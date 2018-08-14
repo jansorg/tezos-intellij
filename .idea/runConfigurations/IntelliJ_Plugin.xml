@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="IntelliJ Plugin" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+    <module name="tezos-intellij-plugin" />
+    <option name="VM_PARAMETERS" value="-Xmx1512m -Xms768m -XX:MaxPermSize=250m -ea" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <predefined_log_file id="idea.log" enabled="true" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

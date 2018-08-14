@@ -1,0 +1,130 @@
+buildscript {
+    ext.kotlin_version = '1.2.60'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id "jacoco"
+    id "org.jetbrains.intellij" version "0.3.6"
+    id "org.jetbrains.grammarkit" version "2018.1.7"
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'org.jetbrains.grammarkit'
+
+import org.jetbrains.grammarkit.tasks.*
+
+version = '0.1.0'
+
+apply plugin: "java"
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+apply plugin: "kotlin"
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+apply plugin: 'org.jetbrains.intellij'
+intellij {
+    version 'IC-2016.1'
+    pluginName 'tezos'
+
+    patchPluginXml {
+        sinceBuild '145.0'
+        untilBuild '193.*'
+    }
+}
+
+publishPlugin {
+    username 'your-jetbrains-username'
+    //add your user's password on the command line using '-Dintellij.publish.password=...'
+    password System.properties['intellij.publish.password']
+
+    channels 'eap'
+}
+
+task generateMichelsonLexer(type: GenerateLexer) {
+    // source flex file
+    source = "grammar/michelson.flex"
+
+    // target directory for lexer
+    targetDir = "gen/com/tezos/lang/michelson/lexer/"
+
+    // target classname, target file will be targetDir/targetClass.java
+    targetClass = "MichelsonLexer"
+
+    // optional, path to the task-specific skeleton file. Default: none
+    //skeleton = '/some/specific/skeleton'
+
+    // if set, plugin will remove a lexer output file before generating new one. Default: false
+    purgeOldFiles = true
+}
+
+task generateMichelsonParser(type: GenerateParser) {
+    // source bnf file
+    source = "grammar/michelson.bnf"
+
+    // optional, task-specific root for the generated files. Default: none
+    targetRoot = 'gen'
+
+    // path to a parser file, relative to the targetRoot
+    pathToParser = '/com/tezos/lang/michelson/parser/MichelsonParserGenerated.java'
+
+    // path to a directory with generated psi files, relative to the targetRoot
+    pathToPsiRoot = '/com/tezos/lang/michelson/psi'
+
+    // if set, plugin will remove a parser output file and psi output directory before generating new ones. Default: false
+    purgeOldFiles = true
+}
+
+task generateLexers {
+    dependsOn generateMichelsonLexer
+}
+
+task generateParsers {
+    dependsOn generateMichelsonParser
+}
+
+// code coverage using the Jacoco engine, see https://docs.gradle.org/current/userguide/jacoco_plugin.html
+// the coverage reports will be available at build/reports/coverage/test/html/index.html
+apply plugin: 'jacoco'
+jacoco {
+    toolVersion = "0.8.1"
+    reportsDir = file("$buildDir/reports/coverage")
+}
+
+test {
+    finalizedBy jacocoTestReport
+
+    jacoco {
+        enabled true
+        append false
+        includes["com.*"]
+    }
+
+    testLogging {
+        events = [
+                org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
+        ]
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.8.1'
+}
