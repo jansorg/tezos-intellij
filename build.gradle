@@ -20,10 +20,6 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'org.jetbrains.grammarkit'
-
-import org.jetbrains.grammarkit.tasks.*
-
 version = '0.1.0'
 
 apply plugin: "java"
@@ -35,6 +31,13 @@ apply plugin: "kotlin"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+sourceSets {
+    main {
+        java.srcDirs += 'gen'
+        kotlin.srcDirs += 'gen'
+    }
 }
 
 apply plugin: 'org.jetbrains.intellij'
@@ -56,12 +59,16 @@ publishPlugin {
     channels 'eap'
 }
 
+apply plugin: 'org.jetbrains.grammarkit'
+import org.jetbrains.grammarkit.tasks.GenerateLexer
+import org.jetbrains.grammarkit.tasks.GenerateParser
+
 task generateMichelsonLexer(type: GenerateLexer) {
     // source flex file
     source = "grammar/michelson.flex"
 
     // target directory for lexer
-    targetDir = "gen/com/tezos/lang/michelson/lexer/"
+    targetDir = "gen/com/tezos/lang/michelson/parser/"
 
     // target classname, target file will be targetDir/targetClass.java
     targetClass = "MichelsonLexer"
@@ -94,6 +101,7 @@ task generateLexers {
     dependsOn generateMichelsonLexer
 }
 
+// not working atm due to classpath issues when Gradle is run
 task generateParsers {
     dependsOn generateMichelsonParser
 }

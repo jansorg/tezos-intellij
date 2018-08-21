@@ -1,11 +1,11 @@
-package generated;
+package com.tezos.lang.michelson.parser;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static generated.GeneratedTypes.*;
+import static com.tezos.lang.michelson.MichelsonTypes.*;
 
 %%
 
@@ -25,23 +25,28 @@ import static generated.GeneratedTypes.*;
 EOL=\R
 WHITE_SPACE=\s+
 
-INT_CONSTANT=[0-9]+
-NATURAL_NUMBER_CONSTANT=[0-9]+.[0-9]+]
+INT=-?[0-9]+
+STRING=\"[^\"]*\"
+BYTE=0x[0-9A-F]+
+TAG=[A-Z][a-z]+
+NAME=[a-z]+
+INSTRUCTION_TOKEN=[A-Z][A-Z_0-9]*
+COMMENT_LINE=#.*$
+COMMENT_MULTI_LINE="/"\* ~\*"/"
 
 %%
 <YYINITIAL> {
-  {WHITE_SPACE}                  { return WHITE_SPACE; }
+  {WHITE_SPACE}             { return WHITE_SPACE; }
 
-  ""                             { return STRING_CONSTANT; }
-  ""                             { return TIMESTAMP_STRING_CONSTANT; }
-  ""                             { return SIGNATURE_STRING_CONSTANT; }
-  ""                             { return KEY_STRING_CONSTANT; }
-  ""                             { return KEY_HASH_STRING_CONSTANT; }
-  ""                             { return TEZ_STRING_CONSTANT; }
-  ""                             { return CONTRACT_STRING_CONSTANT; }
 
-  {INT_CONSTANT}                 { return INT_CONSTANT; }
-  {NATURAL_NUMBER_CONSTANT}      { return NATURAL_NUMBER_CONSTANT; }
+  {INT}                     { return INT; }
+  {STRING}                  { return STRING; }
+  {BYTE}                    { return BYTE; }
+  {TAG}                     { return TAG; }
+  {NAME}                    { return NAME; }
+  {INSTRUCTION_TOKEN}       { return INSTRUCTION_TOKEN; }
+  {COMMENT_LINE}            { return COMMENT_LINE; }
+  {COMMENT_MULTI_LINE}      { return COMMENT_MULTI_LINE; }
 
 }
 

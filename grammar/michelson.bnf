@@ -1,71 +1,102 @@
 {
+    parserClass="com.tezos.lang.michelson.parser.MichelsonParser"
+    psiPackage="com.tezos.lang.michelson.parser"
+    psiImplPackage="com.tezos.lang.michelson.parser.impl"
+
+    elementTypeHolderClass="com.tezos.lang.michelson.MichelsonTypes"
+
     tokens=[
-        INT_CONSTANT='regexp:[0-9]+'
-        NATURAL_NUMBER_CONSTANT='regexp:[0-9]+.[0-9]+]'
-        STRING_CONSTANT='regexp:"[^"]*"'
-        TIMESTAMP_STRING_CONSTANT=''
-        SIGNATURE_STRING_CONSTANT=''
-        KEY_STRING_CONSTANT=''
-        KEY_HASH_STRING_CONSTANT=''
-        TEZ_STRING_CONSTANT=''
-        CONTRACT_STRING_CONSTANT=''
+        INT='regexp:-?[0-9]+'
+        STRING='regexp:"[^"]*"' //fixme handle escape codes?
+        BYTE='regexp:0x[0-9A-F]+' //fixme: add lowercase characters?
+        TAG='regexp:[A-Z][a-z]+'
+        NAME='regexp:[a-z]+'
+
+//        TIMESTAMP_STRING='regexp:"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\w+"'
+//        SIGNATURE_STRING=''
+//        KEY_STRING=''
+//        KEY_HASH_STRING=''
+//        TEZ_STRING=''
+//        CONTRACT_STRING=''
+
+        // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
+        INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
+
+        //fixme add comment tokens
+        COMMENT_LINE='regexp:#.*$'
+        COMMENT_MULTI_LINE='regexp:/\* ~\*/'
     ]
 }
 
-data ::=
-    INT_CONSTANT
-  | NATURAL_NUMBER_CONSTANT
-  | STRING_CONSTANT
-  | TIMESTAMP_STRING_CONSTANT
-  | SIGNATURE_STRING_CONSTANT
-  | KEY_STRING_CONSTANT
-  | KEY_HASH_STRING_CONSTANT
-  | TEZ_STRING_CONSTANT
-  | CONTRACT_STRING_CONSTANT
+//fixme
+grammar ::= section*
+
+section ::= parameter_section | return_section | storage_section | code_section
+parameter_section ::= 'parameter' type_toplevel
+return_section ::= 'return' type_toplevel
+storage_section ::= 'storage' type_toplevel
+code_section ::= 'code' instruction
+
+data_toplevel ::=
+    '(' data ')'
+  | INT
+  | STRING
+//  | TIMESTAMP_STRING
+//  | SIGNATURE_STRING
+//  | KEY_STRING
+//  | KEY_HASH_STRING
+//  | TEZ_STRING
+//  | CONTRACT_STRING
   | 'Unit'
   | 'True'
   | 'False'
-  | 'Pair' data data
-  | 'Left' data
-  | 'Right' data
-  | 'Some' data
+
+data ::=
+    data_toplevel
+  |  'Pair' data_toplevel data_toplevel
+  | 'Left' data_toplevel
+  | 'Right' data_toplevel
+  | 'Some' data_toplevel
   | 'None'
-  | '{' data ';' data? '}' //fixme
-  | '{' 'Elt' data data ';' /*...*/ '}' //fixme
-  | instruction
+  | '{' (data_toplevel (';' data_toplevel)*)? '}' //fixme
+  | '{' ('Elt' data_toplevel data_toplevel (';' 'Elt' data_toplevel data_toplevel)*)? '}' //fixme
+  | instruction //fixme
+
+//instructions ::= '{' (';' instruction?)* '}'
+instructions ::= '{' (instruction (';' instruction)*)? '}'
 
 instruction ::=
-    '{' instruction* '}'
+    instructions
   | 'DROP'
   | 'DUP'
   | 'SWAP'
-  | 'PUSH' type data
+  | 'PUSH' type_toplevel data_toplevel
   | 'SOME'
-  | 'NONE' type
+  | 'NONE' type_toplevel
   | 'UNIT'
-  | 'IF_NONE' '{' instruction* '}' '{' instruction* '}'
+  | 'IF_NONE' instructions instructions
   | 'PAIR'
   | 'CAR'
   | 'CDR'
-  | 'LEFT' type
-  | 'RIGHT' type
-  | 'IF_LEFT' '{' instruction /*...*/ '}' '{' instruction /*...*/ '}' //fixme
-  | 'NIL' type
+  | 'LEFT' type_toplevel
+  | 'RIGHT' type_toplevel
+  | 'IF_LEFT' instructions instructions
+  | 'NIL' type_toplevel
   | 'CONS'
-  | 'IF_CONS' '{' instruction /*...*/ '}' '{' instruction /*...*/ '}' //fixme
+  | 'IF_CONS' instructions instructions
   | 'EMPTY_SET' type
   | 'EMPTY_MAP' comparable_type type
-  | 'MAP' '{' instruction /*...*/ '}'
-  | 'ITER' '{' instruction /*...*/ '}'
+  | 'MAP' instructions
+  | 'ITER' instructions
   | 'MEM'
   | 'GET'
   | 'UPDATE'
-  | 'IF' '{' instruction /*...*/ '}' '{' instruction /*...*/ '}'
-  | 'LOOP' '{' instruction /*...*/ '}'
-  | 'LOOP_LEFT' '{' instruction /*...*/ '}'
-  | 'LAMBDA' type type '{' instruction /*...*/ '}'
+  | 'IF' instructions instructions
+  | 'LOOP' instructions
+  | 'LOOP_LEFT' instructions
+  | 'LAMBDA' type type instructions
   | 'EXEC'
-  | 'DIP' '{' instruction /*... */'}'
+  | 'DIP' instructions
   | 'FAILWITH'
   | 'CAST'
   | 'RENAME'
@@ -107,15 +138,18 @@ instruction ::=
   | 'SOURCE'
   | 'SENDER'
 
-type ::=
-    comparable_type
+type_toplevel ::=
+    '(' type ')'
   | 'key'
   | 'unit'
   | 'signature'
+  | 'operation'
+
+type ::=
+    type_toplevel
   | 'option' type
   | 'list' type
   | 'set' comparable_type
-  | 'operation'
   | 'contract' type
   | 'pair' type type
   | 'or' type type

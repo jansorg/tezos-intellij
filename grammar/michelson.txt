@@ -1,0 +1,116 @@
+<data> ::=
+  | <int constant>
+  | <natural number constant>
+  | <string constant>
+  | <timestamp string constant>
+  | <signature string constant>
+  | <key string constant>
+  | <key_hash string constant>
+  | <tez string constant>
+  | <contract string constant>
+  | Unit
+  | True
+  | False
+  | Pair <data> <data>
+  | Left <data>
+  | Right <data>
+  | Some <data>
+  | None
+  | { <data> ; ... }
+  | { Elt <data> <data> ; ... }
+  | instruction
+<instruction> ::=
+  | { <instruction> ... }
+  | DROP
+  | DUP
+  | SWAP
+  | PUSH <type> <data>
+  | SOME
+  | NONE <type>
+  | UNIT
+  | IF_NONE { <instruction> ... } { <instruction> ... }
+  | PAIR
+  | CAR
+  | CDR
+  | LEFT <type>
+  | RIGHT <type>
+  | IF_LEFT { <instruction> ... } { <instruction> ... }
+  | NIL <type>
+  | CONS
+  | IF_CONS { <instruction> ... } { <instruction> ... }
+  | EMPTY_SET <type>
+  | EMPTY_MAP <comparable type> <type>
+  | MAP { <instruction> ... }
+  | ITER { <instruction> ... }
+  | MEM
+  | GET
+  | UPDATE
+  | IF { <instruction> ... } { <instruction> ... }
+  | LOOP { <instruction> ... }
+  | LOOP_LEFT { <instruction> ... }
+  | LAMBDA <type> <type> { <instruction> ... }
+  | EXEC
+  | DIP { <instruction> ... }
+  | FAILWITH
+  | CAST
+  | RENAME
+  | CONCAT
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | ABS
+  | NEG
+  | MOD
+  | LSL
+  | LSR
+  | OR
+  | AND
+  | XOR
+  | NOT
+  | COMPARE
+  | EQ
+  | NEQ
+  | LT
+  | GT
+  | LE
+  | GE
+  | INT
+  | SELF
+  | TRANSFER_TOKENS
+  | SET_DELEGATE
+  | CREATE_ACCOUNT
+  | CREATE_CONTRACT
+  | IMPLICIT_ACCOUNT
+  | NOW
+  | AMOUNT
+  | BALANCE
+  | CHECK_SIGNATURE
+  | BLAKE2B
+  | HASH_KEY
+  | STEPS_TO_QUOTA
+  | SOURCE
+  | SENDER
+<type> ::=
+  | <comparable type>
+  | key
+  | unit
+  | signature
+  | option <type>
+  | list <type>
+  | set <comparable type>
+  | operation
+  | contract <type>
+  | pair <type> <type>
+  | or <type> <type>
+  | lambda <type> <type>
+  | map <comparable type> <type>
+  | big_map <comparable type> <type>
+<comparable type> ::=
+  | int
+  | nat
+  | string
+  | tez
+  | bool
+  | key_hash
+  | timestamp

@@ -1,0 +1,15 @@
+parameter (pair (set string) (set string));
+return (set string);
+storage unit;
+code { CAR;                     # Get the parameter
+       DUP; CAR; DIP{CDR};      # Unpack the sets
+       LAMBDA (pair string (set string)) # Lambda for reduce
+              (set string)
+              { DUP;
+                CAR;
+                DIP{CDR};       # Unpack accumulator and string
+                PUSH bool True;
+                SWAP;
+                UPDATE};        # Add it to the set
+       REDUCE;                  # Execute reduce
+       UNIT; SWAP; PAIR}        # Calling convention
