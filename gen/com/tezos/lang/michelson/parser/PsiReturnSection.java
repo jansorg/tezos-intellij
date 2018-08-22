@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReturnSection extends PsiElement {
+public interface PsiReturnSection extends PsiSection {
 
-  @NotNull
-  TypeToplevel getTypeToplevel();
+  @Nullable
+  PsiType getType();
 
 }

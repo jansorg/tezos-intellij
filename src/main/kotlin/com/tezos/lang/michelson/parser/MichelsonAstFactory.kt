@@ -8,12 +8,8 @@ import com.tezos.lang.michelson.MichelsonTypes
 /**
  * @author jansorg
  */
-//class MichelsonAstFactory : ASTFactory(){
-//    override fun createComposite(type: IElementType): CompositeElement {
-//        //custom elements
-//        return when {
-//            type === MichelsonElementTypes.TYPE_NAME -> PsiTypeNameImpl(type)
-//            else -> MichelsonTypes.Factory.createElement(type)
-//        }
-//    }
-//}
+class MichelsonAstFactory : ASTFactory() {
+    override fun createComposite(type: IElementType): CompositeElement {
+        return MichelsonTypes.Factory.createElement(type)
+    }
+}

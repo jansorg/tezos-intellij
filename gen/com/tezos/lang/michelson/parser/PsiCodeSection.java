@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface Type extends PsiElement {
+public interface PsiCodeSection extends PsiSection {
 
-  @Nullable
-  ComparableType getComparableType();
-
-  @Nullable
-  Type getType();
-
-  @Nullable
-  TypeToplevel getTypeToplevel();
+  @NotNull
+  PsiInstruction getInstruction();
 
 }

@@ -8,21 +8,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tezos.lang.michelson.parser.*;
+import com.intellij.psi.tree.IElementType;
 
-public class ComparableTypeImpl extends ASTWrapperPsiElement implements ComparableType {
+public class PsiComparableTypeImpl extends PsiTypeImpl implements PsiComparableType {
 
-  public ComparableTypeImpl(@NotNull ASTNode node) {
-    super(node);
+  public PsiComparableTypeImpl(@NotNull IElementType type) {
+    super(type);
   }
 
-  public <R> R accept(@NotNull Visitor<R> visitor) {
+  public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitComparableType(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) accept((Visitor)visitor);
+    if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 

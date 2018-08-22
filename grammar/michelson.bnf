@@ -1,13 +1,25 @@
 {
     generate=[names="long" visitor-value="R"]
 
+    // if this is a composite element then it triggers a different factory in PowershellElementTypes using IElementType
+    implements="com.tezos.lang.michelson.psi.MichelsonComposite"
+    extends="com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl"
+
     parserClass="com.tezos.lang.michelson.parser.MichelsonParser"
+    parserUtilClass="com.tezos.lang.michelson.parser.MichelsonParserUtil"
+
+    psiClassPrefix="Psi"
+    psiImplClassSuffix="Impl"
     psiPackage="com.tezos.lang.michelson.parser"
     psiImplPackage="com.tezos.lang.michelson.parser.impl"
 
-    parserUtilClass="com.tezos.lang.michelson.parser.MichelsonParserUtil"
-
+    tokenTypeClass="com.tezos.lang.michelson.lexer.MichelsonElementType"
+    elementTypeClass="com.tezos.lang.michelson.psi.MichelsonCompositeElementType"
     elementTypeHolderClass="com.tezos.lang.michelson.MichelsonTypes"
+
+    extends(".*_type")=type
+    extends(".*_data")=data
+    extends(".*_section")=section
 
     tokens=[
         LEFT_PAREN='('
@@ -18,10 +30,15 @@
 
         INT='regexp:-?[0-9]+'
         STRING='regexp:"[^"]*"' //fixme handle escape codes?
-        BYTE='regexp:0x[0-9A-F]+' //fixme: add lowercase characters?
+        BYTE='regexp:0x[A-F0-9]+' //fixme: add lowercase characters?
         TAG='regexp:[A-Z][a-z]+'
         NAME='regexp:[a-z]+'
+        // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
+        INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
+//        Unit='Unit'
+//        TRUE='True'
+//        FALSE='False'
 //        TIMESTAMP_STRING='regexp:"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\w+"'
 //        SIGNATURE_STRING=''
 //        KEY_STRING=''
@@ -29,25 +46,21 @@
 //        TEZ_STRING=''
 //        CONTRACT_STRING=''
 
-        // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
-        INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
-
         //fixme add comment tokens
         COMMENT_LINE='regexp:#.*'
         COMMENT_MULTI_LINE='regexp:/\* ~\*/'
     ]
 }
 
-//fixme
 private script_file ::= section*
 
 section ::= parameter_section | return_section | storage_section | code_section
-parameter_section ::= 'parameter' type_toplevel ';'
-return_section ::= 'return' type_toplevel ';'
-storage_section ::= 'storage' type_toplevel ';'
+parameter_section ::= 'parameter' toplevel_type ';'
+return_section ::= 'return' toplevel_type ';'
+storage_section ::= 'storage' toplevel_type ';'
 code_section ::= 'code' instruction ';'
 
-data_toplevel ::=
+private toplevel_data ::=
     '(' data ')'
   | INT
   | STRING
@@ -62,14 +75,14 @@ data_toplevel ::=
   | 'False'
 
 data ::=
-    data_toplevel
-  |  'Pair' data_toplevel data_toplevel
-  | 'Left' data_toplevel
-  | 'Right' data_toplevel
-  | 'Some' data_toplevel
+    toplevel_data
+  | 'Pair' toplevel_data toplevel_data
+  | 'Left' toplevel_data
+  | 'Right' toplevel_data
+  | 'Some' toplevel_data
   | 'None'
-  | '{' (data_toplevel (';' data_toplevel)*)? '}' //fixme
-  | '{' ('Elt' data_toplevel data_toplevel (';' 'Elt' data_toplevel data_toplevel)*)? '}' //fixme
+  | '{' (toplevel_data (';' toplevel_data)*)? '}' //fixme
+  | '{' ('Elt' toplevel_data toplevel_data (';' 'Elt' toplevel_data toplevel_data)*)? '}' //fixme
   | instruction //fixme
 
 instructions ::= '{' (instruction (';' instruction)*)? '}'
@@ -79,18 +92,18 @@ instruction ::=
   | 'DROP'
   | 'DUP'
   | 'SWAP'
-  | 'PUSH' type_toplevel data_toplevel
+  | 'PUSH' toplevel_type toplevel_data
   | 'SOME'
-  | 'NONE' type_toplevel
+  | 'NONE' toplevel_type
   | 'UNIT'
   | 'IF_NONE' instructions instructions
   | 'PAIR'
   | 'CAR'
   | 'CDR'
-  | 'LEFT' type_toplevel
-  | 'RIGHT' type_toplevel
+  | 'LEFT' toplevel_type
+  | 'RIGHT' toplevel_type
   | 'IF_LEFT' instructions instructions
-  | 'NIL' type_toplevel
+  | 'NIL' toplevel_type
   | 'CONS'
   | 'IF_CONS' instructions instructions
   | 'EMPTY_SET' type
@@ -147,7 +160,7 @@ instruction ::=
   | 'SOURCE'
   | 'SENDER'
 
-type_toplevel ::=
+private toplevel_type ::=
     '(' type ')'
   | 'key'
   | 'unit'
@@ -156,7 +169,7 @@ type_toplevel ::=
   | comparable_type
 
 type ::=
-    type_toplevel
+    toplevel_type
   | 'option' type
   | 'list' type
   | 'set' comparable_type

@@ -4,22 +4,20 @@ package com.tezos.lang.michelson.parser;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.tezos.lang.michelson.psi.MichelsonComposite;
 
-public interface Instruction extends PsiElement {
-
-  @Nullable
-  ComparableType getComparableType();
+public interface PsiData extends MichelsonComposite {
 
   @Nullable
-  DataToplevel getDataToplevel();
+  PsiData getData();
 
   @Nullable
-  Instructions getInstructions();
+  PsiInstruction getInstruction();
 
   @Nullable
-  Type getType();
+  PsiElement getInt();
 
   @Nullable
-  TypeToplevel getTypeToplevel();
+  PsiElement getString();
 
 }

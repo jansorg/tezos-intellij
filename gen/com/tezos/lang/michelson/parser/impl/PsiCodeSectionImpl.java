@@ -8,28 +8,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tezos.lang.michelson.parser.*;
+import com.intellij.psi.tree.IElementType;
 
-public class InstructionsImpl extends ASTWrapperPsiElement implements Instructions {
+public class PsiCodeSectionImpl extends PsiSectionImpl implements PsiCodeSection {
 
-  public InstructionsImpl(@NotNull ASTNode node) {
-    super(node);
+  public PsiCodeSectionImpl(@NotNull IElementType type) {
+    super(type);
   }
 
-  public <R> R accept(@NotNull Visitor<R> visitor) {
-    return visitor.visitInstructions(this);
+  public <R> R accept(@NotNull PsiVisitor<R> visitor) {
+    return visitor.visitCodeSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) accept((Visitor)visitor);
+    if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public List<Instruction> getInstructionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, Instruction.class);
+  public PsiInstruction getInstruction() {
+    return PsiTreeUtil.getChildOfType(this, PsiInstruction.class);
   }
 
 }

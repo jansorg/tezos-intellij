@@ -27,7 +27,7 @@ WHITE_SPACE=\s+
 
 INT=-?[0-9]+
 STRING=\"[^\"]*\"
-BYTE=0x[0-9A-F]+
+BYTE=0x[A-F0-9]+
 TAG=[A-Z][a-z]+
 NAME=[a-z]+
 INSTRUCTION_TOKEN=[A-Z][A-Z_0-9]*
@@ -56,3 +56,4 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
 }
 
 [^] { return BAD_CHARACTER; }
+

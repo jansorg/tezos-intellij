@@ -8,34 +8,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tezos.lang.michelson.parser.*;
+import com.intellij.psi.tree.IElementType;
 
-public class DataImpl extends ASTWrapperPsiElement implements Data {
+public class PsiStorageSectionImpl extends PsiSectionImpl implements PsiStorageSection {
 
-  public DataImpl(@NotNull ASTNode node) {
-    super(node);
+  public PsiStorageSectionImpl(@NotNull IElementType type) {
+    super(type);
   }
 
-  public <R> R accept(@NotNull Visitor<R> visitor) {
-    return visitor.visitData(this);
+  public <R> R accept(@NotNull PsiVisitor<R> visitor) {
+    return visitor.visitStorageSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) accept((Visitor)visitor);
+    if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
-  public DataToplevel getDataToplevel() {
-    return findChildByClass(DataToplevel.class);
-  }
-
-  @Override
-  @Nullable
-  public Instruction getInstruction() {
-    return findChildByClass(Instruction.class);
+  public PsiType getType() {
+    return PsiTreeUtil.getChildOfType(this, PsiType.class);
   }
 
 }
