@@ -17,8 +17,8 @@ public class StorageSectionImpl extends ASTWrapperPsiElement implements StorageS
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitStorageSection(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitStorageSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

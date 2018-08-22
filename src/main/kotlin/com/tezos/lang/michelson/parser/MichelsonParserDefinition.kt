@@ -20,11 +20,13 @@ import com.tezos.lang.michelson.psi.impl.MichelsonPsiFileImpl
  * @author jansorg
  */
 class MichelsonParserDefinition : ParserDefinition {
-    val MICHELSON_FILE_ELEMENT_TYPE = IFileElementType("MICHELSON_FILE", MichelsonLanguage);
+    companion object {
+        private val STRING_TOKENS = TokenSet.create(STRING)
+        private val WHITESPACE_TOKENS = TokenSet.create(TokenType.WHITE_SPACE)
+        private val COMMENT_TOKENS = TokenSet.create(COMMENT_LINE, COMMENT_MULTI_LINE)
+    }
 
-    private val STRING_TOKENS = TokenSet.create(STRING)
-    private val WHITESPACE_TOKENS = TokenSet.create(TokenType.WHITE_SPACE)
-    private val COMMENT_TOKENS = TokenSet.create(COMMENT_LINE, COMMENT_MULTI_LINE)
+    private val MICHELSON_FILE_ELEMENT_TYPE = IFileElementType("MICHELSON_FILE", MichelsonLanguage);
 
     override fun createLexer(project: Project): Lexer = MichelsonLexer()
 
@@ -34,9 +36,9 @@ class MichelsonParserDefinition : ParserDefinition {
 
     override fun spaceExistanceTypeBetweenTokens(first: ASTNode, second: ASTNode): ParserDefinition.SpaceRequirements = ParserDefinition.SpaceRequirements.MAY
 
-    override fun getStringLiteralElements(): TokenSet = STRING_TOKENS
-
     override fun getFileNodeType(): IFileElementType = MICHELSON_FILE_ELEMENT_TYPE
+
+    override fun getStringLiteralElements(): TokenSet = STRING_TOKENS
 
     override fun getWhitespaceTokens(): TokenSet = WHITESPACE_TOKENS
 

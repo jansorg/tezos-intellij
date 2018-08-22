@@ -17,8 +17,8 @@ public class DataImpl extends ASTWrapperPsiElement implements Data {
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitData(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitData(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

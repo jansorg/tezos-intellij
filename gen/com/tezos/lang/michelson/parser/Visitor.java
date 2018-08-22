@@ -5,58 +5,59 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 
-public class Visitor extends PsiElementVisitor {
+public class Visitor<R> extends PsiElementVisitor {
 
-  public void visitCodeSection(@NotNull CodeSection o) {
-    visitPsiElement(o);
+  public R visitCodeSection(@NotNull CodeSection o) {
+    return visitPsiElement(o);
   }
 
-  public void visitComparableType(@NotNull ComparableType o) {
-    visitPsiElement(o);
+  public R visitComparableType(@NotNull ComparableType o) {
+    return visitPsiElement(o);
   }
 
-  public void visitData(@NotNull Data o) {
-    visitPsiElement(o);
+  public R visitData(@NotNull Data o) {
+    return visitPsiElement(o);
   }
 
-  public void visitDataToplevel(@NotNull DataToplevel o) {
-    visitPsiElement(o);
+  public R visitDataToplevel(@NotNull DataToplevel o) {
+    return visitPsiElement(o);
   }
 
-  public void visitInstruction(@NotNull Instruction o) {
-    visitPsiElement(o);
+  public R visitInstruction(@NotNull Instruction o) {
+    return visitPsiElement(o);
   }
 
-  public void visitInstructions(@NotNull Instructions o) {
-    visitPsiElement(o);
+  public R visitInstructions(@NotNull Instructions o) {
+    return visitPsiElement(o);
   }
 
-  public void visitParameterSection(@NotNull ParameterSection o) {
-    visitPsiElement(o);
+  public R visitParameterSection(@NotNull ParameterSection o) {
+    return visitPsiElement(o);
   }
 
-  public void visitReturnSection(@NotNull ReturnSection o) {
-    visitPsiElement(o);
+  public R visitReturnSection(@NotNull ReturnSection o) {
+    return visitPsiElement(o);
   }
 
-  public void visitSection(@NotNull Section o) {
-    visitPsiElement(o);
+  public R visitSection(@NotNull Section o) {
+    return visitPsiElement(o);
   }
 
-  public void visitStorageSection(@NotNull StorageSection o) {
-    visitPsiElement(o);
+  public R visitStorageSection(@NotNull StorageSection o) {
+    return visitPsiElement(o);
   }
 
-  public void visitType(@NotNull Type o) {
-    visitPsiElement(o);
+  public R visitType(@NotNull Type o) {
+    return visitPsiElement(o);
   }
 
-  public void visitTypeToplevel(@NotNull TypeToplevel o) {
-    visitPsiElement(o);
+  public R visitTypeToplevel(@NotNull TypeToplevel o) {
+    return visitPsiElement(o);
   }
 
-  public void visitPsiElement(@NotNull PsiElement o) {
+  public R visitPsiElement(@NotNull PsiElement o) {
     visitElement(o);
+    return null;
   }
 
 }

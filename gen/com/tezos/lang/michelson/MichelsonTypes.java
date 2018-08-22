@@ -26,7 +26,12 @@ public interface MichelsonTypes {
   IElementType COMMENT_MULTI_LINE = new IElementType("COMMENT_MULTI_LINE", null);
   IElementType INSTRUCTION_TOKEN = new IElementType("INSTRUCTION_TOKEN", null);
   IElementType INT = new IElementType("INT", null);
+  IElementType LEFT_CURLY = new IElementType("{", null);
+  IElementType LEFT_PAREN = new IElementType("(", null);
   IElementType NAME = new IElementType("NAME", null);
+  IElementType RIGHT_CURLY = new IElementType("}", null);
+  IElementType RIGHT_PAREN = new IElementType(")", null);
+  IElementType SEMI = new IElementType(";", null);
   IElementType STRING = new IElementType("STRING", null);
   IElementType TAG = new IElementType("TAG", null);
 

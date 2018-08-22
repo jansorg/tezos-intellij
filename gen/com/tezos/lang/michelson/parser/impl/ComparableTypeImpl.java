@@ -17,8 +17,8 @@ public class ComparableTypeImpl extends ASTWrapperPsiElement implements Comparab
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitComparableType(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitComparableType(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

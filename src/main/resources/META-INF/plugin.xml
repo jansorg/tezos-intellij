@@ -26,9 +26,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.tezos.lang.michelson.MichelsonFileTypeFactory"/>
-        <lang.parserDefinition id="michelson"
-                               language="Michelson"
-                               implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
+        <!--<lang.ast.factory language="Michelson" implementationClass="MichelsonFac" />-->
+        <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
     </extensions>
 
     <actions>

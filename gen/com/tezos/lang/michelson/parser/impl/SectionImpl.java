@@ -17,8 +17,8 @@ public class SectionImpl extends ASTWrapperPsiElement implements Section {
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitSection(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

@@ -17,8 +17,8 @@ public class ReturnSectionImpl extends ASTWrapperPsiElement implements ReturnSec
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitReturnSection(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitReturnSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

@@ -31,13 +31,18 @@ BYTE=0x[0-9A-F]+
 TAG=[A-Z][a-z]+
 NAME=[a-z]+
 INSTRUCTION_TOKEN=[A-Z][A-Z_0-9]*
-COMMENT_LINE=#.*$
+COMMENT_LINE=#.*
 COMMENT_MULTI_LINE="/"\* ~\*"/"
 
 %%
 <YYINITIAL> {
   {WHITE_SPACE}             { return WHITE_SPACE; }
 
+  "("                       { return LEFT_PAREN; }
+  ")"                       { return RIGHT_PAREN; }
+  "{"                       { return LEFT_CURLY; }
+  "}"                       { return RIGHT_CURLY; }
+  ";"                       { return SEMI; }
 
   {INT}                     { return INT; }
   {STRING}                  { return STRING; }

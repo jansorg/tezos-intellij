@@ -17,8 +17,8 @@ public class ParameterSectionImpl extends ASTWrapperPsiElement implements Parame
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitParameterSection(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitParameterSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

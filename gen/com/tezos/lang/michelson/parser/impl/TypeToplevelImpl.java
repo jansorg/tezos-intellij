@@ -17,13 +17,19 @@ public class TypeToplevelImpl extends ASTWrapperPsiElement implements TypeToplev
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitTypeToplevel(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitTypeToplevel(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof Visitor) accept((Visitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public ComparableType getComparableType() {
+    return findChildByClass(ComparableType.class);
   }
 
   @Override

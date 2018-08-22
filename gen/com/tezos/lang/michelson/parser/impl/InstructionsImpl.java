@@ -17,8 +17,8 @@ public class InstructionsImpl extends ASTWrapperPsiElement implements Instructio
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitInstructions(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitInstructions(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

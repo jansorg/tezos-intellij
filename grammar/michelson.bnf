@@ -1,11 +1,21 @@
 {
+    generate=[names="long" visitor-value="R"]
+
     parserClass="com.tezos.lang.michelson.parser.MichelsonParser"
     psiPackage="com.tezos.lang.michelson.parser"
     psiImplPackage="com.tezos.lang.michelson.parser.impl"
 
+    parserUtilClass="com.tezos.lang.michelson.parser.MichelsonParserUtil"
+
     elementTypeHolderClass="com.tezos.lang.michelson.MichelsonTypes"
 
     tokens=[
+        LEFT_PAREN='('
+        RIGHT_PAREN=')'
+        LEFT_CURLY='{'
+        RIGHT_CURLY='}'
+        SEMI=';'
+
         INT='regexp:-?[0-9]+'
         STRING='regexp:"[^"]*"' //fixme handle escape codes?
         BYTE='regexp:0x[0-9A-F]+' //fixme: add lowercase characters?
@@ -23,19 +33,19 @@
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
         //fixme add comment tokens
-        COMMENT_LINE='regexp:#.*$'
+        COMMENT_LINE='regexp:#.*'
         COMMENT_MULTI_LINE='regexp:/\* ~\*/'
     ]
 }
 
 //fixme
-grammar ::= section*
+private script_file ::= section*
 
 section ::= parameter_section | return_section | storage_section | code_section
-parameter_section ::= 'parameter' type_toplevel
-return_section ::= 'return' type_toplevel
-storage_section ::= 'storage' type_toplevel
-code_section ::= 'code' instruction
+parameter_section ::= 'parameter' type_toplevel ';'
+return_section ::= 'return' type_toplevel ';'
+storage_section ::= 'storage' type_toplevel ';'
+code_section ::= 'code' instruction ';'
 
 data_toplevel ::=
     '(' data ')'
@@ -62,7 +72,6 @@ data ::=
   | '{' ('Elt' data_toplevel data_toplevel (';' 'Elt' data_toplevel data_toplevel)*)? '}' //fixme
   | instruction //fixme
 
-//instructions ::= '{' (';' instruction?)* '}'
 instructions ::= '{' (instruction (';' instruction)*)? '}'
 
 instruction ::=
@@ -144,6 +153,7 @@ type_toplevel ::=
   | 'unit'
   | 'signature'
   | 'operation'
+  | comparable_type
 
 type ::=
     type_toplevel

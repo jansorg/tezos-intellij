@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface TypeToplevel extends PsiElement {
 
   @Nullable
+  ComparableType getComparableType();
+
+  @Nullable
   Type getType();
 
 }

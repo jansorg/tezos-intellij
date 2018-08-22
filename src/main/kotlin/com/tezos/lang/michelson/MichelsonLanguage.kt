@@ -5,4 +5,6 @@ import com.intellij.lang.Language
 /**
  * @author jansorg
  */
-object MichelsonLanguage : Language("Michelson")
+object MichelsonLanguage : Language("Michelson") {
+    override fun getDisplayName(): String = "Michelson"
+}

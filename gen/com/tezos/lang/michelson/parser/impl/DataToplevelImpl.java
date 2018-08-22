@@ -17,8 +17,8 @@ public class DataToplevelImpl extends ASTWrapperPsiElement implements DataToplev
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitDataToplevel(this);
+  public <R> R accept(@NotNull Visitor<R> visitor) {
+    return visitor.visitDataToplevel(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
