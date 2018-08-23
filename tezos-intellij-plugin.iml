@@ -18,6 +18,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60" level="project" />
+    <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61" level="project" />
+    <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-reflect:1.2.61" level="project" />
   </component>
 </module>
