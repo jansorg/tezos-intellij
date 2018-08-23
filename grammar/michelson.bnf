@@ -1,10 +1,6 @@
 {
     generate=[names="long" visitor-value="R"]
 
-    // if this is a composite element then it triggers a different factory in PowershellElementTypes using IElementType
-    implements="com.tezos.lang.michelson.psi.MichelsonComposite"
-    extends="com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl"
-
     parserClass="com.tezos.lang.michelson.parser.MichelsonParser"
     parserUtilClass="com.tezos.lang.michelson.parser.MichelsonParserUtil"
 
@@ -17,11 +13,18 @@
     elementTypeClass="com.tezos.lang.michelson.psi.MichelsonCompositeElementType"
     elementTypeHolderClass="com.tezos.lang.michelson.MichelsonTypes"
 
+    // if this is a composite element then it triggers a different factory in PowershellElementTypes using IElementType
+    implements="com.tezos.lang.michelson.psi.MichelsonComposite"
+    extends="com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl"
     extends(".*_type")=type
     extends(".*_data")=data
     extends(".*_section")=section
+    extends(".*_instruction")=instruction
+    extends(".*_macro")=macro_instruction
 
     tokens=[
+        SECTION_NAME='regexp:parameter|return|storage|code'
+
         LEFT_PAREN='('
         RIGHT_PAREN=')'
         LEFT_CURLY='{'
@@ -33,18 +36,32 @@
         BYTE='regexp:0x[A-F0-9]+' //fixme: add lowercase characters?
         TAG='regexp:[A-Z][a-z]+'
         NAME='regexp:[a-z]+'
-        // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
-        INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
+        MACRO_TOKEN='regexp:CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR'
+        MACRO_DIIP_TOKEN='regexp:DII+P'
+        MACRO_DUUP_TOKEN='regexp:DUU+P'
+        // P: Pair, A: left, I: right
+        // must be validated by annotator later on
+        MACRO_PAIRS_TOKEN='regexp:P(A | I | P)+R'
+        // P: Pair, A: left, I: right
+        // must be validated by annotator later on
+        MACRO_NESTED_TOKEN='regexp:UNP(A | I | R)*R'
+        MACRO_PAIR_ACCESS_TOKEN='regexp:C[AD]+R'
+
+        MACRO_SET_CADR_TOKEN='regexp:SET_C[AD]+R'
+        MACRO_MAP_CADR_TOKEN='regexp:MAP_C[AD]+R'
 //        Unit='Unit'
-//        TRUE='True'
-//        FALSE='False'
+        TRUE='True'
+        FALSE='False'
 //        TIMESTAMP_STRING='regexp:"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\w+"'
 //        SIGNATURE_STRING=''
 //        KEY_STRING=''
 //        KEY_HASH_STRING=''
 //        TEZ_STRING=''
 //        CONTRACT_STRING=''
+
+        // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
+        INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
         //fixme add comment tokens
         COMMENT_LINE='regexp:#.*'
@@ -58,7 +75,7 @@ section ::= parameter_section | return_section | storage_section | code_section
 parameter_section ::= 'parameter' toplevel_type ';'
 return_section ::= 'return' toplevel_type ';'
 storage_section ::= 'storage' toplevel_type ';'
-code_section ::= 'code' instruction ';'
+code_section ::= 'code' instruction ';'?
 
 private toplevel_data ::=
     '(' data ')'
@@ -85,40 +102,29 @@ data ::=
   | '{' ('Elt' toplevel_data toplevel_data (';' 'Elt' toplevel_data toplevel_data)*)? '}' //fixme
   | instruction //fixme
 
-instructions ::= '{' (instruction (';' instruction)*)? '}'
-
 instruction ::=
-    instructions
-  | 'DROP'
+    block_instruction
+  | if_instruction
+  | simple_instruction
+  | arg_instruction
+  | macro_instruction
+  | unknown_instruction
+
+block_instruction ::= '{' (instruction (';' instruction)*)? '}'
+
+simple_instruction ::= 'DROP'
   | 'DUP'
   | 'SWAP'
-  | 'PUSH' toplevel_type toplevel_data
   | 'SOME'
-  | 'NONE' toplevel_type
   | 'UNIT'
-  | 'IF_NONE' instructions instructions
   | 'PAIR'
   | 'CAR'
   | 'CDR'
-  | 'LEFT' toplevel_type
-  | 'RIGHT' toplevel_type
-  | 'IF_LEFT' instructions instructions
-  | 'NIL' toplevel_type
   | 'CONS'
-  | 'IF_CONS' instructions instructions
-  | 'EMPTY_SET' type
-  | 'EMPTY_MAP' comparable_type type
-  | 'MAP' instructions
-  | 'ITER' instructions
   | 'MEM'
   | 'GET'
   | 'UPDATE'
-  | 'IF' instructions instructions
-  | 'LOOP' instructions
-  | 'LOOP_LEFT' instructions
-  | 'LAMBDA' type type instructions
   | 'EXEC'
-  | 'DIP' instructions
   | 'FAILWITH'
   | 'CAST'
   | 'RENAME'
@@ -160,13 +166,57 @@ instruction ::=
   | 'SOURCE'
   | 'SENDER'
 
-private toplevel_type ::=
-    '(' type ')'
-  | 'key'
-  | 'unit'
-  | 'signature'
-  | 'operation'
-  | comparable_type
+arg_instruction ::= 'PUSH' toplevel_type toplevel_data
+  | 'NONE' toplevel_type
+  | 'LEFT' toplevel_type
+  | 'RIGHT' toplevel_type
+  | 'NIL' toplevel_type
+  | 'EMPTY_SET' type
+  | 'EMPTY_MAP' comparable_type type
+  | 'MAP' block_instruction
+  | 'ITER' block_instruction
+  | 'LOOP' block_instruction
+  | 'LOOP_LEFT' block_instruction
+  | 'LAMBDA' type type block_instruction
+  | 'DIP' block_instruction
+
+if_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction {methods=[trueBranch="/instructions[0]" falseBranch="/instructions[1]"]}
+
+macro_instruction ::=
+    cmp_macro
+  | conditional_macro
+  | fail_macro
+  | assert_macro
+  | pair_access_macro
+  | set_macro
+  | map_macro {extends=instruction}
+
+assert_macro ::= "ASSERT"
+  | "ASSERT_EQ" | "ASSERT_NEQ" | "ASSERT_LT" | "ASSERT_LE" | "ASSERT_GT" | "ASSERT_GE"
+  | "ASSERT_CMPEQ" | "ASSERT_CMPNEQ" |"ASSERT_CMPLT" | "ASSERT_CMPLE" | "ASSERT_CMPGT" | "ASSERT_CMPGE"
+  | "ASSERT_NONE"
+  | "ASSERT_SOME"
+  | "ASSERT_LEFT"
+  | "ASSERT_RIGHT"
+
+fail_macro ::= "FAIL"
+
+cmp_macro ::= "CMPEQ" | "CMPNEQ" | "CMPLT" | "CMPGT" | "CMPLE" | "CMPGE"
+
+map_macro ::= "MAP_CAR" | "MAP_CDR" | map_access_macro
+map_access_macro ::= MACRO_MAP_CADR_TOKEN {extends=map_macro}
+
+set_macro ::= "SET_CAR" | "SET_CDR" | set_access_macro
+set_access_macro ::= MACRO_SET_CADR_TOKEN {extends=set_macro}
+
+pair_access_macro ::= (MACRO_DIIP_TOKEN | MACRO_DUUP_TOKEN | MACRO_NESTED_TOKEN | MACRO_PAIR_ACCESS_TOKEN | MACRO_PAIRS_TOKEN) block_instruction
+
+conditional_macro ::= ( "IF_SOME"
+              | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
+              | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE"
+             ) block_instruction block_instruction {methods=[trueBranch="/instructions[0]" falseBranch="/instructions[1]"]}
+
+unknown_instruction ::= INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data)*
 
 type ::=
     toplevel_type
@@ -179,6 +229,14 @@ type ::=
   | 'lambda' type type
   | 'map' comparable_type type
   | 'big_map' comparable_type type
+
+private toplevel_type ::=
+    '(' type ')'
+  | 'key'
+  | 'unit'
+  | 'signature'
+  | 'operation'
+  | comparable_type
 
 comparable_type ::=
     'int'

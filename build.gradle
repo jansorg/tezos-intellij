@@ -30,6 +30,7 @@ tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 apply plugin: "kotlin"
 
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-reflect"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 

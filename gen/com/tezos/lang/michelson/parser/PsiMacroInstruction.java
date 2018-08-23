@@ -4,11 +4,7 @@ package com.tezos.lang.michelson.parser;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.tezos.lang.michelson.psi.MichelsonComposite;
 
-public interface PsiInstructions extends MichelsonComposite {
-
-  @NotNull
-  List<PsiInstruction> getInstructionList();
+public interface PsiMacroInstruction extends PsiInstruction {
 
 }

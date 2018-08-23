@@ -8,18 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
-import com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl;
 import com.tezos.lang.michelson.parser.*;
 import com.intellij.psi.tree.IElementType;
 
-public abstract class PsiInstructionImpl extends MichelsonCompositeImpl implements PsiInstruction {
+public class PsiSetMacroImpl extends PsiMacroInstructionImpl implements PsiSetMacro {
 
-  public PsiInstructionImpl(@NotNull IElementType type) {
+  public PsiSetMacroImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitInstruction(this);
+    return visitor.visitSetMacro(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
