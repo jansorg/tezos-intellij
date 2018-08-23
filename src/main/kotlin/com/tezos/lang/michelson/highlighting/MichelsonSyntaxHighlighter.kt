@@ -21,6 +21,7 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
     private val SECTION_NAME = TextAttributesKey.createTextAttributesKey("MI.SECTION_NAME", DefaultLanguageHighlighterColors.KEYWORD)
 
     private val TYPE_NAME = TextAttributesKey.createTextAttributesKey("MI.TYPE_NAME", DefaultLanguageHighlighterColors.CLASS_REFERENCE)
+    private val TYPE_NAME_COMPARABLE = TextAttributesKey.createTextAttributesKey("MI.TYPE_NAME_COMPARABLE", TYPE_NAME)
     private val TAG = TextAttributesKey.createTextAttributesKey("MI.TAG", DefaultLanguageHighlighterColors.STATIC_METHOD)
     private val INSTRUCTION = TextAttributesKey.createTextAttributesKey("MI.INSTRUCTION", DefaultLanguageHighlighterColors.KEYWORD)
     private val MACRO = TextAttributesKey.createTextAttributesKey("MI.MACRO", DefaultLanguageHighlighterColors.KEYWORD)
@@ -42,7 +43,8 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         keys.put(MichelsonTypes.COMMENT_MULTI_LINE, BLOCK_COMMENT)
         keys.put(MichelsonTypes.SECTION_NAME, SECTION_NAME)
 
-        keys.put(MichelsonTypes.NAME, TYPE_NAME)
+        keys.put(MichelsonTypes.TYPE_NAME, TYPE_NAME)
+        keys.put(MichelsonTypes.TYPE_NAME_COMPARABLE, TYPE_NAME_COMPARABLE)
         keys.put(MichelsonTypes.TAG, TAG)
         keys.put(MichelsonTypes.INSTRUCTION_TOKEN, INSTRUCTION)
         fillMap(keys, MichelsonElementTypes.MACROS, MACRO)

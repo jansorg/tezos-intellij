@@ -1,3 +1,14 @@
+/**
+ This is a PEG grammar for the Michelson language.
+
+ It's based on http://tezos.gitlab.io/betanet/whitedoc/michelson.html#xii-full-grammar.
+ That grammar reference is incomplete, it doesn't define the grmamar for a complete file.
+
+ This file contains optimizations to the generated classes to simplify working with the AST/PSI
+ in extensions added to IntelliJ.
+*/
+
+
 {
     generate=[names="long" visitor-value="R"]
 
@@ -22,6 +33,7 @@
     extends(".*_instruction")=instruction
     extends(".*_macro")=macro_instruction
 
+    // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
         SECTION_NAME='regexp:parameter|return|storage|code'
 
@@ -31,11 +43,13 @@
         RIGHT_CURLY='}'
         SEMI=';'
 
+        TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp'
+        TYPE_NAME='regexp:[a-z]+'
+
         INT='regexp:-?[0-9]+'
         STRING='regexp:"[^"]*"' //fixme handle escape codes?
         BYTE='regexp:0x[A-F0-9]+' //fixme: add lowercase characters?
         TAG='regexp:[A-Z][a-z]+'
-        NAME='regexp:[a-z]+'
 
         MACRO_TOKEN='regexp:CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR'
         MACRO_DIIP_TOKEN='regexp:DII+P'
@@ -50,9 +64,9 @@
 
         MACRO_SET_CADR_TOKEN='regexp:SET_C[AD]+R'
         MACRO_MAP_CADR_TOKEN='regexp:MAP_C[AD]+R'
-//        Unit='Unit'
         TRUE='True'
         FALSE='False'
+//        Unit='Unit'
 //        TIMESTAMP_STRING='regexp:"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\w+"'
 //        SIGNATURE_STRING=''
 //        KEY_STRING=''
@@ -63,12 +77,13 @@
         // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
-        //fixme add comment tokens
         COMMENT_LINE='regexp:#.*'
         COMMENT_MULTI_LINE='regexp:/\* ~\*/'
     ]
 }
 
+// we probably need an external rule to make sure that the required sections are present
+// (we can't define arbitrary order without adding a lot of ruled)
 private script_file ::= section*
 
 section ::= parameter_section | return_section | storage_section | code_section
@@ -77,6 +92,19 @@ return_section ::= 'return' toplevel_type ';'
 storage_section ::= 'storage' toplevel_type ';'
 code_section ::= 'code' instruction ';'?
 
+// data rules
+data ::=
+    toplevel_data
+  | 'Pair' toplevel_data toplevel_data
+  | 'Left' toplevel_data
+  | 'Right' toplevel_data
+  | 'Some' toplevel_data
+  | 'None'
+  | '{' (toplevel_data (';' toplevel_data)*)? '}' //fixme
+  | '{' ('Elt' toplevel_data toplevel_data (';' 'Elt' toplevel_data toplevel_data)*)? '}' //fixme
+  | instruction //fixme
+
+// toplevel_data is our extension to match data which may be used as argument to an instruction or tag
 private toplevel_data ::=
     '(' data ')'
   | INT
@@ -91,17 +119,7 @@ private toplevel_data ::=
   | 'True'
   | 'False'
 
-data ::=
-    toplevel_data
-  | 'Pair' toplevel_data toplevel_data
-  | 'Left' toplevel_data
-  | 'Right' toplevel_data
-  | 'Some' toplevel_data
-  | 'None'
-  | '{' (toplevel_data (';' toplevel_data)*)? '}' //fixme
-  | '{' ('Elt' toplevel_data toplevel_data (';' 'Elt' toplevel_data toplevel_data)*)? '}' //fixme
-  | instruction //fixme
-
+// instructions
 instruction ::=
     block_instruction
   | if_instruction
@@ -216,8 +234,10 @@ conditional_macro ::= ( "IF_SOME"
               | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE"
              ) block_instruction block_instruction {methods=[trueBranch="/instructions[0]" falseBranch="/instructions[1]"]}
 
+// extension to allow yet unsupported instructions. We don't want to break the parsing when newer versions of Michelson are used
 unknown_instruction ::= INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data)*
 
+// types
 type ::=
     toplevel_type
   | 'option' type
@@ -230,6 +250,7 @@ type ::=
   | 'map' comparable_type type
   | 'big_map' comparable_type type
 
+// extension to define the tokens which can be used as arguments to instructions or tags
 private toplevel_type ::=
     '(' type ')'
   | 'key'

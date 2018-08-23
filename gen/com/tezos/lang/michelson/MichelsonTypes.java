@@ -52,7 +52,6 @@ public interface MichelsonTypes {
   IElementType MACRO_PAIR_ACCESS_TOKEN = new MichelsonElementType("MACRO_PAIR_ACCESS_TOKEN");
   IElementType MACRO_SET_CADR_TOKEN = new MichelsonElementType("MACRO_SET_CADR_TOKEN");
   IElementType MACRO_TOKEN = new MichelsonElementType("MACRO_TOKEN");
-  IElementType NAME = new MichelsonElementType("NAME");
   IElementType RIGHT_CURLY = new MichelsonElementType("}");
   IElementType RIGHT_PAREN = new MichelsonElementType(")");
   IElementType SECTION_NAME = new MichelsonElementType("SECTION_NAME");
@@ -60,6 +59,8 @@ public interface MichelsonTypes {
   IElementType STRING = new MichelsonElementType("STRING");
   IElementType TAG = new MichelsonElementType("TAG");
   IElementType TRUE = new MichelsonElementType("True");
+  IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
+  IElementType TYPE_NAME_COMPARABLE = new MichelsonElementType("TYPE_NAME_COMPARABLE");
 
   class Factory {
 
