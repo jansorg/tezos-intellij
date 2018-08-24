@@ -1,0 +1,5 @@
+# Contains incorrect annotations, i.e. different names for the same type
+# Taken from http://tezos.gitlab.io/betanet/whitedoc/michelson.html#type-notations
+parameter (int :p) ;
+storage (int :s) ;
+code { UNPAIR ; SWAP ; DROP ; NIL operation ; PAIR }

@@ -8,7 +8,6 @@
  in extensions added to IntelliJ.
 */
 
-
 {
     generate=[names="long" visitor-value="R"]
 
@@ -35,35 +34,44 @@
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
+        // keywords
         SECTION_NAME='regexp:parameter|return|storage|code'
 
+        // special characters
         LEFT_PAREN='('
         RIGHT_PAREN=')'
         LEFT_CURLY='{'
         RIGHT_CURLY='}'
         SEMI=';'
 
+        // type names
         TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp'
         TYPE_NAME='regexp:[a-z]+'
 
+        // literal values
         INT='regexp:-?[0-9]+'
         STRING='regexp:"[^"]*"' //fixme handle escape codes?
         BYTE='regexp:0x[A-F0-9]+' //fixme: add lowercase characters?
         TAG='regexp:[A-Z][a-z]+'
 
-        MACRO_TOKEN='regexp:CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR'
-        MACRO_DIIP_TOKEN='regexp:DII+P'
-        MACRO_DUUP_TOKEN='regexp:DUU+P'
-        // P: Pair, A: left, I: right
-        // must be validated by annotator later on
-        MACRO_PAIRS_TOKEN='regexp:P(A | I | P)+R'
-        // P: Pair, A: left, I: right
-        // must be validated by annotator later on
-        MACRO_NESTED_TOKEN='regexp:UNP(A | I | R)*R'
-        MACRO_PAIR_ACCESS_TOKEN='regexp:C[AD]+R'
+        // macro tokens
+//        MACRO_TOKEN='regexp:CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR'
+//        MACRO_DIIP_TOKEN='regexp:DII+P'
+//        MACRO_DUUP_TOKEN='regexp:DUU+P'
+//        // P: Pair, A: left, I: right
+//        // must be validated by annotator later on
+//        MACRO_PAIRS_TOKEN='regexp:P(A | I | P)+R'
+//        // P: Pair, A: left, I: right
+//        // must be validated by annotator later on
+//        MACRO_NESTED_TOKEN='regexp:UNP(A | I | R)*R'
+//        MACRO_PAIR_ACCESS_TOKEN='regexp:C[AD]+R'
+//
+//        MACRO_SET_CADR_TOKEN='regexp:SET_C[AD]+R'
+//        MACRO_MAP_CADR_TOKEN='regexp:MAP_C[AD]+R'
 
-        MACRO_SET_CADR_TOKEN='regexp:SET_C[AD]+R'
-        MACRO_MAP_CADR_TOKEN='regexp:MAP_C[AD]+R'
+        MACRO_TOKEN='regexp: (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR) | DII+P | DUU+P | P(A | I | P)+R | UNP(A | I | R)*R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R'
+
+        // literals
         TRUE='True'
         FALSE='False'
 //        Unit='Unit'
@@ -77,6 +85,8 @@
         // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
+        ANNOTATION_TOKEN='regexp:[@:%](@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?'
+
         COMMENT_LINE='regexp:#.*'
         COMMENT_MULTI_LINE='regexp:/\* ~\*/'
     ]
@@ -84,7 +94,9 @@
 
 // we probably need an external rule to make sure that the required sections are present
 // (we can't define arbitrary order without adding a lot of ruled)
-private script_file ::= section*
+private script_file ::= contract?
+
+contract ::= section+ {methods=[sections="section"]}
 
 section ::= parameter_section | return_section | storage_section | code_section
 parameter_section ::= 'parameter' toplevel_type ';'
@@ -122,15 +134,25 @@ private toplevel_data ::=
 // instructions
 instruction ::=
     block_instruction
-  | if_instruction
-  | simple_instruction
-  | arg_instruction
+  | conditional_instruction
+  | lambda_instruction
+  | create_contract_instruction
+  | generic_instruction
   | macro_instruction
-  | unknown_instruction
 
-block_instruction ::= '{' (instruction (';' instruction)*)? '}'
+// fixme find simpler rule to allow optional trailing semicolon
+block_instruction ::= '{' (instruction (';' instruction)*)? ';'? '}'
 
-simple_instruction ::= 'DROP'
+// types must be validated by annotator
+lambda_instruction ::= 'LAMBDA' (type | annotation)+ block_instruction
+
+create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' //fixme: are annotations allowed here?
+
+generic_instruction ::=
+      INSTRUCTION_TOKEN block_instruction+
+    | INSTRUCTION_TOKEN (toplevel_type | toplevel_data | annotation)*
+
+/*simple_instruction ::= 'DROP'
   | 'DUP'
   | 'SWAP'
   | 'SOME'
@@ -182,8 +204,9 @@ simple_instruction ::= 'DROP'
   | 'HASH_KEY'
   | 'STEPS_TO_QUOTA'
   | 'SOURCE'
-  | 'SENDER'
+  | 'SENDER'*/
 
+/*
 arg_instruction ::= 'PUSH' toplevel_type toplevel_data
   | 'NONE' toplevel_type
   | 'LEFT' toplevel_type
@@ -197,9 +220,23 @@ arg_instruction ::= 'PUSH' toplevel_type toplevel_data
   | 'LOOP_LEFT' block_instruction
   | 'LAMBDA' type type block_instruction
   | 'DIP' block_instruction
+*/
 
-if_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction {methods=[trueBranch="/instructions[0]" falseBranch="/instructions[1]"]}
+conditional_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction {methods=[trueBranch="/block_instruction[0]" falseBranch="/block_instruction[1]"]}
 
+// generic parsing of macros
+// needs further validation in annotator
+macro_instruction ::=
+      conditional_macro
+    | MACRO_TOKEN (annotation | block_instruction)* {extends=instruction}
+
+// rule to create better structure for conditional macros
+conditional_macro ::= ( "IF_SOME"
+              | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
+              | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE"
+             ) block_instruction block_instruction {methods=[trueBranch="/block_instruction[0]" falseBranch="/block_instruction[1]"]}
+
+/*
 macro_instruction ::=
     cmp_macro
   | conditional_macro
@@ -228,42 +265,22 @@ set_macro ::= "SET_CAR" | "SET_CDR" | set_access_macro
 set_access_macro ::= MACRO_SET_CADR_TOKEN {extends=set_macro}
 
 pair_access_macro ::= (MACRO_DIIP_TOKEN | MACRO_DUUP_TOKEN | MACRO_NESTED_TOKEN | MACRO_PAIR_ACCESS_TOKEN | MACRO_PAIRS_TOKEN) block_instruction
-
-conditional_macro ::= ( "IF_SOME"
-              | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
-              | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE"
-             ) block_instruction block_instruction {methods=[trueBranch="/instructions[0]" falseBranch="/instructions[1]"]}
-
-// extension to allow yet unsupported instructions. We don't want to break the parsing when newer versions of Michelson are used
-unknown_instruction ::= INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data)*
+*/
 
 // types
 type ::=
-    toplevel_type
-  | 'option' type
-  | 'list' type
-  | 'set' comparable_type
-  | 'contract' type
-  | 'pair' type type
-  | 'or' type type
-  | 'lambda' type type
-  | 'map' comparable_type type
-  | 'big_map' comparable_type type
+      toplevel_type
+    | ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation"]}
 
 // extension to define the tokens which can be used as arguments to instructions or tags
 private toplevel_type ::=
     '(' type ')'
-  | 'key'
-  | 'unit'
-  | 'signature'
-  | 'operation'
-  | comparable_type
+  | ('key' | 'unit' | 'signature' | 'operation' | comparable_type) annotation*
+    // custom data type (types of the official grammaer which are in both are listed here)
+  | ( 'mutez' | 'address' | 'operation' | 'key' | 'signature') annotation*
 
-comparable_type ::=
-    'int'
-  | 'nat'
-  | 'string'
-  | 'tez'
-  | 'bool'
-  | 'key_hash'
-  | 'timestamp'
+// as listed in the official grammar
+// + 'bytes'
+comparable_type ::= 'int' | 'nat' | 'string' | 'tez' | 'bool' | 'key_hash' | 'timestamp' | 'bytes'
+
+annotation ::= ANNOTATION_TOKEN

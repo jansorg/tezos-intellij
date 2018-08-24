@@ -11,31 +11,26 @@ import com.intellij.psi.impl.source.tree.CompositePsiElement;
 
 public interface MichelsonTypes {
 
-  IElementType ARG_INSTRUCTION = new MichelsonCompositeElementType("ARG_INSTRUCTION");
-  IElementType ASSERT_MACRO = new MichelsonCompositeElementType("ASSERT_MACRO");
+  IElementType ANNOTATION = new MichelsonCompositeElementType("ANNOTATION");
   IElementType BLOCK_INSTRUCTION = new MichelsonCompositeElementType("BLOCK_INSTRUCTION");
-  IElementType CMP_MACRO = new MichelsonCompositeElementType("CMP_MACRO");
   IElementType CODE_SECTION = new MichelsonCompositeElementType("CODE_SECTION");
   IElementType COMPARABLE_TYPE = new MichelsonCompositeElementType("COMPARABLE_TYPE");
+  IElementType CONDITIONAL_INSTRUCTION = new MichelsonCompositeElementType("CONDITIONAL_INSTRUCTION");
   IElementType CONDITIONAL_MACRO = new MichelsonCompositeElementType("CONDITIONAL_MACRO");
+  IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
+  IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
-  IElementType FAIL_MACRO = new MichelsonCompositeElementType("FAIL_MACRO");
-  IElementType IF_INSTRUCTION = new MichelsonCompositeElementType("IF_INSTRUCTION");
+  IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
   IElementType INSTRUCTION = new MichelsonCompositeElementType("INSTRUCTION");
+  IElementType LAMBDA_INSTRUCTION = new MichelsonCompositeElementType("LAMBDA_INSTRUCTION");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
-  IElementType MAP_ACCESS_MACRO = new MichelsonCompositeElementType("MAP_ACCESS_MACRO");
-  IElementType MAP_MACRO = new MichelsonCompositeElementType("MAP_MACRO");
-  IElementType PAIR_ACCESS_MACRO = new MichelsonCompositeElementType("PAIR_ACCESS_MACRO");
   IElementType PARAMETER_SECTION = new MichelsonCompositeElementType("PARAMETER_SECTION");
   IElementType RETURN_SECTION = new MichelsonCompositeElementType("RETURN_SECTION");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
-  IElementType SET_ACCESS_MACRO = new MichelsonCompositeElementType("SET_ACCESS_MACRO");
-  IElementType SET_MACRO = new MichelsonCompositeElementType("SET_MACRO");
-  IElementType SIMPLE_INSTRUCTION = new MichelsonCompositeElementType("SIMPLE_INSTRUCTION");
   IElementType STORAGE_SECTION = new MichelsonCompositeElementType("STORAGE_SECTION");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
-  IElementType UNKNOWN_INSTRUCTION = new MichelsonCompositeElementType("UNKNOWN_INSTRUCTION");
 
+  IElementType ANNOTATION_TOKEN = new MichelsonElementType("ANNOTATION_TOKEN");
   IElementType BYTE = new MichelsonElementType("BYTE");
   IElementType COMMENT_LINE = new MichelsonElementType("COMMENT_LINE");
   IElementType COMMENT_MULTI_LINE = new MichelsonElementType("COMMENT_MULTI_LINE");
@@ -44,13 +39,6 @@ public interface MichelsonTypes {
   IElementType INT = new MichelsonElementType("INT");
   IElementType LEFT_CURLY = new MichelsonElementType("{");
   IElementType LEFT_PAREN = new MichelsonElementType("(");
-  IElementType MACRO_DIIP_TOKEN = new MichelsonElementType("MACRO_DIIP_TOKEN");
-  IElementType MACRO_DUUP_TOKEN = new MichelsonElementType("MACRO_DUUP_TOKEN");
-  IElementType MACRO_MAP_CADR_TOKEN = new MichelsonElementType("MACRO_MAP_CADR_TOKEN");
-  IElementType MACRO_NESTED_TOKEN = new MichelsonElementType("MACRO_NESTED_TOKEN");
-  IElementType MACRO_PAIRS_TOKEN = new MichelsonElementType("MACRO_PAIRS_TOKEN");
-  IElementType MACRO_PAIR_ACCESS_TOKEN = new MichelsonElementType("MACRO_PAIR_ACCESS_TOKEN");
-  IElementType MACRO_SET_CADR_TOKEN = new MichelsonElementType("MACRO_SET_CADR_TOKEN");
   IElementType MACRO_TOKEN = new MichelsonElementType("MACRO_TOKEN");
   IElementType RIGHT_CURLY = new MichelsonElementType("}");
   IElementType RIGHT_PAREN = new MichelsonElementType(")");
@@ -65,17 +53,11 @@ public interface MichelsonTypes {
   class Factory {
 
     public static CompositePsiElement createElement(IElementType type) {
-       if (type == ARG_INSTRUCTION) {
-        return new PsiArgInstructionImpl(type);
-      }
-      else if (type == ASSERT_MACRO) {
-        return new PsiAssertMacroImpl(type);
+       if (type == ANNOTATION) {
+        return new PsiAnnotationImpl(type);
       }
       else if (type == BLOCK_INSTRUCTION) {
         return new PsiBlockInstructionImpl(type);
-      }
-      else if (type == CMP_MACRO) {
-        return new PsiCmpMacroImpl(type);
       }
       else if (type == CODE_SECTION) {
         return new PsiCodeSectionImpl(type);
@@ -83,26 +65,29 @@ public interface MichelsonTypes {
       else if (type == COMPARABLE_TYPE) {
         return new PsiComparableTypeImpl(type);
       }
+      else if (type == CONDITIONAL_INSTRUCTION) {
+        return new PsiConditionalInstructionImpl(type);
+      }
       else if (type == CONDITIONAL_MACRO) {
         return new PsiConditionalMacroImpl(type);
+      }
+      else if (type == CONTRACT) {
+        return new PsiContractImpl(type);
+      }
+      else if (type == CREATE_CONTRACT_INSTRUCTION) {
+        return new PsiCreateContractInstructionImpl(type);
       }
       else if (type == DATA) {
         return new PsiDataImpl(type);
       }
-      else if (type == FAIL_MACRO) {
-        return new PsiFailMacroImpl(type);
+      else if (type == GENERIC_INSTRUCTION) {
+        return new PsiGenericInstructionImpl(type);
       }
-      else if (type == IF_INSTRUCTION) {
-        return new PsiIfInstructionImpl(type);
+      else if (type == LAMBDA_INSTRUCTION) {
+        return new PsiLambdaInstructionImpl(type);
       }
-      else if (type == MAP_ACCESS_MACRO) {
-        return new PsiMapAccessMacroImpl(type);
-      }
-      else if (type == MAP_MACRO) {
-        return new PsiMapMacroImpl(type);
-      }
-      else if (type == PAIR_ACCESS_MACRO) {
-        return new PsiPairAccessMacroImpl(type);
+      else if (type == MACRO_INSTRUCTION) {
+        return new PsiMacroInstructionImpl(type);
       }
       else if (type == PARAMETER_SECTION) {
         return new PsiParameterSectionImpl(type);
@@ -110,23 +95,11 @@ public interface MichelsonTypes {
       else if (type == RETURN_SECTION) {
         return new PsiReturnSectionImpl(type);
       }
-      else if (type == SET_ACCESS_MACRO) {
-        return new PsiSetAccessMacroImpl(type);
-      }
-      else if (type == SET_MACRO) {
-        return new PsiSetMacroImpl(type);
-      }
-      else if (type == SIMPLE_INSTRUCTION) {
-        return new PsiSimpleInstructionImpl(type);
-      }
       else if (type == STORAGE_SECTION) {
         return new PsiStorageSectionImpl(type);
       }
       else if (type == TYPE) {
         return new PsiTypeImpl(type);
-      }
-      else if (type == UNKNOWN_INSTRUCTION) {
-        return new PsiUnknownInstructionImpl(type);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

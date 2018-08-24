@@ -11,4 +11,7 @@ public interface PsiType extends MichelsonComposite {
   @NotNull
   List<PsiType> getTypeList();
 
+  @NotNull
+  List<PsiAnnotation> getAnnotations();
+
 }

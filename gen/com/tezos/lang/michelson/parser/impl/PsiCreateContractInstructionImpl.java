@@ -11,19 +11,25 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.parser.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiFailMacroImpl extends PsiMacroInstructionImpl implements PsiFailMacro {
+public class PsiCreateContractInstructionImpl extends PsiInstructionImpl implements PsiCreateContractInstruction {
 
-  public PsiFailMacroImpl(@NotNull IElementType type) {
+  public PsiCreateContractInstructionImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitFailMacro(this);
+    return visitor.visitCreateContractInstruction(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public PsiContract getContract() {
+    return PsiTreeUtil.getChildOfType(this, PsiContract.class);
   }
 
 }

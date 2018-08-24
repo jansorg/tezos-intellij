@@ -8,22 +8,29 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
+import com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl;
 import com.tezos.lang.michelson.parser.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiCmpMacroImpl extends PsiMacroInstructionImpl implements PsiCmpMacro {
+public class PsiAnnotationImpl extends MichelsonCompositeImpl implements PsiAnnotation {
 
-  public PsiCmpMacroImpl(@NotNull IElementType type) {
+  public PsiAnnotationImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitCmpMacro(this);
+    return visitor.visitAnnotation(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getAnnotationToken() {
+    return findPsiChildByType(ANNOTATION_TOKEN);
   }
 
 }

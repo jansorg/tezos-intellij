@@ -27,6 +27,12 @@ public class PsiParameterSectionImpl extends PsiSectionImpl implements PsiParame
   }
 
   @Override
+  @NotNull
+  public List<PsiAnnotation> getAnnotationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  }
+
+  @Override
   @Nullable
   public PsiType getType() {
     return PsiTreeUtil.getChildOfType(this, PsiType.class);

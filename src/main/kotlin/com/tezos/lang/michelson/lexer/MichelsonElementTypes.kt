@@ -7,15 +7,7 @@ import com.tezos.lang.michelson.MichelsonTypes
  * @author jansorg
  */
 object MichelsonElementTypes {
-    val MACROS = TokenSet.create(
-            MichelsonTypes.MACRO_DIIP_TOKEN,
-            MichelsonTypes.MACRO_DUUP_TOKEN,
-            MichelsonTypes.MACRO_MAP_CADR_TOKEN,
-            MichelsonTypes.MACRO_NESTED_TOKEN,
-            MichelsonTypes.MACRO_PAIRS_TOKEN,
-            MichelsonTypes.MACRO_PAIR_ACCESS_TOKEN,
-            MichelsonTypes.MACRO_SET_CADR_TOKEN,
-            MichelsonTypes.MACRO_TOKEN)
+    val MACROS = TokenSet.create(MichelsonTypes.MACRO_TOKEN)
 
     val BOOLEAN = TokenSet.create(
             MichelsonTypes.TRUE,

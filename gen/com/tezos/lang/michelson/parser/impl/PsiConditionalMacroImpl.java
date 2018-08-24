@@ -32,4 +32,18 @@ public class PsiConditionalMacroImpl extends PsiMacroInstructionImpl implements 
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
   }
 
+  @Override
+  @NotNull
+  public PsiBlockInstruction getTrueBranch() {
+    List<PsiBlockInstruction> p1 = getBlockInstructionList();
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public PsiBlockInstruction getFalseBranch() {
+    List<PsiBlockInstruction> p1 = getBlockInstructionList();
+    return p1.size() < 2 ? null : p1.get(1);
+  }
+
 }

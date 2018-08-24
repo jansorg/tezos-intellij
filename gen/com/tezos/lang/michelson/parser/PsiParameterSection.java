@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiParameterSection extends PsiSection {
 
+  @NotNull
+  List<PsiAnnotation> getAnnotationList();
+
   @Nullable
   PsiType getType();
 

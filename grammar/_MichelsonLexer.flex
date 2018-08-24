@@ -32,48 +32,36 @@ INT=-?[0-9]+
 STRING=\"[^\"]*\"
 BYTE=0x[A-F0-9]+
 TAG=[A-Z][a-z]+
-MACRO_TOKEN=CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR
-MACRO_DIIP_TOKEN=DII+P
-MACRO_DUUP_TOKEN=DUU+P
-MACRO_PAIRS_TOKEN=P(A | I | P)+R
-MACRO_NESTED_TOKEN=UNP(A | I | R)*R
-MACRO_PAIR_ACCESS_TOKEN=C[AD]+R
-MACRO_SET_CADR_TOKEN=SET_C[AD]+R
-MACRO_MAP_CADR_TOKEN=MAP_C[AD]+R
+MACRO_TOKEN= (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR) | DII+P | DUU+P | P(A | I | P)+R | UNP(A | I | R)*R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R
 INSTRUCTION_TOKEN=[A-Z][A-Z_0-9]*
+ANNOTATION_TOKEN=[@:%](@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?
 COMMENT_LINE=#.*
 COMMENT_MULTI_LINE="/"\* ~\*"/"
 
 %%
 <YYINITIAL> {
-  {WHITE_SPACE}                  { return WHITE_SPACE; }
+  {WHITE_SPACE}               { return WHITE_SPACE; }
 
-  "("                            { return LEFT_PAREN; }
-  ")"                            { return RIGHT_PAREN; }
-  "{"                            { return LEFT_CURLY; }
-  "}"                            { return RIGHT_CURLY; }
-  ";"                            { return SEMI; }
-  "True"                         { return TRUE; }
-  "False"                        { return FALSE; }
+  "("                         { return LEFT_PAREN; }
+  ")"                         { return RIGHT_PAREN; }
+  "{"                         { return LEFT_CURLY; }
+  "}"                         { return RIGHT_CURLY; }
+  ";"                         { return SEMI; }
+  "True"                      { return TRUE; }
+  "False"                     { return FALSE; }
 
-  {SECTION_NAME}                 { return SECTION_NAME; }
-  {TYPE_NAME_COMPARABLE}         { return TYPE_NAME_COMPARABLE; }
-  {TYPE_NAME}                    { return TYPE_NAME; }
-  {INT}                          { return INT; }
-  {STRING}                       { return STRING; }
-  {BYTE}                         { return BYTE; }
-  {TAG}                          { return TAG; }
-  {MACRO_TOKEN}                  { return MACRO_TOKEN; }
-  {MACRO_DIIP_TOKEN}             { return MACRO_DIIP_TOKEN; }
-  {MACRO_DUUP_TOKEN}             { return MACRO_DUUP_TOKEN; }
-  {MACRO_PAIRS_TOKEN}            { return MACRO_PAIRS_TOKEN; }
-  {MACRO_NESTED_TOKEN}           { return MACRO_NESTED_TOKEN; }
-  {MACRO_PAIR_ACCESS_TOKEN}      { return MACRO_PAIR_ACCESS_TOKEN; }
-  {MACRO_SET_CADR_TOKEN}         { return MACRO_SET_CADR_TOKEN; }
-  {MACRO_MAP_CADR_TOKEN}         { return MACRO_MAP_CADR_TOKEN; }
-  {INSTRUCTION_TOKEN}            { return INSTRUCTION_TOKEN; }
-  {COMMENT_LINE}                 { return COMMENT_LINE; }
-  {COMMENT_MULTI_LINE}           { return COMMENT_MULTI_LINE; }
+  {SECTION_NAME}              { return SECTION_NAME; }
+  {TYPE_NAME_COMPARABLE}      { return TYPE_NAME_COMPARABLE; }
+  {TYPE_NAME}                 { return TYPE_NAME; }
+  {INT}                       { return INT; }
+  {STRING}                    { return STRING; }
+  {BYTE}                      { return BYTE; }
+  {TAG}                       { return TAG; }
+  {MACRO_TOKEN}               { return MACRO_TOKEN; }
+  {INSTRUCTION_TOKEN}         { return INSTRUCTION_TOKEN; }
+  {ANNOTATION_TOKEN}          { return ANNOTATION_TOKEN; }
+  {COMMENT_LINE}              { return COMMENT_LINE; }
+  {COMMENT_MULTI_LINE}        { return COMMENT_MULTI_LINE; }
 
 }
 

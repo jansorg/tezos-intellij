@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.parser.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiIfInstructionImpl extends PsiInstructionImpl implements PsiIfInstruction {
+public class PsiGenericInstructionImpl extends PsiInstructionImpl implements PsiGenericInstruction {
 
-  public PsiIfInstructionImpl(@NotNull IElementType type) {
+  public PsiGenericInstructionImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitIfInstruction(this);
+    return visitor.visitGenericInstruction(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,32 @@ public class PsiIfInstructionImpl extends PsiInstructionImpl implements PsiIfIns
 
   @Override
   @NotNull
+  public List<PsiAnnotation> getAnnotationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  }
+
+  @Override
+  @NotNull
   public List<PsiBlockInstruction> getBlockInstructionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiData> getDataList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiData.class);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiType> getTypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiType.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getInstructionToken() {
+    return findPsiChildByType(INSTRUCTION_TOKEN);
   }
 
 }

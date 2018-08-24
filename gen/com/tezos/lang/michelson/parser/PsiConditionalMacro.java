@@ -10,4 +10,10 @@ public interface PsiConditionalMacro extends PsiMacroInstruction {
   @NotNull
   List<PsiBlockInstruction> getBlockInstructionList();
 
+  @NotNull
+  PsiBlockInstruction getTrueBranch();
+
+  @Nullable
+  PsiBlockInstruction getFalseBranch();
+
 }

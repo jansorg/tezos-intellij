@@ -5,9 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiMapAccessMacro extends PsiMapMacro {
+public interface PsiLambdaInstruction extends PsiInstruction {
 
   @NotNull
-  PsiElement getMacroMapCadrToken();
+  List<PsiAnnotation> getAnnotationList();
+
+  @NotNull
+  PsiBlockInstruction getBlockInstruction();
+
+  @NotNull
+  List<PsiType> getTypeList();
 
 }

@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.parser.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiSetAccessMacroImpl extends PsiSetMacroImpl implements PsiSetAccessMacro {
+public class PsiConditionalInstructionImpl extends PsiInstructionImpl implements PsiConditionalInstruction {
 
-  public PsiSetAccessMacroImpl(@NotNull IElementType type) {
+  public PsiConditionalInstructionImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitSetAccessMacro(this);
+    return visitor.visitConditionalInstruction(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,22 @@ public class PsiSetAccessMacroImpl extends PsiSetMacroImpl implements PsiSetAcce
 
   @Override
   @NotNull
-  public PsiElement getMacroSetCadrToken() {
-    return findPsiChildByType(MACRO_SET_CADR_TOKEN);
+  public List<PsiBlockInstruction> getBlockInstructionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiBlockInstruction getTrueBranch() {
+    List<PsiBlockInstruction> p1 = getBlockInstructionList();
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public PsiBlockInstruction getFalseBranch() {
+    List<PsiBlockInstruction> p1 = getBlockInstructionList();
+    return p1.size() < 2 ? null : p1.get(1);
   }
 
 }

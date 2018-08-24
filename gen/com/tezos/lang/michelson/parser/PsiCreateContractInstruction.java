@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiSimpleInstruction extends PsiInstruction {
+public interface PsiCreateContractInstruction extends PsiInstruction {
+
+  @NotNull
+  PsiContract getContract();
 
 }

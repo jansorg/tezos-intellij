@@ -11,19 +11,37 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.parser.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiMapMacroImpl extends PsiMacroInstructionImpl implements PsiMapMacro {
+public class PsiLambdaInstructionImpl extends PsiInstructionImpl implements PsiLambdaInstruction {
 
-  public PsiMapMacroImpl(@NotNull IElementType type) {
+  public PsiLambdaInstructionImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitMapMacro(this);
+    return visitor.visitLambdaInstruction(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiAnnotation> getAnnotationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiBlockInstruction getBlockInstruction() {
+    return PsiTreeUtil.getChildOfType(this, PsiBlockInstruction.class);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiType> getTypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiType.class);
   }
 
 }

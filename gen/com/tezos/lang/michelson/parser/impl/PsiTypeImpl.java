@@ -33,4 +33,10 @@ public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiType.class);
   }
 
+  @Override
+  @NotNull
+  public List<PsiAnnotation> getAnnotations() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  }
+
 }
