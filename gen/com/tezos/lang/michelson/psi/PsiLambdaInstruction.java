@@ -1,0 +1,19 @@
+// This is a generated file. Not intended for manual editing.
+package com.tezos.lang.michelson.psi;
+
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
+
+public interface PsiLambdaInstruction extends PsiInstruction {
+
+  @NotNull
+  PsiBlockInstruction getBlockInstruction();
+
+  @NotNull
+  List<PsiType> getTypeList();
+
+  @NotNull
+  List<PsiAnnotation> getAnnotations();
+
+}

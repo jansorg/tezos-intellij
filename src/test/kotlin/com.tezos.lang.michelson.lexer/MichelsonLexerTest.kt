@@ -1,6 +1,8 @@
 package com.tezos.lang.michelson.lexer
 
+import com.tezos.lang.michelson.MichelsonTestUtils
 import org.junit.Test
+import java.nio.file.Paths
 
 /**
  * @author jansorg

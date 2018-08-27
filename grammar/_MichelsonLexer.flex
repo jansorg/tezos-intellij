@@ -26,8 +26,9 @@ EOL=\R
 WHITE_SPACE=\s+
 
 SECTION_NAME=parameter|return|storage|code
-TYPE_NAME_COMPARABLE=int | nat | string | tez | bool | key_hash | timestamp
-TYPE_NAME=[a-z]+
+TYPE_NAME_COMPARABLE=int | nat | string | tez | bool | key_hash | timestamp | bytes
+TYPE_NAME_COMPLEX=option | list | set | contract | pair | or | lambda | map | big_map
+TYPE_NAME=[a-z_]+
 INT=-?[0-9]+
 STRING=\"[^\"]*\"
 BYTE=0x[A-F0-9]+
@@ -49,9 +50,11 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
   ";"                         { return SEMI; }
   "True"                      { return TRUE; }
   "False"                     { return FALSE; }
+  "Unit"                      { return UNIT; }
 
   {SECTION_NAME}              { return SECTION_NAME; }
   {TYPE_NAME_COMPARABLE}      { return TYPE_NAME_COMPARABLE; }
+  {TYPE_NAME_COMPLEX}         { return TYPE_NAME_COMPLEX; }
   {TYPE_NAME}                 { return TYPE_NAME; }
   {INT}                       { return INT; }
   {STRING}                    { return STRING; }

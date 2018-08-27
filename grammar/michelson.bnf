@@ -16,8 +16,8 @@
 
     psiClassPrefix="Psi"
     psiImplClassSuffix="Impl"
-    psiPackage="com.tezos.lang.michelson.parser"
-    psiImplPackage="com.tezos.lang.michelson.parser.impl"
+    psiPackage="com.tezos.lang.michelson.psi"
+    psiImplPackage="com.tezos.lang.michelson.psi.impl"
 
     tokenTypeClass="com.tezos.lang.michelson.lexer.MichelsonElementType"
     elementTypeClass="com.tezos.lang.michelson.psi.MichelsonCompositeElementType"
@@ -26,11 +26,11 @@
     // if this is a composite element then it triggers a different factory in PowershellElementTypes using IElementType
     implements="com.tezos.lang.michelson.psi.MichelsonComposite"
     extends="com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl"
-    extends(".*_type")=type
-    extends(".*_data")=data
-    extends(".*_section")=section
-    extends(".*_instruction")=instruction
-    extends(".*_macro")=macro_instruction
+    extends(".+_type")=type
+    extends(".+_section")=section
+    extends("conditional")=instruction
+    extends(".+_instruction")=instruction
+    extends(".+_macro")=macro_instruction
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
@@ -44,43 +44,24 @@
         RIGHT_CURLY='}'
         SEMI=';'
 
-        // type names
-        TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp'
-        TYPE_NAME='regexp:[a-z]+'
+        // type names, spec + 'bytes'
+        TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp | bytes'
+        TYPE_NAME_COMPLEX='regexp:option | list | set | contract | pair | or | lambda | map | big_map'
+        TYPE_NAME='regexp:[a-z_]+'
 
         // literal values
         INT='regexp:-?[0-9]+'
         STRING='regexp:"[^"]*"' //fixme handle escape codes?
-        BYTE='regexp:0x[A-F0-9]+' //fixme: add lowercase characters?
+        BYTE='regexp:0x[A-F0-9]+' //fixme: are lowercase characters allowed here?
         TAG='regexp:[A-Z][a-z]+'
 
         // macro tokens
-//        MACRO_TOKEN='regexp:CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR'
-//        MACRO_DIIP_TOKEN='regexp:DII+P'
-//        MACRO_DUUP_TOKEN='regexp:DUU+P'
-//        // P: Pair, A: left, I: right
-//        // must be validated by annotator later on
-//        MACRO_PAIRS_TOKEN='regexp:P(A | I | P)+R'
-//        // P: Pair, A: left, I: right
-//        // must be validated by annotator later on
-//        MACRO_NESTED_TOKEN='regexp:UNP(A | I | R)*R'
-//        MACRO_PAIR_ACCESS_TOKEN='regexp:C[AD]+R'
-//
-//        MACRO_SET_CADR_TOKEN='regexp:SET_C[AD]+R'
-//        MACRO_MAP_CADR_TOKEN='regexp:MAP_C[AD]+R'
-
         MACRO_TOKEN='regexp: (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR) | DII+P | DUU+P | P(A | I | P)+R | UNP(A | I | R)*R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R'
 
         // literals
         TRUE='True'
         FALSE='False'
-//        Unit='Unit'
-//        TIMESTAMP_STRING='regexp:"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\w+"'
-//        SIGNATURE_STRING=''
-//        KEY_STRING=''
-//        KEY_HASH_STRING=''
-//        TEZ_STRING=''
-//        CONTRACT_STRING=''
+        UNIT='Unit'
 
         // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
@@ -95,7 +76,6 @@
 // we probably need an external rule to make sure that the required sections are present
 // (we can't define arbitrary order without adding a lot of ruled)
 private script_file ::= contract?
-
 contract ::= section+ {methods=[sections="section"]}
 
 section ::= parameter_section | return_section | storage_section | code_section
@@ -106,30 +86,33 @@ code_section ::= 'code' instruction ';'?
 
 // data rules
 data ::=
-    toplevel_data
-  | 'Pair' toplevel_data toplevel_data
-  | 'Left' toplevel_data
-  | 'Right' toplevel_data
-  | 'Some' toplevel_data
-  | 'None'
-  | '{' (toplevel_data (';' toplevel_data)*)? '}' //fixme
-  | '{' ('Elt' toplevel_data toplevel_data (';' 'Elt' toplevel_data toplevel_data)*)? '}' //fixme
-  | instruction //fixme
+    'None'
+  | data_toplevel
+  | data_pair
+  | data_left
+  | data_right
+  | data_some
+  | data_list_literal
+  | data_map_literal
+  | instruction
 
-// toplevel_data is our extension to match data which may be used as argument to an instruction or tag
-private toplevel_data ::=
-    '(' data ')'
-  | INT
-  | STRING
-//  | TIMESTAMP_STRING
-//  | SIGNATURE_STRING
-//  | KEY_STRING
-//  | KEY_HASH_STRING
-//  | TEZ_STRING
-//  | CONTRACT_STRING
-  | 'Unit'
-  | 'True'
-  | 'False'
+// data_toplevel is our extension to match data which may be used as argument to an instruction or tag
+private data_toplevel ::= data_nested | INT | STRING | 'True' | 'False' | 'Unit'
+data_nested ::= '(' data ')' {}
+// helpers for data, mostly to be able to introduce pin attributes
+private data_some ::= 'Some' data_toplevel {}
+private data_pair ::= 'Pair' data_toplevel data_toplevel {}
+private data_left ::= 'Left' data_toplevel {}
+private data_right ::= 'Right' data_toplevel {}
+private data_list_literal ::= '{' (data_toplevel (';' data_toplevel)*)? '}' {} // {} is an empty list, not an empty map //fixme
+private data_map_literal ::= '{' data_map_entry (';' data_map_entry)* '}' // {}
+private data_map_entry ::= 'Elt' data_toplevel data_toplevel {}
+
+//-- instructions
+
+// instruction&macro fake rules
+// fake rule to introduce a PSI interface for both conditional instructions and experssions
+fake conditional ::= block_instruction block_instruction {methods=[trueBranch="block_instruction[0]" falseBranch="block_instruction[1]" instructionBlocks="block_instruction"]}
 
 // instructions
 instruction ::=
@@ -138,149 +121,43 @@ instruction ::=
   | lambda_instruction
   | create_contract_instruction
   | generic_instruction
-  | macro_instruction
+  | macro_instruction {implements="com.tezos.lang.michelson.psi.PsiAnnotated"}
 
 // fixme find simpler rule to allow optional trailing semicolon
-block_instruction ::= '{' (instruction (';' instruction)*)? ';'? '}'
+block_instruction ::= '{' (instruction (';' instruction)*)? ';'? '}' { methods=[instructions="instruction"]}
+// types must be validated by annotator, method "annotations" implements interface PsiAnnotated
+lambda_instruction ::= 'LAMBDA' (type | annotation)+ block_instruction {methods=[annotations="annotation"]}
+create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' {} //fixme: are annotations allowed here?
+generic_instruction ::= generic_instruction_block | generic_instruction_attrs
+private generic_instruction_block ::= INSTRUCTION_TOKEN block_instruction+ //fixme are annotations allowed here?
+// method "annotations" implements interface PsiAnnotated
+private generic_instruction_attrs ::= INSTRUCTION_TOKEN (toplevel_type | data_toplevel | annotation)* {methods=[annotations="annotation"]}
 
-// types must be validated by annotator
-lambda_instruction ::= 'LAMBDA' (type | annotation)+ block_instruction
+conditional_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction { extends=conditional }
 
-create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' //fixme: are annotations allowed here?
-
-generic_instruction ::=
-      INSTRUCTION_TOKEN block_instruction+
-    | INSTRUCTION_TOKEN (toplevel_type | toplevel_data | annotation)*
-
-/*simple_instruction ::= 'DROP'
-  | 'DUP'
-  | 'SWAP'
-  | 'SOME'
-  | 'UNIT'
-  | 'PAIR'
-  | 'CAR'
-  | 'CDR'
-  | 'CONS'
-  | 'MEM'
-  | 'GET'
-  | 'UPDATE'
-  | 'EXEC'
-  | 'FAILWITH'
-  | 'CAST'
-  | 'RENAME'
-  | 'CONCAT'
-  | 'ADD'
-  | 'SUB'
-  | 'MUL'
-  | 'DIV'
-  | 'ABS'
-  | 'NEG'
-  | 'MOD'
-  | 'LSL'
-  | 'LSR'
-  | 'OR'
-  | 'AND'
-  | 'XOR'
-  | 'NOT'
-  | 'COMPARE'
-  | 'EQ'
-  | 'NEQ'
-  | 'LT'
-  | 'GT'
-  | 'LE'
-  | 'GE'
-  | 'INT'
-  | 'SELF'
-  | 'TRANSFER_TOKENS'
-  | 'SET_DELEGATE'
-  | 'CREATE_ACCOUNT'
-  | 'CREATE_CONTRACT'
-  | 'IMPLICIT_ACCOUNT'
-  | 'NOW'
-  | 'AMOUNT'
-  | 'BALANCE'
-  | 'CHECK_SIGNATURE'
-  | 'BLAKE2B'
-  | 'HASH_KEY'
-  | 'STEPS_TO_QUOTA'
-  | 'SOURCE'
-  | 'SENDER'*/
-
-/*
-arg_instruction ::= 'PUSH' toplevel_type toplevel_data
-  | 'NONE' toplevel_type
-  | 'LEFT' toplevel_type
-  | 'RIGHT' toplevel_type
-  | 'NIL' toplevel_type
-  | 'EMPTY_SET' type
-  | 'EMPTY_MAP' comparable_type type
-  | 'MAP' block_instruction
-  | 'ITER' block_instruction
-  | 'LOOP' block_instruction
-  | 'LOOP_LEFT' block_instruction
-  | 'LAMBDA' type type block_instruction
-  | 'DIP' block_instruction
-*/
-
-conditional_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction {methods=[trueBranch="/block_instruction[0]" falseBranch="/block_instruction[1]"]}
+//-- macros
 
 // generic parsing of macros
 // needs further validation in annotator
-macro_instruction ::=
-      conditional_macro
-    | MACRO_TOKEN (annotation | block_instruction)* {extends=instruction}
+macro_instruction ::= conditional_macro | generic_macro
 
 // rule to create better structure for conditional macros
-conditional_macro ::= ( "IF_SOME"
+conditional_macro ::= ("IF_SOME"
               | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
-              | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE"
-             ) block_instruction block_instruction {methods=[trueBranch="/block_instruction[0]" falseBranch="/block_instruction[1]"]}
+              | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE") block_instruction block_instruction { extends=conditional }
 
-/*
-macro_instruction ::=
-    cmp_macro
-  | conditional_macro
-  | fail_macro
-  | assert_macro
-  | pair_access_macro
-  | set_macro
-  | map_macro {extends=instruction}
+// method "annotations" implements interface PsiAnnotated
+generic_macro ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"]}
 
-assert_macro ::= "ASSERT"
-  | "ASSERT_EQ" | "ASSERT_NEQ" | "ASSERT_LT" | "ASSERT_LE" | "ASSERT_GT" | "ASSERT_GE"
-  | "ASSERT_CMPEQ" | "ASSERT_CMPNEQ" |"ASSERT_CMPLT" | "ASSERT_CMPLE" | "ASSERT_CMPGT" | "ASSERT_CMPGE"
-  | "ASSERT_NONE"
-  | "ASSERT_SOME"
-  | "ASSERT_LEFT"
-  | "ASSERT_RIGHT"
+//-- types
 
-fail_macro ::= "FAIL"
+type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated"}
+complex_type ::= TYPE_NAME_COMPLEX annotation* toplevel_type+ {methods=[annotations="annotation"]}
+private toplevel_type ::= nested_type | generic_type | comparable_type // extension to define the tokens which can be used as arguments to instructions or tags
+nested_type ::= '(' type ')'
+generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation"]}
+comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" methods=[annotations="annotation"]}
 
-cmp_macro ::= "CMPEQ" | "CMPNEQ" | "CMPLT" | "CMPGT" | "CMPLE" | "CMPGE"
+//-- shared rules
 
-map_macro ::= "MAP_CAR" | "MAP_CDR" | map_access_macro
-map_access_macro ::= MACRO_MAP_CADR_TOKEN {extends=map_macro}
-
-set_macro ::= "SET_CAR" | "SET_CDR" | set_access_macro
-set_access_macro ::= MACRO_SET_CADR_TOKEN {extends=set_macro}
-
-pair_access_macro ::= (MACRO_DIIP_TOKEN | MACRO_DUUP_TOKEN | MACRO_NESTED_TOKEN | MACRO_PAIR_ACCESS_TOKEN | MACRO_PAIRS_TOKEN) block_instruction
-*/
-
-// types
-type ::=
-      toplevel_type
-    | ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation"]}
-
-// extension to define the tokens which can be used as arguments to instructions or tags
-private toplevel_type ::=
-    '(' type ')'
-  | ('key' | 'unit' | 'signature' | 'operation' | comparable_type) annotation*
-    // custom data type (types of the official grammaer which are in both are listed here)
-  | ( 'mutez' | 'address' | 'operation' | 'key' | 'signature') annotation*
-
-// as listed in the official grammar
-// + 'bytes'
-comparable_type ::= 'int' | 'nat' | 'string' | 'tez' | 'bool' | 'key_hash' | 'timestamp' | 'bytes'
-
-annotation ::= ANNOTATION_TOKEN
+annotation ::= ANNOTATION_TOKEN {name="annotation" methods=[token="ANNOTATION_TOKEN"]}

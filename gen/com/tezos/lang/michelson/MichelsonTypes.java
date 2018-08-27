@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import com.tezos.lang.michelson.psi.MichelsonCompositeElementType;
 import com.tezos.lang.michelson.lexer.MichelsonElementType;
-import com.tezos.lang.michelson.parser.impl.*;
+import com.tezos.lang.michelson.psi.impl.*;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 
 public interface MichelsonTypes {
@@ -15,15 +15,20 @@ public interface MichelsonTypes {
   IElementType BLOCK_INSTRUCTION = new MichelsonCompositeElementType("BLOCK_INSTRUCTION");
   IElementType CODE_SECTION = new MichelsonCompositeElementType("CODE_SECTION");
   IElementType COMPARABLE_TYPE = new MichelsonCompositeElementType("COMPARABLE_TYPE");
+  IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
   IElementType CONDITIONAL_INSTRUCTION = new MichelsonCompositeElementType("CONDITIONAL_INSTRUCTION");
   IElementType CONDITIONAL_MACRO = new MichelsonCompositeElementType("CONDITIONAL_MACRO");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
+  IElementType DATA_NESTED = new MichelsonCompositeElementType("DATA_NESTED");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
+  IElementType GENERIC_MACRO = new MichelsonCompositeElementType("GENERIC_MACRO");
+  IElementType GENERIC_TYPE = new MichelsonCompositeElementType("GENERIC_TYPE");
   IElementType INSTRUCTION = new MichelsonCompositeElementType("INSTRUCTION");
   IElementType LAMBDA_INSTRUCTION = new MichelsonCompositeElementType("LAMBDA_INSTRUCTION");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
+  IElementType NESTED_TYPE = new MichelsonCompositeElementType("NESTED_TYPE");
   IElementType PARAMETER_SECTION = new MichelsonCompositeElementType("PARAMETER_SECTION");
   IElementType RETURN_SECTION = new MichelsonCompositeElementType("RETURN_SECTION");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
@@ -49,6 +54,8 @@ public interface MichelsonTypes {
   IElementType TRUE = new MichelsonElementType("True");
   IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
   IElementType TYPE_NAME_COMPARABLE = new MichelsonElementType("TYPE_NAME_COMPARABLE");
+  IElementType TYPE_NAME_COMPLEX = new MichelsonElementType("TYPE_NAME_COMPLEX");
+  IElementType UNIT = new MichelsonElementType("Unit");
 
   class Factory {
 
@@ -65,6 +72,9 @@ public interface MichelsonTypes {
       else if (type == COMPARABLE_TYPE) {
         return new PsiComparableTypeImpl(type);
       }
+      else if (type == COMPLEX_TYPE) {
+        return new PsiComplexTypeImpl(type);
+      }
       else if (type == CONDITIONAL_INSTRUCTION) {
         return new PsiConditionalInstructionImpl(type);
       }
@@ -80,14 +90,23 @@ public interface MichelsonTypes {
       else if (type == DATA) {
         return new PsiDataImpl(type);
       }
+      else if (type == DATA_NESTED) {
+        return new PsiDataNestedImpl(type);
+      }
       else if (type == GENERIC_INSTRUCTION) {
         return new PsiGenericInstructionImpl(type);
+      }
+      else if (type == GENERIC_MACRO) {
+        return new PsiGenericMacroImpl(type);
+      }
+      else if (type == GENERIC_TYPE) {
+        return new PsiGenericTypeImpl(type);
       }
       else if (type == LAMBDA_INSTRUCTION) {
         return new PsiLambdaInstructionImpl(type);
       }
-      else if (type == MACRO_INSTRUCTION) {
-        return new PsiMacroInstructionImpl(type);
+      else if (type == NESTED_TYPE) {
+        return new PsiNestedTypeImpl(type);
       }
       else if (type == PARAMETER_SECTION) {
         return new PsiParameterSectionImpl(type);
@@ -97,9 +116,6 @@ public interface MichelsonTypes {
       }
       else if (type == STORAGE_SECTION) {
         return new PsiStorageSectionImpl(type);
-      }
-      else if (type == TYPE) {
-        return new PsiTypeImpl(type);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

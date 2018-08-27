@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.parser
 
+import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
 import com.tezos.lang.michelson.lexer.TestUtil
 import org.junit.After
 import org.junit.Before

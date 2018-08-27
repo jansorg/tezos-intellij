@@ -2,10 +2,7 @@ package com.tezos.lang.michelson.lexer
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
-import com.tezos.lang.michelson.MichelsonTypes
 import org.junit.Assert
-
-import java.io.IOException
 import java.net.URISyntaxException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -38,9 +35,9 @@ object TestUtil {
         throw IllegalStateException("Unable to locate testdata directory")
     }
 
-    @Throws(IOException::class)
-    fun load(path: String, vararg more: String): String {
-        val filePath = dataPath().resolve(Paths.get(path, *more))
+    fun load(path: String, vararg more: String): String = load(dataPath().resolve(Paths.get(path, *more)))
+
+    fun load(filePath: Path): String {
         if (!Files.exists(filePath)) {
             throw IllegalStateException("Unable to locate file at $filePath")
         }
@@ -48,11 +45,14 @@ object TestUtil {
         return String(Files.readAllBytes(filePath))
     }
 
-    @Throws(IOException::class)
-    @JvmOverloads
     fun assertLexing(fileName: String, showWhitespace: Boolean = false) {
-        val data = load("lexer", fileName)
-        val expectedReport = load("lexer", fileName.replace(".tz", ".tokens"))
+        assertLexing(Paths.get(fileName), showWhitespace)
+    }
+
+    fun assertLexing(file: Path, showWhitespace: Boolean = false) {
+        val finalPath = if (file.isAbsolute) file else Paths.get("lexer").resolve(file)
+        val data = load(finalPath)
+        val expectedReport = load("lexer", file.fileName.toString().replace(".tz", ".tokens"))
 
         val l = MichelsonLexer()
         l.start(data)
@@ -65,7 +65,7 @@ object TestUtil {
                 report.append(String.format("[%d : %d] %s\n%s\n-----\n",
                         l.getTokenStart(),
                         l.getTokenEnd(),
-                        token!!.toString(),
+                        token.toString(),
                         l.getTokenText()))
             }
 
@@ -74,6 +74,28 @@ object TestUtil {
         }
 
         Assert.assertEquals("Unexpected tokens returned by lexer", expectedReport, report.toString())
+    }
+
+    fun assertNoLexingErrors(file: Path) {
+        val finalPath = if (file.isAbsolute) file else Paths.get("lexer").resolve(file)
+        val data = load(finalPath)
+
+        val l = MichelsonLexer()
+        l.start(data)
+
+        val report = StringBuilder()
+
+        var token = l.getTokenType()
+        while (token != null) {
+            if (token == TokenType.BAD_CHARACTER) {
+                report.append("lexing at index ${l.currentPosition.offset}")
+            }
+
+            l.advance()
+            token = l.getTokenType()
+        }
+
+        Assert.assertTrue("Lexing errors:" + report, report.toString().isEmpty())
     }
 
     fun getElementLineNumber(element: PsiElement): Int {
