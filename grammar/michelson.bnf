@@ -2,7 +2,10 @@
  This is a PEG grammar for the Michelson language.
 
  It's based on http://tezos.gitlab.io/betanet/whitedoc/michelson.html#xii-full-grammar.
- That grammar reference is incomplete, it doesn't define the grmamar for a complete file.
+ That grammar reference is incomplete, it doesn't define the gramamar for a complete file.
+ Therefore we've added our own enhancements to be able to lex and parse complete *.tz files.
+ It adds support for the different sections, annotations and also adds a few missing instructions and tags
+ to fully parse the existing sample contracts in the tezos git repository.
 
  This file contains optimizations to the generated classes to simplify working with the AST/PSI
  in extensions added to IntelliJ.
@@ -51,7 +54,7 @@
 
         // literal values
         INT='regexp:-?[0-9]+'
-        STRING='regexp:"[^"]*"' //fixme handle escape codes?
+        STRING='regexp:"( (\\ [ntbr\\"]) | [^"] )*"' //escapes codes as documented in the official grammar
         BYTE='regexp:0x[A-F0-9]+' //fixme: are lowercase characters allowed here?
         TAG='regexp:[A-Z][a-z]+'
 

@@ -80,6 +80,10 @@ object TestUtil {
         val finalPath = if (file.isAbsolute) file else Paths.get("lexer").resolve(file)
         val data = load(finalPath)
 
+        assertNoStringLexingErrors(data)
+    }
+
+    fun assertNoStringLexingErrors(data: String) {
         val l = MichelsonLexer()
         l.start(data)
 
@@ -88,7 +92,7 @@ object TestUtil {
         var token = l.getTokenType()
         while (token != null) {
             if (token == TokenType.BAD_CHARACTER) {
-                report.append("lexing at index ${l.currentPosition.offset}")
+                report.append("error at offset ${l.currentPosition.offset}: ${l.tokenText}\n")
             }
 
             l.advance()

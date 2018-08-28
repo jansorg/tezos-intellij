@@ -1,8 +1,6 @@
 package com.tezos.lang.michelson.lexer
 
-import com.tezos.lang.michelson.MichelsonTestUtils
 import org.junit.Test
-import java.nio.file.Paths
 
 /**
  * @author jansorg
@@ -16,5 +14,12 @@ class MichelsonLexerTest {
     @Test
     fun forward() {
         TestUtil.assertLexing("forward.tz")
+    }
+
+    @Test
+    fun stringEscapes() {
+        TestUtil.assertNoStringLexingErrors("""
+            "my string with escapes: \n, \t, \b, \r, \\, \" ..."
+        """.trimIndent())
     }
 }

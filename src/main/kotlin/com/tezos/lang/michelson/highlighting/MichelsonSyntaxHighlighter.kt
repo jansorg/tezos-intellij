@@ -35,7 +35,7 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         private val BOOLEAN_LITERAL = TextAttributesKey.createTextAttributesKey("MI.BOOL_LITERAL", OTHER_LITERAL)
         private val UNIT_LITERAL = TextAttributesKey.createTextAttributesKey("MI.UNIT_LITERAL", OTHER_LITERAL)
 
-        // generic symboles
+        // generic symbols
         private val SEMI = TextAttributesKey.createTextAttributesKey("MI.SEMI", DefaultLanguageHighlighterColors.SEMICOLON)
         private val PAREN = TextAttributesKey.createTextAttributesKey("MI.PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
         private val BRACES = TextAttributesKey.createTextAttributesKey("MI.PAREN", DefaultLanguageHighlighterColors.BRACES)
