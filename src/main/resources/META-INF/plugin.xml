@@ -25,6 +25,11 @@
         <lang.ast.factory language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonAstFactory" />
         <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
 
+        <!--Highlighting-->
+        <colorSettingsPage implementation="com.tezos.lang.michelson.highlighting.MichelsonColorSettingsPage"/>
+        <additionalTextAttributes scheme="Default" file="colors/michelson_default.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colors/michelson_darcula.xml"/>
+
         <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonSyntaxHighlighterFactory"/>
     </extensions>
     <!-- @formatter:on -->

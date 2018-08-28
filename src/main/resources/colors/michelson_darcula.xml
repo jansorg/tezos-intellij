@@ -1,0 +1,14 @@
+<?xml version='1.0'?>
+<list>
+    <option name="MI.MACRO">
+        <value>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+    <option name="MI.TYPE_NAME_COMPARABLE">
+        <value>
+            <option name="FOREGROUND" value="769aa5"/>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+</list>
