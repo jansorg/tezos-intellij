@@ -50,17 +50,21 @@ class MichelsonHighlightingAnnotator : Annotator {
         val types = psi.typeList
         val datas = psi.dataList
 
+        val isOneBlockCommand = name in INSTRUCTIONS_ONE_BLOCK
+        val isTwoBlocksCommand = name in INSTRUCTIONS_TWO_BLOCKS
+        val isNoArgsCommand = name in INSTRUCTIONS_NO_ARGS
+        val blockCount = blocks.size
         when {
-            name in INSTRUCTIONS_ONE_BLOCK && blocks.size != 1 -> {
+            isOneBlockCommand && blockCount != 1 -> {
                 holder.createErrorAnnotation(instruction, "expected 1 block after $name")
             }
-            name in INSTRUCTIONS_TWO_BLOCKS && blocks.size != 2 -> {
+            isTwoBlocksCommand && blockCount != 2 -> {
                 holder.createErrorAnnotation(instruction, "expected 2 blocks after $name")
             }
-            name in INSTRUCTIONS_NO_ARGS && (blocks.size != 0 || types.size != 0 || datas.size != 0) -> {
-                holder.createErrorAnnotation(instruction, "$name supports no arguments")
+            isNoArgsCommand && (blockCount != 0 || types.size != 0 || datas.size != 0) -> {
+                holder.createErrorAnnotation(instruction, "$name doesn't support arguments")
             }
-            name !in INSTRUCTIONS_ONE_BLOCK && name !in INSTRUCTIONS_TWO_BLOCKS && name !in INSTRUCTIONS_NO_ARGS -> {
+            !isOneBlockCommand && !isTwoBlocksCommand && !isNoArgsCommand -> {
                 holder.createErrorAnnotation(psi, "Unknown instruction")
             }
         }
