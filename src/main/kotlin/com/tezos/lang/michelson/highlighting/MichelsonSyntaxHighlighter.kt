@@ -20,11 +20,10 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         val LINE_COMMENT = TextAttributesKey.createTextAttributesKey("MI.LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
         val BLOCK_COMMENT = TextAttributesKey.createTextAttributesKey("MI.BLOCK_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT)
 
-        val SECTION_NAME = TextAttributesKey.createTextAttributesKey("MI.SECTION_NAME", DefaultLanguageHighlighterColors.KEYWORD)
-        val TAG = TextAttributesKey.createTextAttributesKey("MI.TAG", DefaultLanguageHighlighterColors.STATIC_METHOD)
-
         val INSTRUCTION = TextAttributesKey.createTextAttributesKey("MI.INSTRUCTION", DefaultLanguageHighlighterColors.FUNCTION_CALL)
         val MACRO = TextAttributesKey.createTextAttributesKey("MI.MACRO", INSTRUCTION)
+
+        val TAG = TextAttributesKey.createTextAttributesKey("MI.TAG", DefaultLanguageHighlighterColors.CLASS_REFERENCE)
 
         val TYPE_NAME = TextAttributesKey.createTextAttributesKey("MI.TYPE_NAME", DefaultLanguageHighlighterColors.CLASS_REFERENCE)
         val TYPE_NAME_COMPARABLE = TextAttributesKey.createTextAttributesKey("MI.TYPE_NAME_COMPARABLE", TYPE_NAME)
@@ -42,6 +41,7 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         val UNIT_LITERAL = TextAttributesKey.createTextAttributesKey("MI.UNIT_LITERAL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
 
         // generic symbols
+        val SECTION_NAME = TextAttributesKey.createTextAttributesKey("MI.SECTION_NAME", DefaultLanguageHighlighterColors.KEYWORD)
         val SEMI = TextAttributesKey.createTextAttributesKey("MI.SEMI", DefaultLanguageHighlighterColors.SEMICOLON)
         val PAREN = TextAttributesKey.createTextAttributesKey("MI.PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
         val BRACES = TextAttributesKey.createTextAttributesKey("MI.PAREN", DefaultLanguageHighlighterColors.BRACES)

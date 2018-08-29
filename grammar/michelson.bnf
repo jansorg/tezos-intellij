@@ -155,7 +155,7 @@ generic_macro ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com
 //-- types
 
 type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated"}
-complex_type ::= TYPE_NAME_COMPLEX annotation* toplevel_type+ {methods=[annotations="annotation"]}
+complex_type ::= TYPE_NAME_COMPLEX annotation* toplevel_type+ {methods=[annotations="annotation"]} //handle annotations at the end?
 private toplevel_type ::= nested_type | generic_type | comparable_type // extension to define the tokens which can be used as arguments to instructions or tags
 nested_type ::= '(' type ')'
 generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation"]}
