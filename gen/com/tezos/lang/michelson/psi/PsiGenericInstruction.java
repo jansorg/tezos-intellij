@@ -11,15 +11,15 @@ public interface PsiGenericInstruction extends PsiInstruction {
   List<PsiAnnotation> getAnnotationList();
 
   @NotNull
-  List<PsiBlockInstruction> getBlockInstructionList();
-
-  @NotNull
-  List<PsiDataNested> getDataNestedList();
+  List<PsiData> getDataList();
 
   @NotNull
   List<PsiType> getTypeList();
 
   @NotNull
   PsiElement getInstructionToken();
+
+  @NotNull
+  List<PsiBlockInstruction> getInstructionBlocks();
 
 }

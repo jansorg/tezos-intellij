@@ -1,0 +1,6 @@
+parameter string;
+return string;
+storage units;
+code { UNKNOWN_INSTRUCTION;
+    OTHER_UNKNOWN;
+};

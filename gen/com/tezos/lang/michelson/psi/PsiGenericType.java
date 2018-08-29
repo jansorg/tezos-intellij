@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface PsiGenericType extends PsiType {
 
   @NotNull
-  PsiElement getTypeName();
+  List<PsiAnnotation> getAnnotations();
 
   @NotNull
-  List<PsiAnnotation> getAnnotations();
+  PsiElement getTypeToken();
 
 }

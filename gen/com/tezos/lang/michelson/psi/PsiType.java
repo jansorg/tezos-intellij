@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiType extends PsiAnnotated {
 
+  @NotNull
+  String getTypeNameString();
+
 }

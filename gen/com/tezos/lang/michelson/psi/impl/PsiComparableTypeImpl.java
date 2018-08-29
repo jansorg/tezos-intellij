@@ -28,14 +28,14 @@ public class PsiComparableTypeImpl extends PsiTypeImpl implements PsiComparableT
 
   @Override
   @NotNull
-  public PsiElement getTypeNameComparable() {
-    return findPsiChildByType(TYPE_NAME_COMPARABLE);
+  public List<PsiAnnotation> getAnnotations() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }
 
   @Override
   @NotNull
-  public List<PsiAnnotation> getAnnotations() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  public PsiElement getTypeToken() {
+    return findPsiChildByType(TYPE_NAME_COMPARABLE);
   }
 
 }

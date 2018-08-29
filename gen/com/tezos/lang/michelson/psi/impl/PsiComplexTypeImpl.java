@@ -38,4 +38,9 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }
 
+  @NotNull
+  public PsiElement getTypeToken() {
+    return MichelsonPsiUtil.getTypeToken(this);
+  }
+
 }

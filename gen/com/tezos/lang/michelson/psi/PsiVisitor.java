@@ -50,8 +50,8 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitMichelsonComposite(o);
   }
 
-  public R visitDataNested(@NotNull PsiDataNested o) {
-    return visitMichelsonComposite(o);
+  public R visitGenericData(@NotNull PsiGenericData o) {
+    return visitData(o);
   }
 
   public R visitGenericInstruction(@NotNull PsiGenericInstruction o) {
@@ -74,8 +74,20 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitInstruction(o);
   }
 
+  public R visitLiteralData(@NotNull PsiLiteralData o) {
+    return visitData(o);
+  }
+
   public R visitMacroInstruction(@NotNull PsiMacroInstruction o) {
     return visitInstruction(o);
+  }
+
+  public R visitMapEntryData(@NotNull PsiMapEntryData o) {
+    return visitData(o);
+  }
+
+  public R visitNestedData(@NotNull PsiNestedData o) {
+    return visitData(o);
   }
 
   public R visitNestedType(@NotNull PsiNestedType o) {

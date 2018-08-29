@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiDataNested extends MichelsonComposite {
+public interface PsiNestedData extends PsiData {
 
   @NotNull
   PsiData getData();

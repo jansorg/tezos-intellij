@@ -34,14 +34,8 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
 
   @Override
   @NotNull
-  public List<PsiBlockInstruction> getBlockInstructionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
-  }
-
-  @Override
-  @NotNull
-  public List<PsiDataNested> getDataNestedList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiDataNested.class);
+  public List<PsiData> getDataList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiData.class);
   }
 
   @Override
@@ -54,6 +48,12 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
   @NotNull
   public PsiElement getInstructionToken() {
     return findPsiChildByType(INSTRUCTION_TOKEN);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiBlockInstruction> getInstructionBlocks() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
   }
 
 }

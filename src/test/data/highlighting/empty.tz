@@ -1,4 +1,4 @@
 parameter string;
 return string;
-storage units; # unknown type "units"
+storage unit;
 code {};

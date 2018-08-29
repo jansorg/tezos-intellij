@@ -7,4 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiInstruction extends PsiAnnotated {
 
+  @Nullable
+  String getInstructionName();
+
+  @Nullable
+  PsiElement getInstructionToken();
+
 }

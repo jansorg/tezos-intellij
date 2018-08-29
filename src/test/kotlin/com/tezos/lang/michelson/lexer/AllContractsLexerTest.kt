@@ -1,9 +1,7 @@
 package com.tezos.lang.michelson.lexer
 
+import com.tezos.lang.michelson.MichelsonTestUtils
 import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
-import com.tezos.lang.michelson.lexer.TestUtil
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -18,7 +16,7 @@ import java.nio.file.Paths
 @RunWith(Parameterized::class)
 class AllContractsLexerTest(val michelsonFile: String) {
     companion object {
-        private val dataRootPath = TestUtil.dataPath()
+        private val dataRootPath = MichelsonTestUtils.dataPath()
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -33,6 +31,6 @@ class AllContractsLexerTest(val michelsonFile: String) {
 
     @Test
     fun testFile() {
-        TestUtil.assertNoLexingErrors(dataRootPath.resolve(michelsonFile))
+        MichelsonTestUtils.assertNoLexingErrors(dataRootPath.resolve(michelsonFile))
     }
 }

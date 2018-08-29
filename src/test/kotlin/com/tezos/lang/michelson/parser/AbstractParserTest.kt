@@ -6,11 +6,10 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
-import com.tezos.lang.michelson.lexer.TestUtil
+import com.tezos.lang.michelson.MichelsonTestUtils
 import org.junit.Assert
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.stream.Collectors
 
 /**
@@ -37,7 +36,7 @@ abstract class AbstractParserTest : LightPlatformCodeInsightFixtureTestCase() {
         builder.append(", Errors: " + errors.size)
         for (error in errors) {
             builder.append("\n\t").append(error.errorDescription)
-            builder.append(": '").append(error.text).append("'").append(", line ").append(TestUtil.getElementLineNumber(error))
+            builder.append(": '").append(error.text).append("'").append(", line ").append(MichelsonTestUtils.getElementLineNumber(error))
         }
 
         builder.append("\n\n")
@@ -46,7 +45,7 @@ abstract class AbstractParserTest : LightPlatformCodeInsightFixtureTestCase() {
 
     fun testSingleFile(filePath: Path) {
         WriteCommandAction.runWriteCommandAction(project) {
-            val bytes = Files.readAllBytes(TestUtil.dataPath().resolve(filePath))
+            val bytes = Files.readAllBytes(MichelsonTestUtils.dataPath().resolve(filePath))
             val psiFile = myFixture.configureByText(filePath.fileName.toString(), String(bytes))
             val errors = findErrors(psiFile)
             Assert.assertEquals("Errors: " + errors.stream().reduce("", { s, s2 -> s + "\n" + s2 }), 0, errors.size.toLong())

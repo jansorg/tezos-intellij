@@ -26,4 +26,14 @@ public abstract class PsiInstructionImpl extends MichelsonCompositeImpl implemen
     else super.accept(visitor);
   }
 
+  @Nullable
+  public String getInstructionName() {
+    return MichelsonPsiUtil.getInstructionName(this);
+  }
+
+  @Nullable
+  public PsiElement getInstructionToken() {
+    return MichelsonPsiUtil.getInstructionToken(this);
+  }
+
 }

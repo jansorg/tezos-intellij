@@ -21,6 +21,7 @@
     psiImplClassSuffix="Impl"
     psiPackage="com.tezos.lang.michelson.psi"
     psiImplPackage="com.tezos.lang.michelson.psi.impl"
+    psiImplUtilClass="com.tezos.lang.michelson.psi.MichelsonPsiUtil"
 
     tokenTypeClass="com.tezos.lang.michelson.lexer.MichelsonElementType"
     elementTypeClass="com.tezos.lang.michelson.psi.MichelsonCompositeElementType"
@@ -29,6 +30,8 @@
     // if this is a composite element then it triggers a different factory in PowershellElementTypes using IElementType
     implements="com.tezos.lang.michelson.psi.MichelsonComposite"
     extends="com.tezos.lang.michelson.psi.impl.MichelsonCompositeImpl"
+    extends(".+_data")=data
+    extends("data_.+")=data
     extends(".+_type")=type
     extends(".+_section")=section
     extends("conditional")=instruction
@@ -64,6 +67,7 @@
         TRUE='True'
         FALSE='False'
         UNIT='Unit'
+        NONE='None'
 
         // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
@@ -86,34 +90,30 @@ return_section ::= 'return' toplevel_type ';'
 storage_section ::= 'storage' toplevel_type ';'
 code_section ::= 'code' instruction ';'?
 
-// data rules
+//-- data
 data ::=
-    'None'
-  | data_toplevel
-  | data_pair
-  | data_left
-  | data_right
-  | data_some
-  | data_list_literal
-  | data_map_literal
-  | instruction
+    toplevel_data
+  | generic_data
+  | instruction //fixme is this valid in every context?
 
 // data_toplevel is our extension to match data which may be used as argument to an instruction or tag
-private data_toplevel ::= data_nested | INT | STRING | 'True' | 'False' | 'Unit'
-data_nested ::= '(' data ')' {}
+private toplevel_data ::= nested_data | literal_data
+nested_data ::= '(' data ')'
+literal_data ::= 'None' | 'True' | 'False' | 'Unit' | INT | STRING
+generic_data ::= data_pair | data_left | data_right | data_some | data_list | data_map
 // helpers for data, mostly to be able to introduce pin attributes
-private data_some ::= 'Some' data_toplevel {}
-private data_pair ::= 'Pair' data_toplevel data_toplevel {}
-private data_left ::= 'Left' data_toplevel {}
-private data_right ::= 'Right' data_toplevel {}
-private data_list_literal ::= '{' (data_toplevel (';' data_toplevel)*)? '}' {} // {} is an empty list, not an empty map //fixme
-private data_map_literal ::= '{' data_map_entry (';' data_map_entry)* '}' // {}
-private data_map_entry ::= 'Elt' data_toplevel data_toplevel {}
+private data_some ::= 'Some' toplevel_data {}
+private data_pair ::= 'Pair' toplevel_data toplevel_data {}
+private data_left ::= 'Left' toplevel_data {}
+private data_right ::= 'Right' toplevel_data {}
+private data_list ::= '{' (toplevel_data (';' toplevel_data)*)? '}'// {} is an empty list, not an empty map //fixme
+private data_map ::= '{' map_entry_data (';' map_entry_data)* '}' // {} not allowed here
+map_entry_data ::= 'Elt' toplevel_data toplevel_data {}
 
 //-- instructions
 
 // instruction&macro fake rules
-// fake rule to introduce a PSI interface for both conditional instructions and experssions
+// fake rule to introduce a PSI interface for both conditional instructions and expressions
 fake conditional ::= block_instruction block_instruction {methods=[trueBranch="block_instruction[0]" falseBranch="block_instruction[1]" instructionBlocks="block_instruction"]}
 
 // instructions
@@ -123,18 +123,18 @@ instruction ::=
   | lambda_instruction
   | create_contract_instruction
   | generic_instruction
-  | macro_instruction {implements="com.tezos.lang.michelson.psi.PsiAnnotated"}
+  | macro_instruction {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getInstructionName getInstructionToken]}
 
 // fixme find simpler rule to allow optional trailing semicolon
 block_instruction ::= '{' (instruction (';' instruction)*)? ';'? '}' { methods=[instructions="instruction"]}
+conditional_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction { extends=conditional }
 // types must be validated by annotator, method "annotations" implements interface PsiAnnotated
 lambda_instruction ::= 'LAMBDA' (type | annotation)+ block_instruction {methods=[annotations="annotation"]}
-create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' {} //fixme: are annotations allowed here?
-generic_instruction ::= generic_instruction_block | generic_instruction_attrs
+create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' //fixme: are annotations allowed here?
+generic_instruction ::= generic_instruction_block | generic_instruction_attrs {methods=[instructionBlocks="block_instruction"]}
 private generic_instruction_block ::= INSTRUCTION_TOKEN block_instruction+ //fixme are annotations allowed here?
 // method "annotations" implements interface PsiAnnotated
-private generic_instruction_attrs ::= INSTRUCTION_TOKEN (toplevel_type | data_toplevel | annotation)* {methods=[annotations="annotation"]}
-conditional_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction { extends=conditional }
+private generic_instruction_attrs ::= INSTRUCTION_TOKEN (toplevel_type | toplevel_data | annotation)* {methods=[annotations="annotation"]}
 
 //-- macros
 
@@ -152,12 +152,12 @@ generic_macro ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com
 
 //-- types
 
-type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated"}
-complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation"]} //handle annotations at the end?
+type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString]}
+complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeToken]} //handle annotations at the end?
 private toplevel_type ::= nested_type | generic_type | comparable_type // extension to define the tokens which can be used as arguments to instructions or tags
 nested_type ::= '(' type ')'
-generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation"]}
-comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" methods=[annotations="annotation"]}
+generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
+comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME_COMPARABLE"]}
 
 //-- shared rules
 

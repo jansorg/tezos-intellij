@@ -28,14 +28,14 @@ public class PsiGenericTypeImpl extends PsiTypeImpl implements PsiGenericType {
 
   @Override
   @NotNull
-  public PsiElement getTypeName() {
-    return findPsiChildByType(TYPE_NAME);
+  public List<PsiAnnotation> getAnnotations() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }
 
   @Override
   @NotNull
-  public List<PsiAnnotation> getAnnotations() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  public PsiElement getTypeToken() {
+    return findPsiChildByType(TYPE_NAME);
   }
 
 }
