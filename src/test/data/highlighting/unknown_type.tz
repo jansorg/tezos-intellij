@@ -1,4 +1,4 @@
 parameter string;
 return string;
-storage <error descr="Unknown type 'units'">units</error>;
+storage <error descr="Unknown type">units</error>;
 code {};

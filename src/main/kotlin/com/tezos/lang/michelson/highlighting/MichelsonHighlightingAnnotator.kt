@@ -60,13 +60,16 @@ class MichelsonHighlightingAnnotator : Annotator {
             name in INSTRUCTIONS_NO_ARGS && (blocks.size != 0 || types.size != 0 || datas.size != 0) -> {
                 holder.createErrorAnnotation(instruction, "$name supports no arguments")
             }
+            name !in INSTRUCTIONS_ONE_BLOCK && name !in INSTRUCTIONS_TWO_BLOCKS && name !in INSTRUCTIONS_NO_ARGS -> {
+                holder.createErrorAnnotation(psi, "Unknown instruction")
+            }
         }
     }
 
     private fun annotateGenericType(element: PsiGenericType, holder: AnnotationHolder) {
         val typeName = element.typeNameString
         if (!TYPES.contains(typeName)) {
-            holder.createErrorAnnotation(element, "Unknown type '$typeName'")
+            holder.createErrorAnnotation(element, "Unknown type")
             return
         }
     }
