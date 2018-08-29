@@ -231,16 +231,33 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TYPE_NAME_COMPLEX annotation* toplevel_type+
+  // ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+
   public static boolean complex_type(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "complex_type")) return false;
-    if (!nextTokenIs(builder, TYPE_NAME_COMPLEX)) return false;
     boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, TYPE_NAME_COMPLEX);
+    Marker marker = enter_section_(builder, level, _COLLAPSE_, COMPLEX_TYPE, "<complex type>");
+    result = complex_type_0(builder, level + 1);
     result = result && complex_type_1(builder, level + 1);
     result = result && complex_type_2(builder, level + 1);
-    exit_section_(builder, marker, COMPLEX_TYPE, result);
+    exit_section_(builder, level, marker, result, false, null);
+    return result;
+  }
+
+  // 'option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map'
+  private static boolean complex_type_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "complex_type_0")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, "option");
+    if (!result) result = consumeToken(builder, "list");
+    if (!result) result = consumeToken(builder, "set");
+    if (!result) result = consumeToken(builder, "contract");
+    if (!result) result = consumeToken(builder, "pair");
+    if (!result) result = consumeToken(builder, "or");
+    if (!result) result = consumeToken(builder, "lambda");
+    if (!result) result = consumeToken(builder, "map");
+    if (!result) result = consumeToken(builder, "big_map");
+    exit_section_(builder, marker, null, result);
     return result;
   }
 

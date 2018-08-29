@@ -1,0 +1,345 @@
+[0 : 94] COMMENT_LINE
+# This tests contains all macros to make sure that these are not parsed as instruction tokens.
+-----
+[95 : 104] SECTION_NAME
+parameter
+-----
+[105 : 109] TYPE_NAME
+unit
+-----
+[109 : 110] ;
+;
+-----
+[111 : 117] SECTION_NAME
+return
+-----
+[118 : 122] TYPE_NAME
+unit
+-----
+[122 : 123] ;
+;
+-----
+[124 : 131] SECTION_NAME
+storage
+-----
+[132 : 136] TYPE_NAME
+unit
+-----
+[136 : 137] ;
+;
+-----
+[138 : 142] SECTION_NAME
+code
+-----
+[143 : 144] {
+{
+-----
+[145 : 150] MACRO_TOKEN
+CMPEQ
+-----
+[150 : 151] ;
+;
+-----
+[152 : 158] MACRO_TOKEN
+CMPNEQ
+-----
+[158 : 159] ;
+;
+-----
+[160 : 165] MACRO_TOKEN
+CMPLT
+-----
+[165 : 166] ;
+;
+-----
+[167 : 172] MACRO_TOKEN
+CMPGT
+-----
+[172 : 173] ;
+;
+-----
+[174 : 179] MACRO_TOKEN
+CMPLE
+-----
+[179 : 180] ;
+;
+-----
+[181 : 186] MACRO_TOKEN
+CMPGE
+-----
+[186 : 187] ;
+;
+-----
+[192 : 196] MACRO_TOKEN
+IFEQ
+-----
+[196 : 197] ;
+;
+-----
+[198 : 203] MACRO_TOKEN
+IFNEQ
+-----
+[203 : 204] ;
+;
+-----
+[205 : 209] MACRO_TOKEN
+IFLT
+-----
+[209 : 210] ;
+;
+-----
+[211 : 215] MACRO_TOKEN
+IFGT
+-----
+[215 : 216] ;
+;
+-----
+[217 : 221] MACRO_TOKEN
+IFLE
+-----
+[221 : 222] ;
+;
+-----
+[223 : 227] MACRO_TOKEN
+IFGE
+-----
+[227 : 228] ;
+;
+-----
+[233 : 240] MACRO_TOKEN
+IFCMPEQ
+-----
+[240 : 241] ;
+;
+-----
+[242 : 250] MACRO_TOKEN
+IFCMPNEQ
+-----
+[250 : 251] ;
+;
+-----
+[252 : 259] MACRO_TOKEN
+IFCMPLT
+-----
+[259 : 260] ;
+;
+-----
+[261 : 268] MACRO_TOKEN
+IFCMPGT
+-----
+[268 : 269] ;
+;
+-----
+[270 : 277] MACRO_TOKEN
+IFCMPLE
+-----
+[277 : 278] ;
+;
+-----
+[279 : 286] MACRO_TOKEN
+IFCMPGE
+-----
+[286 : 287] ;
+;
+-----
+[292 : 296] MACRO_TOKEN
+FAIL
+-----
+[296 : 297] ;
+;
+-----
+[302 : 308] MACRO_TOKEN
+ASSERT
+-----
+[308 : 309] ;
+;
+-----
+[314 : 323] MACRO_TOKEN
+ASSERT_EQ
+-----
+[323 : 324] ;
+;
+-----
+[325 : 335] MACRO_TOKEN
+ASSERT_NEQ
+-----
+[335 : 336] ;
+;
+-----
+[337 : 346] MACRO_TOKEN
+ASSERT_LT
+-----
+[346 : 347] ;
+;
+-----
+[348 : 357] MACRO_TOKEN
+ASSERT_LE
+-----
+[357 : 358] ;
+;
+-----
+[359 : 368] MACRO_TOKEN
+ASSERT_GT
+-----
+[368 : 369] ;
+;
+-----
+[370 : 379] MACRO_TOKEN
+ASSERT_GE
+-----
+[379 : 380] ;
+;
+-----
+[385 : 397] MACRO_TOKEN
+ASSERT_CMPEQ
+-----
+[397 : 398] ;
+;
+-----
+[399 : 412] MACRO_TOKEN
+ASSERT_CMPNEQ
+-----
+[412 : 413] ;
+;
+-----
+[414 : 426] MACRO_TOKEN
+ASSERT_CMPLT
+-----
+[426 : 427] ;
+;
+-----
+[428 : 440] MACRO_TOKEN
+ASSERT_CMPLE
+-----
+[440 : 441] ;
+;
+-----
+[442 : 454] MACRO_TOKEN
+ASSERT_CMPGT
+-----
+[454 : 455] ;
+;
+-----
+[456 : 468] MACRO_TOKEN
+ASSERT_CMPGE
+-----
+[468 : 469] ;
+;
+-----
+[474 : 485] MACRO_TOKEN
+ASSERT_NONE
+-----
+[485 : 486] ;
+;
+-----
+[491 : 502] MACRO_TOKEN
+ASSERT_SOME
+-----
+[502 : 503] ;
+;
+-----
+[508 : 519] MACRO_TOKEN
+ASSERT_LEFT
+-----
+[519 : 520] ;
+;
+-----
+[525 : 537] MACRO_TOKEN
+ASSERT_RIGHT
+-----
+[537 : 538] ;
+;
+-----
+[543 : 547] MACRO_TOKEN
+DIIP
+-----
+[547 : 548] ;
+;
+-----
+[549 : 558] MACRO_TOKEN
+DIIIIIIIP
+-----
+[558 : 559] ;
+;
+-----
+[564 : 568] MACRO_TOKEN
+DUUP
+-----
+[568 : 569] ;
+;
+-----
+[570 : 579] MACRO_TOKEN
+DUUUUUUUP
+-----
+[579 : 580] ;
+;
+-----
+[585 : 589] MACRO_TOKEN
+PAIR
+-----
+[589 : 590] ;
+;
+-----
+[591 : 599] MACRO_TOKEN
+PAPPAIIR
+-----
+[599 : 600] ;
+;
+-----
+[605 : 609] MACRO_TOKEN
+CADR
+-----
+[609 : 610] ;
+;
+-----
+[611 : 617] MACRO_TOKEN
+CAADDR
+-----
+[617 : 618] ;
+;
+-----
+[623 : 630] MACRO_TOKEN
+IF_SOME
+-----
+[630 : 631] ;
+;
+-----
+[636 : 643] MACRO_TOKEN
+SET_CAR
+-----
+[643 : 644] ;
+;
+-----
+[649 : 656] MACRO_TOKEN
+SET_CDR
+-----
+[656 : 657] ;
+;
+-----
+[662 : 673] MACRO_TOKEN
+SET_CAAADDR
+-----
+[673 : 674] ;
+;
+-----
+[679 : 686] MACRO_TOKEN
+MAP_CAR
+-----
+[686 : 687] ;
+;
+-----
+[692 : 699] MACRO_TOKEN
+MAP_CDR
+-----
+[699 : 700] ;
+;
+-----
+[705 : 716] MACRO_TOKEN
+MAP_CAAADDR
+-----
+[716 : 717] ;
+;
+-----
+[718 : 719] }
+}
+-----

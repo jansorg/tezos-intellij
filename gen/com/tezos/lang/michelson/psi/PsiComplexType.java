@@ -11,9 +11,6 @@ public interface PsiComplexType extends PsiType {
   List<PsiType> getTypeList();
 
   @NotNull
-  PsiElement getTypeNameComplex();
-
-  @NotNull
   List<PsiAnnotation> getAnnotations();
 
 }

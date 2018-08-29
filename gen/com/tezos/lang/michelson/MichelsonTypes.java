@@ -54,7 +54,6 @@ public interface MichelsonTypes {
   IElementType TRUE = new MichelsonElementType("True");
   IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
   IElementType TYPE_NAME_COMPARABLE = new MichelsonElementType("TYPE_NAME_COMPARABLE");
-  IElementType TYPE_NAME_COMPLEX = new MichelsonElementType("TYPE_NAME_COMPLEX");
   IElementType UNIT = new MichelsonElementType("Unit");
 
   class Factory {

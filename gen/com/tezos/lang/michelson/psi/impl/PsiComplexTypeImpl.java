@@ -34,12 +34,6 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
 
   @Override
   @NotNull
-  public PsiElement getTypeNameComplex() {
-    return findPsiChildByType(TYPE_NAME_COMPLEX);
-  }
-
-  @Override
-  @NotNull
   public List<PsiAnnotation> getAnnotations() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }

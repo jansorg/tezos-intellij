@@ -1,31 +1,31 @@
-[0 : 9] NAME
+[0 : 9] SECTION_NAME
 parameter
 -----
-[10 : 16] NAME
+[10 : 16] TYPE_NAME_COMPARABLE
 string
 -----
 [16 : 17] ;
 ;
 -----
-[18 : 24] NAME
+[18 : 24] SECTION_NAME
 return
 -----
-[25 : 31] NAME
+[25 : 31] TYPE_NAME_COMPARABLE
 string
 -----
 [31 : 32] ;
 ;
 -----
-[33 : 40] NAME
+[33 : 40] SECTION_NAME
 storage
 -----
-[41 : 45] NAME
+[41 : 45] TYPE_NAME
 unit
 -----
 [45 : 46] ;
 ;
 -----
-[47 : 51] NAME
+[47 : 51] SECTION_NAME
 code
 -----
 [52 : 53] {

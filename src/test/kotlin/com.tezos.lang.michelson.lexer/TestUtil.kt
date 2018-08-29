@@ -46,13 +46,13 @@ object TestUtil {
     }
 
     fun assertLexing(fileName: String, showWhitespace: Boolean = false) {
-        assertLexing(Paths.get(fileName), showWhitespace)
+        assertLexing(Paths.get(fileName), Paths.get(fileName.replace(".tz", ".tokens")), showWhitespace)
     }
 
-    fun assertLexing(file: Path, showWhitespace: Boolean = false) {
+    fun assertLexing(file: Path, tokensFile: Path, showWhitespace: Boolean = false) {
         val finalPath = if (file.isAbsolute) file else Paths.get("lexer").resolve(file)
         val data = load(finalPath)
-        val expectedReport = load("lexer", file.fileName.toString().replace(".tz", ".tokens"))
+        val expectedReport = load(tokensFile)
 
         val l = MichelsonLexer()
         l.start(data)
