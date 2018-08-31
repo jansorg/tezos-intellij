@@ -697,22 +697,13 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // block_instruction
-  //   | conditional_instruction
-  //   | lambda_instruction
-  //   | create_contract_instruction
-  //   | generic_instruction
-  //   | macro_instruction
+  // block_instruction | simple_instruction
   public static boolean instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "instruction")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _COLLAPSE_, INSTRUCTION, "<instruction>");
     result = block_instruction(builder, level + 1);
-    if (!result) result = conditional_instruction(builder, level + 1);
-    if (!result) result = lambda_instruction(builder, level + 1);
-    if (!result) result = create_contract_instruction(builder, level + 1);
-    if (!result) result = generic_instruction(builder, level + 1);
-    if (!result) result = macro_instruction(builder, level + 1);
+    if (!result) result = simple_instruction(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
   }
@@ -868,6 +859,23 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = storage_section(builder, level + 1);
     if (!result) result = code_section(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // conditional_instruction
+  //   | lambda_instruction
+  //   | create_contract_instruction
+  //   | generic_instruction
+  //   | macro_instruction
+  static boolean simple_instruction(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "simple_instruction")) return false;
+    boolean result;
+    result = conditional_instruction(builder, level + 1);
+    if (!result) result = lambda_instruction(builder, level + 1);
+    if (!result) result = create_contract_instruction(builder, level + 1);
+    if (!result) result = generic_instruction(builder, level + 1);
+    if (!result) result = macro_instruction(builder, level + 1);
     return result;
   }
 
