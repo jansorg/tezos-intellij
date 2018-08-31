@@ -7,4 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiMacroInstruction extends PsiInstruction {
 
+  @NotNull
+  List<PsiBlockInstruction> getBlockInstructionList();
+
+  @NotNull
+  PsiElement getMacroToken();
+
+  @NotNull
+  List<PsiAnnotation> getAnnotations();
+
 }

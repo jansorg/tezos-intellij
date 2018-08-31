@@ -26,18 +26,6 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitType(o);
   }
 
-  public R visitConditional(@NotNull PsiConditional o) {
-    return visitInstruction(o);
-  }
-
-  public R visitConditionalInstruction(@NotNull PsiConditionalInstruction o) {
-    return visitConditional(o);
-  }
-
-  public R visitConditionalMacro(@NotNull PsiConditionalMacro o) {
-    return visitConditional(o);
-  }
-
   public R visitContract(@NotNull PsiContract o) {
     return visitMichelsonComposite(o);
   }
@@ -58,20 +46,12 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitInstruction(o);
   }
 
-  public R visitGenericMacro(@NotNull PsiGenericMacro o) {
-    return visitMacroInstruction(o);
-  }
-
   public R visitGenericType(@NotNull PsiGenericType o) {
     return visitType(o);
   }
 
   public R visitInstruction(@NotNull PsiInstruction o) {
     return visitMichelsonComposite(o);
-  }
-
-  public R visitLambdaInstruction(@NotNull PsiLambdaInstruction o) {
-    return visitInstruction(o);
   }
 
   public R visitLiteralData(@NotNull PsiLiteralData o) {

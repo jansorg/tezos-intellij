@@ -27,7 +27,7 @@ public class PsiCreateContractInstructionImpl extends PsiInstructionImpl impleme
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiContract getContract() {
     return PsiTreeUtil.getChildOfType(this, PsiContract.class);
   }

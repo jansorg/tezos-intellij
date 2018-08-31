@@ -11,7 +11,7 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public abstract class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMacroInstruction {
+public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMacroInstruction {
 
   public PsiMacroInstructionImpl(@NotNull IElementType type) {
     super(type);
@@ -24,6 +24,24 @@ public abstract class PsiMacroInstructionImpl extends PsiInstructionImpl impleme
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiBlockInstruction> getBlockInstructionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getMacroToken() {
+    return findPsiChildByType(MACRO_TOKEN);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiAnnotation> getAnnotations() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }
 
 }

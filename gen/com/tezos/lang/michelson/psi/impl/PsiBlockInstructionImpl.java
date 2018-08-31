@@ -26,10 +26,4 @@ public class PsiBlockInstructionImpl extends PsiInstructionImpl implements PsiBl
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<PsiInstruction> getInstructions() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiInstruction.class);
-  }
-
 }

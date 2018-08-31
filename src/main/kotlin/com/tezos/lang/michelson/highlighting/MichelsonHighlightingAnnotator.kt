@@ -59,10 +59,10 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         when {
             // commands which expect a single instruction block
-            oneBlockCommand && blockCount != 1 -> holder.createErrorAnnotation(instruction, "expected 1 block after $name")
+            oneBlockCommand && blockCount != 1 -> holder.createErrorAnnotation(instruction, "One block expected")
 
             // commands which expect two instruction blocks
-            twoBlocksCommand && blockCount != 2 -> holder.createErrorAnnotation(instruction, "expected 2 blocks after $name")
+            twoBlocksCommand && blockCount != 2 -> holder.createErrorAnnotation(instruction, "Two blocks expected")
 
             // commands which expect no arguments
             noArgsCommand && (blockCount != 0 || types.size != 0 || datas.size != 0) -> {
@@ -71,7 +71,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
             // commands which support a single type argument
             oneTypeCommand && types.size != 1 -> {
-                holder.createErrorAnnotation(instruction, "Expected one type argument")
+                holder.createErrorAnnotation(instruction, "Type argument expected")
             }
 
             // unknown commands

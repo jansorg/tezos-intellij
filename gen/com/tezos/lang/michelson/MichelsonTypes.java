@@ -16,17 +16,13 @@ public interface MichelsonTypes {
   IElementType CODE_SECTION = new MichelsonCompositeElementType("CODE_SECTION");
   IElementType COMPARABLE_TYPE = new MichelsonCompositeElementType("COMPARABLE_TYPE");
   IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
-  IElementType CONDITIONAL_INSTRUCTION = new MichelsonCompositeElementType("CONDITIONAL_INSTRUCTION");
-  IElementType CONDITIONAL_MACRO = new MichelsonCompositeElementType("CONDITIONAL_MACRO");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
   IElementType GENERIC_DATA = new MichelsonCompositeElementType("GENERIC_DATA");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
-  IElementType GENERIC_MACRO = new MichelsonCompositeElementType("GENERIC_MACRO");
   IElementType GENERIC_TYPE = new MichelsonCompositeElementType("GENERIC_TYPE");
   IElementType INSTRUCTION = new MichelsonCompositeElementType("INSTRUCTION");
-  IElementType LAMBDA_INSTRUCTION = new MichelsonCompositeElementType("LAMBDA_INSTRUCTION");
   IElementType LITERAL_DATA = new MichelsonCompositeElementType("LITERAL_DATA");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
   IElementType MAP_ENTRY_DATA = new MichelsonCompositeElementType("MAP_ENTRY_DATA");
@@ -78,12 +74,6 @@ public interface MichelsonTypes {
       else if (type == COMPLEX_TYPE) {
         return new PsiComplexTypeImpl(type);
       }
-      else if (type == CONDITIONAL_INSTRUCTION) {
-        return new PsiConditionalInstructionImpl(type);
-      }
-      else if (type == CONDITIONAL_MACRO) {
-        return new PsiConditionalMacroImpl(type);
-      }
       else if (type == CONTRACT) {
         return new PsiContractImpl(type);
       }
@@ -99,17 +89,14 @@ public interface MichelsonTypes {
       else if (type == GENERIC_INSTRUCTION) {
         return new PsiGenericInstructionImpl(type);
       }
-      else if (type == GENERIC_MACRO) {
-        return new PsiGenericMacroImpl(type);
-      }
       else if (type == GENERIC_TYPE) {
         return new PsiGenericTypeImpl(type);
       }
-      else if (type == LAMBDA_INSTRUCTION) {
-        return new PsiLambdaInstructionImpl(type);
-      }
       else if (type == LITERAL_DATA) {
         return new PsiLiteralDataImpl(type);
+      }
+      else if (type == MACRO_INSTRUCTION) {
+        return new PsiMacroInstructionImpl(type);
       }
       else if (type == MAP_ENTRY_DATA) {
         return new PsiMapEntryDataImpl(type);

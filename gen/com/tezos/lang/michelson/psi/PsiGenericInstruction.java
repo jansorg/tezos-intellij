@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface PsiGenericInstruction extends PsiInstruction {
 
   @NotNull
-  List<PsiAnnotation> getAnnotationList();
-
-  @NotNull
   List<PsiData> getDataList();
 
   @NotNull
@@ -18,6 +15,9 @@ public interface PsiGenericInstruction extends PsiInstruction {
 
   @NotNull
   PsiElement getInstructionToken();
+
+  @NotNull
+  List<PsiAnnotation> getAnnotations();
 
   @NotNull
   List<PsiBlockInstruction> getInstructionBlocks();

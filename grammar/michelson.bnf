@@ -112,46 +112,22 @@ map_entry_data ::= 'Elt' toplevel_data toplevel_data
 
 //-- instructions
 
-// instruction&macro fake rules
-// fake rule to introduce a PSI interface for both conditional instructions and expressions
-fake conditional ::= block_instruction block_instruction {methods=[trueBranch="block_instruction[0]" falseBranch="block_instruction[1]" instructionBlocks="block_instruction"]}
-
-// instructions
 instruction ::= block_instruction | simple_instruction {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getInstructionName getInstructionToken]}
-
-block_instruction ::= '{' (instruction (';' instruction)*)? ';'? '}' { methods=[instructions="instruction"] }
+block_instruction ::= block_instruction_inner
+external block_instruction_inner ::= parse_instruction_block instruction
 
 private simple_instruction ::=
-    conditional_instruction
-  | lambda_instruction
-  | create_contract_instruction
+    create_contract_instruction
   | generic_instruction
   | macro_instruction
 
-conditional_instruction ::= ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction { extends=conditional }
 // types must be validated by annotator, method "annotations" implements interface PsiAnnotated
-lambda_instruction ::= 'LAMBDA' (type | annotation)+ block_instruction {methods=[annotations="annotation"]}
-//fixme: are annotations allowed here?
-create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}'
-generic_instruction ::= generic_instruction_block | generic_instruction_attrs {methods=[instructionBlocks="block_instruction"]}
-//fixme annotations allowed here?
-private generic_instruction_block ::= INSTRUCTION_TOKEN block_instruction+
-// method "annotations" implements interface PsiAnnotated
-private generic_instruction_attrs ::= INSTRUCTION_TOKEN (toplevel_type | toplevel_data | annotation)* {methods=[annotations="annotation"]}
-
-//-- macros
-
-// generic parsing of macros
-// needs further validation in annotator
-macro_instruction ::= conditional_macro | generic_macro
-
-// rule to create better structure for conditional macros
-conditional_macro ::= ("IF_SOME"
-              | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
-              | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE") block_instruction block_instruction { extends=conditional }
-
-// method "annotations" implements interface PsiAnnotated
-generic_macro ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"]}
+create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' {pin=2}
+generic_instruction ::= INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data | annotation)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
+// generic parsing of macros, needs further validation in annotator
+macro_instruction ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"] pin=1 recoverWhile=instruction_recover}
+// uses an external rule because the GrammarKit doesn't seem to handle look-aheads without consuming tokens
+private instruction_recover ::= <<instruction_recover_while>>
 
 //-- types
 

@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiBlockInstruction extends PsiInstruction {
 
-  @NotNull
-  List<PsiInstruction> getInstructions();
-
 }

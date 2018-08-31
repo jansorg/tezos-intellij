@@ -28,12 +28,6 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
 
   @Override
   @NotNull
-  public List<PsiAnnotation> getAnnotationList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
-  }
-
-  @Override
-  @NotNull
   public List<PsiData> getDataList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiData.class);
   }
@@ -48,6 +42,12 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
   @NotNull
   public PsiElement getInstructionToken() {
     return findPsiChildByType(INSTRUCTION_TOKEN);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiAnnotation> getAnnotations() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }
 
   @Override

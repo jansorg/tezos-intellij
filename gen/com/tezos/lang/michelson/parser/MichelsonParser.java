@@ -38,12 +38,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == COMPLEX_TYPE) {
       result = complex_type(builder, 0);
     }
-    else if (type == CONDITIONAL_INSTRUCTION) {
-      result = conditional_instruction(builder, 0);
-    }
-    else if (type == CONDITIONAL_MACRO) {
-      result = conditional_macro(builder, 0);
-    }
     else if (type == CONTRACT) {
       result = contract(builder, 0);
     }
@@ -59,17 +53,11 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == GENERIC_INSTRUCTION) {
       result = generic_instruction(builder, 0);
     }
-    else if (type == GENERIC_MACRO) {
-      result = generic_macro(builder, 0);
-    }
     else if (type == GENERIC_TYPE) {
       result = generic_type(builder, 0);
     }
     else if (type == INSTRUCTION) {
       result = instruction(builder, 0);
-    }
-    else if (type == LAMBDA_INSTRUCTION) {
-      result = lambda_instruction(builder, 0);
     }
     else if (type == LITERAL_DATA) {
       result = literal_data(builder, 0);
@@ -116,11 +104,10 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
       STORAGE_SECTION),
     create_token_set_(DATA, GENERIC_DATA, LITERAL_DATA, MAP_ENTRY_DATA,
       NESTED_DATA),
+    create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, GENERIC_INSTRUCTION, INSTRUCTION,
+      MACRO_INSTRUCTION),
     create_token_set_(COMPARABLE_TYPE, COMPLEX_TYPE, GENERIC_TYPE, NESTED_TYPE,
       TYPE),
-    create_token_set_(BLOCK_INSTRUCTION, CONDITIONAL_INSTRUCTION, CONDITIONAL_MACRO, CREATE_CONTRACT_INSTRUCTION,
-      GENERIC_INSTRUCTION, GENERIC_MACRO, INSTRUCTION, LAMBDA_INSTRUCTION,
-      MACRO_INSTRUCTION),
   };
 
   /* ********************************************************** */
@@ -136,65 +123,14 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' (instruction (';' instruction)*)? ';'? '}'
+  // block_instruction_inner
   public static boolean block_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "block_instruction")) return false;
-    if (!nextTokenIs(builder, LEFT_CURLY)) return false;
     boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, LEFT_CURLY);
-    result = result && block_instruction_1(builder, level + 1);
-    result = result && block_instruction_2(builder, level + 1);
-    result = result && consumeToken(builder, RIGHT_CURLY);
-    exit_section_(builder, marker, BLOCK_INSTRUCTION, result);
+    Marker marker = enter_section_(builder, level, _COLLAPSE_, BLOCK_INSTRUCTION, "<block instruction>");
+    result = parse_instruction_block(builder, level + 1, instruction_parser_);
+    exit_section_(builder, level, marker, result, false, null);
     return result;
-  }
-
-  // (instruction (';' instruction)*)?
-  private static boolean block_instruction_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "block_instruction_1")) return false;
-    block_instruction_1_0(builder, level + 1);
-    return true;
-  }
-
-  // instruction (';' instruction)*
-  private static boolean block_instruction_1_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "block_instruction_1_0")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = instruction(builder, level + 1);
-    result = result && block_instruction_1_0_1(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  // (';' instruction)*
-  private static boolean block_instruction_1_0_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "block_instruction_1_0_1")) return false;
-    while (true) {
-      int pos = current_position_(builder);
-      if (!block_instruction_1_0_1_0(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "block_instruction_1_0_1", pos)) break;
-    }
-    return true;
-  }
-
-  // ';' instruction
-  private static boolean block_instruction_1_0_1_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "block_instruction_1_0_1_0")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, SEMI);
-    result = result && instruction(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  // ';'?
-  private static boolean block_instruction_2(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "block_instruction_2")) return false;
-    consumeToken(builder, SEMI);
-    return true;
   }
 
   /* ********************************************************** */
@@ -299,71 +235,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ('IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE') block_instruction block_instruction
-  public static boolean conditional_instruction(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "conditional_instruction")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder, level, _COLLAPSE_, CONDITIONAL_INSTRUCTION, "<conditional instruction>");
-    result = conditional_instruction_0(builder, level + 1);
-    result = result && block_instruction(builder, level + 1);
-    result = result && block_instruction(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
-    return result;
-  }
-
-  // 'IF' | 'IF_CONS' | 'IF_LEFT' | 'IF_NONE'
-  private static boolean conditional_instruction_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "conditional_instruction_0")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, "IF");
-    if (!result) result = consumeToken(builder, "IF_CONS");
-    if (!result) result = consumeToken(builder, "IF_LEFT");
-    if (!result) result = consumeToken(builder, "IF_NONE");
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // ("IF_SOME"
-  //               | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
-  //               | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE") block_instruction block_instruction
-  public static boolean conditional_macro(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "conditional_macro")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder, level, _COLLAPSE_, CONDITIONAL_MACRO, "<conditional macro>");
-    result = conditional_macro_0(builder, level + 1);
-    result = result && block_instruction(builder, level + 1);
-    result = result && block_instruction(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
-    return result;
-  }
-
-  // "IF_SOME"
-  //               | "IFEQ" | "IFNEQ" | "IFLT" | "IFGT" | "IFLE" | "IFGE"
-  //               | "IFCMPEQ" | "IFCMPNEQ" | "IFCMPLT" | "IFCMPGT" | "IFCMPLE" | "IFCMPGE"
-  private static boolean conditional_macro_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "conditional_macro_0")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, "IF_SOME");
-    if (!result) result = consumeToken(builder, "IFEQ");
-    if (!result) result = consumeToken(builder, "IFNEQ");
-    if (!result) result = consumeToken(builder, "IFLT");
-    if (!result) result = consumeToken(builder, "IFGT");
-    if (!result) result = consumeToken(builder, "IFLE");
-    if (!result) result = consumeToken(builder, "IFGE");
-    if (!result) result = consumeToken(builder, "IFCMPEQ");
-    if (!result) result = consumeToken(builder, "IFCMPNEQ");
-    if (!result) result = consumeToken(builder, "IFCMPLT");
-    if (!result) result = consumeToken(builder, "IFCMPGT");
-    if (!result) result = consumeToken(builder, "IFCMPLE");
-    if (!result) result = consumeToken(builder, "IFCMPGE");
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
   // section+
   public static boolean contract(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "contract")) return false;
@@ -383,14 +254,15 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   // 'CREATE_CONTRACT' '{' contract '}'
   public static boolean create_contract_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "create_contract_instruction")) return false;
-    boolean result;
+    boolean result, pinned;
     Marker marker = enter_section_(builder, level, _NONE_, CREATE_CONTRACT_INSTRUCTION, "<create contract instruction>");
     result = consumeToken(builder, "CREATE_CONTRACT");
     result = result && consumeToken(builder, LEFT_CURLY);
-    result = result && contract(builder, level + 1);
-    result = result && consumeToken(builder, RIGHT_CURLY);
-    exit_section_(builder, level, marker, result, false, null);
-    return result;
+    pinned = result; // pin = 2
+    result = result && report_error_(builder, contract(builder, level + 1));
+    result = pinned && consumeToken(builder, RIGHT_CURLY) && result;
+    exit_section_(builder, level, marker, result, pinned, null);
+    return result || pinned;
   }
 
   /* ********************************************************** */
@@ -565,110 +437,37 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // generic_instruction_block | generic_instruction_attrs
+  // INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data | annotation)*
   public static boolean generic_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "generic_instruction")) return false;
-    if (!nextTokenIs(builder, INSTRUCTION_TOKEN)) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = generic_instruction_block(builder, level + 1);
-    if (!result) result = generic_instruction_attrs(builder, level + 1);
-    exit_section_(builder, marker, GENERIC_INSTRUCTION, result);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // INSTRUCTION_TOKEN (toplevel_type | toplevel_data | annotation)*
-  static boolean generic_instruction_attrs(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_instruction_attrs")) return false;
-    if (!nextTokenIs(builder, INSTRUCTION_TOKEN)) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
+    boolean result, pinned;
+    Marker marker = enter_section_(builder, level, _NONE_, GENERIC_INSTRUCTION, "<generic instruction>");
     result = consumeToken(builder, INSTRUCTION_TOKEN);
-    result = result && generic_instruction_attrs_1(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
+    pinned = result; // pin = 1
+    result = result && generic_instruction_1(builder, level + 1);
+    exit_section_(builder, level, marker, result, pinned, instruction_recover_parser_);
+    return result || pinned;
   }
 
-  // (toplevel_type | toplevel_data | annotation)*
-  private static boolean generic_instruction_attrs_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_instruction_attrs_1")) return false;
+  // (block_instruction | toplevel_type | toplevel_data | annotation)*
+  private static boolean generic_instruction_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "generic_instruction_1")) return false;
     while (true) {
       int pos = current_position_(builder);
-      if (!generic_instruction_attrs_1_0(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "generic_instruction_attrs_1", pos)) break;
+      if (!generic_instruction_1_0(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "generic_instruction_1", pos)) break;
     }
     return true;
   }
 
-  // toplevel_type | toplevel_data | annotation
-  private static boolean generic_instruction_attrs_1_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_instruction_attrs_1_0")) return false;
+  // block_instruction | toplevel_type | toplevel_data | annotation
+  private static boolean generic_instruction_1_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "generic_instruction_1_0")) return false;
     boolean result;
-    result = toplevel_type(builder, level + 1);
+    result = block_instruction(builder, level + 1);
+    if (!result) result = toplevel_type(builder, level + 1);
     if (!result) result = toplevel_data(builder, level + 1);
     if (!result) result = annotation(builder, level + 1);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // INSTRUCTION_TOKEN block_instruction+
-  static boolean generic_instruction_block(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_instruction_block")) return false;
-    if (!nextTokenIs(builder, INSTRUCTION_TOKEN)) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, INSTRUCTION_TOKEN);
-    result = result && generic_instruction_block_1(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  // block_instruction+
-  private static boolean generic_instruction_block_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_instruction_block_1")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = block_instruction(builder, level + 1);
-    while (result) {
-      int pos = current_position_(builder);
-      if (!block_instruction(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "generic_instruction_block_1", pos)) break;
-    }
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // MACRO_TOKEN (annotation | block_instruction)*
-  public static boolean generic_macro(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_macro")) return false;
-    if (!nextTokenIs(builder, MACRO_TOKEN)) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, MACRO_TOKEN);
-    result = result && generic_macro_1(builder, level + 1);
-    exit_section_(builder, marker, GENERIC_MACRO, result);
-    return result;
-  }
-
-  // (annotation | block_instruction)*
-  private static boolean generic_macro_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_macro_1")) return false;
-    while (true) {
-      int pos = current_position_(builder);
-      if (!generic_macro_1_0(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "generic_macro_1", pos)) break;
-    }
-    return true;
-  }
-
-  // annotation | block_instruction
-  private static boolean generic_macro_1_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_macro_1_0")) return false;
-    boolean result;
-    result = annotation(builder, level + 1);
-    if (!result) result = block_instruction(builder, level + 1);
     return result;
   }
 
@@ -709,40 +508,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'LAMBDA' (type | annotation)+ block_instruction
-  public static boolean lambda_instruction(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "lambda_instruction")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder, level, _NONE_, LAMBDA_INSTRUCTION, "<lambda instruction>");
-    result = consumeToken(builder, "LAMBDA");
-    result = result && lambda_instruction_1(builder, level + 1);
-    result = result && block_instruction(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
-    return result;
-  }
-
-  // (type | annotation)+
-  private static boolean lambda_instruction_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "lambda_instruction_1")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = lambda_instruction_1_0(builder, level + 1);
-    while (result) {
-      int pos = current_position_(builder);
-      if (!lambda_instruction_1_0(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "lambda_instruction_1", pos)) break;
-    }
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  // type | annotation
-  private static boolean lambda_instruction_1_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "lambda_instruction_1_0")) return false;
-    boolean result;
-    result = type(builder, level + 1);
-    if (!result) result = annotation(builder, level + 1);
-    return result;
+  // <<instruction_recover_while>>
+  static boolean instruction_recover(PsiBuilder builder, int level) {
+    return instruction_recover_while(builder, level + 1);
   }
 
   /* ********************************************************** */
@@ -762,14 +530,35 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // conditional_macro | generic_macro
+  // MACRO_TOKEN (annotation | block_instruction)*
   public static boolean macro_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "macro_instruction")) return false;
+    boolean result, pinned;
+    Marker marker = enter_section_(builder, level, _NONE_, MACRO_INSTRUCTION, "<macro instruction>");
+    result = consumeToken(builder, MACRO_TOKEN);
+    pinned = result; // pin = 1
+    result = result && macro_instruction_1(builder, level + 1);
+    exit_section_(builder, level, marker, result, pinned, instruction_recover_parser_);
+    return result || pinned;
+  }
+
+  // (annotation | block_instruction)*
+  private static boolean macro_instruction_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "macro_instruction_1")) return false;
+    while (true) {
+      int pos = current_position_(builder);
+      if (!macro_instruction_1_0(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "macro_instruction_1", pos)) break;
+    }
+    return true;
+  }
+
+  // annotation | block_instruction
+  private static boolean macro_instruction_1_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "macro_instruction_1_0")) return false;
     boolean result;
-    Marker marker = enter_section_(builder, level, _COLLAPSE_, MACRO_INSTRUCTION, "<macro instruction>");
-    result = conditional_macro(builder, level + 1);
-    if (!result) result = generic_macro(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
+    result = annotation(builder, level + 1);
+    if (!result) result = block_instruction(builder, level + 1);
     return result;
   }
 
@@ -863,19 +652,17 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // conditional_instruction
-  //   | lambda_instruction
-  //   | create_contract_instruction
+  // create_contract_instruction
   //   | generic_instruction
   //   | macro_instruction
   static boolean simple_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "simple_instruction")) return false;
     boolean result;
-    result = conditional_instruction(builder, level + 1);
-    if (!result) result = lambda_instruction(builder, level + 1);
-    if (!result) result = create_contract_instruction(builder, level + 1);
+    Marker marker = enter_section_(builder);
+    result = create_contract_instruction(builder, level + 1);
     if (!result) result = generic_instruction(builder, level + 1);
     if (!result) result = macro_instruction(builder, level + 1);
+    exit_section_(builder, marker, null, result);
     return result;
   }
 
@@ -925,4 +712,14 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     return result;
   }
 
+  final static Parser instruction_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder, int level) {
+      return instruction(builder, level + 1);
+    }
+  };
+  final static Parser instruction_recover_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder, int level) {
+      return instruction_recover(builder, level + 1);
+    }
+  };
 }

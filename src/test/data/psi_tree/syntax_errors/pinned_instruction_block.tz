@@ -3,6 +3,6 @@ return string;
 storage unit;
 code {
     # blocks must be parsed, even when instructions in them contain syntax errors
-    IF { DROP DROP } { DROP DROP };
-    IF { DROP DROP } { DROP DROP }
+    IF { DROP DRIP } { DROP_DROP DRIP_DRIP };
+    IF { DROP2 DRIP2 } { DROP_DROP2 DRIP_DRIP2 };
 };
