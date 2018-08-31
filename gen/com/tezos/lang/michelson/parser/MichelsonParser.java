@@ -409,21 +409,15 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'Left' toplevel_data {}
+  // 'Left' toplevel_data
   static boolean data_left(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_left")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, "Left");
     result = result && toplevel_data(builder, level + 1);
-    result = result && data_left_2(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
-  }
-
-  // {}
-  private static boolean data_left_2(PsiBuilder builder, int level) {
-    return true;
   }
 
   /* ********************************************************** */
@@ -518,7 +512,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'Pair' toplevel_data toplevel_data {}
+  // 'Pair' toplevel_data toplevel_data
   static boolean data_pair(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_pair")) return false;
     boolean result;
@@ -526,50 +520,32 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, "Pair");
     result = result && toplevel_data(builder, level + 1);
     result = result && toplevel_data(builder, level + 1);
-    result = result && data_pair_3(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
   }
 
-  // {}
-  private static boolean data_pair_3(PsiBuilder builder, int level) {
-    return true;
-  }
-
   /* ********************************************************** */
-  // 'Right' toplevel_data {}
+  // 'Right' toplevel_data
   static boolean data_right(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_right")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, "Right");
     result = result && toplevel_data(builder, level + 1);
-    result = result && data_right_2(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
   }
 
-  // {}
-  private static boolean data_right_2(PsiBuilder builder, int level) {
-    return true;
-  }
-
   /* ********************************************************** */
-  // 'Some' toplevel_data {}
+  // 'Some' toplevel_data
   static boolean data_some(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_some")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, "Some");
     result = result && toplevel_data(builder, level + 1);
-    result = result && data_some_2(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
-  }
-
-  // {}
-  private static boolean data_some_2(PsiBuilder builder, int level) {
-    return true;
   }
 
   /* ********************************************************** */
@@ -807,7 +783,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'Elt' toplevel_data toplevel_data {}
+  // 'Elt' toplevel_data toplevel_data
   public static boolean map_entry_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "map_entry_data")) return false;
     boolean result;
@@ -815,14 +791,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, "Elt");
     result = result && toplevel_data(builder, level + 1);
     result = result && toplevel_data(builder, level + 1);
-    result = result && map_entry_data_3(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
-  }
-
-  // {}
-  private static boolean map_entry_data_3(PsiBuilder builder, int level) {
-    return true;
   }
 
   /* ********************************************************** */

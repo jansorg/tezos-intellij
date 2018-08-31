@@ -82,7 +82,7 @@
 // we probably need an external rule to make sure that the required sections are present
 // (we can't define arbitrary order without adding a lot of ruled)
 private script_file ::= contract?
-contract ::= section+ {methods=[sections="section"]}
+contract ::= section+ { methods=[sections="section"] }
 
 section ::= parameter_section | return_section | storage_section | code_section
 parameter_section ::= 'parameter' toplevel_type ';'
@@ -102,13 +102,13 @@ nested_data ::= '(' data ')'
 literal_data ::= 'None' | 'True' | 'False' | 'Unit' | INT | STRING
 generic_data ::= data_pair | data_left | data_right | data_some | data_list | data_map
 // helpers for data, mostly to be able to introduce pin attributes
-private data_some ::= 'Some' toplevel_data {}
-private data_pair ::= 'Pair' toplevel_data toplevel_data {}
-private data_left ::= 'Left' toplevel_data {}
-private data_right ::= 'Right' toplevel_data {}
+private data_some ::= 'Some' toplevel_data
+private data_pair ::= 'Pair' toplevel_data toplevel_data
+private data_left ::= 'Left' toplevel_data
+private data_right ::= 'Right' toplevel_data
 private data_list ::= '{' (toplevel_data (';' toplevel_data)*)? '}'// {} is an empty list, not an empty map //fixme
 private data_map ::= '{' map_entry_data (';' map_entry_data)* '}' // {} not allowed here
-map_entry_data ::= 'Elt' toplevel_data toplevel_data {}
+map_entry_data ::= 'Elt' toplevel_data toplevel_data
 
 //-- instructions
 

@@ -50,23 +50,32 @@ class MichelsonHighlightingAnnotator : Annotator {
         val types = psi.typeList
         val datas = psi.dataList
 
-        val isOneBlockCommand = name in INSTRUCTIONS_ONE_BLOCK
-        val isTwoBlocksCommand = name in INSTRUCTIONS_TWO_BLOCKS
-        val isNoArgsCommand = name in INSTRUCTIONS_NO_ARGS
+        val oneBlockCommand = name in INSTRUCTIONS_ONE_BLOCK
+        val twoBlocksCommand = name in INSTRUCTIONS_TWO_BLOCKS
+        val noArgsCommand = name in INSTRUCTIONS_NO_ARGS
+        val oneTypeCommand = INSTRUCTIONS_ONE_TYPE.contains(name)
+        val unknownCommand = !oneBlockCommand && !twoBlocksCommand && !noArgsCommand && !oneTypeCommand
         val blockCount = blocks.size
+
         when {
-            isOneBlockCommand && blockCount != 1 -> {
-                holder.createErrorAnnotation(instruction, "expected 1 block after $name")
-            }
-            isTwoBlocksCommand && blockCount != 2 -> {
-                holder.createErrorAnnotation(instruction, "expected 2 blocks after $name")
-            }
-            isNoArgsCommand && (blockCount != 0 || types.size != 0 || datas.size != 0) -> {
+            // commands which expect a single instruction block
+            oneBlockCommand && blockCount != 1 -> holder.createErrorAnnotation(instruction, "expected 1 block after $name")
+
+            // commands which expect two instruction blocks
+            twoBlocksCommand && blockCount != 2 -> holder.createErrorAnnotation(instruction, "expected 2 blocks after $name")
+
+            // commands which expect no arguments
+            noArgsCommand && (blockCount != 0 || types.size != 0 || datas.size != 0) -> {
                 holder.createErrorAnnotation(instruction, "$name doesn't support arguments")
             }
-            !isOneBlockCommand && !isTwoBlocksCommand && !isNoArgsCommand -> {
-                holder.createErrorAnnotation(psi, "Unknown instruction")
+
+            // commands which support a single type argument
+            oneTypeCommand && types.size != 1 -> {
+                holder.createErrorAnnotation(instruction, "Expected one type argument")
             }
+
+            // unknown commands
+            unknownCommand -> holder.createErrorAnnotation(psi, "Unknown instruction")
         }
     }
 

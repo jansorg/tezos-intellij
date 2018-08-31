@@ -1,0 +1,8 @@
+parameter string;
+return string;
+storage unit;
+code {
+    # blocks must be parsed, even when instructions in them contain syntax errors
+    IF { DROP DROP } { DROP DROP };
+    IF { DROP DROP } { DROP DROP }
+};

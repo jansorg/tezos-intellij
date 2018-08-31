@@ -50,6 +50,7 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
   "True"                      { return TRUE; }
   "False"                     { return FALSE; }
   "Unit"                      { return UNIT; }
+  "None"                      { return NONE; }
 
   {SECTION_NAME}              { return SECTION_NAME; }
   {TYPE_NAME_COMPARABLE}      { return TYPE_NAME_COMPARABLE; }

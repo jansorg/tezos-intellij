@@ -41,8 +41,11 @@ object MichelsonTestUtils {
 
     fun load(path: String, vararg more: String): String = load(dataPath().resolve(Paths.get(path, *more)))
 
-    fun load(filePath: Path): String {
+    fun load(filePath: Path, defaultValue:String? = null): String {
         if (!Files.exists(filePath)) {
+            if (defaultValue != null) {
+                return defaultValue
+            }
             throw IllegalStateException("Unable to locate file at $filePath")
         }
 

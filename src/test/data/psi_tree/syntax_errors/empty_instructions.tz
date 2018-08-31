@@ -1,0 +1,4 @@
+parameter unit;
+storage unit;
+# a single empty instruction, i.e. '{ ; }' is valid syntax, two are invalid
+code { ; ; };
