@@ -31,7 +31,7 @@ object MichelsonTestUtils {
             throw IllegalStateException("Directory $sourcePath not found.")
         }
 
-        val files = Files.find(sourcePath, 10, { p, a -> isMichelsonFile(p) }, arrayOf(FileVisitOption.FOLLOW_LINKS))
+        val files = Files.find(sourcePath, 10, { p, _ -> isMichelsonFile(p) }, arrayOf(FileVisitOption.FOLLOW_LINKS))
         return files.collect(Collectors.toList())
     }
 

@@ -8,7 +8,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.tezos.lang.michelson.MichelsonTypes
-import com.tezos.lang.michelson.lexer.MichelsonElementTypes
+import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
 import com.tezos.lang.michelson.lexer.MichelsonLexer
 import java.util.*
 
@@ -60,7 +60,7 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
             keys.put(MichelsonTypes.TYPE_NAME_COMPARABLE, TYPE_NAME_COMPARABLE)
             keys.put(MichelsonTypes.TAG, TAG)
             keys.put(MichelsonTypes.INSTRUCTION_TOKEN, INSTRUCTION)
-            fillMap(keys, MichelsonElementTypes.MACROS, MACRO)
+            fillMap(keys, MichelsonElementTokenSets.MACROS, MACRO)
 
             keys.put(MichelsonTypes.ANNOTATION_TOKEN, ANNOTATION)
             //fixme better handle different types of annotations in annotator
@@ -69,11 +69,11 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
             keys.put(MichelsonTypes.BYTE, BYTE_LITERAL)
             keys.put(MichelsonTypes.STRING, STRING_LITERAL)
             keys.put(MichelsonTypes.UNIT, UNIT_LITERAL)
-            fillMap(keys, MichelsonElementTypes.BOOLEAN, BOOLEAN_LITERAL)
+            fillMap(keys, MichelsonElementTokenSets.BOOLEAN, BOOLEAN_LITERAL)
 
             keys.put(MichelsonTypes.SEMI, SEMI)
-            fillMap(keys, MichelsonElementTypes.PARENTHESES, PAREN)
-            fillMap(keys, MichelsonElementTypes.BRACES, BRACES)
+            fillMap(keys, MichelsonElementTokenSets.PARENTHESES, PAREN)
+            fillMap(keys, MichelsonElementTokenSets.BRACES, BRACES)
         }
     }
 
