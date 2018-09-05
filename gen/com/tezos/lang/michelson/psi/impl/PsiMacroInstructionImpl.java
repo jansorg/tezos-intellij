@@ -28,12 +28,6 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
 
   @Override
   @NotNull
-  public List<PsiBlockInstruction> getBlockInstructionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
-  }
-
-  @Override
-  @NotNull
   public PsiElement getMacroToken() {
     return findPsiChildByType(MACRO_TOKEN);
   }
@@ -42,6 +36,12 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
   @NotNull
   public List<PsiAnnotation> getAnnotations() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiBlockInstruction> getInstructionBlocks() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
   }
 
 }

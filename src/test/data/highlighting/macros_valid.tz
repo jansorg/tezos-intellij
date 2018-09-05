@@ -1,0 +1,68 @@
+parameter string;
+return string;
+storage unit;
+code {
+    # compare
+    CMPEQ;
+    CMPNEQ;
+    CMPLT;
+    CMPGT;
+    CMPLE;
+    CMPGE;
+
+    IFEQ {} {};
+    IFNEQ {} {};
+    IFLT {} {};
+    IFGT {} {};
+    IFLE {} {};
+    IFGE {} {};
+
+    IFCMPEQ {} {};
+    IFCMPNEQ {} {};
+    IFCMPLT {} {};
+    IFCMPGT {} {};
+    IFCMPLE {} {};
+    IFCMPGE {} {};
+
+    # Fail
+    FAIL;
+
+    # Assertion macros
+    ASSERT;
+    ASSERT_EQ;
+    ASSERT_NEQ;
+    ASSERT_LT;
+    ASSERT_LE;
+    ASSERT_GT;
+    ASSERT_GE;
+    ASSERT_CMPEQ;
+    ASSERT_CMPNEQ;
+    ASSERT_CMPLT;
+    ASSERT_CMPLE;
+    ASSERT_CMPGT;
+    ASSERT_CMPGE;
+    ASSERT_NONE;
+    ASSERT_SOME;
+    ASSERT_LEFT;
+    ASSERT_RIGHT;
+
+    # Syntactic Conveniences
+    DIIP {};
+    DIIIIIIIP {};
+    DUUP;
+    DUUUUUUUP;
+    PAIR;
+    PAPPAIIR;
+    CADR;
+    CAADDR;
+
+    IF_SOME {} {};
+
+    SET_CAR;
+    SET_CDR;
+    SET_CAAADDR;
+
+    MAP_CAR {};
+    MAP_CDR {};
+    MAP_CAAADDR {};
+};

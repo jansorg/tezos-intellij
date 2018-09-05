@@ -31,4 +31,8 @@ public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiT
     return MichelsonPsiUtil.getTypeNameString(this);
   }
 
+  public boolean isComparable() {
+    return MichelsonPsiUtil.isComparable(this);
+  }
+
 }

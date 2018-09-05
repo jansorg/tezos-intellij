@@ -10,4 +10,6 @@ public interface PsiType extends PsiAnnotated {
   @NotNull
   String getTypeNameString();
 
+  boolean isComparable();
+
 }

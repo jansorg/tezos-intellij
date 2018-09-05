@@ -1,0 +1,159 @@
+parameter string;
+return string;
+storage unit;
+code {
+    ### core data types
+    # control structures
+    FAILWITH;
+    IF {} {};
+    LOOP {};
+    LOOP_LEFT {};
+    DIP {};
+    EXEC;
+
+    # Stack operations
+    DROP;
+    DUP;
+    SWAP;
+    PUSH int 123;
+    UNIT;
+    LAMBDA string int {};
+
+    # generic comparision
+    EQ;
+    NEQ;
+    LT;
+    GT;
+    LE;
+    GE;
+
+    # operations on boolean
+    OR;
+    AND;
+    XOR;
+    NOT;
+
+    # Operations on integers and natural numbers
+    NEG;
+    ABS;
+    ADD;
+    SUB;
+    MUL;
+    EDIV;
+    OR;
+    AND;
+    XOR;
+    NOT;
+    LSL;
+    LSR;
+    COMPARE;
+
+    # operations on strings
+    CONCAT;
+    SIZE;
+    SLICE;
+    COMPARE;
+
+    # operations on pairs
+    PAIR;
+    CAR;
+    CDR;
+
+    # operations on sets
+    EMPTY_SET int;
+    MEM;
+    UPDATE;
+    ITER {};
+    SIZE;
+
+    # operations on maps
+    EMPTY_MAP int string;
+    GET;
+    MEM;
+    UPDATE;
+    MAP {};
+    ITER {};
+    SIZE;
+
+    # operations on big_maps
+    GET;
+    MEM;
+    UPDATE;
+
+    # operations on optional values
+    SOME;
+    NONE int;
+    IF_NONE {} {};
+
+    # operations on unions
+    LEFT int;
+    RIGHT string;
+    IF_LEFT {} {};
+    IF_RIGHT {} {};
+
+    # operations on lists
+    CONS;
+    NIL int;
+    IF_CONS {} {};
+    MAP {};
+    SIZE;
+    ITER {};
+
+    ### domain specific data types and operations
+    # domain specific data types
+    NIL timestamp;
+    NIL mutez;
+    NIL (contract string);
+    NIL address;
+    NIL operation;
+    NIL key;
+    NIL key_hash;
+    NIL signature;
+
+    # operations on timestamps
+    ADD;
+    SUB; # works with timestamp:int:other_stack and timestamp:timestamp:other_stack
+    COMPARE;
+
+    # operations on mutez
+    ADD;
+    SUB;
+    MUL;
+    EDIV;
+    COMPARE;
+
+    # operations on contracts
+    CREATE_CONTRACT;
+    CREATE_CONTRACT { storage int; parameter int; code { PUSH string "hello"; }};
+    CREATE_ACCOUNT;
+    TRANSFER_TOKENS;
+    SET_DELEGATE;
+    BALANCE;
+    ADDRESS;
+    CONTRACT int;
+    SOURCE;
+    SENDER;
+    SELF;
+    AMOUNT;
+    IMPLICIT_ACCOUNT;
+
+    # special operations
+    STEPS_TO_QUOTA;
+    NOW;
+
+    # operations on bytes
+    PACK;
+    UNPACK int;
+    CONCAT;
+    SIZE;
+    SLICE;
+    COMPARE;
+
+    # cryptographic primitives
+    HASH_KEY;
+    BLAKE2B;
+    SHA256;
+    SHA512;
+    CHECK_SIGNATURE;
+    COMPARE;
+};

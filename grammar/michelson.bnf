@@ -34,9 +34,7 @@
     extends("data_.+")=data
     extends(".+_type")=type
     extends(".+_section")=section
-    extends("conditional")=instruction
     extends(".+_instruction")=instruction
-    extends(".+_macro")=macro_instruction
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
@@ -50,8 +48,8 @@
         RIGHT_CURLY='}'
         SEMI=';'
 
-        // type names, spec + 'bytes'
-        TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp | bytes'
+        // type names, spec + 'bytes' + 'mutez' + 'address'
+        TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp | bytes | mutez | address'
         TYPE_NAME='regexp:[a-z_]+'
 
         // literal values
@@ -61,7 +59,7 @@
         TAG='regexp:[A-Z][a-z]+'
 
         // macro tokens
-        MACRO_TOKEN='regexp: (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | IFEQ | IFNEQ | IFLT | IFGT | IFLE | IFGE | IFCMPEQ | IFCMPNEQ | IFCMPLT | IFCMPGT | IFCMPLE | IFCMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR | IF_SOME) | DII+P | DUU+P | P(A | I | P)+R | UNP(A | I | R)*R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R'
+        MACRO_TOKEN='regexp: (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | IFEQ | IFNEQ | IFLT | IFGT | IFLE | IFGE | IFCMPEQ | IFCMPNEQ | IFCMPLT | IFCMPGT | IFCMPLE | IFCMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR | IF_SOME) | DII+P | DUU+P | P[AIP]+R | UNP[PAI]+R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R'
 
         // literals
         TRUE='True'
@@ -125,13 +123,13 @@ private simple_instruction ::=
 create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' {pin=2}
 generic_instruction ::= INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data | annotation)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
 // generic parsing of macros, needs further validation in annotator
-macro_instruction ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"] pin=1 recoverWhile=instruction_recover}
+macro_instruction ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
 // uses an external rule because the GrammarKit doesn't seem to handle look-aheads without consuming tokens
 private instruction_recover ::= <<instruction_recover_while>>
 
 //-- types
 
-type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString]}
+type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString isComparable]}
 complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeToken]} //handle annotations at the end?
 private toplevel_type ::= nested_type | generic_type | comparable_type // extension to define the tokens which can be used as arguments to instructions or tags
 nested_type ::= '(' type ')'

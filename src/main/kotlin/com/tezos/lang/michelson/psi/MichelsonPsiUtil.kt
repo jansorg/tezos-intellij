@@ -17,6 +17,9 @@ object MichelsonPsiUtil {
         }
     }
 
+    @JvmStatic
+    fun isComparable(type: PsiType) = type is PsiComparableType
+
     /**
      * Returns the PSIElement which contains the type's name token, which is a leaf in the PSI tree.
      */

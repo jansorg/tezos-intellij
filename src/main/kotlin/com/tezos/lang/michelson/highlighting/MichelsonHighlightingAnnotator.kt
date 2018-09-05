@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.psi.PsiElement
 import com.tezos.lang.michelson.psi.PsiGenericInstruction
 import com.tezos.lang.michelson.psi.PsiGenericType
+import com.tezos.lang.michelson.psi.PsiMacroInstruction
 
 /**
  * Highlighting annotator for Michelson.
@@ -20,30 +21,40 @@ class MichelsonHighlightingAnnotator : Annotator {
         // the lexer takes care to match comparable types
         val TYPES = setOf("key", "unit", "signature", "option", "list", "set", "operation", "contract", "pair", "or", "lambda", "map", "big_map")
 
-        val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "AMOUNT", "AND", "BALANCE", "BLAKE2B", "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT",
-                "CONS", "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP", "EQ", "EXEC", "FAILWITH", "GE", "GET", "GT",
+        val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "ADDRESS", "AMOUNT", "AND", "BALANCE", "BLAKE2B",
+                "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT", "CONS",
+                "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP",
+                "EDIV", "EQ", "EXEC", "FAILWITH", "GE", "GET", "GT",
                 "HASH_KEY", "IMPLICIT_ACCOUNT", "INT", "LE", "LSL", "LSR", "LT", "MEM", "MOD", "MUL", "NEG", "NEQ", "NOT", "NOW",
-                "OR", "PAIR", "RENAME", "SELF", "SENDER", "SET_DELEGATE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
+                "OR", "PACK", "PAIR", "RENAME",
+                "SELF", "SENDER", "SET_DELEGATE", "SHA256", "SHA512", "SIZE", "SLICE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
                 "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR")
 
+        val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "REDUCE")
+
         // instructions which expect one instruction block
-        val INSTRUCTIONS_ONE_BLOCK = setOf("ITER", "LOOP", "LOOP_LEFT", "MAP")
+        val INSTRUCTIONS_ONE_BLOCK = setOf("DIP", "ITER", "LOOP", "LOOP_LEFT", "MAP")
         // instructions which expect two instruction blocks
-        val INSTRUCTIONS_TWO_BLOCKS = setOf("IF", "IF_CONS", "IF_LEFT", "IF_NONE")
+        val INSTRUCTIONS_TWO_BLOCKS = setOf("IF", "IF_CONS", "IF_LEFT", "IF_RIGHT", "IF_NONE")
         // instructions which expect one type as argument
-        val INSTRUCTIONS_ONE_TYPE = setOf("EMPTY_SET", "LEFT", "NIL", "NONE", "RIGHT")
-        /*
-        others: PUSH <type> <data>
-                EMPTY_MAP <comparable type> <type>
-                DIP { <instruction> ... }
-                LAMBDA <type> <type> { <instruction> ... }
-         */
+        val INSTRUCTIONS_ONE_TYPE = setOf("CONTRACT", "EMPTY_SET", "LEFT", "NIL", "NONE", "RIGHT", "UNPACK")
+
+        val MACROS_NO_ARGS = setOf(
+                "CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE",
+                "ASSERT", "ASSERT_EQ", "ASSERT_NEQ", "ASSERT_LT", "ASSERT_LE", "ASSERT_GT",
+                "ASSERT_GE", "ASSERT_CMPEQ", "ASSERT_CMPNEQ", "ASSERT_CMPLT", "ASSERT_CMPLE",
+                "ASSERT_CMPGT", "ASSERT_CMPGE", "ASSERT_NONE", "ASSERT_SOME", "ASSERT_LEFT",
+                "ASSERT_RIGHT")
+        val MACROS_TWO_BLOCKS = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
+                "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
+                "IF_SOME")
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
         when (psi) {
             is PsiGenericType -> annotateGenericType(psi, holder)
             is PsiGenericInstruction -> annotateInstruction(psi, holder)
+            is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
         }
     }
 
@@ -59,8 +70,11 @@ class MichelsonHighlightingAnnotator : Annotator {
         val twoBlocksCommand = name in INSTRUCTIONS_TWO_BLOCKS
         val noArgsCommand = name in INSTRUCTIONS_NO_ARGS
         val oneTypeCommand = INSTRUCTIONS_ONE_TYPE.contains(name)
-        val unknownCommand = !oneBlockCommand && !twoBlocksCommand && !noArgsCommand && !oneTypeCommand
+        val unknownCommand = !oneBlockCommand && !twoBlocksCommand && !noArgsCommand && !oneTypeCommand && name !in QUESTIONABLE_INSTRUCTIONS
+
         val blockCount = blocks.size
+        val typeCount = types.size
+        val dataCount = datas.size
 
         when {
             // commands which expect a single instruction block
@@ -70,25 +84,115 @@ class MichelsonHighlightingAnnotator : Annotator {
             twoBlocksCommand && blockCount != 2 -> holder.createErrorAnnotation(instruction, "Two blocks expected")
 
             // commands which expect no arguments
-            noArgsCommand && (blockCount != 0 || types.size != 0 || datas.size != 0) -> {
+            noArgsCommand && (blockCount != 0 || typeCount != 0 || dataCount != 0) -> {
                 holder.createErrorAnnotation(instruction, "$name doesn't support arguments")
             }
 
             // commands which support a single type argument
-            oneTypeCommand && types.size != 1 -> {
+            oneTypeCommand && typeCount != 1 -> {
                 holder.createErrorAnnotation(instruction, "Type argument expected")
             }
 
+            // PUSH <type> <data>
+            name == "PUSH" -> {
+                when {
+                    typeCount == 0 && dataCount == 0 -> holder.createErrorAnnotation(instruction, "Expected type and data")
+                    typeCount == 0 && dataCount == 1 -> holder.createErrorAnnotation(instruction, "Expected a type")
+                    typeCount == 1 && dataCount == 0 -> holder.createErrorAnnotation(instruction, "Expected data")
+                    typeCount != 1 || dataCount != 1 -> holder.createErrorAnnotation(instruction, "Expected one type and one data element")
+                }
+            }
+
+            // EMPTY_MAP <comparable type> <type>
+            name == "EMPTY_MAP" -> {
+                if (typeCount != 2) {
+                    holder.createErrorAnnotation(instruction, "Expected two types")
+                } else if (!types[0].isComparable) {
+                    holder.createErrorAnnotation(types[0], "Expected a comparable type")
+                }
+            }
+
+            // LAMBDA <type> <type> { <instruction> ... }
+            name == "LAMBDA" -> {
+                if (typeCount != 2) {
+                    holder.createErrorAnnotation(instruction, "Expected two types")
+                } else if (blockCount != 1) {
+                    holder.createErrorAnnotation(instruction, "Expected an instruction block")
+                }
+            }
+
             // unknown commands
-            unknownCommand -> holder.createErrorAnnotation(psi, "Unknown instruction")
+            unknownCommand -> holder.createErrorAnnotation(instruction, "Unknown instruction")
         }
     }
 
     private fun annotateGenericType(element: PsiGenericType, holder: AnnotationHolder) {
         val typeName = element.typeNameString
         if (!TYPES.contains(typeName)) {
-            holder.createErrorAnnotation(element, "Unknown type")
+            holder.createErrorAnnotation(element.typeToken, "Unknown type")
             return
+        }
+    }
+
+    private fun annotateMacroInstruction(psi: PsiMacroInstruction, holder: AnnotationHolder) {
+        val macroName = psi.instructionName ?: throw IllegalStateException("macro name not found")
+        val macroToken = psi.instructionToken ?: throw IllegalStateException("macro token not found")
+
+        val blocks = psi.instructionBlocks
+        val blockCount = blocks.size
+
+        when {
+            macroName in MACROS_NO_ARGS && blockCount != 0 -> {
+                holder.createErrorAnnotation(macroToken, "Macro does not support instructions")
+                // fixme validate annotations
+            }
+
+            macroName in MACROS_TWO_BLOCKS && blockCount != 2 -> {
+                holder.createErrorAnnotation(macroToken, "Two instruction blocks expected")
+                // fixme validate annotations
+            }
+
+            // handle the special macros
+            macroName.startsWith("DII") -> annotateDiipMacro(macroToken, holder, blockCount)
+            macroName.startsWith("DUU") -> annotateDuupMacro(macroToken, holder, blockCount)
+            macroName.startsWith('P') -> annotatePairMacro(macroToken, holder, blockCount)
+            macroName.startsWith('U') -> annotateUnpairMacro(macroToken, holder, blockCount)
+            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateCadrMacro(macroToken, holder, blockCount)
+        }
+    }
+
+    private fun annotateDiipMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
+        when {
+            blockCount == 0 -> holder.createErrorAnnotation(macroToken, "Expected an instruction block")
+            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Only one instruction block supported")
+        }
+    }
+
+    private fun annotateDuupMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
+        when {
+            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
+            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
+        }
+    }
+
+    private fun annotatePairMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
+        when {
+            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
+            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
+        }
+    }
+
+    private fun annotateUnpairMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
+        when {
+            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
+            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
+        }
+    }
+
+    private fun annotateCadrMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
+        when {
+            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
+            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
         }
     }
 }
