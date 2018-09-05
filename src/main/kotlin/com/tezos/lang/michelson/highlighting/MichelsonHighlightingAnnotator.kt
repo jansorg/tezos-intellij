@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.tezos.lang.michelson.psi.PsiGenericInstruction
 import com.tezos.lang.michelson.psi.PsiGenericType
 import com.tezos.lang.michelson.psi.PsiMacroInstruction
+import com.tezos.lang.michelson.psi.PsiType
 
 /**
  * Highlighting annotator for Michelson.
@@ -21,6 +22,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         // the lexer takes care to match comparable types
         val TYPES = setOf("key", "unit", "signature", "option", "list", "set", "operation", "contract", "pair", "or", "lambda", "map", "big_map")
 
+        // instructions which do not support arguments
         val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "ADDRESS", "AMOUNT", "AND", "BALANCE", "BLAKE2B",
                 "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT", "CONS",
                 "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP",
@@ -30,6 +32,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                 "SELF", "SENDER", "SET_DELEGATE", "SHA256", "SHA512", "SIZE", "SLICE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
                 "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR")
 
+        // instructions which are not fully explained in the whitepaper
         val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "REDUCE")
 
         // instructions which expect one instruction block
@@ -39,12 +42,15 @@ class MichelsonHighlightingAnnotator : Annotator {
         // instructions which expect one type as argument
         val INSTRUCTIONS_ONE_TYPE = setOf("CONTRACT", "EMPTY_SET", "LEFT", "NIL", "NONE", "RIGHT", "UNPACK")
 
+        // macros which support no arguments
         val MACROS_NO_ARGS = setOf(
                 "CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE",
                 "ASSERT", "ASSERT_EQ", "ASSERT_NEQ", "ASSERT_LT", "ASSERT_LE", "ASSERT_GT",
                 "ASSERT_GE", "ASSERT_CMPEQ", "ASSERT_CMPNEQ", "ASSERT_CMPLT", "ASSERT_CMPLE",
                 "ASSERT_CMPGT", "ASSERT_CMPGE", "ASSERT_NONE", "ASSERT_SOME", "ASSERT_LEFT",
                 "ASSERT_RIGHT")
+
+        // macros whch expect two instruction blocks
         val MACROS_TWO_BLOCKS = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
                 "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
                 "IF_SOME")
@@ -89,40 +95,42 @@ class MichelsonHighlightingAnnotator : Annotator {
             }
 
             // commands which support a single type argument
-            oneTypeCommand && typeCount != 1 -> {
-                holder.createErrorAnnotation(instruction, "Type argument expected")
-            }
+            oneTypeCommand && typeCount != 1 -> holder.createErrorAnnotation(instruction, "Type argument expected")
 
             // PUSH <type> <data>
-            name == "PUSH" -> {
-                when {
-                    typeCount == 0 && dataCount == 0 -> holder.createErrorAnnotation(instruction, "Expected type and data")
-                    typeCount == 0 && dataCount == 1 -> holder.createErrorAnnotation(instruction, "Expected a type")
-                    typeCount == 1 && dataCount == 0 -> holder.createErrorAnnotation(instruction, "Expected data")
-                    typeCount != 1 || dataCount != 1 -> holder.createErrorAnnotation(instruction, "Expected one type and one data element")
-                }
-            }
+            name == "PUSH" -> annotatePushInstruction(typeCount, dataCount, holder, instruction)
 
             // EMPTY_MAP <comparable type> <type>
-            name == "EMPTY_MAP" -> {
-                if (typeCount != 2) {
-                    holder.createErrorAnnotation(instruction, "Expected two types")
-                } else if (!types[0].isComparable) {
-                    holder.createErrorAnnotation(types[0], "Expected a comparable type")
-                }
-            }
+            name == "EMPTY_MAP" -> annotateEmptyMapInstruction(typeCount, holder, instruction, types)
 
             // LAMBDA <type> <type> { <instruction> ... }
-            name == "LAMBDA" -> {
-                if (typeCount != 2) {
-                    holder.createErrorAnnotation(instruction, "Expected two types")
-                } else if (blockCount != 1) {
-                    holder.createErrorAnnotation(instruction, "Expected an instruction block")
-                }
-            }
+            name == "LAMBDA" -> annotateLambdaInstruction(typeCount, holder, instruction, blockCount)
 
             // unknown commands
             unknownCommand -> holder.createErrorAnnotation(instruction, "Unknown instruction")
+        }
+    }
+
+    private fun annotateLambdaInstruction(typeCount: Int, holder: AnnotationHolder, instruction: PsiElement, blockCount: Int) {
+        when {
+            typeCount != 2 -> holder.createErrorAnnotation(instruction, "Expected two types")
+            blockCount != 1 -> holder.createErrorAnnotation(instruction, "Expected an instruction block")
+        }
+    }
+
+    private fun annotateEmptyMapInstruction(typeCount: Int, holder: AnnotationHolder, instruction: PsiElement, types: List<PsiType>) {
+        when {
+            typeCount != 2 -> holder.createErrorAnnotation(instruction, "Expected two types")
+            !types[0].isComparable -> holder.createErrorAnnotation(types[0], "Expected a comparable type")
+        }
+    }
+
+    private fun annotatePushInstruction(typeCount: Int, dataCount: Int, holder: AnnotationHolder, instruction: PsiElement) {
+        when {
+            typeCount == 0 && dataCount == 0 -> holder.createErrorAnnotation(instruction, "Expected type and data")
+            typeCount == 0 && dataCount == 1 -> holder.createErrorAnnotation(instruction, "Expected a type")
+            typeCount == 1 && dataCount == 0 -> holder.createErrorAnnotation(instruction, "Expected data")
+            typeCount != 1 || dataCount != 1 -> holder.createErrorAnnotation(instruction, "Expected one type and one data element")
         }
     }
 
@@ -180,6 +188,7 @@ class MichelsonHighlightingAnnotator : Annotator {
             blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
             blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
         }
+        //fixme validate token name
     }
 
     private fun annotateUnpairMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
@@ -187,6 +196,7 @@ class MichelsonHighlightingAnnotator : Annotator {
             blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
             blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
         }
+        //fixme validate token name
     }
 
     private fun annotateCadrMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
@@ -194,5 +204,6 @@ class MichelsonHighlightingAnnotator : Annotator {
             blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
             blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
         }
+        //fixme validate token name
     }
 }
