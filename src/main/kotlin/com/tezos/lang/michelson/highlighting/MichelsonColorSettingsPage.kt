@@ -9,6 +9,8 @@ import com.tezos.lang.michelson.ui.Icons
 import javax.swing.Icon
 
 /**
+ * The page for Michelson colors settings in the settings dialog.
+ *
  * @author jansorg
  */
 class MichelsonColorSettingsPage : ColorSettingsPage {
@@ -20,7 +22,10 @@ class MichelsonColorSettingsPage : ColorSettingsPage {
                 "ANNOTATION_FIELD" to MichelsonSyntaxHighlighter.FIELD_ANNOTATION
         )
 
-        // handle token based highlighting
+        /**
+         *  Handle token based highlighting.
+         *  A double slash // creates nested groups of color definitions in the settings UI.
+         */
         private val attrs: Array<AttributesDescriptor> = arrayOf(
                 AttributesDescriptor("General//Line comment", MichelsonSyntaxHighlighter.LINE_COMMENT),
                 AttributesDescriptor("General//Block comment", MichelsonSyntaxHighlighter.BLOCK_COMMENT),

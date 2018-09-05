@@ -7,6 +7,11 @@ import com.tezos.lang.michelson.psi.PsiGenericInstruction
 import com.tezos.lang.michelson.psi.PsiGenericType
 
 /**
+ * Highlighting annotator for Michelson.
+ * This is our main syntax and semantic validation logic apart from the parser.
+ * All syntax errors which are not caught by the parser have to be handled in this annotator. A unit test must be added for each
+ * case.
+ *
  * @author jansorg
  */
 class MichelsonHighlightingAnnotator : Annotator {

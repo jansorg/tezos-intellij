@@ -8,25 +8,22 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonLanguage
-import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
 import com.tezos.lang.michelson.lexer.MichelsonLexer
 import com.tezos.lang.michelson.psi.impl.MichelsonPsiFileImpl
 
 /**
+ * Parser definition for the Michelson file type.
+ *
  * @author jansorg
  */
 class MichelsonParserDefinition : ParserDefinition {
-    companion object {
-        private val STRING_TOKENS = TokenSet.create(STRING)
-        private val WHITESPACE_TOKENS = TokenSet.create(TokenType.WHITE_SPACE)
-        private val COMMENT_TOKENS = TokenSet.create(COMMENT_LINE, COMMENT_MULTI_LINE)
+    private companion object {
+        private val MICHELSON_FILE_ELEMENT_TYPE = IFileElementType("MICHELSON_FILE", MichelsonLanguage);
     }
-
-    private val MICHELSON_FILE_ELEMENT_TYPE = IFileElementType("MICHELSON_FILE", MichelsonLanguage);
 
     override fun createLexer(project: Project): Lexer = MichelsonLexer()
 
@@ -38,11 +35,11 @@ class MichelsonParserDefinition : ParserDefinition {
 
     override fun getFileNodeType(): IFileElementType = MICHELSON_FILE_ELEMENT_TYPE
 
-    override fun getStringLiteralElements(): TokenSet = STRING_TOKENS
+    override fun getStringLiteralElements(): TokenSet = MichelsonElementTokenSets.STRING_TOKENS
 
-    override fun getWhitespaceTokens(): TokenSet = WHITESPACE_TOKENS
+    override fun getWhitespaceTokens(): TokenSet = MichelsonElementTokenSets.WHITESPACE_TOKENS
 
-    override fun getCommentTokens(): TokenSet = COMMENT_TOKENS
+    override fun getCommentTokens(): TokenSet = MichelsonElementTokenSets.COMMENT_TOKENS
 
     override fun createElement(node: ASTNode): PsiElement = throw UnsupportedOperationException()
 }
