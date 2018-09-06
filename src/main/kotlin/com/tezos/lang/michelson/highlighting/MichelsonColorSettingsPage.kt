@@ -44,10 +44,12 @@ class MichelsonColorSettingsPage : ColorSettingsPage {
                 AttributesDescriptor("Instructions//Macro instruction", MichelsonSyntaxHighlighter.MACRO),
 
                 AttributesDescriptor("Literals//Number literal", MichelsonSyntaxHighlighter.INT_LITERAL),
-                AttributesDescriptor("Literals//String literal", MichelsonSyntaxHighlighter.STRING_LITERAL),
                 AttributesDescriptor("Literals//Byte literal", MichelsonSyntaxHighlighter.BYTE_LITERAL),
                 AttributesDescriptor("Literals//Boolean literal", MichelsonSyntaxHighlighter.BOOLEAN_LITERAL),
                 AttributesDescriptor("Literals//Unit literal", MichelsonSyntaxHighlighter.UNIT_LITERAL),
+                AttributesDescriptor("Literals//String literal", MichelsonSyntaxHighlighter.STRING_LITERAL),
+                AttributesDescriptor("Literals//Escape sequence/Valid", MichelsonSyntaxHighlighter.VALID_STRING_ESCAPE),
+                AttributesDescriptor("Literals//Escape sequence/Invalid", MichelsonSyntaxHighlighter.ILLEGAL_STRING_ESCAPE),
 
                 AttributesDescriptor("Misc//Semicolon", MichelsonSyntaxHighlighter.SEMI),
                 AttributesDescriptor("Misc//Parentheses", MichelsonSyntaxHighlighter.PAREN),
@@ -76,6 +78,7 @@ class MichelsonColorSettingsPage : ColorSettingsPage {
                                 (contract <ANNOTATION_FIELD>%over_key unit</ANNOTATION_FIELD>))
                           (pair (nat <ANNOTATION_TYPE>:rain</ANNOTATION_TYPE> <ANNOTATION_FIELD>%rain_level</ANNOTATION_FIELD>) (key <ANNOTATION_FIELD>%weather_service_key</ANNOTATION_FIELD>)));
             code { DUP; DUP;
+                   PUSH string "string\nvalue\nwith invalid escapes: \f\o\o"; DROP;
                    CAR; MAP_CDR{PACK ; BLAKE2B};
                    SWAP; CDDDR <ANNOTATION_FIELD>%weather_service_key</ANNOTATION_FIELD>;
                    DIP {UNPAIR} ; CHECK_SIGNATURE @sigok; # Check if the data has been correctly signed

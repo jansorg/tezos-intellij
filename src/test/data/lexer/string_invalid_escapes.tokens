@@ -1,0 +1,66 @@
+[0 : 9] SECTION_NAME
+parameter
+-----
+[10 : 14] TYPE_NAME
+unit
+-----
+[14 : 15] ;
+;
+-----
+[16 : 23] SECTION_NAME
+storage
+-----
+[24 : 28] TYPE_NAME
+unit
+-----
+[28 : 29] ;
+;
+-----
+[30 : 34] SECTION_NAME
+code
+-----
+[35 : 36] {
+{
+-----
+[41 : 45] INSTRUCTION_TOKEN
+PUSH
+-----
+[46 : 52] TYPE_NAME_COMPARABLE
+string
+-----
+[53 : 54] "
+"
+-----
+[54 : 56] STRING_ESCAPE_INVALID
+\q
+-----
+[56 : 58] STRING_ESCAPE_INVALID
+\w
+-----
+[58 : 60] STRING_ESCAPE_INVALID
+\e
+-----
+[60 : 62] STRING_ESCAPE_INVALID
+\a
+-----
+[62 : 64] STRING_ESCAPE_INVALID
+\s
+-----
+[64 : 66] STRING_ESCAPE_INVALID
+\z
+-----
+[66 : 68] STRING_ESCAPE_INVALID
+\x
+-----
+[68 : 70] STRING_ESCAPE_INVALID
+\&
+-----
+[70 : 71] "
+"
+-----
+[71 : 72] ;
+;
+-----
+[73 : 74] }
+}
+-----

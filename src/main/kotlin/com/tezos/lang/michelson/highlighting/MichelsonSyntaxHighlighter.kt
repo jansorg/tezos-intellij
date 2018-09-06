@@ -36,6 +36,8 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         // literal
         val INT_LITERAL = TextAttributesKey.createTextAttributesKey("MI.INT", DefaultLanguageHighlighterColors.NUMBER)
         val STRING_LITERAL = TextAttributesKey.createTextAttributesKey("MI.STRING", DefaultLanguageHighlighterColors.STRING)
+        val VALID_STRING_ESCAPE = TextAttributesKey.createTextAttributesKey("MI.STRING_ESCAPE_VALID", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
+        val ILLEGAL_STRING_ESCAPE = TextAttributesKey.createTextAttributesKey("MI.STRING_ESCAPE_INVALID", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
         val BYTE_LITERAL = TextAttributesKey.createTextAttributesKey("MI.BYTE", DefaultLanguageHighlighterColors.CONSTANT)
         val BOOLEAN_LITERAL = TextAttributesKey.createTextAttributesKey("MI.BOOL_LITERAL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
         val UNIT_LITERAL = TextAttributesKey.createTextAttributesKey("MI.UNIT_LITERAL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
@@ -67,8 +69,11 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
 
             keys.put(MichelsonTypes.INT, INT_LITERAL)
             keys.put(MichelsonTypes.BYTE, BYTE_LITERAL)
-            keys.put(MichelsonTypes.STRING, STRING_LITERAL)
             keys.put(MichelsonTypes.UNIT, UNIT_LITERAL)
+            keys.put(MichelsonTypes.QUOTE, STRING_LITERAL)
+            keys.put(MichelsonTypes.STRING_CONTENT, STRING_LITERAL)
+            keys.put(MichelsonTypes.STRING_ESCAPE, VALID_STRING_ESCAPE)
+            keys.put(MichelsonTypes.STRING_ESCAPE_INVALID, ILLEGAL_STRING_ESCAPE)
             fillMap(keys, MichelsonElementTokenSets.BOOLEAN, BOOLEAN_LITERAL)
 
             keys.put(MichelsonTypes.SEMI, SEMI)

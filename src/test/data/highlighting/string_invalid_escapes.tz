@@ -1,0 +1,5 @@
+parameter unit;
+storage unit;
+code {
+    PUSH string "<error descr="Illegal escape character \q">\q</error><error descr="Illegal escape character \w">\w</error><error descr="Illegal escape character \e">\e</error><error descr="Illegal escape character \a">\a</error><error descr="Illegal escape character \s">\s</error><error descr="Illegal escape character \z">\z</error><error descr="Illegal escape character \x">\x</error><error descr="Illegal escape character \&">\&</error>";
+}

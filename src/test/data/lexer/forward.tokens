@@ -298,8 +298,14 @@ PUSH
 [584 : 590] TYPE_NAME_COMPARABLE
 string
 -----
-[591 : 598] STRING
-"buyer"
+[591 : 592] "
+"
+-----
+[592 : 597] STRING_CONTENT
+buyer
+-----
+[597 : 598] "
+"
 -----
 [599 : 600] ;
 ;
@@ -472,8 +478,14 @@ PUSH
 [1094 : 1100] TYPE_NAME_COMPARABLE
 string
 -----
-[1101 : 1109] STRING
-"seller"
+[1101 : 1102] "
+"
+-----
+[1102 : 1108] STRING_CONTENT
+seller
+-----
+[1108 : 1109] "
+"
 -----
 [1110 : 1111] ;
 ;
@@ -1243,8 +1255,14 @@ PUSH
 [3305 : 3311] TYPE_NAME_COMPARABLE
 string
 -----
-[3312 : 3319] STRING
-"buyer"
+[3312 : 3313] "
+"
+-----
+[3313 : 3318] STRING_CONTENT
+buyer
+-----
+[3318 : 3319] "
+"
 -----
 [3320 : 3321] ;
 ;

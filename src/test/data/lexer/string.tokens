@@ -1,0 +1,117 @@
+[0 : 9] SECTION_NAME
+parameter
+-----
+[10 : 14] TYPE_NAME
+unit
+-----
+[14 : 15] ;
+;
+-----
+[16 : 23] SECTION_NAME
+storage
+-----
+[24 : 28] TYPE_NAME
+unit
+-----
+[28 : 29] ;
+;
+-----
+[30 : 34] SECTION_NAME
+code
+-----
+[35 : 36] {
+{
+-----
+[41 : 45] INSTRUCTION_TOKEN
+PUSH
+-----
+[46 : 52] TYPE_NAME_COMPARABLE
+string
+-----
+[53 : 54] "
+"
+-----
+[54 : 55] "
+"
+-----
+[55 : 56] ;
+;
+-----
+[61 : 65] INSTRUCTION_TOKEN
+PUSH
+-----
+[66 : 72] TYPE_NAME_COMPARABLE
+string
+-----
+[73 : 74] "
+"
+-----
+[74 : 89] STRING_CONTENT
+my string value
+-----
+[89 : 90] "
+"
+-----
+[90 : 91] ;
+;
+-----
+[96 : 100] INSTRUCTION_TOKEN
+PUSH
+-----
+[101 : 107] TYPE_NAME_COMPARABLE
+string
+-----
+[108 : 109] "
+"
+-----
+[109 : 111] STRING_ESCAPE
+\"
+-----
+[111 : 112] "
+"
+-----
+[112 : 113] ;
+;
+-----
+[118 : 122] INSTRUCTION_TOKEN
+PUSH
+-----
+[123 : 129] TYPE_NAME_COMPARABLE
+string
+-----
+[130 : 131] "
+"
+-----
+[131 : 140] STRING_CONTENT
+my string
+-----
+[140 : 142] STRING_ESCAPE
+\n
+-----
+[142 : 144] STRING_ESCAPE
+\t
+-----
+[144 : 146] STRING_ESCAPE
+\b
+-----
+[146 : 148] STRING_ESCAPE
+\r
+-----
+[148 : 150] STRING_ESCAPE
+\\
+-----
+[150 : 152] STRING_ESCAPE
+\"
+-----
+[152 : 159] STRING_CONTENT
+ value!
+-----
+[159 : 160] "
+"
+-----
+[160 : 161] ;
+;
+-----
+[162 : 163] }
+}
+-----

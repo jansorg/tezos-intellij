@@ -10,7 +10,4 @@ public interface PsiLiteralData extends PsiData {
   @Nullable
   PsiElement getInt();
 
-  @Nullable
-  PsiElement getString();
-
 }

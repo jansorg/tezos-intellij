@@ -1,0 +1,8 @@
+parameter unit;
+storage unit;
+code {
+    PUSH string "";
+    PUSH string "my string value";
+    PUSH string "\"";
+    PUSH string "my string\n\t\b\r\\\" value!";
+}

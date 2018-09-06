@@ -11,7 +11,7 @@ import com.tezos.lang.michelson.MichelsonTypes
 object MichelsonElementTokenSets {
     val WHITESPACE_TOKENS = TokenSet.create(TokenType.WHITE_SPACE)
 
-    val STRING_TOKENS = TokenSet.create(MichelsonTypes.STRING)
+    val STRING_TOKENS = TokenSet.create(MichelsonTypes.STRING_CONTENT, MichelsonTypes.STRING_ESCAPE, MichelsonTypes.STRING_ESCAPE_INVALID)
 
     val COMMENT_TOKENS = TokenSet.create(
             MichelsonTypes.COMMENT_LINE,

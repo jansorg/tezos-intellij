@@ -3,6 +3,9 @@ package com.tezos.lang.michelson.highlighting
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
+import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.psi.PsiGenericInstruction
 import com.tezos.lang.michelson.psi.PsiGenericType
 import com.tezos.lang.michelson.psi.PsiMacroInstruction
@@ -18,6 +21,8 @@ import com.tezos.lang.michelson.psi.PsiType
  */
 class MichelsonHighlightingAnnotator : Annotator {
     private companion object {
+        val LEAF_TOKENS = TokenSet.create(MichelsonTypes.STRING_ESCAPE_INVALID)
+
         // the supported generic types in the Michelson language, doesn't contain the comparable types.
         // the lexer takes care to match comparable types
         val TYPES = setOf("key", "unit", "signature", "option", "list", "set", "operation", "contract", "pair", "or", "lambda", "map", "big_map")
@@ -57,10 +62,20 @@ class MichelsonHighlightingAnnotator : Annotator {
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
-        when (psi) {
-            is PsiGenericType -> annotateGenericType(psi, holder)
-            is PsiGenericInstruction -> annotateInstruction(psi, holder)
-            is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
+        val nodeType = psi.node.elementType
+        when {
+            LEAF_TOKENS.contains(nodeType) -> annotateLeafElement(psi, nodeType, holder)
+            else -> when (psi) {
+                is PsiGenericType -> annotateGenericType(psi, holder)
+                is PsiGenericInstruction -> annotateInstruction(psi, holder)
+                is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
+            }
+        }
+    }
+
+    private fun annotateLeafElement(psi: PsiElement, nodeType: IElementType, holder: AnnotationHolder) {
+        when (nodeType) {
+            MichelsonTypes.STRING_ESCAPE_INVALID -> holder.createErrorAnnotation(psi, "Illegal escape character ${psi.text}")
         }
     }
 

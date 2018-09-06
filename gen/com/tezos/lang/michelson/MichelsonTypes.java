@@ -32,6 +32,7 @@ public interface MichelsonTypes {
   IElementType RETURN_SECTION = new MichelsonCompositeElementType("RETURN_SECTION");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
   IElementType STORAGE_SECTION = new MichelsonCompositeElementType("STORAGE_SECTION");
+  IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
 
   IElementType ANNOTATION_TOKEN = new MichelsonElementType("ANNOTATION_TOKEN");
@@ -45,11 +46,14 @@ public interface MichelsonTypes {
   IElementType LEFT_PAREN = new MichelsonElementType("(");
   IElementType MACRO_TOKEN = new MichelsonElementType("MACRO_TOKEN");
   IElementType NONE = new MichelsonElementType("None");
+  IElementType QUOTE = new MichelsonElementType("\"");
   IElementType RIGHT_CURLY = new MichelsonElementType("}");
   IElementType RIGHT_PAREN = new MichelsonElementType(")");
   IElementType SECTION_NAME = new MichelsonElementType("SECTION_NAME");
   IElementType SEMI = new MichelsonElementType(";");
-  IElementType STRING = new MichelsonElementType("STRING");
+  IElementType STRING_CONTENT = new MichelsonElementType("STRING_CONTENT");
+  IElementType STRING_ESCAPE = new MichelsonElementType("STRING_ESCAPE");
+  IElementType STRING_ESCAPE_INVALID = new MichelsonElementType("STRING_ESCAPE_INVALID");
   IElementType TAG = new MichelsonElementType("TAG");
   IElementType TRUE = new MichelsonElementType("True");
   IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
@@ -115,6 +119,9 @@ public interface MichelsonTypes {
       }
       else if (type == STORAGE_SECTION) {
         return new PsiStorageSectionImpl(type);
+      }
+      else if (type == STRING_LITERAL) {
+        return new PsiStringLiteralImpl(type);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

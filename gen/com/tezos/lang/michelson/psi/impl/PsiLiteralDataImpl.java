@@ -32,10 +32,4 @@ public class PsiLiteralDataImpl extends PsiDataImpl implements PsiLiteralData {
     return findPsiChildByType(INT);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getString() {
-    return findPsiChildByType(STRING);
-  }
-
 }
