@@ -27,14 +27,25 @@
 
         <!--Highlighting and basic validation-->
         <colorSettingsPage implementation="com.tezos.lang.michelson.highlighting.MichelsonColorSettingsPage"/>
+        <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonSyntaxHighlighterFactory"/>
         <additionalTextAttributes scheme="Default" file="colors/michelson_default.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colors/michelson_darcula.xml"/>
         <annotator language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonHighlightingAnnotator"/>
 
-        <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonSyntaxHighlighterFactory"/>
+        <!-- basic features -->
+        <internalFileTemplate name="Michelson File" />
+        <internalFileTemplate name="Michelson Contract" />
+
+        <!-- inspections -->
+
+        <!-- intentions -->
     </extensions>
     <!-- @formatter:on -->
 
     <actions>
+        <group id="tezos.NewMichelson" text="Michelson">
+            <action id="tezos.NewMichelsonFile" class="com.tezos.lang.michelson.actions.CreateMichelsonFileAction"/>
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
+        </group>
     </actions>
 </idea-plugin>
