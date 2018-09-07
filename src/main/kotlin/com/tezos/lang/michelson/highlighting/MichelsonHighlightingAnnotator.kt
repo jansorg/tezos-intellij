@@ -87,7 +87,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         // annotation highlighting
         when (psi) {
-            is PsiType -> annotateTypeAnnotations(psi, holder)
+            is PsiType -> annotateAnnotationsOfType(psi, holder)
             is PsiGenericInstruction -> annotateInstructionAnnotations(psi, holder)
             //fixme handle contract instruction
             is PsiMacroInstruction -> annotateMacroAnnotations(psi, holder)
@@ -104,18 +104,23 @@ class MichelsonHighlightingAnnotator : Annotator {
         val annotationCount = annotations.size
 
         when {
+            // mark annotations on instructions which do not support them
             instructionName in INSTRUCTIONS_NO_ANNOTATION && annotationCount > 0 -> {
                 for (annotation in annotations) {
                     holder.createErrorAnnotation(annotation, "Unexpected annotation")
                 }
             }
 
-            instructionName in INSTRUCTIONS_ONE_VAR_ANNOTATION && annotationCount > 0 -> {
+            // mark 2nd, 3rd, ... var annotations
+            // mark all other annotations (field and type)
+            (instructionName in INSTRUCTIONS_ONE_VAR_ANNOTATION || instructionName in INSTRUCTIONS_TWO_VAR_ANNOTATIONS) && annotationCount > 0 -> {
+                val maxVarAnnotations = if (instructionName in INSTRUCTIONS_TWO_VAR_ANNOTATIONS) 2 else 1
                 var varAnnotations = 0
                 for (a in annotations) {
                     when {
                         a.isVariableAnnotation -> when {
-                            varAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one variable annotation supported")
+                            maxVarAnnotations == 1 && varAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one variable annotation supported")
+                            varAnnotations >= maxVarAnnotations -> holder.createErrorAnnotation(a, "Only $maxVarAnnotations variable annotations supported")
                             else -> varAnnotations++
                         }
                         else -> holder.createErrorAnnotation(a, "Unsupported annotation")
@@ -128,7 +133,24 @@ class MichelsonHighlightingAnnotator : Annotator {
     /**
      * Annotations illegal annotations used on a PsiType.
      */
-    private fun annotateTypeAnnotations(psi: PsiType, holder: AnnotationHolder) {
+    private fun annotateAnnotationsOfType(psi: PsiType, holder: AnnotationHolder) {
+        val annotations = psi.annotations
+        val annotationCount = annotations.size
+        var typeAnnotations = 0
+
+        when {
+            annotationCount > 0 -> {
+                for (a in annotations) {
+                    when {
+                        a.isTypeAnnotation -> when {
+                            typeAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one type annotation supported")
+                            else -> typeAnnotations++
+                        }
+                        else -> holder.createErrorAnnotation(a, "Unsupported annotation")
+                    }
+                }
+            }
+        }
     }
 
     private fun annotateMacroAnnotations(psi: PsiMacroInstruction, holder: AnnotationHolder) {

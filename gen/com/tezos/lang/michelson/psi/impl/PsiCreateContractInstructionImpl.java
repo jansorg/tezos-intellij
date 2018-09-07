@@ -11,7 +11,7 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiCreateContractInstructionImpl extends PsiInstructionImpl implements PsiCreateContractInstruction {
+public class PsiCreateContractInstructionImpl extends PsiGenericInstructionImpl implements PsiCreateContractInstruction {
 
   public PsiCreateContractInstructionImpl(@NotNull IElementType type) {
     super(type);

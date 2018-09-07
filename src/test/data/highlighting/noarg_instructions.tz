@@ -15,8 +15,6 @@ code {
     <error descr="COMPARE doesn't support arguments">COMPARE</error> "invalid arg" 123;
     <error descr="CONCAT doesn't support arguments">CONCAT</error> "invalid arg" 123;
     <error descr="CONS doesn't support arguments">CONS</error> "invalid arg" 123 ;
-    <error descr="CREATE_ACCOUNT doesn't support arguments">CREATE_ACCOUNT</error> "invalid arg" 123;
-    <error descr="CREATE_CONTRACT doesn't support arguments">CREATE_CONTRACT</error> "invalid arg" 123;
     <error descr="DIV doesn't support arguments">DIV</error> "invalid arg" 123;
     <error descr="DROP doesn't support arguments">DROP</error> "invalid arg" 123 ;
     <error descr="DUP doesn't support arguments">DUP</error> "invalid arg" 123;
@@ -70,7 +68,8 @@ code {
     CONCAT;
     CONS ;
     CREATE_ACCOUNT;
-    CREATE_CONTRACT;
+    CREATE_CONTRACT ;
+    CREATE_CONTRACT { parameter unit; storage unit; code {} };
     DIV;
     DROP ;
     DUP;

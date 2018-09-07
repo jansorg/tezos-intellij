@@ -1,0 +1,32 @@
+parameter unit;
+storage unit;
+code
+  {
+    # non-var annotations are unsupported
+    CREATE_ACCOUNT <error descr="Unsupported annotation">:</error> ;
+    CREATE_ACCOUNT <error descr="Unsupported annotation">:a</error> ;
+    CREATE_ACCOUNT <error descr="Unsupported annotation">:a</error> <error descr="Unsupported annotation">%</error> ;
+    CREATE_ACCOUNT <error descr="Unsupported annotation">:a</error> <error descr="Unsupported annotation">%b</error> ;
+    CREATE_CONTRACT <error descr="Unsupported annotation">:a</error> { parameter unit; storage unit; code {} } ;
+
+    # 3 var annotations are invalid
+    CREATE_ACCOUNT @a @b <error descr="Only 2 variable annotations supported">@</error> ;
+    CREATE_ACCOUNT @a @b <error descr="Only 2 variable annotations supported">@c</error> ;
+    CREATE_CONTRACT @a @b <error descr="Only 2 variable annotations supported">@c</error> { parameter unit; storage unit; code {} } ;
+
+    # 2 var annotations are valid
+    CREATE_ACCOUNT @ @ ;
+    CREATE_ACCOUNT @a @ ;
+    CREATE_ACCOUNT @a @b ;
+    CREATE_CONTRACT @a @b { parameter unit; storage unit; code {} } ;
+
+    # 1 var annotation is valid
+    CREATE_ACCOUNT @a ;
+    CREATE_CONTRACT @a { parameter unit; storage unit; code {} } ;
+    CREATE_CONTRACT { parameter unit; storage unit; code {} } ;
+
+    # no var annotations are valid
+    CREATE_ACCOUNT ;
+    CREATE_CONTRACT ;
+    CREATE_CONTRACT { parameter unit; storage unit; code {} } ;
+  }

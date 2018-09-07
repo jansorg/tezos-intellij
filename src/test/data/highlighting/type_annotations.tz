@@ -1,0 +1,24 @@
+storage unit;
+parameter unit;
+code
+  {
+    # two type annotations must be invalid
+    PUSH (int :a <error descr="Only one type annotation supported">:b</error>) 123 ;
+    PUSH (pair :a <error descr="Only one type annotation supported">:b</error> int int) (Pair 123 123) ;
+    PUSH (pair :a int int :c) (Pair 123 123) ;
+    PUSH (pair :a (int :a <error descr="Only one type annotation supported">:b</error>) (int :a)) (Pair 123 123) ;
+    PUSH (pair :a (int :a <error descr="Only one type annotation supported">:b</error>) (int :a <error descr="Only one type annotation supported">:b</error>)) (Pair 123 123) ;
+
+    # non-type annotations must be highlighted
+    PUSH (int <error descr="Unsupported annotation">@a</error>) 123 ;
+    PUSH (int <error descr="Unsupported annotation">%a</error>) 123 ;
+    PUSH (int :a  <error descr="Unsupported annotation">@a</error> <error descr="Unsupported annotation">%a</error>)  123 ;
+
+    # valid
+    PUSH (int) 123 ;
+    PUSH (int :a) 123 ;
+    PUSH (string :a) "hello" ;
+
+    PUSH (pair :a int int) (Pair 123 123) ;
+    PUSH (pair :a (int :a) (int :a)) (Pair 123 123) ;
+  }

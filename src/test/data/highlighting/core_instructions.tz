@@ -123,7 +123,7 @@ code {
     COMPARE;
 
     # operations on contracts
-    CREATE_CONTRACT;
+    CREATE_CONTRACT ;
     CREATE_CONTRACT { storage int; parameter int; code { PUSH string "hello"; }};
     CREATE_ACCOUNT;
     TRANSFER_TOKENS;

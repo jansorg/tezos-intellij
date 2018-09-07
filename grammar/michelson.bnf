@@ -128,10 +128,10 @@ private simple_instruction ::=
   | macro_instruction
 
 // types must be validated by annotator, method "annotations" implements interface PsiAnnotated
-create_contract_instruction ::= 'CREATE_CONTRACT' '{' contract '}' {pin=2}
-generic_instruction ::= INSTRUCTION_TOKEN (block_instruction | toplevel_type | toplevel_data | annotation)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
+generic_instruction ::= INSTRUCTION_TOKEN annotation* (block_instruction | toplevel_type | toplevel_data)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
+create_contract_instruction ::= 'CREATE_CONTRACT' annotation* ('{' contract '}')? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"] extends=generic_instruction}
 // generic parsing of macros, needs further validation in annotator
-macro_instruction ::= MACRO_TOKEN (annotation | block_instruction)* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
+macro_instruction ::= MACRO_TOKEN annotation* block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
 // uses an external rule because the GrammarKit doesn't seem to handle look-aheads without consuming tokens
 private instruction_recover ::= <<instruction_recover_while>>
 

@@ -31,7 +31,7 @@ public class PsiVisitor<R> extends PsiElementVisitor {
   }
 
   public R visitCreateContractInstruction(@NotNull PsiCreateContractInstruction o) {
-    return visitInstruction(o);
+    return visitGenericInstruction(o);
   }
 
   public R visitData(@NotNull PsiData o) {
