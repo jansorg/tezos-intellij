@@ -38,7 +38,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                 "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR")
 
         // instructions which are not fully explained in the whitepaper
-        val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "REDUCE")
+        val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT", "REDUCE")
 
         // instructions which expect one instruction block
         val INSTRUCTIONS_ONE_BLOCK = setOf("DIP", "ITER", "LOOP", "LOOP_LEFT", "MAP")
@@ -59,18 +59,80 @@ class MichelsonHighlightingAnnotator : Annotator {
         val MACROS_TWO_BLOCKS = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
                 "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
                 "IF_SOME")
+
+        val INSTRUCTIONS_NO_ANNOTATION = setOf("DROP", "SWAP", "IF_NONE", "IF_LEFT", "IF_CONS", "ITER", "IF", "LOOP", "LOOP_LEFT", "DIP", "FAILWITH")
+
+        val INSTRUCTIONS_ONE_VAR_ANNOTATION = setOf("DUP", "PUSH", "UNIT", "SOME", "NONE", "PAIR", "CAR", "CDR", "LEFT", "RIGHT", "NIL", "CONS", "SIZE",
+                "MAP", "MEM", "EMPTY_SET", "EMPTY_MAP", "UPDATE", "GET", "LAMBDA", "EXEC", "ADD", "SUB", "CONCAT", "MUL", "OR", "AND", "XOR", "NOT",
+                "ABS", "IS_NAT", "INT", "NEG", "EDIV", "LSL", "LSR", "COMPARE", "EQ", "NEQ", "LT", "GT", "LE", "GE",
+                "ADDRESS", "CONTRACT", "SET_DELEGATE", "IMPLICIT_ACCOUNT", "NOW", "AMOUNT", "BALANCE", "HASH_KEY",
+                "CHECK_SIGNATURE", "BLAKE2B", "STEPS_TO_QUOTA", "SOURCE", "SENDER", "SELF", "CAST", "RENAME")
+
+        val INSTRUCTIONS_TWO_VAR_ANNOTATIONS = setOf("CREATE_ACCOUNT", "CREATE_CONTRACT")
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
         val nodeType = psi.node.elementType
+        if (LEAF_TOKENS.contains(nodeType)) {
+            annotateLeafElement(psi, nodeType, holder)
+            return
+        }
+
+        // generic type and instruction highlighting
+        when (psi) {
+            is PsiGenericType -> annotateGenericType(psi, holder)
+            is PsiGenericInstruction -> annotateInstruction(psi, holder)
+            is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
+        }
+
+        // annotation highlighting
+        when (psi) {
+            is PsiType -> annotateTypeAnnotations(psi, holder)
+            is PsiGenericInstruction -> annotateInstructionAnnotations(psi, holder)
+            //fixme handle contract instruction
+            is PsiMacroInstruction -> annotateMacroAnnotations(psi, holder)
+        }
+    }
+
+    /**
+     * Instructions support different numbers of variable annotations, depending on the name.
+     * The spec also states: to improve readability and robustness, instructions CAR and CDR.
+     */
+    private fun annotateInstructionAnnotations(psi: PsiGenericInstruction, holder: AnnotationHolder) {
+        val instructionName = psi.instructionName
+        val annotations = psi.annotations
+        val annotationCount = annotations.size
+
         when {
-            LEAF_TOKENS.contains(nodeType) -> annotateLeafElement(psi, nodeType, holder)
-            else -> when (psi) {
-                is PsiGenericType -> annotateGenericType(psi, holder)
-                is PsiGenericInstruction -> annotateInstruction(psi, holder)
-                is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
+            instructionName in INSTRUCTIONS_NO_ANNOTATION && annotationCount > 0 -> {
+                for (annotation in annotations) {
+                    holder.createErrorAnnotation(annotation, "Unexpected annotation")
+                }
+            }
+
+            instructionName in INSTRUCTIONS_ONE_VAR_ANNOTATION && annotationCount > 0 -> {
+                var varAnnotations = 0
+                for (a in annotations) {
+                    when {
+                        a.isVariableAnnotation -> when {
+                            varAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one variable annotation supported")
+                            else -> varAnnotations++
+                        }
+                        else -> holder.createErrorAnnotation(a, "Unsupported annotation")
+                    }
+                }
             }
         }
+    }
+
+    /**
+     * Annotations illegal annotations used on a PsiType.
+     */
+    private fun annotateTypeAnnotations(psi: PsiType, holder: AnnotationHolder) {
+    }
+
+    private fun annotateMacroAnnotations(psi: PsiMacroInstruction, holder: AnnotationHolder) {
+        // annotate PAIR, UNPAIR, etc.
     }
 
     private fun annotateLeafElement(psi: PsiElement, nodeType: IElementType, holder: AnnotationHolder) {

@@ -48,4 +48,23 @@ object MichelsonPsiUtil {
             else -> psi.firstChild
         }
     }
+
+    @JvmStatic
+    fun getAnnotationType(psi: PsiAnnotation): PsiAnnotationType {
+        return when (psi) {
+            is PsiTypeAnnotation -> PsiAnnotationType.TYPE
+            is PsiVariableAnnotation -> PsiAnnotationType.VARIABLE
+            is PsiFieldAnnotation -> PsiAnnotationType.FIELD
+            else -> throw IllegalStateException("unsupported annotation type ${psi.javaClass.name}")
+        }
+    }
+
+    @JvmStatic
+    fun isTypeAnnotation(psi: PsiAnnotation): Boolean = psi is PsiTypeAnnotation
+
+    @JvmStatic
+    fun isVariableAnnotation(psi: PsiAnnotation): Boolean = psi is PsiVariableAnnotation
+
+    @JvmStatic
+    fun isFieldAnnotation(psi: PsiAnnotation): Boolean = psi is PsiFieldAnnotation
 }

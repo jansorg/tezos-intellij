@@ -19,6 +19,7 @@ public interface MichelsonTypes {
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
+  IElementType FIELD_ANNOTATION = new MichelsonCompositeElementType("FIELD_ANNOTATION");
   IElementType GENERIC_DATA = new MichelsonCompositeElementType("GENERIC_DATA");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
   IElementType GENERIC_TYPE = new MichelsonCompositeElementType("GENERIC_TYPE");
@@ -34,12 +35,14 @@ public interface MichelsonTypes {
   IElementType STORAGE_SECTION = new MichelsonCompositeElementType("STORAGE_SECTION");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
+  IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
+  IElementType VARIABLE_ANNOTATION = new MichelsonCompositeElementType("VARIABLE_ANNOTATION");
 
-  IElementType ANNOTATION_TOKEN = new MichelsonElementType("ANNOTATION_TOKEN");
   IElementType BYTE = new MichelsonElementType("BYTE");
   IElementType COMMENT_LINE = new MichelsonElementType("COMMENT_LINE");
   IElementType COMMENT_MULTI_LINE = new MichelsonElementType("COMMENT_MULTI_LINE");
   IElementType FALSE = new MichelsonElementType("False");
+  IElementType FIELD_ANNOTATION_TOKEN = new MichelsonElementType("FIELD_ANNOTATION_TOKEN");
   IElementType INSTRUCTION_TOKEN = new MichelsonElementType("INSTRUCTION_TOKEN");
   IElementType INT = new MichelsonElementType("INT");
   IElementType LEFT_CURLY = new MichelsonElementType("{");
@@ -56,17 +59,16 @@ public interface MichelsonTypes {
   IElementType STRING_ESCAPE_INVALID = new MichelsonElementType("STRING_ESCAPE_INVALID");
   IElementType TAG = new MichelsonElementType("TAG");
   IElementType TRUE = new MichelsonElementType("True");
+  IElementType TYPE_ANNOTATION_TOKEN = new MichelsonElementType("TYPE_ANNOTATION_TOKEN");
   IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
   IElementType TYPE_NAME_COMPARABLE = new MichelsonElementType("TYPE_NAME_COMPARABLE");
   IElementType UNIT = new MichelsonElementType("Unit");
+  IElementType VAR_ANNOTATION_TOKEN = new MichelsonElementType("VAR_ANNOTATION_TOKEN");
 
   class Factory {
 
     public static CompositePsiElement createElement(IElementType type) {
-       if (type == ANNOTATION) {
-        return new PsiAnnotationImpl(type);
-      }
-      else if (type == BLOCK_INSTRUCTION) {
+       if (type == BLOCK_INSTRUCTION) {
         return new PsiBlockInstructionImpl(type);
       }
       else if (type == CODE_SECTION) {
@@ -86,6 +88,9 @@ public interface MichelsonTypes {
       }
       else if (type == DATA) {
         return new PsiDataImpl(type);
+      }
+      else if (type == FIELD_ANNOTATION) {
+        return new PsiFieldAnnotationImpl(type);
       }
       else if (type == GENERIC_DATA) {
         return new PsiGenericDataImpl(type);
@@ -122,6 +127,12 @@ public interface MichelsonTypes {
       }
       else if (type == STRING_LITERAL) {
         return new PsiStringLiteralImpl(type);
+      }
+      else if (type == TYPE_ANNOTATION) {
+        return new PsiTypeAnnotationImpl(type);
+      }
+      else if (type == VARIABLE_ANNOTATION) {
+        return new PsiVariableAnnotationImpl(type);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

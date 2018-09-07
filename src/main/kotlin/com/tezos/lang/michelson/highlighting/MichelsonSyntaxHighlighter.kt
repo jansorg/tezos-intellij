@@ -64,8 +64,9 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
             keys.put(MichelsonTypes.INSTRUCTION_TOKEN, INSTRUCTION)
             fillMap(keys, MichelsonElementTokenSets.MACROS, MACRO)
 
-            keys.put(MichelsonTypes.ANNOTATION_TOKEN, ANNOTATION)
-            //fixme better handle different types of annotations in annotator
+            keys.put(MichelsonTypes.TYPE_ANNOTATION_TOKEN, TYPE_ANNOTATION)
+            keys.put(MichelsonTypes.VAR_ANNOTATION_TOKEN, VARIABLE_ANNOTATION)
+            keys.put(MichelsonTypes.FIELD_ANNOTATION_TOKEN, FIELD_ANNOTATION)
 
             keys.put(MichelsonTypes.INT, INT_LITERAL)
             keys.put(MichelsonTypes.BYTE, BYTE_LITERAL)

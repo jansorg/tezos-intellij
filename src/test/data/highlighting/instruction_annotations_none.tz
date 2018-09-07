@@ -1,0 +1,82 @@
+parameter unit;
+storage unit;
+code
+  {
+     # instructions which don't support annotations, the type annotations must be highlighted
+     DROP <error descr="Unexpected annotation">:a</error> ;
+     SWAP <error descr="Unexpected annotation">:a</error> ;
+     IF_NONE <error descr="Unexpected annotation">:a</error> {} {};
+     IF_LEFT <error descr="Unexpected annotation">:a</error> {} {};
+     IF_CONS <error descr="Unexpected annotation">:a</error> {} {};
+     ITER <error descr="Unexpected annotation">:a</error> {};
+     IF <error descr="Unexpected annotation">:a</error> {} {};
+     LOOP <error descr="Unexpected annotation">:a</error> {};
+     LOOP_LEFT <error descr="Unexpected annotation">:a</error> {};
+     DIP <error descr="Unexpected annotation">:a</error> {};
+     FAILWITH <error descr="Unexpected annotation">:a</error> ;
+
+     # instructions which don't support annotations, the variable annotations must be highlighted
+     DROP <error descr="Unexpected annotation">@a</error> ;
+     SWAP <error descr="Unexpected annotation">@a</error> ;
+     IF_NONE <error descr="Unexpected annotation">@a</error> {} {};
+     IF_LEFT <error descr="Unexpected annotation">@a</error> {} {};
+     IF_CONS <error descr="Unexpected annotation">@a</error> {} {};
+     ITER <error descr="Unexpected annotation">@a</error> {};
+     IF <error descr="Unexpected annotation">@a</error> {} {};
+     LOOP <error descr="Unexpected annotation">@a</error> {} ;
+     LOOP_LEFT <error descr="Unexpected annotation">@a</error> {} ;
+     DIP <error descr="Unexpected annotation">@a</error> {} ;
+     FAILWITH <error descr="Unexpected annotation">@a</error> ;
+
+     # instructions which don't support annotations, the field annotations must be highlighted
+     DROP <error descr="Unexpected annotation">%a</error> ;
+     SWAP <error descr="Unexpected annotation">%a</error> ;
+     IF_NONE <error descr="Unexpected annotation">%a</error> {} {};
+     IF_LEFT <error descr="Unexpected annotation">%a</error> {} {};
+     IF_CONS <error descr="Unexpected annotation">%a</error> {} {};
+     ITER <error descr="Unexpected annotation">%a</error> {} ;
+     IF <error descr="Unexpected annotation">%a</error> {} {};
+     LOOP <error descr="Unexpected annotation">%a</error> {} ;
+     LOOP_LEFT <error descr="Unexpected annotation">%a</error> {} ;
+     DIP <error descr="Unexpected annotation">%a</error> {} ;
+     FAILWITH <error descr="Unexpected annotation">%a</error> ;
+
+     # instructions which don't support annotations, the field annotations must be highlighted
+     DROP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error>;
+     SWAP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error>;
+     IF_NONE <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} {};
+     IF_LEFT <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} {};
+     IF_CONS <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} {};
+     ITER <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} ;
+     IF <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} {};
+     LOOP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} ;
+     LOOP_LEFT <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} ;
+     DIP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error> {} ;
+     FAILWITH <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> <error descr="Unexpected annotation">:b</error> <error descr="Unexpected annotation">%b</error> <error descr="Unexpected annotation">@b</error>;
+
+     # instructions which don't support annotations, the field annotations must be highlighted
+     DROP <error descr="Unexpected annotation">:a</error> ;
+     SWAP <error descr="Unexpected annotation">:a</error> ;
+     IF_NONE <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> ;
+     IF_LEFT <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> ;
+     IF_CONS <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> ;
+     ITER <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> ;
+     IF <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error> ;
+     LOOP <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error>;
+     LOOP_LEFT <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error>;
+     DIP <error descr="Unexpected annotation">:a</error> {} <error descr="Unexpected annotation">:a</error>;
+     FAILWITH <error descr="Unexpected annotation">:a</error> ;
+
+     # instructions which don't support annotations, no errors must highlighted
+     DROP ;
+     SWAP ;
+     IF_NONE {} {};
+     IF_LEFT {} {};
+     IF_CONS {} {};
+     ITER {} ;
+     IF {} {};
+     LOOP {} ;
+     LOOP_LEFT {} ;
+     DIP {} ;
+     FAILWITH ;
+  }

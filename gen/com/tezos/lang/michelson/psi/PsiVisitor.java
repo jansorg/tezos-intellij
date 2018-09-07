@@ -38,6 +38,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitMichelsonComposite(o);
   }
 
+  public R visitFieldAnnotation(@NotNull PsiFieldAnnotation o) {
+    return visitAnnotation(o);
+  }
+
   public R visitGenericData(@NotNull PsiGenericData o) {
     return visitData(o);
   }
@@ -96,6 +100,14 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitType(@NotNull PsiType o) {
     return visitMichelsonComposite(o);
+  }
+
+  public R visitTypeAnnotation(@NotNull PsiTypeAnnotation o) {
+    return visitAnnotation(o);
+  }
+
+  public R visitVariableAnnotation(@NotNull PsiVariableAnnotation o) {
+    return visitAnnotation(o);
   }
 
   public R visitMichelsonComposite(@NotNull MichelsonComposite o) {

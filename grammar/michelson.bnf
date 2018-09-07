@@ -74,7 +74,10 @@
         // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
-        ANNOTATION_TOKEN='regexp:[@:%](@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?'
+        // the empty group match of the spec is translated into an optional part after the initial char
+        TYPE_ANNOTATION_TOKEN='regexp::(@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?'
+        VAR_ANNOTATION_TOKEN='regexp:@(@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?'
+        FIELD_ANNOTATION_TOKEN='regexp:%(@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?'
 
         COMMENT_LINE='regexp:#.*'
         COMMENT_MULTI_LINE='regexp:/\* ~\*/'
@@ -143,4 +146,7 @@ comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" met
 
 //-- shared rules
 
-annotation ::= ANNOTATION_TOKEN {name="annotation" methods=[token="ANNOTATION_TOKEN"]}
+annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType]}
+type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"] extends=annotation}
+variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"] extends=annotation}
+field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"] extends=annotation}

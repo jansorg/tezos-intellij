@@ -1,0 +1,11 @@
+parameter unit;
+storage (pair :a (int :a) (string :a));
+code
+  {
+    DROP;
+    PUSH @a (int :a) 123;
+    PUSH %a (string :a) "hello";
+    SWAP;
+    PAIR;
+    NIL operation; PAIR;
+  }

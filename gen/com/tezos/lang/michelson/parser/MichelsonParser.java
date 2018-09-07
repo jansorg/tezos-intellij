@@ -47,6 +47,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == DATA) {
       result = data(builder, 0);
     }
+    else if (type == FIELD_ANNOTATION) {
+      result = field_annotation(builder, 0);
+    }
     else if (type == GENERIC_DATA) {
       result = generic_data(builder, 0);
     }
@@ -92,6 +95,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == TYPE) {
       result = type(builder, 0);
     }
+    else if (type == TYPE_ANNOTATION) {
+      result = type_annotation(builder, 0);
+    }
+    else if (type == VARIABLE_ANNOTATION) {
+      result = variable_annotation(builder, 0);
+    }
     else {
       result = parse_root_(type, builder, 0);
     }
@@ -103,6 +112,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
+    create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
     create_token_set_(CODE_SECTION, PARAMETER_SECTION, RETURN_SECTION, SECTION,
       STORAGE_SECTION),
     create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, GENERIC_INSTRUCTION, INSTRUCTION,
@@ -114,13 +124,14 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // ANNOTATION_TOKEN
+  // type_annotation | variable_annotation | field_annotation
   public static boolean annotation(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "annotation")) return false;
-    if (!nextTokenIs(builder, "<annotation>", ANNOTATION_TOKEN)) return false;
     boolean result;
-    Marker marker = enter_section_(builder, level, _NONE_, ANNOTATION, "<annotation>");
-    result = consumeToken(builder, ANNOTATION_TOKEN);
+    Marker marker = enter_section_(builder, level, _COLLAPSE_, ANNOTATION, "<annotation>");
+    result = type_annotation(builder, level + 1);
+    if (!result) result = variable_annotation(builder, level + 1);
+    if (!result) result = field_annotation(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
   }
@@ -420,6 +431,18 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, "Some");
     result = result && toplevel_data(builder, level + 1);
     exit_section_(builder, marker, null, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // FIELD_ANNOTATION_TOKEN
+  public static boolean field_annotation(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "field_annotation")) return false;
+    if (!nextTokenIs(builder, FIELD_ANNOTATION_TOKEN)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, FIELD_ANNOTATION_TOKEN);
+    exit_section_(builder, marker, FIELD_ANNOTATION, result);
     return result;
   }
 
@@ -747,6 +770,30 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = complex_type(builder, level + 1);
     if (!result) result = toplevel_type(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // TYPE_ANNOTATION_TOKEN
+  public static boolean type_annotation(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "type_annotation")) return false;
+    if (!nextTokenIs(builder, TYPE_ANNOTATION_TOKEN)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, TYPE_ANNOTATION_TOKEN);
+    exit_section_(builder, marker, TYPE_ANNOTATION, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // VAR_ANNOTATION_TOKEN
+  public static boolean variable_annotation(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "variable_annotation")) return false;
+    if (!nextTokenIs(builder, VAR_ANNOTATION_TOKEN)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, VAR_ANNOTATION_TOKEN);
+    exit_section_(builder, marker, VARIABLE_ANNOTATION, result);
     return result;
   }
 

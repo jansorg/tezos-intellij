@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiAnnotation extends MichelsonComposite {
-
-  boolean isTypeAnnotation();
-
-  boolean isVariableAnnotation();
-
-  boolean isFieldAnnotation();
+public interface PsiVariableAnnotation extends PsiAnnotation {
 
   @NotNull
-  PsiAnnotationType getAnnotationType();
+  PsiElement getToken();
 
 }

@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implements PsiAnnotation {
+public class PsiFieldAnnotationImpl extends PsiAnnotationImpl implements PsiFieldAnnotation {
 
-  public PsiAnnotationImpl(@NotNull IElementType type) {
+  public PsiFieldAnnotationImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitAnnotation(this);
+    return visitor.visitFieldAnnotation(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -26,21 +26,10 @@ public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implement
     else super.accept(visitor);
   }
 
-  public boolean isTypeAnnotation() {
-    return MichelsonPsiUtil.isTypeAnnotation(this);
-  }
-
-  public boolean isVariableAnnotation() {
-    return MichelsonPsiUtil.isVariableAnnotation(this);
-  }
-
-  public boolean isFieldAnnotation() {
-    return MichelsonPsiUtil.isFieldAnnotation(this);
-  }
-
+  @Override
   @NotNull
-  public PsiAnnotationType getAnnotationType() {
-    return MichelsonPsiUtil.getAnnotationType(this);
+  public PsiElement getToken() {
+    return findPsiChildByType(FIELD_ANNOTATION_TOKEN);
   }
 
 }
