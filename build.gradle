@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id "jacoco"
-    id "org.jetbrains.intellij" version "0.3.6"
+    id "org.jetbrains.intellij" version "0.3.9"
     id "org.jetbrains.grammarkit" version "2018.1.7"
 }
 
@@ -42,7 +42,7 @@ sourceSets {
 
 apply plugin: 'org.jetbrains.intellij'
 intellij {
-    version 'IC-2016.1'
+    version intellij
     pluginName 'tezos'
 
     patchPluginXml {
@@ -52,10 +52,9 @@ intellij {
 }
 
 publishPlugin {
-    username 'your-jetbrains-username'
+    username 'wallaby'
     //add your user's password on the command line using '-Dintellij.publish.password=...'
     password System.properties['intellij.publish.password']
-
     channels 'eap'
 }
 
@@ -120,15 +119,15 @@ test {
     jacoco {
         enabled true
         append false
-        includes["com.*"]
+        includes["com.tezos.*"]
     }
 
     testLogging {
         events = [
-                org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-                org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-                org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
         ]
     }
 }
