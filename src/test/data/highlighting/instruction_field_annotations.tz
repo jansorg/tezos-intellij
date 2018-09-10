@@ -1,0 +1,36 @@
+storage unit;
+parameter unit;
+code
+  {
+    # invalid
+    PAIR %a %b %c; DROP;
+
+    LEFT %a %b <error descr="Only 2 field annotations supported">%c</error> int; DROP;
+
+    RIGHT %a %b <error descr="Only 2 field annotations supported">%c</error> int; DROP;
+
+    NONE %a <error descr="Only one field annotation supported">%b</error> int; DROP;
+
+    NONE %a <error descr="Only one field annotation supported">%b</error> <error descr="Only one field annotation supported">%d</error> int; DROP;
+
+    SOME %a <error descr="Only one field annotation supported">%b</error>; DROP;
+
+    # valid
+    PUSH int 123; LEFT %a int; DROP;
+
+    PUSH int 123; LEFT %a %b int; DROP;
+
+    PUSH int 123; RIGHT %a int; DROP;
+
+    PUSH int 123; RIGHT %a %b int; DROP;
+
+    PUSH int 123; RIGHT %a %b int; DROP;
+
+    NONE %a int ; DROP;
+
+    PUSH int 123 ; SOME %a ; DROP;
+
+    CDR;
+    NIL operation;
+    PAIR;
+  }

@@ -1,0 +1,40 @@
+storage unit;
+parameter unit;
+code
+  {
+    # invalid
+    PUSH <error descr="Unsupported annotation">%a</error> int 123; DROP;
+
+    PUSH (int <error descr="Unsupported annotation">%a</error>) 123; DROP;
+
+    PUSH (pair :a (string %b <error descr="Only one field annotation supported">%c</error>) int) (Pair "abc" 123); DROP;
+
+    PUSH (pair :a (string) (int %b <error descr="Only one field annotation supported">%c</error>)) (Pair "abc" 123); DROP;
+
+    PUSH (option %a (string %b <error descr="Only one field annotation supported">%c</error>)) (Some "abc"); DROP;
+
+    PUSH (option :a (string %b <error descr="Only one field annotation supported">%c</error>)) (Some "abc"); DROP;
+
+    PUSH (option <error descr="Unsupported annotation">%a</error> (string %b)) (None); DROP;
+
+    PUSH (option :a (string %b <error descr="Only one field annotation supported">%c</error>)) (None); DROP;
+
+    PUSH (or :a (string %b) (int %c)) (Left "abc"); DROP;
+
+    # valid
+    PUSH (pair :a (string %b) (int %c)) (Pair "abc" 123); DROP;
+
+    PUSH (option :a (string %b)) (Some "abc"); DROP;
+
+    PUSH (option :a (string %b)) (None); DROP;
+
+    PUSH (or :a (string %b) (int %c)) (Left "abc"); DROP;
+
+    PAIR %a; DROP;
+
+    PAIR %a %b; DROP;
+
+    CDR;
+    NIL operation;
+    PAIR;
+  }

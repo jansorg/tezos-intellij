@@ -16,4 +16,13 @@ public interface PsiAnnotation extends MichelsonComposite {
   @NotNull
   PsiAnnotationType getAnnotationType();
 
+  @Nullable
+  PsiInstruction findParentInstruction();
+
+  @Nullable
+  PsiType findParentType();
+
+  @Nullable
+  PsiData findParentData();
+
 }

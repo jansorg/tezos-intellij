@@ -71,12 +71,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == MAP_ENTRY_DATA) {
       result = map_entry_data(builder, 0);
     }
-    else if (type == NESTED_DATA) {
-      result = nested_data(builder, 0);
-    }
-    else if (type == NESTED_TYPE) {
-      result = nested_type(builder, 0);
-    }
     else if (type == PARAMETER_SECTION) {
       result = parameter_section(builder, 0);
     }
@@ -112,15 +106,14 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
+    create_token_set_(COMPARABLE_TYPE, COMPLEX_TYPE, GENERIC_TYPE, TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
     create_token_set_(CODE_SECTION, PARAMETER_SECTION, RETURN_SECTION, SECTION,
       STORAGE_SECTION),
+    create_token_set_(DATA, GENERIC_DATA, LITERAL_DATA, MAP_ENTRY_DATA,
+      STRING_LITERAL),
     create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, GENERIC_INSTRUCTION, INSTRUCTION,
       MACRO_INSTRUCTION),
-    create_token_set_(COMPARABLE_TYPE, COMPLEX_TYPE, GENERIC_TYPE, NESTED_TYPE,
-      TYPE),
-    create_token_set_(DATA, GENERIC_DATA, LITERAL_DATA, MAP_ENTRY_DATA,
-      NESTED_DATA, STRING_LITERAL),
   };
 
   /* ********************************************************** */
@@ -646,7 +639,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // '(' data ')'
-  public static boolean nested_data(PsiBuilder builder, int level) {
+  static boolean nested_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "nested_data")) return false;
     if (!nextTokenIs(builder, LEFT_PAREN)) return false;
     boolean result;
@@ -654,13 +647,13 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, LEFT_PAREN);
     result = result && data(builder, level + 1);
     result = result && consumeToken(builder, RIGHT_PAREN);
-    exit_section_(builder, marker, NESTED_DATA, result);
+    exit_section_(builder, marker, null, result);
     return result;
   }
 
   /* ********************************************************** */
   // '(' type ')'
-  public static boolean nested_type(PsiBuilder builder, int level) {
+  static boolean nested_type(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "nested_type")) return false;
     if (!nextTokenIs(builder, LEFT_PAREN)) return false;
     boolean result;
@@ -668,7 +661,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, LEFT_PAREN);
     result = result && type(builder, level + 1);
     result = result && consumeToken(builder, RIGHT_PAREN);
-    exit_section_(builder, marker, NESTED_TYPE, result);
+    exit_section_(builder, marker, null, result);
     return result;
   }
 

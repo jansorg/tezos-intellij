@@ -70,14 +70,6 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitData(o);
   }
 
-  public R visitNestedData(@NotNull PsiNestedData o) {
-    return visitData(o);
-  }
-
-  public R visitNestedType(@NotNull PsiNestedType o) {
-    return visitType(o);
-  }
-
   public R visitParameterSection(@NotNull PsiParameterSection o) {
     return visitSection(o);
   }

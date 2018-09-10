@@ -11,7 +11,6 @@ object MichelsonPsiUtil {
         return when (type) {
             is PsiComparableType -> type.typeToken.text
             is PsiGenericType -> type.typeToken.text
-            is PsiNestedType -> type.type.typeNameString
             is PsiComplexType -> type.typeToken.text
             else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
         }
@@ -19,6 +18,22 @@ object MichelsonPsiUtil {
 
     @JvmStatic
     fun isComparable(type: PsiType) = type is PsiComparableType
+
+    @JvmStatic
+    fun findComposedParentType(type: PsiType): PsiType? {
+        return type.parent as? PsiType
+    }
+
+    @JvmStatic
+    fun hasComposedParentType(type: PsiType): Boolean {
+        return findComposedParentType(type) != null
+    }
+
+    /**
+     * Returns the children types of a composed type. Returns an empty list when no types were found.
+     */
+    @JvmStatic
+    fun findChildrenTypes(type: PsiType): List<PsiType> = type.children.mapNotNull { it as? PsiType }
 
     /**
      * Returns the PSIElement which contains the type's name token, which is a leaf in the PSI tree.
@@ -67,4 +82,13 @@ object MichelsonPsiUtil {
 
     @JvmStatic
     fun isFieldAnnotation(psi: PsiAnnotation): Boolean = psi is PsiFieldAnnotation
+
+    @JvmStatic
+    fun findParentType(psi: PsiAnnotation): PsiType? = psi.parent as? PsiType
+
+    @JvmStatic
+    fun findParentInstruction(psi: PsiAnnotation): PsiInstruction? = psi.parent as? PsiInstruction
+
+    @JvmStatic
+    fun findParentData(psi: PsiAnnotation): PsiData? = psi.parent as? PsiData
 }

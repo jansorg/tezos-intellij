@@ -103,7 +103,7 @@ data ::=
 
 // data_toplevel is our extension to match data which may be used as argument to an instruction or tag
 private toplevel_data ::= nested_data | literal_data
-nested_data ::= '(' data ')'
+private nested_data ::= '(' data ')'
 literal_data ::= 'None' | 'True' | 'False' | 'Unit' | INT | string_literal
 string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)* '"' {extends=literal_data}
 generic_data ::= data_pair | data_left | data_right | data_some | data_list | data_map
@@ -137,16 +137,16 @@ private instruction_recover ::= <<instruction_recover_while>>
 
 //-- types
 
-type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString isComparable]}
+type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString isComparable findComposedParentType findChildrenTypes hasComposedParentType]}
 complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeToken]} //handle annotations at the end?
 private toplevel_type ::= nested_type | generic_type | comparable_type // extension to define the tokens which can be used as arguments to instructions or tags
-nested_type ::= '(' type ')'
+private nested_type ::= '(' type ')'
 generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
 comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME_COMPARABLE"]}
 
 //-- shared rules
 
-annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType]}
+annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentType findParentData]}
 type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"] extends=annotation}
 variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"] extends=annotation}
 field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"] extends=annotation}

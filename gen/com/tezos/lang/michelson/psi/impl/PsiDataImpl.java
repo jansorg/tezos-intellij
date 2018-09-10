@@ -28,6 +28,12 @@ public class PsiDataImpl extends MichelsonCompositeImpl implements PsiData {
 
   @Override
   @Nullable
+  public PsiData getData() {
+    return PsiTreeUtil.getChildOfType(this, PsiData.class);
+  }
+
+  @Override
+  @Nullable
   public PsiInstruction getInstruction() {
     return PsiTreeUtil.getChildOfType(this, PsiInstruction.class);
   }

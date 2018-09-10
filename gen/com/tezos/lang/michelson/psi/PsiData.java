@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface PsiData extends MichelsonComposite {
 
   @Nullable
+  PsiData getData();
+
+  @Nullable
   PsiInstruction getInstruction();
 
 }

@@ -67,8 +67,15 @@ class MichelsonHighlightingAnnotator : Annotator {
                 "ABS", "IS_NAT", "INT", "NEG", "EDIV", "LSL", "LSR", "COMPARE", "EQ", "NEQ", "LT", "GT", "LE", "GE",
                 "ADDRESS", "CONTRACT", "SET_DELEGATE", "IMPLICIT_ACCOUNT", "NOW", "AMOUNT", "BALANCE", "HASH_KEY",
                 "CHECK_SIGNATURE", "BLAKE2B", "STEPS_TO_QUOTA", "SOURCE", "SENDER", "SELF", "CAST", "RENAME")
-
+        val INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE = setOf("TRANSFER_TOKENS", "SLICE", "UNIT")
         val INSTRUCTIONS_TWO_VAR_ANNOTATIONS = setOf("CREATE_ACCOUNT", "CREATE_CONTRACT")
+
+        val INSTRUCTIONS_ONE_TYPE_ANNOTATION = setOf("UNIT", "PAIR", "SOME", "NONE", "LEFT", "RIGHT", "NIL", "EMPTY_SET", "EMPTY_MAP")
+
+        val INSTRUCTIONS_ONE_FIELD_ANNOTATION = setOf("NONE", "SOME")
+        val INSTRUCTIONS_TWO_FIELD_ANNOTATIONS = setOf("PAIR", "LEFT", "RIGHT")
+
+        val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -111,18 +118,63 @@ class MichelsonHighlightingAnnotator : Annotator {
                 }
             }
 
-            // mark 2nd, 3rd, ... var annotations
-            // mark all other annotations (field and type)
-            (instructionName in INSTRUCTIONS_ONE_VAR_ANNOTATION || instructionName in INSTRUCTIONS_TWO_VAR_ANNOTATIONS) && annotationCount > 0 -> {
-                val maxVarAnnotations = if (instructionName in INSTRUCTIONS_TWO_VAR_ANNOTATIONS) 2 else 1
+            annotationCount != 0 -> {
                 var varAnnotations = 0
+                val maxVarAnnotations = when (instructionName) {
+                    in INSTRUCTIONS_ONE_VAR_ANNOTATION -> 1
+                    in INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE -> 1 //fixme
+                    in INSTRUCTIONS_TWO_VAR_ANNOTATIONS -> 2
+                    else -> 0
+                }
+
+                var fieldAnnotations = 0
+                val maxFieldAnnotations = when {
+                    instructionName in INSTRUCTIONS_ONE_FIELD_ANNOTATION -> 1
+                    instructionName in INSTRUCTIONS_TWO_FIELD_ANNOTATIONS -> 2
+                    else -> 0
+                }
+
+                var typeAnnotations = 0
+                val maxTypeAnnotations = when {
+                    instructionName in INSTRUCTIONS_ONE_TYPE_ANNOTATION -> 1
+                    else -> 0
+                }
+
                 for (a in annotations) {
                     when {
-                        a.isVariableAnnotation -> when {
-                            maxVarAnnotations == 1 && varAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one variable annotation supported")
-                            varAnnotations >= maxVarAnnotations -> holder.createErrorAnnotation(a, "Only $maxVarAnnotations variable annotations supported")
+                        maxVarAnnotations > 0 && a.isVariableAnnotation -> when {
+                            varAnnotations >= maxVarAnnotations -> {
+                                val msg = when (varAnnotations) {
+                                    1 -> "Only one variable annotation supported"
+                                    else -> "Only $maxVarAnnotations variable annotations supported"
+                                }
+                                holder.createErrorAnnotation(a, msg)
+                            }
                             else -> varAnnotations++
                         }
+
+                        maxFieldAnnotations > 0 && a.isFieldAnnotation -> when {
+                            fieldAnnotations >= maxFieldAnnotations -> {
+                                val msg = when (fieldAnnotations) {
+                                    1 -> "Only one field annotation supported"
+                                    else -> "Only $maxFieldAnnotations field annotations supported"
+                                }
+                                holder.createErrorAnnotation(a, msg)
+                            }
+                            else -> fieldAnnotations++
+                        }
+
+                        maxTypeAnnotations > 0 && a.isTypeAnnotation -> when {
+                            typeAnnotations >= maxTypeAnnotations -> {
+                                val msg = when (typeAnnotations) {
+                                    1 -> "Only one type annotation supported"
+                                    else -> "Only $maxTypeAnnotations type annotations supported"
+                                }
+                                holder.createErrorAnnotation(a, msg)
+                            }
+                            else -> typeAnnotations++
+                        }
+
                         else -> holder.createErrorAnnotation(a, "Unsupported annotation")
                     }
                 }
@@ -136,16 +188,31 @@ class MichelsonHighlightingAnnotator : Annotator {
     private fun annotateAnnotationsOfType(psi: PsiType, holder: AnnotationHolder) {
         val annotations = psi.annotations
         val annotationCount = annotations.size
-        var typeAnnotations = 0
-
         when {
             annotationCount > 0 -> {
+                var typeAnnotations = 0
+                var fieldAnnotations = 0
                 for (a in annotations) {
                     when {
                         a.isTypeAnnotation -> when {
                             typeAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one type annotation supported")
                             else -> typeAnnotations++
                         }
+
+                        // spec: components of 'pair' types, 'option' types and 'or' types
+                        // can be annotated with a field or constructor annotation
+                        a.isFieldAnnotation -> {
+                            val componentType = a.findParentType()?.findComposedParentType()
+                            val componentTypeName = componentType?.typeNameString
+
+                            val supported = componentTypeName in TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS
+                            when {
+                                supported && fieldAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one field annotation supported")
+                                supported -> fieldAnnotations++
+                                else -> holder.createErrorAnnotation(a, "Unsupported annotation")
+                            }
+                        }
+
                         else -> holder.createErrorAnnotation(a, "Unsupported annotation")
                     }
                 }
@@ -154,7 +221,7 @@ class MichelsonHighlightingAnnotator : Annotator {
     }
 
     private fun annotateMacroAnnotations(psi: PsiMacroInstruction, holder: AnnotationHolder) {
-        // annotate PAIR, UNPAIR, etc.
+        // fixme annotate PAIR, UNPAIR, etc.
     }
 
     private fun annotateLeafElement(psi: PsiElement, nodeType: IElementType, holder: AnnotationHolder) {

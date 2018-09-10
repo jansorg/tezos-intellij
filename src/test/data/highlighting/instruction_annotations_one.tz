@@ -5,21 +5,13 @@ code
     # only variable annotations are allowed on these instructions
     DUP <error descr="Unsupported annotation">:a</error> ;
     PUSH <error descr="Unsupported annotation">:a</error> int 123 ;
-    UNIT <error descr="Unsupported annotation">:a</error> ;
-    SOME <error descr="Unsupported annotation">:a</error> ;
-    NONE <error descr="Unsupported annotation">:a</error> int ;
     PAIR :a ;
     CAR :a ;
     CDR :a ;
-    LEFT <error descr="Unsupported annotation">:a</error> int ;
-    RIGHT <error descr="Unsupported annotation">:a</error> int ;
-    NIL <error descr="Unsupported annotation">:a</error> int ;
     CONS <error descr="Unsupported annotation">:a</error> ;
     SIZE <error descr="Unsupported annotation">:a</error> ;
     MAP <error descr="Unsupported annotation">:a</error> {} ;
     MEM <error descr="Unsupported annotation">:a</error> ;
-    EMPTY_SET <error descr="Unsupported annotation">:a</error> int ;
-    EMPTY_MAP <error descr="Unsupported annotation">:a</error> int int ;
     UPDATE <error descr="Unsupported annotation">:a</error> ;
     GET <error descr="Unsupported annotation">:a</error> ;
     LAMBDA <error descr="Unsupported annotation">:a</error> int int {} ;
@@ -67,13 +59,9 @@ code
     DUP <error descr="Unsupported annotation">%a</error> ;
     PUSH <error descr="Unsupported annotation">%a</error> int 123 ;
     UNIT <error descr="Unsupported annotation">%a</error> ;
-    SOME <error descr="Unsupported annotation">%a</error> ;
-    NONE <error descr="Unsupported annotation">%a</error> int ;
     PAIR %a ;
     CAR %a ;
     CDR %a ;
-    LEFT <error descr="Unsupported annotation">%a</error> int ;
-    RIGHT <error descr="Unsupported annotation">%a</error> int ;
     NIL <error descr="Unsupported annotation">%a</error> int ;
     CONS <error descr="Unsupported annotation">%a</error> ;
     SIZE <error descr="Unsupported annotation">%a</error> ;
@@ -306,4 +294,20 @@ code
     SELF ;
     CAST ;
     RENAME ;
+
+    # valid
+    SOME %a ;
+    NONE %a int ;
+    LEFT %a int ;
+    RIGHT %a int ;
+
+    UNIT :a ;
+    SOME :a ;
+    NONE :a int ;
+    LEFT :a int ;
+    RIGHT :a int ;
+    NIL :a int ;
+    EMPTY_SET :a int ;
+    EMPTY_MAP :a int int ;
+
   }

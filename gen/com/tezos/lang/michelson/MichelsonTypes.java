@@ -27,8 +27,6 @@ public interface MichelsonTypes {
   IElementType LITERAL_DATA = new MichelsonCompositeElementType("LITERAL_DATA");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
   IElementType MAP_ENTRY_DATA = new MichelsonCompositeElementType("MAP_ENTRY_DATA");
-  IElementType NESTED_DATA = new MichelsonCompositeElementType("NESTED_DATA");
-  IElementType NESTED_TYPE = new MichelsonCompositeElementType("NESTED_TYPE");
   IElementType PARAMETER_SECTION = new MichelsonCompositeElementType("PARAMETER_SECTION");
   IElementType RETURN_SECTION = new MichelsonCompositeElementType("RETURN_SECTION");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
@@ -110,12 +108,6 @@ public interface MichelsonTypes {
       else if (type == MAP_ENTRY_DATA) {
         return new PsiMapEntryDataImpl(type);
       }
-      else if (type == NESTED_DATA) {
-        return new PsiNestedDataImpl(type);
-      }
-      else if (type == NESTED_TYPE) {
-        return new PsiNestedTypeImpl(type);
-      }
       else if (type == PARAMETER_SECTION) {
         return new PsiParameterSectionImpl(type);
       }
@@ -127,6 +119,9 @@ public interface MichelsonTypes {
       }
       else if (type == STRING_LITERAL) {
         return new PsiStringLiteralImpl(type);
+      }
+      else if (type == TYPE) {
+        return new PsiTypeImpl(type);
       }
       else if (type == TYPE_ANNOTATION) {
         return new PsiTypeAnnotationImpl(type);
