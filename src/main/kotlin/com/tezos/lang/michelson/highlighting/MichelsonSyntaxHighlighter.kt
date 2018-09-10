@@ -46,10 +46,11 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         val SECTION_NAME = TextAttributesKey.createTextAttributesKey("MI.SECTION_NAME", DefaultLanguageHighlighterColors.KEYWORD)
         val SEMI = TextAttributesKey.createTextAttributesKey("MI.SEMI", DefaultLanguageHighlighterColors.SEMICOLON)
         val PAREN = TextAttributesKey.createTextAttributesKey("MI.PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
-        val BRACES = TextAttributesKey.createTextAttributesKey("MI.PAREN", DefaultLanguageHighlighterColors.BRACES)
+        val BRACES = TextAttributesKey.createTextAttributesKey("MI.BRACES", DefaultLanguageHighlighterColors.BRACES)
 
         // keys
         private val keys = HashMap<IElementType, TextAttributesKey>()
+
         init {
             keys.put(TokenType.BAD_CHARACTER, HighlighterColors.BAD_CHARACTER)
 
