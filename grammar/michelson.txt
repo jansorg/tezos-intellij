@@ -1,3 +1,5 @@
+# The original grammar at http://tezos.gitlab.io/betanet/whitedoc/michelson.html#xii-full-grammar
+
 <data> ::=
   | <int constant>
   | <natural number constant>
