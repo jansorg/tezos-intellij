@@ -1,0 +1,147 @@
+[0 : 9] SECTION_NAME
+parameter
+-----
+[10 : 14] TYPE_NAME
+unit
+-----
+[14 : 15] ;
+;
+-----
+[16 : 23] SECTION_NAME
+storage
+-----
+[24 : 25] (
+(
+-----
+[25 : 29] TYPE_NAME
+pair
+-----
+[30 : 32] TYPE_ANNOTATION_TOKEN
+:a
+-----
+[33 : 34] (
+(
+-----
+[34 : 37] TYPE_NAME_COMPARABLE
+int
+-----
+[38 : 40] TYPE_ANNOTATION_TOKEN
+:a
+-----
+[40 : 41] )
+)
+-----
+[42 : 43] (
+(
+-----
+[43 : 49] TYPE_NAME_COMPARABLE
+string
+-----
+[50 : 52] TYPE_ANNOTATION_TOKEN
+:a
+-----
+[52 : 53] )
+)
+-----
+[53 : 54] )
+)
+-----
+[54 : 55] ;
+;
+-----
+[56 : 60] SECTION_NAME
+code
+-----
+[63 : 64] {
+{
+-----
+[69 : 73] INSTRUCTION_TOKEN
+DROP
+-----
+[73 : 74] ;
+;
+-----
+[79 : 83] INSTRUCTION_TOKEN
+PUSH
+-----
+[84 : 86] VAR_ANNOTATION_TOKEN
+@a
+-----
+[87 : 88] (
+(
+-----
+[88 : 91] TYPE_NAME_COMPARABLE
+int
+-----
+[92 : 94] TYPE_ANNOTATION_TOKEN
+:a
+-----
+[94 : 95] )
+)
+-----
+[96 : 99] INT
+123
+-----
+[99 : 100] ;
+;
+-----
+[105 : 109] INSTRUCTION_TOKEN
+PUSH
+-----
+[110 : 112] VAR_ANNOTATION_TOKEN
+@a
+-----
+[113 : 114] (
+(
+-----
+[114 : 120] TYPE_NAME_COMPARABLE
+string
+-----
+[121 : 123] TYPE_ANNOTATION_TOKEN
+:a
+-----
+[123 : 124] )
+)
+-----
+[125 : 126] "
+"
+-----
+[126 : 131] STRING_CONTENT
+hello
+-----
+[131 : 132] "
+"
+-----
+[132 : 133] ;
+;
+-----
+[138 : 142] INSTRUCTION_TOKEN
+SWAP
+-----
+[142 : 143] ;
+;
+-----
+[148 : 152] MACRO_TOKEN
+PAIR
+-----
+[152 : 153] ;
+;
+-----
+[158 : 161] INSTRUCTION_TOKEN
+NIL
+-----
+[162 : 171] TYPE_NAME
+operation
+-----
+[171 : 172] ;
+;
+-----
+[173 : 177] MACRO_TOKEN
+PAIR
+-----
+[177 : 178] ;
+;
+-----
+[181 : 182] }
+}
+-----
