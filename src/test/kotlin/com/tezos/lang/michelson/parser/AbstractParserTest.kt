@@ -26,7 +26,7 @@ abstract class AbstractParserTest : LightPlatformCodeInsightFixtureTestCase() {
             }
         })
 
-        return errors.stream().map { psiErrorElement -> description(file, errors) }.collect(Collectors.toList())
+        return errors.stream().map { _ -> description(file, errors) }.collect(Collectors.toList())
     }
 
     fun description(file: PsiFile, errors: List<PsiErrorElement>): String {

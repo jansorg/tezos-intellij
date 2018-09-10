@@ -31,7 +31,7 @@ object MichelsonElementTokenSets {
             MichelsonTypes.LEFT_CURLY,
             MichelsonTypes.RIGHT_CURLY)
 
-   val ANNOTATIONS = TokenSet.create(
+    val ANNOTATIONS = TokenSet.create(
             MichelsonTypes.TYPE_ANNOTATION_TOKEN,
             MichelsonTypes.VAR_ANNOTATION_TOKEN,
             MichelsonTypes.FIELD_ANNOTATION_TOKEN)

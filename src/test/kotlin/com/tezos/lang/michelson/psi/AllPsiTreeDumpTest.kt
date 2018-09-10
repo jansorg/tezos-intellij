@@ -1,7 +1,6 @@
 package com.tezos.lang.michelson.psi
 
 import com.intellij.psi.impl.DebugUtil
-import com.tezos.lang.michelson.MichelsonFileType
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import com.tezos.lang.michelson.MichelsonTestUtils.dataPath
 import com.tezos.lang.michelson.MichelsonTestUtils.load

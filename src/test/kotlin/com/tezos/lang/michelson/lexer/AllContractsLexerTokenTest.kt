@@ -26,7 +26,7 @@ class AllContractsLexerTokenTest(val michelsonFile: String) {
             return locateMichelsonFiles(Paths.get("lexer")).filter(this::tokensFileExists).map({ dataRootPath.relativize(it).toString() }).toList()
         }
 
-        fun tokensFileExists(michelsonFile: Path) : Boolean {
+        fun tokensFileExists(michelsonFile: Path): Boolean {
             return Files.exists(tokensFilePath(michelsonFile))
         }
 

@@ -2,7 +2,6 @@ package com.tezos.lang.michelson
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
-import com.intellij.util.exists
 import com.tezos.lang.michelson.lexer.MichelsonLexer
 import org.junit.Assert
 import java.net.URISyntaxException
@@ -27,7 +26,7 @@ object MichelsonTestUtils {
             false -> dataPath().resolve(path)
         }
 
-        if (!sourcePath.exists()) {
+        if (!Files.exists(sourcePath)) {
             throw IllegalStateException("Directory $sourcePath not found.")
         }
 
@@ -41,7 +40,7 @@ object MichelsonTestUtils {
 
     fun load(path: String, vararg more: String): String = load(dataPath().resolve(Paths.get(path, *more)))
 
-    fun load(filePath: Path, defaultValue:String? = null): String {
+    fun load(filePath: Path, defaultValue: String? = null): String {
         if (!Files.exists(filePath)) {
             if (defaultValue != null) {
                 return defaultValue
