@@ -1,0 +1,24 @@
+parameter unit;
+storage unit;
+code
+  {
+    # this is all valid
+    PUSH int 123;
+    PUSH int 234;
+    PUSH int 123;
+    PPAIIR :a %a %b ;
+
+    PUSH int 123;
+    PUSH int 234;
+    PAIR @a ;
+    DROP;
+
+    UNPPAIIR @a @a ;
+    DROP;
+    DROP;
+    DROP;
+
+    CDR;
+    NIL operation;
+    PAIR;
+  }

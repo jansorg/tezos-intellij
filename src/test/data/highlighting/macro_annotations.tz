@@ -1,0 +1,93 @@
+parameter string;
+storage unit;
+code
+  {
+    # Unsupported annotations to DIP and DUP and/r unsupported blocks
+    <error descr="One block expected">DIP</error> ;
+    <error descr="One block expected">DIP</error> <error descr="Unexpected annotation">:a</error> ;
+    DIP <error descr="Unexpected annotation">:a</error> {};
+    <error descr="One block expected">DIP</error> <error descr="Unexpected annotation">@a</error> ;
+    <error descr="One block expected">DIP</error> <error descr="Unexpected annotation">%a</error> ;
+    <error descr="One block expected">DIP</error> <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> ;
+    DIP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> {} ;
+    <error descr="One block expected">DIP</error> {} {} ;
+    <error descr="Expected one block.">DIIIP</error> ;
+    <error descr="Only 1 blocks expected.">DIIIP</error> {} {} ;
+    <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected type annotation">:a</error> ;
+    <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected variable annotation">@a</error> ;
+    <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected field annotation">%a</error> ;
+    <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected variable annotation">@a</error> <error descr="Unexpected field annotation">%a</error> ;
+    DIIIP <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected variable annotation">@a</error> <error descr="Unexpected field annotation">%a</error> {} ;
+
+    <error descr="DUP doesn't support arguments">DUP</error> {} ;
+    DUP <error descr="Unsupported annotation">:a</error> ;
+    DUP <error descr="Unsupported annotation">%a</error> ;
+    DUP @a <error descr="Only one variable annotation supported">@b</error> ;
+    <error descr="No blocks expected.">DUUUP</error> {} ;
+    DUUUP <error descr="Unexpected type annotation">:a</error> ;
+    DUUUP <error descr="Unexpected field annotation">%a</error> ;
+    DUUUP @a <error descr="Unexpected variable annotation">@b</error> ;
+
+    # Unsupported blocks
+    <error descr="No blocks expected.">PAIR</error> {} ;
+    <error descr="No blocks expected.">PAIR</error> :t {} ;
+    <error descr="No blocks expected.">PAIR</error> {} ;
+    <error descr="No blocks expected.">PAIR</error> :t {} {} ;
+
+    <error descr="No blocks expected.">UNPAIR</error> {} ;
+    <error descr="No blocks expected.">UNPAIR</error> {} {} ;
+
+    # Incorrectly built dynamic macros
+    PAI<error descr="Unexpected 'I'">IR</error> ;
+    PA<error descr="Left leaf 'A' used where right leaf 'I' or 'P' was expected">AIIR</error> ;
+    PP<error descr="Missing left leaf 'A'">R</error> ;
+    PPAI<error descr="Missing right leaf 'I'">R</error> ;
+    PAIP<error descr="Missing left leaf 'A'">R</error> ;
+
+    UN<error descr="Missing right leaf 'I'">PAR</error> ;
+    UN<error descr="Left leaf 'A' used where right leaf 'I' or 'P' was expected">PAAR</error> ;
+    U<error descr="Right leaf 'I' used where left leaf 'A' or 'P' was expected">NPIR</error> ;
+    U<error descr="Right leaf 'I' used where left leaf 'A' or 'P' was expected">NPIIR</error> ;
+    UN<error descr="Missing left leaf 'A'">PPR</error> ;
+    UNP<error descr="Missing left leaf 'A'">PPR</error> ;
+    UNPPP<error descr="Missing right leaf 'I'">AIR</error> ;
+
+    # invalid number of annotations
+    PAIR :a <error descr="Unexpected type annotation">:b</error>;
+    PAIR :a %a %b <error descr="Unexpected field annotation">%c</error>;
+    PAPAIR :a %a %b %c <error descr="Unexpected field annotation">%d</error>;
+
+    UNPAIR @a @b <error descr="Unexpected variable annotation">@c</error> ;
+    UNPAIR %a %b <error descr="Unexpected field annotation">%c</error>;
+    UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> ;
+    UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> %a %b %c <error descr="Unexpected field annotation">%d</error>;
+    UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> <error descr="Unexpected type annotation">:c</error> %a %b %c <error descr="Unexpected field annotation">%d</error> @a @b @c <error descr="Unexpected variable annotation">@d</error> ;
+
+    # valid
+    DIP {};
+    DIIP {};
+    DIIIIIP {};
+
+    DUP ;
+    DUUP ;
+    DUUUP ;
+    DUP @a ;
+
+    PAIR;
+    PAIR @a ;
+    PAIR :a ;
+    PAIR @a :a ;
+    PAIR :a @a ;
+    PAPAIR ;
+    PAPAIR :a ;
+    PAPAIR :a %a %b %c;
+
+    UNPAIR ;
+    UNPAIR @a @b ;
+    UNPAIR %a ;
+    UNPAIR %a @a ;
+    UNPAIR @a %a ;
+    UNPAPAIR ;
+    UNPAPAIR %a %b %c;
+    UNPAPAIR %a %b %c @a @b @c;
+  };

@@ -2,12 +2,12 @@ parameter unit;
 storage unit;
 code
   {
+    # only one type annotation allowed here
+    PAIR @a <error descr="Unexpected variable annotation">@a</error> ;
+
     # only variable annotations are allowed on these instructions
     DUP <error descr="Unsupported annotation">:a</error> ;
     PUSH <error descr="Unsupported annotation">:a</error> int 123 ;
-    PAIR :a ;
-    CAR :a ;
-    CDR :a ;
     CONS <error descr="Unsupported annotation">:a</error> ;
     SIZE <error descr="Unsupported annotation">:a</error> ;
     MAP <error descr="Unsupported annotation">:a</error> {} ;
@@ -118,9 +118,6 @@ code
     UNIT @a <error descr="Only one variable annotation supported">@a</error> ;
     SOME @a <error descr="Only one variable annotation supported">@a</error> ;
     NONE @a <error descr="Only one variable annotation supported">@a</error> int ;
-    PAIR @a @a ;
-    CAR @a @a ;
-    CDR @a @a ;
     LEFT @a <error descr="Only one variable annotation supported">@a</error> int ;
     RIGHT @a <error descr="Only one variable annotation supported">@a</error> int ;
     NIL @a <error descr="Only one variable annotation supported">@a</error> int ;
@@ -172,6 +169,11 @@ code
     SELF @a <error descr="Only one variable annotation supported">@a</error> ;
     CAST @a <error descr="Only one variable annotation supported">@a</error> ;
     RENAME @a <error descr="Only one variable annotation supported">@a</error> ;
+
+    # valid
+    PAIR :a ;
+    CAR :a ;
+    CDR :a ;
 
     # one variable annotations is valid
     DUP @a ;
@@ -310,4 +312,7 @@ code
     EMPTY_SET :a int ;
     EMPTY_MAP :a int int ;
 
+    # valid
+    CAR @a @a ;
+    CDR @a @a ;
   }
