@@ -2,14 +2,13 @@ package com.tezos.lang.michelson.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
-import com.tezos.lang.michelson.psi.PsiGenericInstruction
-import com.tezos.lang.michelson.psi.PsiGenericType
-import com.tezos.lang.michelson.psi.PsiMacroInstruction
-import com.tezos.lang.michelson.psi.PsiType
+import com.tezos.lang.michelson.parser.*
+import com.tezos.lang.michelson.psi.*
 
 /**
  * Highlighting annotator for Michelson.
@@ -76,6 +75,11 @@ class MichelsonHighlightingAnnotator : Annotator {
         val INSTRUCTIONS_TWO_FIELD_ANNOTATIONS = setOf("PAIR", "LEFT", "RIGHT")
 
         val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
+
+        val DUUP_MACRO: MacroMetadata = DupMacroMetadata()
+        val DIIP_MACRO: MacroMetadata = DipMacroMetadata()
+        val PAIR_MACRO: MacroMetadata = PairMacroMetadata()
+        val UNPAIR_MACRO: MacroMetadata = UnpairMacroMetadata()
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -326,50 +330,66 @@ class MichelsonHighlightingAnnotator : Annotator {
                 // fixme validate annotations
             }
 
-            // handle the special macros
-            macroName.startsWith("DII") -> annotateDiipMacro(macroToken, holder, blockCount)
-            macroName.startsWith("DUU") -> annotateDuupMacro(macroToken, holder, blockCount)
-            macroName.startsWith('P') -> annotatePairMacro(macroToken, holder, blockCount)
-            macroName.startsWith('U') -> annotateUnpairMacro(macroToken, holder, blockCount)
-            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateCadrMacro(macroToken, holder, blockCount)
+            // handle the dynamic macros
+            macroName.startsWith("DII") -> annotateMacro(DIIP_MACRO, psi, blockCount, holder)
+            macroName.startsWith("DUU") -> annotateMacro(DUUP_MACRO, psi, blockCount, holder)
+            macroName.startsWith('P') -> annotateMacro(PAIR_MACRO, psi, blockCount, holder)
+            macroName.startsWith('U') -> annotateMacro(UNPAIR_MACRO, psi, blockCount, holder)
+//            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateCadrMacro(macroToken, holder, blockCount)
         }
     }
 
-    private fun annotateDiipMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
-        when {
-            blockCount == 0 -> holder.createErrorAnnotation(macroToken, "Expected an instruction block")
-            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Only one instruction block supported")
-        }
-    }
+    private fun annotateMacro(macroMetadata: MacroMetadata, psi: PsiMacroInstruction, blockCount: Int, holder: AnnotationHolder) {
+        val macroToken = psi.macroToken
+        val macro = macroToken.text
 
-    private fun annotateDuupMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
-        when {
-            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
-            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
+        val error = macroMetadata.validate(macro)
+        if (error != null) {
+            val all = psi.textRange
+            val r = TextRange.create(all.startOffset + error.second, all.endOffset)
+            holder.createErrorAnnotation(r, error.first)
+            return
         }
-    }
 
-    private fun annotatePairMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
-        when {
-            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
-            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
+        val requiredBlocks = macroMetadata.requiredBlocks()
+        if (blockCount != requiredBlocks) {
+            if (blockCount < requiredBlocks) {
+                if (requiredBlocks == 1) {
+                    holder.createErrorAnnotation(macroToken, "Expected one block.")
+                } else {
+                    holder.createErrorAnnotation(macroToken, "Expected $requiredBlocks blocks, found $blockCount")
+                }
+            } else if (requiredBlocks == 0) {
+                holder.createErrorAnnotation(macroToken, "No blocks expected.")
+            } else {
+                holder.createErrorAnnotation(macroToken, "Only $requiredBlocks blocks expected.")
+            }
         }
-        //fixme validate token name
-    }
 
-    private fun annotateUnpairMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
-        when {
-            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
-            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
+        var varAnnotations = macroMetadata.supportedAnnotations(PsiAnnotationType.VARIABLE, macro)
+        var typeAnnotations = macroMetadata.supportedAnnotations(PsiAnnotationType.TYPE, macro)
+        var fieldAnnotations = macroMetadata.supportedAnnotations(PsiAnnotationType.FIELD, macro)
+        for (a in psi.annotations) {
+            when {
+                a.isTypeAnnotation -> {
+                    typeAnnotations--
+                    if (typeAnnotations < 0) {
+                        holder.createErrorAnnotation(a, "Unexpected type annotation")
+                    }
+                }
+                a.isVariableAnnotation -> {
+                    varAnnotations--
+                    if (varAnnotations < 0) {
+                        holder.createErrorAnnotation(a, "Unexpected variable annotation")
+                    }
+                }
+                a.isFieldAnnotation -> {
+                    fieldAnnotations--
+                    if (fieldAnnotations < 0) {
+                        holder.createErrorAnnotation(a, "Unexpected field annotation")
+                    }
+                }
+            }
         }
-        //fixme validate token name
-    }
-
-    private fun annotateCadrMacro(macroToken: PsiElement, holder: AnnotationHolder, blockCount: Int) {
-        when {
-            blockCount == 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction block")
-            blockCount > 1 -> holder.createErrorAnnotation(macroToken, "Unexpected instruction blocks")
-        }
-        //fixme validate token name
     }
 }

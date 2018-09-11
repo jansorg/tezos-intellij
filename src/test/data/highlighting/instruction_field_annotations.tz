@@ -3,7 +3,7 @@ parameter unit;
 code
   {
     # invalid
-    PAIR %a %b %c; DROP;
+    PAIR %a %b <error descr="Unexpected field annotation">%c</error>; DROP;
 
     LEFT %a %b <error descr="Only 2 field annotations supported">%c</error> int; DROP;
 
