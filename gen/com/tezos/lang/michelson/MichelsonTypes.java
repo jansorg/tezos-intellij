@@ -13,7 +13,6 @@ public interface MichelsonTypes {
 
   IElementType ANNOTATION = new MichelsonCompositeElementType("ANNOTATION");
   IElementType BLOCK_INSTRUCTION = new MichelsonCompositeElementType("BLOCK_INSTRUCTION");
-  IElementType CODE_SECTION = new MichelsonCompositeElementType("CODE_SECTION");
   IElementType COMPARABLE_TYPE = new MichelsonCompositeElementType("COMPARABLE_TYPE");
   IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
@@ -27,10 +26,7 @@ public interface MichelsonTypes {
   IElementType LITERAL_DATA = new MichelsonCompositeElementType("LITERAL_DATA");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
   IElementType MAP_ENTRY_DATA = new MichelsonCompositeElementType("MAP_ENTRY_DATA");
-  IElementType PARAMETER_SECTION = new MichelsonCompositeElementType("PARAMETER_SECTION");
-  IElementType RETURN_SECTION = new MichelsonCompositeElementType("RETURN_SECTION");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
-  IElementType STORAGE_SECTION = new MichelsonCompositeElementType("STORAGE_SECTION");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
@@ -69,9 +65,6 @@ public interface MichelsonTypes {
        if (type == BLOCK_INSTRUCTION) {
         return new PsiBlockInstructionImpl(type);
       }
-      else if (type == CODE_SECTION) {
-        return new PsiCodeSectionImpl(type);
-      }
       else if (type == COMPARABLE_TYPE) {
         return new PsiComparableTypeImpl(type);
       }
@@ -108,14 +101,8 @@ public interface MichelsonTypes {
       else if (type == MAP_ENTRY_DATA) {
         return new PsiMapEntryDataImpl(type);
       }
-      else if (type == PARAMETER_SECTION) {
-        return new PsiParameterSectionImpl(type);
-      }
-      else if (type == RETURN_SECTION) {
-        return new PsiReturnSectionImpl(type);
-      }
-      else if (type == STORAGE_SECTION) {
-        return new PsiStorageSectionImpl(type);
+      else if (type == SECTION) {
+        return new PsiSectionImpl(type);
       }
       else if (type == STRING_LITERAL) {
         return new PsiStringLiteralImpl(type);

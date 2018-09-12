@@ -14,10 +14,6 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitInstruction(o);
   }
 
-  public R visitCodeSection(@NotNull PsiCodeSection o) {
-    return visitSection(o);
-  }
-
   public R visitComparableType(@NotNull PsiComparableType o) {
     return visitType(o);
   }
@@ -70,20 +66,8 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitData(o);
   }
 
-  public R visitParameterSection(@NotNull PsiParameterSection o) {
-    return visitSection(o);
-  }
-
-  public R visitReturnSection(@NotNull PsiReturnSection o) {
-    return visitSection(o);
-  }
-
   public R visitSection(@NotNull PsiSection o) {
     return visitMichelsonComposite(o);
-  }
-
-  public R visitStorageSection(@NotNull PsiStorageSection o) {
-    return visitSection(o);
   }
 
   public R visitStringLiteral(@NotNull PsiStringLiteral o) {

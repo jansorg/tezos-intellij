@@ -33,7 +33,6 @@
     extends(".+_data")=data
     extends("data_.+")=data
     extends(".+_type")=type
-    extends(".+_section")=section
     extends(".+_instruction")=instruction
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
@@ -89,11 +88,11 @@
 private script_file ::= contract?
 contract ::= section+ { methods=[sections="section"] }
 
-section ::= parameter_section | return_section | storage_section | code_section
-parameter_section ::= 'parameter' toplevel_type ';'
-return_section ::= 'return' toplevel_type ';'
-storage_section ::= 'storage' toplevel_type ';'
-code_section ::= 'code' instruction ';'?
+section ::= parameter_section | return_section | storage_section | code_section {methods=[instructions="instruction" getSectionType]}
+private parameter_section ::= 'parameter' toplevel_type ';'
+private return_section ::= 'return' toplevel_type ';'
+private storage_section ::= 'storage' toplevel_type ';'
+private code_section ::= 'code' instruction ';'?
 
 //-- data
 data ::=
@@ -144,7 +143,7 @@ private nested_type ::= '(' type ')'
 generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
 comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME_COMPARABLE"]}
 
-//-- shared rules
+//-- annotations
 
 annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentType findParentData]}
 type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"] extends=annotation}
