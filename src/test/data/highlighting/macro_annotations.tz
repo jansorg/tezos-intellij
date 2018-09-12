@@ -2,6 +2,11 @@ parameter string;
 storage unit;
 code
   {
+    # unsupported annotations for CDAR
+    CDAR <error descr="Unexpected type annotation">:t</error> ;
+    CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> ;
+    CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> ;
+
     # Unsupported annotations to DIP and DUP and/r unsupported blocks
     <error descr="One block expected">DIP</error> ;
     <error descr="One block expected">DIP</error> <error descr="Unexpected annotation">:a</error> ;
@@ -62,6 +67,12 @@ code
     UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> ;
     UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> %a %b %c <error descr="Unexpected field annotation">%d</error>;
     UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> <error descr="Unexpected type annotation">:c</error> %a %b %c <error descr="Unexpected field annotation">%d</error> @a @b @c <error descr="Unexpected variable annotation">@d</error> ;
+
+    # valid annotations for CDAR
+    CDAR ;
+    CDAR @a ;
+    CDAR %a ;
+    CDAR @a %a ;
 
     # valid
     DIP {};

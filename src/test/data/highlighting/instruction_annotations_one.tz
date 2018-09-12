@@ -172,8 +172,8 @@ code
 
     # valid
     PAIR :a ;
-    CAR :a ;
-    CDR :a ;
+    CAR @a ;
+    CDR @a ;
 
     # one variable annotations is valid
     DUP @a ;
@@ -313,6 +313,6 @@ code
     EMPTY_MAP :a int int ;
 
     # valid
-    CAR @a @a ;
-    CDR @a @a ;
+    CAR @a ;
+    CDR @a ;
   }
