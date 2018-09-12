@@ -82,6 +82,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         val UNPAIR_MACRO: MacroMetadata = UnpairMacroMetadata()
         val CADR_MACRO: MacroMetadata = CadrMacroMetadata()
         val SET_CADR_MACRO: MacroMetadata = SetCadrMacroMetadata()
+        val MAP_CADR_MACRO: MacroMetadata = MapCadrMacroMetadata()
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -338,7 +339,8 @@ class MichelsonHighlightingAnnotator : Annotator {
             macroName.startsWith('P') -> annotateMacro(PAIR_MACRO, psi, blockCount, holder)
             macroName.startsWith('U') -> annotateMacro(UNPAIR_MACRO, psi, blockCount, holder)
             macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateMacro(CADR_MACRO, psi, blockCount, holder)
-            macroName.startsWith("SET_C")  -> annotateMacro(SET_CADR_MACRO, psi, blockCount, holder)
+            macroName.startsWith("SET_C") -> annotateMacro(SET_CADR_MACRO, psi, blockCount, holder)
+            macroName.startsWith("MAP_C") -> annotateMacro(MAP_CADR_MACRO, psi, blockCount, holder)
         }
     }
 
@@ -364,6 +366,8 @@ class MichelsonHighlightingAnnotator : Annotator {
                 }
             } else if (requiredBlocks == 0) {
                 holder.createErrorAnnotation(macroToken, "No blocks expected.")
+            } else if (requiredBlocks == 1) {
+                holder.createErrorAnnotation(macroToken, "Only one block expected.")
             } else {
                 holder.createErrorAnnotation(macroToken, "Only $requiredBlocks blocks expected.")
             }

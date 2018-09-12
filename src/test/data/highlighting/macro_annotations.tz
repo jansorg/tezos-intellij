@@ -26,6 +26,16 @@ code
     <error descr="No blocks expected.">SET_CDAR</error> {} ;
     <error descr="No blocks expected.">SET_CAAR</error> {} ;
 
+    # unsupported annotations for MAP_CDAR
+    MAP_CAR <error descr="Unexpected type annotation">:t</error> {} ;
+    MAP_CDR <error descr="Unexpected type annotation">:t</error> {} ;
+    MAP_CDAR <error descr="Unexpected type annotation">:t</error> {} ;
+    MAP_CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> {} ;
+    MAP_CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> {} ;
+    <error descr="Expected one block.">MAP_CAR</error> ;
+    <error descr="Only one block expected.">MAP_CAR</error> {} {} ;
+    <error descr="Only one block expected.">MAP_CAR</error> @a %b {} {} ;
+
     # Unsupported annotations to DIP and DUP and/r unsupported blocks
     <error descr="One block expected">DIP</error> ;
     <error descr="One block expected">DIP</error> <error descr="Unexpected annotation">:a</error> ;
@@ -36,7 +46,7 @@ code
     DIP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> {} ;
     <error descr="One block expected">DIP</error> {} {} ;
     <error descr="Expected one block.">DIIIP</error> ;
-    <error descr="Only 1 blocks expected.">DIIIP</error> {} {} ;
+    <error descr="Only one block expected.">DIIIP</error> {} {} ;
     <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected type annotation">:a</error> ;
     <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected variable annotation">@a</error> ;
     <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected field annotation">%a</error> ;
@@ -108,6 +118,20 @@ code
     SET_CDAR @a ;
     SET_CDAR %a ;
     SET_CDAR %a @a ;
+
+    # valid MAP_CDAR
+    MAP_CAR {} ;
+    MAP_CAR @a {} ;
+    MAP_CAR %a {} ;
+    MAP_CAR %a @a {} ;
+    MAP_CDR {} ;
+    MAP_CDR @a {} ;
+    MAP_CDR %a {} ;
+    MAP_CDR %a @a {} ;
+    MAP_CDAR {} ;
+    MAP_CDAR @a {} ;
+    MAP_CDAR %a {} ;
+    MAP_CDAR %a @a {} ;
 
     # valid
     DIP {};
