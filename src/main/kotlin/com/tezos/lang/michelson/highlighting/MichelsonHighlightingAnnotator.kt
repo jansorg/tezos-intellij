@@ -81,6 +81,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         val PAIR_MACRO: MacroMetadata = PairMacroMetadata()
         val UNPAIR_MACRO: MacroMetadata = UnpairMacroMetadata()
         val CADR_MACRO: MacroMetadata = CadrMacroMetadata()
+        val SET_CADR_MACRO: MacroMetadata = SetCadrMacroMetadata()
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -337,6 +338,7 @@ class MichelsonHighlightingAnnotator : Annotator {
             macroName.startsWith('P') -> annotateMacro(PAIR_MACRO, psi, blockCount, holder)
             macroName.startsWith('U') -> annotateMacro(UNPAIR_MACRO, psi, blockCount, holder)
             macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateMacro(CADR_MACRO, psi, blockCount, holder)
+            macroName.startsWith("SET_C")  -> annotateMacro(SET_CADR_MACRO, psi, blockCount, holder)
         }
     }
 

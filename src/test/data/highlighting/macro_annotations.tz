@@ -3,9 +3,28 @@ storage unit;
 code
   {
     # unsupported annotations for CDAR
+    CAR <error descr="Unexpected type annotation">:t</error> ;
+    CDR <error descr="Unexpected type annotation">:t</error> ;
     CDAR <error descr="Unexpected type annotation">:t</error> ;
     CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> ;
     CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> ;
+    <error descr="No blocks expected.">CAR</error> {} ;
+    <error descr="No blocks expected.">CAR</error> {} {} ;
+    <error descr="No blocks expected.">CDR</error> {} ;
+    <error descr="No blocks expected.">CDAR</error> {} ;
+    <error descr="No blocks expected.">CAAR</error> {} ;
+
+    # unsupported annotations for SET_CDAR
+    SET_CAR <error descr="Unexpected type annotation">:t</error> ;
+    SET_CDR <error descr="Unexpected type annotation">:t</error> ;
+    SET_CDAR <error descr="Unexpected type annotation">:t</error> ;
+    SET_CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> ;
+    SET_CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> ;
+    <error descr="No blocks expected.">SET_CAR</error> {} ;
+    <error descr="No blocks expected.">SET_CAR</error> {} {} ;
+    <error descr="No blocks expected.">SET_CDR</error> {} ;
+    <error descr="No blocks expected.">SET_CDAR</error> {} ;
+    <error descr="No blocks expected.">SET_CAAR</error> {} ;
 
     # Unsupported annotations to DIP and DUP and/r unsupported blocks
     <error descr="One block expected">DIP</error> ;
@@ -69,10 +88,26 @@ code
     UNPAPAIR <error descr="Unexpected type annotation">:a</error> <error descr="Unexpected type annotation">:b</error> <error descr="Unexpected type annotation">:c</error> %a %b %c <error descr="Unexpected field annotation">%d</error> @a @b @c <error descr="Unexpected variable annotation">@d</error> ;
 
     # valid annotations for CDAR
+    CAR ;
+    CDR ;
     CDAR ;
     CDAR @a ;
     CDAR %a ;
     CDAR @a %a ;
+
+    # valid SET_CDAR
+    SET_CAR ;
+    SET_CAR @a ;
+    SET_CAR %a ;
+    SET_CAR %a @a ;
+    SET_CDR ;
+    SET_CDR @a ;
+    SET_CDR %a ;
+    SET_CDR %a @a ;
+    SET_CDAR ;
+    SET_CDAR @a ;
+    SET_CDAR %a ;
+    SET_CDAR %a @a ;
 
     # valid
     DIP {};
