@@ -8,11 +8,11 @@ code
     CDAR <error descr="Unexpected type annotation">:t</error> ;
     CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> ;
     CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> ;
-    <error descr="No blocks expected.">CAR</error> {} ;
-    <error descr="No blocks expected.">CAR</error> {} {} ;
-    <error descr="No blocks expected.">CDR</error> {} ;
-    <error descr="No blocks expected.">CDAR</error> {} ;
-    <error descr="No blocks expected.">CAAR</error> {} ;
+    CAR <error descr="Unexpected code block">{}</error> ;
+    CAR <error descr="Unexpected code block">{}</error> <error descr="Unexpected code block">{}</error> ;
+    CDR <error descr="Unexpected code block">{}</error> ;
+    CDAR <error descr="Unexpected code block">{}</error> ;
+    CAAR <error descr="Unexpected code block">{}</error> ;
 
     # unsupported annotations for SET_CDAR
     SET_CAR <error descr="Unexpected type annotation">:t</error> ;
@@ -20,11 +20,11 @@ code
     SET_CDAR <error descr="Unexpected type annotation">:t</error> ;
     SET_CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> ;
     SET_CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> ;
-    <error descr="No blocks expected.">SET_CAR</error> {} ;
-    <error descr="No blocks expected.">SET_CAR</error> {} {} ;
-    <error descr="No blocks expected.">SET_CDR</error> {} ;
-    <error descr="No blocks expected.">SET_CDAR</error> {} ;
-    <error descr="No blocks expected.">SET_CAAR</error> {} ;
+    SET_CAR <error descr="Unexpected code block">{}</error> ;
+    SET_CAR <error descr="Unexpected code block">{}</error> <error descr="Unexpected code block">{}</error> ;
+    SET_CDR <error descr="Unexpected code block">{}</error> ;
+    SET_CDAR <error descr="Unexpected code block">{}</error> ;
+    SET_CAAR <error descr="Unexpected code block">{}</error> ;
 
     # unsupported annotations for MAP_CDAR
     MAP_CAR <error descr="Unexpected type annotation">:t</error> {} ;
@@ -33,8 +33,8 @@ code
     MAP_CDAR <error descr="Unexpected type annotation">:t</error> <error descr="Unexpected type annotation">:t</error> {} ;
     MAP_CDAR @a <error descr="Unexpected variable annotation">@b</error> %a <error descr="Unexpected field annotation">%b</error> {} ;
     <error descr="Expected one block.">MAP_CAR</error> ;
-    <error descr="Only one block expected.">MAP_CAR</error> {} {} ;
-    <error descr="Only one block expected.">MAP_CAR</error> @a %b {} {} ;
+    MAP_CAR {} <error descr="Unexpected code block">{}</error> ;
+    MAP_CAR @a %b {} <error descr="Unexpected code block">{}</error> ;
 
     # Unsupported annotations to DIP and DUP and/r unsupported blocks
     <error descr="One block expected">DIP</error> ;
@@ -46,7 +46,7 @@ code
     DIP <error descr="Unexpected annotation">:a</error> <error descr="Unexpected annotation">@a</error> <error descr="Unexpected annotation">%a</error> {} ;
     <error descr="One block expected">DIP</error> {} {} ;
     <error descr="Expected one block.">DIIIP</error> ;
-    <error descr="Only one block expected.">DIIIP</error> {} {} ;
+    DIIIP {} <error descr="Unexpected code block">{}</error> ;
     <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected type annotation">:a</error> ;
     <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected variable annotation">@a</error> ;
     <error descr="Expected one block.">DIIIP</error> <error descr="Unexpected field annotation">%a</error> ;
@@ -57,19 +57,19 @@ code
     DUP <error descr="Unsupported annotation">:a</error> ;
     DUP <error descr="Unsupported annotation">%a</error> ;
     DUP @a <error descr="Only one variable annotation supported">@b</error> ;
-    <error descr="No blocks expected.">DUUUP</error> {} ;
+    DUUUP <error descr="Unexpected code block">{}</error> ;
     DUUUP <error descr="Unexpected type annotation">:a</error> ;
     DUUUP <error descr="Unexpected field annotation">%a</error> ;
     DUUUP @a <error descr="Unexpected variable annotation">@b</error> ;
 
     # Unsupported blocks
-    <error descr="No blocks expected.">PAIR</error> {} ;
-    <error descr="No blocks expected.">PAIR</error> :t {} ;
-    <error descr="No blocks expected.">PAIR</error> {} ;
-    <error descr="No blocks expected.">PAIR</error> :t {} {} ;
+    PAIR <error descr="Unexpected code block">{}</error> ;
+    PAIR :t <error descr="Unexpected code block">{}</error> ;
+    PAIR <error descr="Unexpected code block">{}</error> ;
+    PAIR :t <error descr="Unexpected code block">{}</error> <error descr="Unexpected code block">{}</error> ;
 
-    <error descr="No blocks expected.">UNPAIR</error> {} ;
-    <error descr="No blocks expected.">UNPAIR</error> {} {} ;
+    UNPAIR <error descr="Unexpected code block">{}</error> ;
+    UNPAIR <error descr="Unexpected code block">{}</error> <error descr="Unexpected code block">{}</error> ;
 
     # Incorrectly built dynamic macros
     PAI<error descr="Unexpected 'I'">IR</error> ;

@@ -46,19 +46,6 @@ class MichelsonHighlightingAnnotator : Annotator {
         // instructions which expect one type as argument
         val INSTRUCTIONS_ONE_TYPE = setOf("CONTRACT", "EMPTY_SET", "LEFT", "NIL", "NONE", "RIGHT", "UNPACK")
 
-        // macros which support no arguments
-        val MACROS_NO_ARGS = setOf(
-                "CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE",
-                "ASSERT", "ASSERT_EQ", "ASSERT_NEQ", "ASSERT_LT", "ASSERT_LE", "ASSERT_GT",
-                "ASSERT_GE", "ASSERT_CMPEQ", "ASSERT_CMPNEQ", "ASSERT_CMPLT", "ASSERT_CMPLE",
-                "ASSERT_CMPGT", "ASSERT_CMPGE", "ASSERT_NONE", "ASSERT_SOME", "ASSERT_LEFT",
-                "ASSERT_RIGHT")
-
-        // macros whch expect two instruction blocks
-        val MACROS_TWO_BLOCKS = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
-                "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
-                "IF_SOME")
-
         val INSTRUCTIONS_NO_ANNOTATION = setOf("DROP", "SWAP", "IF_NONE", "IF_LEFT", "IF_CONS", "ITER", "IF", "LOOP", "LOOP_LEFT", "DIP", "FAILWITH")
 
         val INSTRUCTIONS_ONE_VAR_ANNOTATION = setOf("DUP", "PUSH", "UNIT", "SOME", "NONE", "PAIR", "CAR", "CDR", "LEFT", "RIGHT", "NIL", "CONS", "SIZE",
@@ -76,6 +63,10 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 
+        // macros
+        val ASSERT_MACROS: MacroMetadata = AssertMacroMetadata()
+        val COMPARE_MACROS: MacroMetadata = CompareMacroMetadata()
+        val IF_MACROS: MacroMetadata = ConditionalMacroMetadata()
         val DUUP_MACRO: MacroMetadata = DupMacroMetadata()
         val DIIP_MACRO: MacroMetadata = DipMacroMetadata()
         val PAIR_MACRO: MacroMetadata = PairMacroMetadata()
@@ -317,34 +308,24 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateMacroInstruction(psi: PsiMacroInstruction, holder: AnnotationHolder) {
         val macroName = psi.instructionName ?: throw IllegalStateException("macro name not found")
-        val macroToken = psi.instructionToken ?: throw IllegalStateException("macro token not found")
-
-        val blocks = psi.instructionBlocks
-        val blockCount = blocks.size
-
         when {
-            macroName in MACROS_NO_ARGS && blockCount != 0 -> {
-                holder.createErrorAnnotation(macroToken, "Macro does not support instructions")
-                // fixme validate annotations
-            }
+            // static macros
+            macroName.startsWith("ASSERT") -> annotateMacro(ASSERT_MACROS, psi, holder)
+            macroName.startsWith("ASSERT") -> annotateMacro(COMPARE_MACROS, psi, holder)
+            macroName.startsWith("IF") -> annotateMacro(IF_MACROS, psi, holder)
 
-            macroName in MACROS_TWO_BLOCKS && blockCount != 2 -> {
-                holder.createErrorAnnotation(macroToken, "Two instruction blocks expected")
-                // fixme validate annotations
-            }
-
-            // handle the dynamic macros
-            macroName.startsWith("DII") -> annotateMacro(DIIP_MACRO, psi, blockCount, holder)
-            macroName.startsWith("DUU") -> annotateMacro(DUUP_MACRO, psi, blockCount, holder)
-            macroName.startsWith('P') -> annotateMacro(PAIR_MACRO, psi, blockCount, holder)
-            macroName.startsWith('U') -> annotateMacro(UNPAIR_MACRO, psi, blockCount, holder)
-            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateMacro(CADR_MACRO, psi, blockCount, holder)
-            macroName.startsWith("SET_C") -> annotateMacro(SET_CADR_MACRO, psi, blockCount, holder)
-            macroName.startsWith("MAP_C") -> annotateMacro(MAP_CADR_MACRO, psi, blockCount, holder)
+            // macros with dynamic name
+            macroName.startsWith("DII") -> annotateMacro(DIIP_MACRO, psi, holder)
+            macroName.startsWith("DUU") -> annotateMacro(DUUP_MACRO, psi, holder)
+            macroName.startsWith('P') -> annotateMacro(PAIR_MACRO, psi, holder)
+            macroName.startsWith('U') -> annotateMacro(UNPAIR_MACRO, psi, holder)
+            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateMacro(CADR_MACRO, psi, holder)
+            macroName.startsWith("SET_C") -> annotateMacro(SET_CADR_MACRO, psi, holder)
+            macroName.startsWith("MAP_C") -> annotateMacro(MAP_CADR_MACRO, psi, holder)
         }
     }
 
-    private fun annotateMacro(macroMetadata: MacroMetadata, psi: PsiMacroInstruction, blockCount: Int, holder: AnnotationHolder) {
+    private fun annotateMacro(macroMetadata: MacroMetadata, psi: PsiMacroInstruction, holder: AnnotationHolder) {
         val macroToken = psi.macroToken
         val macro = macroToken.text
 
@@ -356,20 +337,24 @@ class MichelsonHighlightingAnnotator : Annotator {
             return
         }
 
+        val blocks = psi.instructionBlocks
+        val blockCount = blocks.size
         val requiredBlocks = macroMetadata.requiredBlocks()
-        if (blockCount != requiredBlocks) {
-            if (blockCount < requiredBlocks) {
-                if (requiredBlocks == 1) {
-                    holder.createErrorAnnotation(macroToken, "Expected one block.")
-                } else {
-                    holder.createErrorAnnotation(macroToken, "Expected $requiredBlocks blocks, found $blockCount")
-                }
-            } else if (requiredBlocks == 0) {
-                holder.createErrorAnnotation(macroToken, "No blocks expected.")
-            } else if (requiredBlocks == 1) {
-                holder.createErrorAnnotation(macroToken, "Only one block expected.")
+        if (blockCount < requiredBlocks) {
+            // fixme quickfix to add blocks
+            if (requiredBlocks == 1) {
+                holder.createErrorAnnotation(macroToken, "Expected one block.")
             } else {
-                holder.createErrorAnnotation(macroToken, "Only $requiredBlocks blocks expected.")
+                holder.createErrorAnnotation(macroToken, "Expected $requiredBlocks blocks, found $blockCount")
+            }
+        } else {
+            var index = 0
+            for (b in blocks) {
+                if (index >= requiredBlocks) {
+                    // fixme quickfix to remove superfluous blocks
+                    holder.createErrorAnnotation(b, "Unexpected code block")
+                }
+                index++
             }
         }
 
