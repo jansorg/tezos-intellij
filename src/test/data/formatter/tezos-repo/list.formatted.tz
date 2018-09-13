@@ -1,0 +1,9 @@
+parameter unit;
+storage unit;
+code {
+       PUSH int 123;
+       PUSH int 234;
+       PUSH int 456;
+       DROP; DROP;
+       DROP;
+     }

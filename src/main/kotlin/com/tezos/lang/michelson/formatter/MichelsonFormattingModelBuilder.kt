@@ -6,18 +6,31 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonLanguage
-import com.tezos.lang.michelson.MichelsonTypes.SECTION
+import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
 
 /**
  * Formatter for the Michelson language.
  * @author jansorg
  */
 class MichelsonFormattingModelBuilder : FormattingModelBuilder {
+    private companion object {
+        val literals = TokenSet.create(LITERAL_DATA, STRING_LITERAL)
+        val types = TokenSet.create(TYPE, COMPARABLE_TYPE)
+        val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
+        val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
+        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG, COMPLEX_TYPE), MichelsonElementTokenSets.TYPE_NAMES)
+        val allArguments = TokenSet.orSet(types, literals, MichelsonElementTokenSets.TYPE_NAMES, MichelsonElementTokenSets.LITERAL_TOKENS, annotations)
+    }
+
     override fun createModel(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
-        val wrap = Wrap.createWrap(WrapType.NONE, false)
-        val alignment = Alignment.createAlignment()
-        val block = SimpleMichelsonBlock(element.node, wrap, alignment, createSpacingBuilder(settings), Indent.getNoneIndent())
+        val block = MichelsonBlock(
+                element.node,
+                Wrap.createWrap(WrapType.NONE, false),
+                Alignment.createAlignment(), createSpacingBuilder(settings),
+                Indent.getNoneIndent())
 
         return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, block, settings)
     }
@@ -25,7 +38,28 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val builder = SpacingBuilder(settings, MichelsonLanguage)
 
-        builder.between(SECTION, SECTION).none()
+        // section
+        builder.after(SECTION_NAME).lineBreakOrForceSpace(false, true)
+        builder.beforeInside(SEMI, SECTION).lineBreakOrForceSpace(false, false)
+        builder.between(SECTION, SECTION).spacing(0, 0, 1, true, 1)
+
+        // generic spacing
+        builder.between(allToplevel, allArguments).lineBreakOrForceSpace(false, true)
+        builder.between(allArguments, allArguments).lineBreakOrForceSpace(false, true)
+        builder.between(instructions, SEMI).lineBreakOrForceSpace(false, false)
+
+        // types
+        builder.between(LEFT_PAREN, allToplevel).lineBreakOrForceSpace(false, false)
+        builder.between(allToplevel, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
+        builder.between(allArguments, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
+
+        // inside instruction blocks
+        // no space in empty block '{}'
+        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).spaces(0)
+        builder.beforeInside(LEFT_CURLY, BLOCK_INSTRUCTION).parentDependentLFSpacing(1, 1, false, 0)
+        builder.beforeInside(RIGHT_CURLY, BLOCK_INSTRUCTION).parentDependentLFSpacing(1, 1, false, 0)
+        builder.afterInside(LEFT_CURLY, BLOCK_INSTRUCTION).parentDependentLFSpacing(1, 1, false, 0)
+        builder.afterInside(SEMI, BLOCK_INSTRUCTION).spaces(1)
 
         return builder
     }
