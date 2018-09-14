@@ -6,6 +6,7 @@ import com.intellij.psi.PsiConditionalExpression
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.psi.PsiComplexType
 import com.tezos.lang.michelson.psi.PsiGenericInstruction
 
 
@@ -33,6 +34,11 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                 }
                 childType == BLOCK_INSTRUCTION -> {
                     MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), Alignment.createAlignment(), spacing, Indent.getNoneIndent(), parent = this)
+                }
+
+                // align types in complex types which contain at least one complex type
+                (childType == GENERIC_TYPE || childType == LEFT_PAREN) && nodePsi is PsiComplexType && !nodePsi.hasSimpleTypes() -> {
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), blockChildAlign, spacing, Indent.getNormalIndent(), parent = this)
                 }
 
                 childType == GENERIC_INSTRUCTION || childType == MACRO_INSTRUCTION -> {

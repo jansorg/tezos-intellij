@@ -43,4 +43,12 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
     return MichelsonPsiUtil.getTypeToken(this);
   }
 
+  public boolean hasSimpleTypes() {
+    return MichelsonPsiUtil.hasSimpleTypes(this);
+  }
+
+  public boolean hasComplexTypes() {
+    return MichelsonPsiUtil.hasComplexTypes(this);
+  }
+
 }

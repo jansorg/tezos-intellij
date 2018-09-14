@@ -18,12 +18,17 @@ import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
 class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     private companion object {
         val literals = TokenSet.create(LITERAL_DATA, STRING_LITERAL)
+
         val types = TokenSet.create(TYPE, COMPARABLE_TYPE)
+        val allTypes = TokenSet.orSet(types, TokenSet.create(COMPLEX_TYPE, GENERIC_TYPE))
+
         val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
         val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
         val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG, COMPLEX_TYPE), MichelsonElementTokenSets.TYPE_NAMES)
         val allArguments = TokenSet.orSet(types, literals, MichelsonElementTokenSets.TYPE_NAMES, MichelsonElementTokenSets.LITERAL_TOKENS, annotations)
+        val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION)
     }
+
 
     override fun createModel(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
         val block = MichelsonBlock(
@@ -36,15 +41,17 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     }
 
     private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-        val commonSettings = settings.getCommonSettings(MichelsonLanguage)
         val michelsonSettings = settings.getCustomSettings(MichelsonCodeStyleSettings::class.java)
-
-        val builder = SpacingBuilder(settings, MichelsonLanguage)
+        val commonSettings = settings.getCommonSettings(MichelsonLanguage)
+        val builder = SpacingBuilder(commonSettings)
 
         // section
         builder.after(SECTION_NAME).lineBreakOrForceSpace(false, true)
         builder.beforeInside(SEMI, SECTION).lineBreakOrForceSpace(false, false)
         builder.between(SECTION, SECTION).lineBreakInCode()
+
+        builder.beforeInside(TokenSet.create(LEFT_PAREN, GENERIC_TYPE), COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST, true)
+        builder.beforeInside(TokenSet.create(LEFT_PAREN, GENERIC_TYPE), COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
 
         // generic spacing
         builder.between(allToplevel, allArguments).lineBreakOrForceSpace(false, true)
@@ -61,8 +68,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.before(SEMI).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON)
         builder.after(SEMI).spaceIf(commonSettings.SPACE_AFTER_SEMICOLON)
 
-        // wrapping between IF {
-        builder.betweenInside(MichelsonElementTokenSets.INTRUCTIONS_TOKENS, TokenSet.create(BLOCK_INSTRUCTION), GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
+        // wrapping before initial block in instructions
+        builder.betweenInside(MichelsonElementTokenSets.INTRUCTIONS_TOKENS, blockInstructionSet, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
         // wrapping between blocks to enable alignment, e.g. in IF {} {}
         builder.betweenInside(BLOCK_INSTRUCTION, BLOCK_INSTRUCTION, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.ALIGN_BLOCKS, true)
 
@@ -71,5 +78,14 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
 
     override fun getRangeAffectingIndent(file: PsiFile, offset: Int, elementAtOffset: ASTNode): TextRange? {
         return null
+    }
+
+    private fun SpacingBuilder.RuleBuilder.lineBreakOrForceSpace(lbOption: Boolean, spaceOption: Boolean, keepLineBreaks: Boolean): SpacingBuilder {
+        if (lbOption) {
+            return lineBreakInCode()
+        }
+
+        val count = if (spaceOption) 1 else 0
+        return this.spacing(count, count, 0, keepLineBreaks, 0)
     }
 }

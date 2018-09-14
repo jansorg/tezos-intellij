@@ -106,6 +106,15 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
         if (file.contains(Paths.get("no_align_blocks"))) {
             customMichelson.ALIGN_BLOCKS = false
         }
+        if (file.contains(Paths.get("wrap_first_block"))) {
+            customMichelson.WRAP_FIRST_BLOCK = true
+        }
+        if (file.contains(Paths.get("complex_type_align"))) {
+            customMichelson.COMPLEX_TYPE_ALIGN = true
+        }
+        if (file.contains(Paths.get("complex_type_wrap_first"))) {
+            customMichelson.COMPLEX_TYPE_WRAP_FIRST = true
+        }
 
         return settings
     }

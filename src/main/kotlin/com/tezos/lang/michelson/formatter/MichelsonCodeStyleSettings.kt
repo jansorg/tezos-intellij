@@ -10,4 +10,7 @@ import com.tezos.lang.michelson.MichelsonLanguage
 class MichelsonCodeStyleSettings(container: CodeStyleSettings) : CustomCodeStyleSettings(MichelsonLanguage.id, container) {
     var WRAP_FIRST_BLOCK = false
     var ALIGN_BLOCKS = true
+
+    var COMPLEX_TYPE_WRAP_FIRST = false
+    var COMPLEX_TYPE_ALIGN = false
 }

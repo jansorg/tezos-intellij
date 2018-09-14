@@ -16,4 +16,8 @@ public interface PsiComplexType extends PsiType {
   @NotNull
   PsiElement getTypeToken();
 
+  boolean hasSimpleTypes();
+
+  boolean hasComplexTypes();
+
 }

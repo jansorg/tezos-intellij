@@ -55,6 +55,16 @@ object MichelsonPsiUtil {
         return type.firstChild
     }
 
+    @JvmStatic
+    fun hasSimpleTypes(type: PsiComplexType) : Boolean{
+        return type.typeList.filter { it is PsiGenericType }.isNotEmpty()
+    }
+
+    @JvmStatic
+    fun hasComplexTypes(type: PsiComplexType) : Boolean{
+        return type.typeList.filter { it is PsiComplexType }.isNotEmpty()
+    }
+
     /**
      * Returns the name of the instruction.
      * Instuction blocks don't have a unique instruction name. 'null' is returned in this case.
