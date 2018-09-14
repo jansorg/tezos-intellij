@@ -97,9 +97,14 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
             settings.copyFrom(settingsOverride)
         }
 
-        val michelsonSettings = settings.getCommonSettings(MichelsonLanguage)
+        val commonMichelson = settings.getCommonSettings(MichelsonLanguage)
+        val customMichelson = settings.getCustomSettings(MichelsonCodeStyleSettings::class.java)
+
         if (file.contains(Paths.get("no_blank_lines"))) {
-            michelsonSettings.KEEP_BLANK_LINES_IN_CODE = 0
+            commonMichelson.KEEP_BLANK_LINES_IN_CODE = 0
+        }
+        if (file.contains(Paths.get("no_align_blocks"))) {
+            customMichelson.ALIGN_BLOCKS = false
         }
 
         return settings

@@ -8,5 +8,6 @@ import com.tezos.lang.michelson.MichelsonLanguage
  * @author jansorg
  */
 class MichelsonCodeStyleSettings(container: CodeStyleSettings) : CustomCodeStyleSettings(MichelsonLanguage.id, container) {
-
+    var WRAP_FIRST_BLOCK = false
+    var ALIGN_BLOCKS = true
 }

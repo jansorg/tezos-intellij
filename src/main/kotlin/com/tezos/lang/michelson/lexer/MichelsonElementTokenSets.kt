@@ -40,6 +40,7 @@ object MichelsonElementTokenSets {
             MichelsonTypes.TYPE_NAME,
             MichelsonTypes.TYPE_NAME_COMPARABLE)
 
+    val INTRUCTIONS_TOKENS = TokenSet.create(MichelsonTypes.INSTRUCTION_TOKEN, MichelsonTypes.MACRO_TOKEN)
 
     val LITERAL_TOKENS = TokenSet.create(
             MichelsonTypes.NONE,

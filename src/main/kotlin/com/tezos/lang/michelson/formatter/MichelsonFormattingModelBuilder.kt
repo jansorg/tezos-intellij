@@ -36,6 +36,9 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     }
 
     private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
+        val commonSettings = settings.getCommonSettings(MichelsonLanguage)
+        val michelsonSettings = settings.getCustomSettings(MichelsonCodeStyleSettings::class.java)
+
         val builder = SpacingBuilder(settings, MichelsonLanguage)
 
         // section
@@ -48,18 +51,20 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.between(allArguments, allArguments).lineBreakOrForceSpace(false, true)
         builder.between(instructions, SEMI).lineBreakOrForceSpace(false, false)
 
-        // types
-        builder.between(LEFT_PAREN, allToplevel).lineBreakOrForceSpace(false, false)
-        builder.between(allToplevel, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
-        builder.between(allArguments, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
+        builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
-        // inside instruction blocks
-        // no space in empty block '{}'
-        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).spaces(0)
-        builder.beforeInside(LEFT_CURLY, BLOCK_INSTRUCTION).parentDependentLFSpacing(1, 1, false, 0)
-        builder.beforeInside(RIGHT_CURLY, BLOCK_INSTRUCTION).parentDependentLFSpacing(1, 1, false, 0)
-        builder.afterInside(LEFT_CURLY, BLOCK_INSTRUCTION).parentDependentLFSpacing(1, 1, false, 0)
-        builder.afterInside(SEMI, BLOCK_INSTRUCTION).spaces(1)
+        builder.between(LEFT_CURLY, RIGHT_CURLY).none()
+        builder.before(RIGHT_CURLY).parentDependentLFSpacing(1, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
+        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).none()
+        builder.after(LEFT_CURLY).spaces(1, true)
+
+        builder.before(SEMI).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON)
+        builder.after(SEMI).spaceIf(commonSettings.SPACE_AFTER_SEMICOLON)
+
+        // wrapping between IF {
+        builder.betweenInside(MichelsonElementTokenSets.INTRUCTIONS_TOKENS, TokenSet.create(BLOCK_INSTRUCTION), GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
+        // wrapping between blocks to enable alignment, e.g. in IF {} {}
+        builder.betweenInside(BLOCK_INSTRUCTION, BLOCK_INSTRUCTION, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.ALIGN_BLOCKS, true)
 
         return builder
     }

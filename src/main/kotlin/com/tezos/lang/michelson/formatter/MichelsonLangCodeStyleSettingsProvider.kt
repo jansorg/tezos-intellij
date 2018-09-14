@@ -14,17 +14,22 @@ import com.tezos.lang.michelson.MichelsonLanguage
 class MichelsonLangCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
         if (settingsType == LanguageCodeStyleSettingsProvider.SettingsType.BLANK_LINES_SETTINGS) {
-            consumer.showStandardOptions("KEEP_BLANK_LINES_IN_CODE")
+            consumer.showStandardOptions(
+                    "SPACE_BEFORE_SEMICOLON", "SPACE_AFTER_SEMICOLON",
+                    "KEEP_BLANK_LINES_IN_CODE",
+                    "KEEP_BLANK_LINES_BEFORE_RBRACE")
         }
     }
 
     override fun getDefaultCommonSettings(): CommonCodeStyleSettings? {
         val settings = CommonCodeStyleSettings(MichelsonLanguage)
-        settings.KEEP_LINE_BREAKS = true; // already default, but to document our default style
+        settings.KEEP_LINE_BREAKS = true; // default, but we do want to document our default style
         settings.KEEP_BLANK_LINES_IN_CODE = 1
+        settings.KEEP_BLANK_LINES_BEFORE_RBRACE = 0
 
         val indentOptions = settings.initIndentOptions()
         indentOptions.INDENT_SIZE = 2
+        indentOptions.USE_TAB_CHARACTER = false //default
 
         return settings
     }
