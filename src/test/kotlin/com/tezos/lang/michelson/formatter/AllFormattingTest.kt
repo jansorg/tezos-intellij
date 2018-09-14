@@ -8,6 +8,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.rt.execution.junit.FileComparisonFailure
 import com.intellij.util.containers.ContainerUtil
 import com.tezos.lang.michelson.MichelsonFixtureTest
+import com.tezos.lang.michelson.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTestUtils.dataPath
 import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
 import junit.framework.TestCase
@@ -56,20 +57,18 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
         testFileFormatting(dataRootPath.resolve(michelsonFile))
     }
 
-    fun testFileFormatting(file: Path, settingsOverride: CodeStyleSettings? = null) {
+    private fun testFileFormatting(file: Path, settingsOverride: CodeStyleSettings? = null) {
         val relativeFile = dataRootPath.relativize(file)
         myFixture.configureByFiles(relativeFile.toString())
 
-        val oldSettings = CodeStyleSettingsManager.getSettings(project).clone()
         WriteCommandAction.runWriteCommandAction(project) {
+            val settingsManager = CodeStyleSettingsManager.getInstance(project)
             try {
-                if (settingsOverride != null) {
-                    CodeStyleSettingsManager.getSettings(project).copyFrom(settingsOverride)
-                }
+                settingsManager.temporarySettings = codeStyleSettings(file, settingsOverride)
 
                 CodeStyleManager.getInstance(project).reformatText(myFixture.file, ContainerUtil.newArrayList<TextRange>(myFixture.file.textRange))
             } finally {
-                CodeStyleSettingsManager.getSettings(project).copyFrom(oldSettings)
+                settingsManager.dropTemporarySettings()
             }
         }
 
@@ -90,5 +89,19 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
                 throw e
             }
         }
+    }
+
+    fun codeStyleSettings(file: Path, settingsOverride: CodeStyleSettings?): CodeStyleSettings {
+        val settings = CodeStyleSettingsManager.getSettings(project).clone()
+        if (settingsOverride != null) {
+            settings.copyFrom(settingsOverride)
+        }
+
+        val michelsonSettings = settings.getCommonSettings(MichelsonLanguage)
+        if (file.contains(Paths.get("no_blank_lines"))) {
+            michelsonSettings.KEEP_BLANK_LINES_IN_CODE = 0
+        }
+
+        return settings
     }
 }

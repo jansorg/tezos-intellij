@@ -28,7 +28,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                 }
 
                 elementType == GENERIC_INSTRUCTION || elementType == MACRO_INSTRUCTION -> {
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG, true), Alignment.createAlignment(), spacing, Indent.getSpaceIndent(2))
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG, true), Alignment.createAlignment(), spacing, Indent.getNormalIndent())
                 }
 
                 elementType == LEFT_CURLY -> {

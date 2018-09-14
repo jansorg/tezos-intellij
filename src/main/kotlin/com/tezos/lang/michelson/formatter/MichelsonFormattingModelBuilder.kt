@@ -41,7 +41,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         // section
         builder.after(SECTION_NAME).lineBreakOrForceSpace(false, true)
         builder.beforeInside(SEMI, SECTION).lineBreakOrForceSpace(false, false)
-        builder.between(SECTION, SECTION).spacing(0, 0, 1, true, 1)
+        builder.between(SECTION, SECTION).lineBreakInCode()
 
         // generic spacing
         builder.between(allToplevel, allArguments).lineBreakOrForceSpace(false, true)

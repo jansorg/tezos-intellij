@@ -1,6 +1,9 @@
 parameter (int          :t);
 
+
 storage (pair   :a  int         %a      string           %b );
+
+
 
 code {
 
