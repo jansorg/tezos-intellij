@@ -1,4 +1,3 @@
 parameter (pair (or (or int string) (or string int)) (pair (pair string int) (pair int string)));
-storage (pair (pair string int)
-              (or string int));
+storage (pair (pair string int) (or string int));
 code {}

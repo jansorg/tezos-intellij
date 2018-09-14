@@ -50,7 +50,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.beforeInside(SEMI, SECTION).lineBreakOrForceSpace(false, false)
         builder.between(SECTION, SECTION).lineBreakInCode()
 
-        builder.beforeInside(TokenSet.create(LEFT_PAREN, GENERIC_TYPE), COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST, true)
+        builder.betweenInside(TokenSet.create(TYPE_NAME), TokenSet.create(LEFT_PAREN, GENERIC_TYPE), COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST, true)
+        builder.betweenInside(RIGHT_PAREN, LEFT_PAREN, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true)
         builder.beforeInside(TokenSet.create(LEFT_PAREN, GENERIC_TYPE), COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
 
         // generic spacing
