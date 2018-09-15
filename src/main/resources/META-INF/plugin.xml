@@ -17,6 +17,12 @@
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.2</b>
+        <ul>
+            <li>Highlighting errors in macro names and macro arguments (DUP, DIP, PAIR, UNPAIR, CADR, SET_CADR, MAP_CADR and variants)</li>
+            <li>Basic formatting of Michelson files</li>
+        </ul><br><br>
+
         <b>Version 0.1</b>
         <ul>
             <li>Initial release</li>
