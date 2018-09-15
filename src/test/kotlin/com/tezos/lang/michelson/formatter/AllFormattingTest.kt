@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import java.lang.reflect.Field
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -100,22 +101,46 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
         val commonMichelson = settings.getCommonSettings(MichelsonLanguage)
         val customMichelson = settings.getCustomSettings(MichelsonCodeStyleSettings::class.java)
 
-        if (file.contains(Paths.get("no_blank_lines"))) {
-            commonMichelson.KEEP_BLANK_LINES_IN_CODE = 0
+        val allCommonSettings = mutableMapOf<String, Field>()
+        commonMichelson.javaClass.fields.forEach {
+            allCommonSettings[it.name] = it
         }
-        if (file.contains(Paths.get("no_align_blocks"))) {
-            customMichelson.ALIGN_BLOCKS = false
+
+        val allCustomSettings = mutableMapOf<String, Field>()
+        val javaClass = customMichelson.javaClass
+        javaClass.fields.forEach {
+            allCustomSettings[it.name] = it
         }
-        if (file.contains(Paths.get("wrap_first_block"))) {
-            customMichelson.WRAP_FIRST_BLOCK = true
-        }
-        if (file.contains(Paths.get("complex_type_align"))) {
-            customMichelson.COMPLEX_TYPE_ALIGN = true
-        }
-        if (file.contains(Paths.get("complex_type_wrap_first"))) {
-            customMichelson.COMPLEX_TYPE_WRAP_FIRST = true
+
+        val fileSettings = loadSettings(file.resolveSibling("settings.txt"))
+        for ((k, v) in fileSettings.entries) {
+            if (allCommonSettings.containsKey(k)) {
+                allCommonSettings[k]?.set(commonMichelson, v)
+            } else if (allCustomSettings.containsKey(k)) {
+                allCustomSettings[k]?.set(customMichelson, v)
+            } else {
+                throw java.lang.IllegalStateException("unable to apply settings $k=$v")
+            }
         }
 
         return settings
+    }
+
+    fun loadSettings(path: Path): Map<String, Any> {
+        if (Files.notExists(path)) {
+            return emptyMap()
+        }
+
+        val result = mutableMapOf<String, Any>()
+        Files.readAllLines(path).stream()
+                .map { it.split('=') }
+                .map { Pair(it[0], it[1]) }
+                .forEach {
+                    result[it.first] = it.second.toIntOrNull()
+                            ?: if (it.second == "true") true else if (it.second == "false") false else null
+                            ?: throw IllegalStateException("Unexpected setting $it")
+                }
+
+        return result
     }
 }

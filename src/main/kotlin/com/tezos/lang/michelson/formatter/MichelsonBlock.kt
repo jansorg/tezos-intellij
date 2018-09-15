@@ -56,7 +56,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                     MichelsonBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), blockChildAlign, spacing, Indent.getNormalIndent(), parent = this)
                 }
 
-                childType != WHITE_SPACE -> {
+                childType != WHITE_SPACE && child.textLength > 0 -> { // exclude whitespace and empty error markers
                     MichelsonBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), spacing, Indent.getNoneIndent(), parent = this)
                 }
 

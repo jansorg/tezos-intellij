@@ -4,8 +4,12 @@ import com.intellij.application.options.IndentOptionsEditor
 import com.intellij.application.options.SmartIndentOptionsEditor
 import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.BlankLinesOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.SpacingOption
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
+import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider.SettingsType.BLANK_LINES_SETTINGS
+import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider.SettingsType.WRAPPING_AND_BRACES_SETTINGS
 import com.tezos.lang.michelson.MichelsonLanguage
 
 /**
@@ -13,11 +17,28 @@ import com.tezos.lang.michelson.MichelsonLanguage
  */
 class MichelsonLangCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
-        if (settingsType == LanguageCodeStyleSettingsProvider.SettingsType.BLANK_LINES_SETTINGS) {
-            consumer.showStandardOptions(
-                    "SPACE_BEFORE_SEMICOLON", "SPACE_AFTER_SEMICOLON",
-                    "KEEP_BLANK_LINES_IN_CODE",
-                    "KEEP_BLANK_LINES_BEFORE_RBRACE")
+        when (settingsType) {
+            BLANK_LINES_SETTINGS -> {
+                consumer.showStandardOptions(
+                        BlankLinesOption.KEEP_BLANK_LINES_IN_CODE.name,
+                        BlankLinesOption.KEEP_BLANK_LINES_BEFORE_RBRACE.name)
+            }
+
+            SettingsType.SPACING_SETTINGS -> {
+                consumer.showStandardOptions(
+                        SpacingOption.SPACE_WITHIN_PARENTHESES.name,
+                        SpacingOption.SPACE_BEFORE_SEMICOLON.name,
+                        SpacingOption.SPACE_AFTER_SEMICOLON.name)
+            }
+
+            WRAPPING_AND_BRACES_SETTINGS -> {
+            }
+
+            SettingsType.INDENT_SETTINGS -> {
+            }
+
+            SettingsType.COMMENTER_SETTINGS -> {
+            }
         }
     }
 

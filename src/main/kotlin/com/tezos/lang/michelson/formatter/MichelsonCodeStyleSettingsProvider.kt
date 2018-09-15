@@ -31,10 +31,11 @@ private class SettingsConfigurable(settings: CodeStyleSettings, originalSettings
 
 private class TabbedCodeStylePanel(currentSettings: CodeStyleSettings, settings: CodeStyleSettings) : TabbedLanguageCodeStylePanel(MichelsonLanguage, currentSettings, settings) {
     override fun initTabs(settings: CodeStyleSettings) {
-//        addIndentOptionsTab(settings)
-//        addSpacesTab(settings)
+        addIndentOptionsTab(settings)
+        addSpacesTab(settings)
         addBlankLinesTab(settings)
-//        addWrappingAndBracesTab(settings)
-//        addTab(MichelsonCodeStylePanel(settings))
+        addWrappingAndBracesTab(settings)
+
+        addTab(MichelsonCodeStylePanel(settings))
     }
 }
