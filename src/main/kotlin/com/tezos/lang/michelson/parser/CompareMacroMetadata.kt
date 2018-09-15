@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.parser
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 class CompareMacroMetadata : MacroMetadata {
-    internal companion object {
+    companion object {
         val NAMES = setOf("CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE")
     }
 

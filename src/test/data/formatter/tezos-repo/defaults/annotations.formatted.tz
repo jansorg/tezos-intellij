@@ -1,0 +1,22 @@
+parameter (int :t);
+
+storage (pair :a int %a string %b);
+
+code {
+
+       PUSH @a int 123;
+
+       PUSH (pair :a (string %b) (int %c)) (Pair "abc" 123); DROP;
+
+       PUSH (option :a (string %b)) (Some "abc"); DROP;
+       PUSH (option :a (string %b)) (None); DROP;
+       PUSH (or :a (string %b) (int %c)) (Left "abc"); DROP;
+
+       PAIR %a; DROP;
+
+       PAIR %a %b; DROP;
+
+       CDR;
+       NIL operation;
+       PAIR;
+     };

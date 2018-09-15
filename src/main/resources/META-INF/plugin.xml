@@ -48,6 +48,11 @@
         <internalFileTemplate name="Michelson File" />
         <internalFileTemplate name="Michelson Contract" />
 
+        <!-- formatter -->
+        <lang.formatter language="Michelson" implementationClass="com.tezos.lang.michelson.formatter.MichelsonFormattingModelBuilder"/>
+        <codeStyleSettingsProvider implementation="com.tezos.lang.michelson.formatter.MichelsonCodeStyleSettingsProvider" />
+        <langCodeStyleSettingsProvider implementation="com.tezos.lang.michelson.formatter.MichelsonLangCodeStyleSettingsProvider" />
+
         <!-- inspections -->
 
         <!-- intentions -->

@@ -36,4 +36,16 @@ object MichelsonElementTokenSets {
             MichelsonTypes.VAR_ANNOTATION_TOKEN,
             MichelsonTypes.FIELD_ANNOTATION_TOKEN)
 
+    val TYPE_NAMES = TokenSet.create(
+            MichelsonTypes.TYPE_NAME,
+            MichelsonTypes.TYPE_NAME_COMPARABLE)
+
+    val INTRUCTIONS_TOKENS = TokenSet.create(MichelsonTypes.INSTRUCTION_TOKEN, MichelsonTypes.MACRO_TOKEN)
+
+    val LITERAL_TOKENS = TokenSet.create(
+            MichelsonTypes.NONE,
+            MichelsonTypes.TRUE,
+            MichelsonTypes.FALSE,
+            MichelsonTypes.UNIT,
+            MichelsonTypes.INT)
 }

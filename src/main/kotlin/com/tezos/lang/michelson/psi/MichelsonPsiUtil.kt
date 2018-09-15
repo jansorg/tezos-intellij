@@ -7,6 +7,18 @@ import com.intellij.psi.PsiElement
  */
 object MichelsonPsiUtil {
     @JvmStatic
+    fun getSectionType(type: PsiSection): PsiSectionType {
+        val token = type.firstChild?.text
+        return when (token) {
+            "parameter" -> PsiSectionType.PARAMETER
+            "storage" -> PsiSectionType.STORAGE
+            "return" -> PsiSectionType.RETURN
+            "code" -> PsiSectionType.CODE
+            else -> throw IllegalStateException("unsupported section type $token")
+        }
+    }
+
+    @JvmStatic
     fun getTypeNameString(type: PsiType): String {
         return when (type) {
             is PsiComparableType -> type.typeToken.text
@@ -41,6 +53,16 @@ object MichelsonPsiUtil {
     @JvmStatic
     fun getTypeToken(type: PsiComplexType): PsiElement {
         return type.firstChild
+    }
+
+    @JvmStatic
+    fun hasSimpleTypes(type: PsiComplexType) : Boolean{
+        return type.typeList.filter { it is PsiGenericType }.isNotEmpty()
+    }
+
+    @JvmStatic
+    fun hasComplexTypes(type: PsiComplexType) : Boolean{
+        return type.typeList.filter { it is PsiComplexType }.isNotEmpty()
     }
 
     /**

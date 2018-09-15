@@ -1,6 +1,5 @@
 package com.tezos.lang.michelson.parser
 
-import com.google.common.collect.Lists
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
@@ -10,6 +9,7 @@ import com.tezos.lang.michelson.MichelsonTestUtils
 import org.junit.Assert
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 import java.util.stream.Collectors
 
 /**
@@ -19,7 +19,7 @@ abstract class AbstractParserTest : LightPlatformCodeInsightFixtureTestCase() {
     fun findErrors(file: PsiFile): List<String> {
         Assert.assertNotNull("File not found", file)
 
-        val errors = Lists.newLinkedList<PsiErrorElement>()
+        val errors = LinkedList<PsiErrorElement>()
         file.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitErrorElement(element: PsiErrorElement) {
                 errors.add(element)
