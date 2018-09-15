@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.parser
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 class ConditionalMacroMetadata : MacroMetadata {
-    internal companion object {
+    companion object {
         val NAMES = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
                 "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
                 "IF_SOME")

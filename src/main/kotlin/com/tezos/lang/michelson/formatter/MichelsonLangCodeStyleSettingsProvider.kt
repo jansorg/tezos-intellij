@@ -21,7 +21,7 @@ class MichelsonLangCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
         }
     }
 
-    override fun getDefaultCommonSettings(): CommonCodeStyleSettings? {
+    override fun getDefaultCommonSettings(): CommonCodeStyleSettings {
         val settings = CommonCodeStyleSettings(MichelsonLanguage)
         settings.KEEP_LINE_BREAKS = true; // default, but we do want to document our default style
         settings.KEEP_BLANK_LINES_IN_CODE = 1

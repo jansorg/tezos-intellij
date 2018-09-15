@@ -64,7 +64,7 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
         WriteCommandAction.runWriteCommandAction(project) {
             val settingsManager = CodeStyleSettingsManager.getInstance(project)
             try {
-                settingsManager.temporarySettings = codeStyleSettings(file, settingsOverride)
+                settingsManager.setTemporarySettings(codeStyleSettings(file, settingsOverride))
 
                 CodeStyleManager.getInstance(project).reformatText(myFixture.file, ContainerUtil.newArrayList<TextRange>(myFixture.file.textRange))
             } finally {

@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.parser
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 class AssertMacroMetadata : MacroMetadata {
-    internal companion object {
+    companion object {
         val NAMES = setOf("ASSERT", "ASSERT_EQ", "ASSERT_NEQ", "ASSERT_LT", "ASSERT_LE", "ASSERT_GT",
                 "ASSERT_GE", "ASSERT_CMPEQ", "ASSERT_CMPNEQ", "ASSERT_CMPLT", "ASSERT_CMPLE",
                 "ASSERT_CMPGT", "ASSERT_CMPGE", "ASSERT_NONE", "ASSERT_SOME", "ASSERT_LEFT",

@@ -1,9 +1,9 @@
 package com.tezos.lang.michelson.psi;
 
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -20,7 +20,7 @@ interface PsiAnnotated extends MichelsonComposite {
     }
 
     default List<PsiAnnotation> findAnnotations(PsiAnnotationType type) {
-        List<PsiAnnotation> result = Lists.newLinkedList();
+        List<PsiAnnotation> result = new LinkedList<>();
 
         acceptChildren(new PsiVisitor<Void>() {
             @Override
