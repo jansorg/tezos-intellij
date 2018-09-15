@@ -57,6 +57,24 @@ Macro and instructions are highlighted differently.
 
 <img src="docs/colorsettings.png"/>
 
+### Code style & formatting
+
+Some of the built-in code style settings are applied to Michelson files.
+These are:
+- Keep blank lines in code
+- Keep blank lines before right braces
+- Space withing parentheses
+- Space before semicolon
+- Space after semicolon
+
+A few options which are specific to Michelson are available:
+- Align blocks of statements
+- Warp first block of statements
+- Wrap first type of complex types
+- Align types of complex types
+
+<img src="docs/codestyle_michelson.png"/>
+
 # License
 This software is licensed under the BSD 3-clause license, see LICENSE.txt for details.
 
