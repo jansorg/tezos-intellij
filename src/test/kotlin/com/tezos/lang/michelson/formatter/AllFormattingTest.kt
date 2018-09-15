@@ -112,7 +112,7 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
             allCustomSettings[it.name] = it
         }
 
-        val fileSettings = loadSettings(file.resolveSibling("settings.txt"))
+        val fileSettings = loadSettings(file.resolveSibling("codestyle.txt"))
         for ((k, v) in fileSettings.entries) {
             if (allCommonSettings.containsKey(k)) {
                 allCommonSettings[k]?.set(commonMichelson, v)
@@ -133,6 +133,7 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
 
         val result = mutableMapOf<String, Any>()
         Files.readAllLines(path).stream()
+                .filter { !it.trim().startsWith("//") }
                 .map { it.split('=') }
                 .map { Pair(it[0], it[1]) }
                 .forEach {

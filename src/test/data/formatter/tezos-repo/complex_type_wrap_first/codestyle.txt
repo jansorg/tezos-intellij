@@ -1,0 +1,2 @@
+// has not effect because "ALIGN_TYPES" must be enabled, too, to activate this
+COMPLEX_TYPE_WRAP_FIRST=true
