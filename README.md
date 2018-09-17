@@ -4,9 +4,9 @@ IntelliJ support for the Tezos platform.
 This plugin adds support of technologies and languages used by the
 Tezos platform to the IntelliJ products.
 
-<img src="docs/mainwindow.png"/>
+**Please beware that this is a very early release. A lot of features will be added in the future.**
 
-** Please beware that this is a very early release. A lot of features will be added in the future. **
+<img src="docs/mainwindow.png"/>
 
 ## Reporting issues and whishes
 Please use GitHub's issues to report any issue your uncover. Please free to
@@ -76,7 +76,7 @@ A few options which are specific to Michelson are available:
 <img src="docs/codestyle_michelson.png"/>
 
 # License
-This software is licensed under the BSD 3-clause license, see LICENSE.txt for details.
+This software is licensed under the BSD-3-clause license, see LICENSE.txt for details.
 
 This repository contains script files at `src/test/data/contracts/tezos-repo/`
 which were obtained at https://gitlab.com/tezos/tezos and which are under the MIT license.
