@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonLanguage
-import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
+import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.lexer.MichelsonLexer
 import com.tezos.lang.michelson.psi.impl.MichelsonPsiFileImpl
 
@@ -35,11 +35,11 @@ class MichelsonParserDefinition : ParserDefinition {
 
     override fun getFileNodeType(): IFileElementType = MICHELSON_FILE_ELEMENT_TYPE
 
-    override fun getStringLiteralElements(): TokenSet = MichelsonElementTokenSets.STRING_TOKENS
+    override fun getStringLiteralElements(): TokenSet = MichelsonTokenSets.STRING_TOKENS
 
-    override fun getWhitespaceTokens(): TokenSet = MichelsonElementTokenSets.WHITESPACE_TOKENS
+    override fun getWhitespaceTokens(): TokenSet = MichelsonTokenSets.WHITESPACE_TOKENS
 
-    override fun getCommentTokens(): TokenSet = MichelsonElementTokenSets.COMMENT_TOKENS
+    override fun getCommentTokens(): TokenSet = MichelsonTokenSets.COMMENT_TOKENS
 
     override fun createElement(node: ASTNode): PsiElement = throw UnsupportedOperationException()
 }

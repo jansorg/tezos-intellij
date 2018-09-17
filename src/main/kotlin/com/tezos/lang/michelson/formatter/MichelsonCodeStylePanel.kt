@@ -14,6 +14,7 @@ class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPrevi
     companion object {
         private val COMPLEX_TYPE_GROUP = "Compex types"
         private val STATEMENT_GROUP = "Statements"
+        private val COMMENT_GROUP = "Comments"
     }
 
     init {
@@ -34,8 +35,11 @@ class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPrevi
         showCustomOption(c, MichelsonCodeStyleSettings::WRAP_FIRST_BLOCK.name, "Wrap first block", STATEMENT_GROUP)
         showCustomOption(c, MichelsonCodeStyleSettings::ALIGN_BLOCKS.name, "Align blocks", STATEMENT_GROUP)
 
+        showCustomOption(c, MichelsonCodeStyleSettings::LINE_COMMENT_LEADING_SPACE.name, "Leading space in line comment", COMMENT_GROUP)
+
         initCustomOptions(STATEMENT_GROUP)
         initCustomOptions(COMPLEX_TYPE_GROUP)
+        initCustomOptions(COMMENT_GROUP)
     }
 
 

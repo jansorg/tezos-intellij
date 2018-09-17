@@ -9,7 +9,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTypes.*
-import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
+import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 
 /**
  * Formatter for the Michelson language.
@@ -18,14 +18,12 @@ import com.tezos.lang.michelson.lexer.MichelsonElementTokenSets
 class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     private companion object {
         val literals = TokenSet.create(LITERAL_DATA, STRING_LITERAL)
-
         val types = TokenSet.create(TYPE, COMPARABLE_TYPE)
-        val allTypes = TokenSet.orSet(types, TokenSet.create(COMPLEX_TYPE, GENERIC_TYPE))
 
         val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
         val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
-        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG, COMPLEX_TYPE), MichelsonElementTokenSets.TYPE_NAMES)
-        val allArguments = TokenSet.orSet(types, literals, MichelsonElementTokenSets.TYPE_NAMES, MichelsonElementTokenSets.LITERAL_TOKENS, annotations)
+        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG, COMPLEX_TYPE), MichelsonTokenSets.TYPE_NAMES)
+        val allArguments = TokenSet.orSet(types, literals, MichelsonTokenSets.TYPE_NAMES, MichelsonTokenSets.LITERAL_TOKENS, annotations)
         val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION)
     }
 
@@ -34,8 +32,10 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         val block = MichelsonBlock(
                 element.node,
                 Wrap.createWrap(WrapType.NONE, false),
-                Alignment.createAlignment(), createSpacingBuilder(settings),
-                Indent.getNoneIndent())
+                Alignment.createAlignment(),
+                createSpacingBuilder(settings),
+                Indent.getNoneIndent(),
+                settings)
 
         return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, block, settings)
     }
@@ -56,6 +56,12 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.betweenInside(nestedTypes, nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true)
         builder.beforeInside(nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
 
+        // comments
+        // split token prefix + content inside of a line comment still have the COMMENT_LINE token type
+        builder.betweenInside(COMMENT_LINE, COMMENT_LINE, COMMENT_LINE).spacing(if (michelsonSettings.LINE_COMMENT_LEADING_SPACE) 1 else 0, Int.MAX_VALUE, 0, true, 0)
+        builder.between(MichelsonTokenSets.COMMENT_TOKENS, MichelsonTokenSets.COMMENT_TOKENS).lineBreakOrForceSpace(true, false)
+        builder.after(MichelsonTokenSets.COMMENT_TOKENS).lineBreakInCode()
+
         // generic spacing
         builder.between(allToplevel, allArguments).lineBreakOrForceSpace(false, true)
         builder.between(allArguments, allArguments).lineBreakOrForceSpace(false, true)
@@ -63,6 +69,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
 
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
+        // blocks
         builder.between(LEFT_CURLY, RIGHT_CURLY).none()
         builder.before(RIGHT_CURLY).parentDependentLFSpacing(1, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
         builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).none()
@@ -72,7 +79,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.after(SEMI).spaceIf(commonSettings.SPACE_AFTER_SEMICOLON)
 
         // wrapping before initial block in instructions
-        builder.betweenInside(MichelsonElementTokenSets.INTRUCTIONS_TOKENS, blockInstructionSet, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
+        builder.betweenInside(MichelsonTokenSets.INTRUCTIONS_TOKENS, blockInstructionSet, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
         // wrapping between blocks to enable alignment, e.g. in IF {} {}
         builder.betweenInside(BLOCK_INSTRUCTION, BLOCK_INSTRUCTION, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.ALIGN_BLOCKS, true)
 

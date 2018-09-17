@@ -1,0 +1,16 @@
+#
+#comment
+# comment
+#       comment
+parameter unit;
+storage unit;
+code {
+    #
+    #comment
+    # comment
+    #       comment
+    PUSH string "";
+    PUSH string "my string value";
+    PUSH string "\"";
+    PUSH string "my string\n\t\b\r\\\" value!";
+}
