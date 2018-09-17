@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.parser
 
+import com.tezos.lang.michelson.parser.macro.UnpairMacroMetadata
 import org.junit.Assert.*
 import org.junit.Test
 

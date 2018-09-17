@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser
+package com.tezos.lang.michelson.parser.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern

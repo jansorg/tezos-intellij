@@ -1,12 +1,10 @@
-package com.tezos.lang.michelson.parser
+package com.tezos.lang.michelson.parser.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
-class ConditionalMacroMetadata : MacroMetadata {
+class CompareMacroMetadata : MacroMetadata {
     companion object {
-        val NAMES = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
-                "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
-                "IF_SOME")
+        val NAMES = setOf("CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE")
     }
 
     override fun validate(macro: String): Pair<String, Int>? {
@@ -17,7 +15,7 @@ class ConditionalMacroMetadata : MacroMetadata {
         }
     }
 
-    override fun requiredBlocks(): Int = 2
+    override fun requiredBlocks(): Int = 0
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int = 0
 }
