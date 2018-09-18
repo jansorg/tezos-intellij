@@ -13,6 +13,6 @@ code {
         #comment within script
         # comment within script
         #  comment within script
-        NIL operation;
+        NIL operation;#comment
         PAIR;
      };

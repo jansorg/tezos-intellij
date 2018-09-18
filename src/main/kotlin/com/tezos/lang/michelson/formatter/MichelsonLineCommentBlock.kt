@@ -15,10 +15,10 @@ import java.util.*
  *
  * @author jansorg
  */
-class MichelsonLineCommentBlock(node: ASTNode, private val spacing: SpacingBuilder, val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, null, null) {
-    override fun buildChildren(): MutableList<Block> {
-        val michelsonStyle = codeStyle.getCustomSettings(MichelsonCodeStyleSettings::class.java)
+class MichelsonLineCommentBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private val spacing: SpacingBuilder, private val indent: Indent?, codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
+    private val michelsonStyle = codeStyle.getCustomSettings(MichelsonCodeStyleSettings::class.java)
 
+    override fun buildChildren(): MutableList<Block> {
         return when {
             michelsonStyle.LINE_COMMENT_LEADING_SPACE -> {
                 val blocks = ContainerUtil.newSmartList<Block>()
@@ -40,12 +40,13 @@ class MichelsonLineCommentBlock(node: ASTNode, private val spacing: SpacingBuild
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
+        // needed to add spacing between bested prefix and content blocks
         return spacing.getSpacing(this, child1, child2)
     }
 
-    override fun getIndent(): Indent? = Indent.getNoneIndent()
+    override fun getIndent(): Indent? = indent
 
-    override fun isLeaf(): Boolean = true
+    override fun isLeaf(): Boolean = !michelsonStyle.LINE_COMMENT_LEADING_SPACE
 }
 
 /**

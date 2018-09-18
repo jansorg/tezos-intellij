@@ -1,0 +1,17 @@
+# comment
+parameter unit;
+# comment
+storage unit;
+code {
+       # comment
+       DROP; # comment on DROP
+       /*
+         block comment on DROP
+       */
+       DROP;
+       IF { # comment on IF
+          }
+          {
+            DROP; /* block comment on DROP */
+          }
+     }

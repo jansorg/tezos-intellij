@@ -4,7 +4,7 @@
 parameter unit;
 storage unit;
 code {
-     #      comment within script
-       NIL operation;
+       #      comment within script
+       NIL operation; #comment
        PAIR;
      };

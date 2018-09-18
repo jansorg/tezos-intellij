@@ -8,11 +8,11 @@
 parameter unit;
 storage unit;
 code {
-     #
-     #
-     # comment within script
-     # comment within script
-     #  comment within script
-       NIL operation;
+       #
+       #
+       # comment within script
+       # comment within script
+       #  comment within script
+       NIL operation; # comment
        PAIR;
      };

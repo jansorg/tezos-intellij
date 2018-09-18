@@ -31,10 +31,10 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     override fun createModel(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
         val block = MichelsonBlock(
                 element.node,
-                Wrap.createWrap(WrapType.NONE, false),
+                Wrap.createWrap(WrapType.ALWAYS, true),
                 Alignment.createAlignment(),
                 createSpacingBuilder(settings),
-                Indent.getNoneIndent(),
+                Indent.getAbsoluteNoneIndent(),
                 settings)
 
         return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, block, settings)
@@ -59,7 +59,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         // comments
         // split token prefix + content inside of a line comment still have the COMMENT_LINE token type
         builder.betweenInside(COMMENT_LINE, COMMENT_LINE, COMMENT_LINE).spacing(if (michelsonSettings.LINE_COMMENT_LEADING_SPACE) 1 else 0, Int.MAX_VALUE, 0, true, 0)
-        builder.between(MichelsonTokenSets.COMMENT_TOKENS, MichelsonTokenSets.COMMENT_TOKENS).lineBreakOrForceSpace(true, false)
+        builder.between(COMMENT_LINE, COMMENT_LINE).lineBreakInCode()
+        builder.between(MichelsonTokenSets.COMMENT_TOKENS, MichelsonTokenSets.COMMENT_TOKENS).lineBreakInCode()
         builder.after(MichelsonTokenSets.COMMENT_TOKENS).lineBreakInCode()
 
         // generic spacing
@@ -70,9 +71,10 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
         // blocks
-        builder.between(LEFT_CURLY, RIGHT_CURLY).none()
+        builder.between(LEFT_CURLY, RIGHT_CURLY).none() // {}
         builder.before(RIGHT_CURLY).parentDependentLFSpacing(1, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
-        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).none()
+        builder.betweenInside(LEFT_CURLY, COMMENT_LINE, BLOCK_INSTRUCTION).spaces(1) // IF { # comment
+        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).none()  // IF {...}
         builder.after(LEFT_CURLY).spaces(1, true)
 
         builder.before(SEMI).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON)

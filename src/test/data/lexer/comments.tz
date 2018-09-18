@@ -13,4 +13,8 @@ code {
     PUSH string "my string value";
     PUSH string "\"";
     PUSH string "my string\n\t\b\r\\\" value!";
+    /* block comment */
+    /*
+        block comment
+    */ DROP;
 }

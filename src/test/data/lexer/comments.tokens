@@ -136,6 +136,20 @@ my string
 [250 : 251] ;
 ;
 -----
-[252 : 253] }
+[256 : 275] COMMENT_MULTI_LINE
+/* block comment */
+-----
+[280 : 311] COMMENT_MULTI_LINE
+/*
+        block comment
+    */
+-----
+[312 : 316] INSTRUCTION_TOKEN
+DROP
+-----
+[316 : 317] ;
+;
+-----
+[318 : 319] }
 }
 -----
