@@ -5,7 +5,7 @@ parameter (or (key_hash %Initialize)
                 (mutez     %withdraw_amount)
                 (signature %sig))));
 storage (or (key_hash %Initialize)
-              (pair %Withdraw
-                  (key %from)
-               (pair (mutez %withdraw_amount) (signature %sig))));
+              (pair     %Withdraw
+               (key %from)
+               (pair (mutez     %withdraw_amount) (signature %sig))));
 code {}

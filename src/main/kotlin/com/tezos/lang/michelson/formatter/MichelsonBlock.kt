@@ -20,6 +20,24 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
 
     companion object {
         val WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
+
+        /**
+         * @return true if this comment covers the full line and doesn't have instructions, ... in front
+         */
+        private fun ASTNode.isCompleteLineComment(): Boolean {
+            return this.elementType == COMMENT_LINE && this.treePrev?.textContains('\n') ?: false
+        }
+
+        private fun ASTNode.nextNonWhitespace(): ASTNode? {
+            var n = this.treeNext
+            while (n != null) {
+                if (n.elementType != WHITE_SPACE) {
+                    return n
+                }
+                n = n.treeNext
+            }
+            return null
+        }
     }
 
     override fun buildChildren(): MutableList<Block> {
@@ -33,9 +51,24 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
             val block = when {
                 // special block for line comments
                 childType == COMMENT_LINE -> {
-                    val indent = if (node.elementType == BLOCK_INSTRUCTION) Indent.getNormalIndent() else Indent.getNoneIndent()
+                    // align comments in instruction blocks
+                    val indent = when (node.elementType == BLOCK_INSTRUCTION) {
+                        true -> Indent.getNormalIndent()
+                        false -> Indent.getNoneIndent()
+                    }
+
+                    val commentCoversLine = child.isCompleteLineComment()
+                    val nextIsBlock = child.nextNonWhitespace()?.elementType == BLOCK_INSTRUCTION
+
                     val alignment = when {
-                        michelsonSettings.LINE_COMMENT_ALIGN -> findClosestInstructionBlock()?.lineCommentAlign
+                        !commentCoversLine && michelsonSettings.LINE_COMMENT_ALIGN -> {
+                            // align end-of-line comments with other eol-style comments of the same block
+                            findClosestHierarchyInstructionBlock()?.lineCommentAlign
+                        }
+                        commentCoversLine && nextIsBlock -> {
+                            // align comments with the blocks if a comment directly precedes the block, i.e. is a note on that particular block
+                            blockChildAlign
+                        }
                         else -> null
                     } ?: Alignment.createAlignment()
 
@@ -80,7 +113,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
         return blocks
     }
 
-    private fun findClosestInstructionBlock(acceptCurrent: Boolean = true): MichelsonBlock? {
+    private fun findClosestHierarchyInstructionBlock(acceptCurrent: Boolean = true): MichelsonBlock? {
         var e: MichelsonBlock? = if (acceptCurrent) this else this.parent
         while (e != null) {
             if (e.node.elementType == BLOCK_INSTRUCTION) {

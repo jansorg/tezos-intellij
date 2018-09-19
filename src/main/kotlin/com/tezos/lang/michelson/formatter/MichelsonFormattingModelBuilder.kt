@@ -50,12 +50,12 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.beforeInside(SEMI, SECTION).lineBreakOrForceSpace(false, false)
         builder.between(SECTION, SECTION).lineBreakInCode()
 
-        // generic: no space in (...)
+        // generic: no space in '(...)'
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
         // first element of a complex type is only wrapped when both wrap_first and align_compex_types are enabled
         val nestedTypes = TokenSet.create(GENERIC_TYPE, LEFT_PAREN)
-        builder.betweenInside(TokenSet.create(TYPE_NAME), nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST && michelsonSettings.COMPLEX_TYPE_ALIGN, true)
+        builder.betweenInside(TokenSet.create(TYPE_NAME), nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST && michelsonSettings.COMPLEX_TYPE_ALIGN, true, true)
         builder.betweenInside(nestedTypes, nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true)
         builder.beforeInside(nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
 
@@ -70,7 +70,6 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.between(allToplevel, allArguments).lineBreakOrForceSpace(false, true)
         builder.between(allArguments, allArguments).lineBreakOrForceSpace(false, true)
         builder.between(instructions, SEMI).lineBreakOrForceSpace(false, false)
-
 
         // blocks
         builder.between(LEFT_CURLY, RIGHT_CURLY).none() // {}
