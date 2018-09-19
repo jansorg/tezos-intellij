@@ -2,6 +2,7 @@
 - Formatter: new option "leading space in line comment". Adds a leading space if there's no space yet betwee # and the comment. Keeps existing spaces.
 - Formatter: new option to align end-of-line comments inside of instruction blocks, disabled by default
 - Formatter: new option to align annotations insode of complex types, disabled by default
+- Brace matcher to highlight pairs of () and {}
 
 # Version 0.2
 - Highlighting errors in macro names and macro arguments
