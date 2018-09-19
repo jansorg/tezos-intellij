@@ -22,4 +22,6 @@ class MichelsonCodeStyleSettings(container: CodeStyleSettings) : CustomCodeStyle
     var COMPLEX_TYPE_WRAP_FIRST = false
     @JvmField
     var COMPLEX_TYPE_ALIGN = false
+    @JvmField
+    var COMPLEX_TYPE_ALIGN_ANNOTATIONS = false
 }

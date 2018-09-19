@@ -5,9 +5,12 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.parser.MichelsonElementSets
+import com.tezos.lang.michelson.psi.PsiAnnotation
 import com.tezos.lang.michelson.psi.PsiComplexType
 
 
@@ -17,6 +20,7 @@ import com.tezos.lang.michelson.psi.PsiComplexType
 class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private val spacing: SpacingBuilder, private val _indent: Indent? = null, val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
     private val blockChildAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
     private val lineCommentAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
+    private val annotationAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
 
     companion object {
         val WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
@@ -63,7 +67,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                     val alignment = when {
                         !commentCoversLine && michelsonSettings.LINE_COMMENT_ALIGN -> {
                             // align end-of-line comments with other eol-style comments of the same block
-                            findClosestHierarchyInstructionBlock()?.lineCommentAlign
+                            findNextHierarchyParent(BLOCK_INSTRUCTION)?.lineCommentAlign
                         }
                         commentCoversLine && nextIsBlock -> {
                             // align comments with the blocks if a comment directly precedes the block, i.e. is a note on that particular block
@@ -96,15 +100,31 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                     MichelsonBlock(child, Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG, true), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
-                childType != WHITE_SPACE && child.textLength > 0 -> { // exclude whitespace and empty error markers
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), spacing, Indent.getNoneIndent(), codeStyle, parent = this)
+                MichelsonTokenSets.ANNOTATIONS.contains(childType) && michelsonSettings.COMPLEX_TYPE_ALIGN_ANNOTATIONS -> {
+                    val isInComplexType = (nodePsi as PsiAnnotation).findParentType() != null
+                    val alignmentReference = if (isInComplexType) parent else this
+
+                    // align all annotations of top-level elements of a complex type with each other
+                    // an annotation on a complex type itself must be aligned with the next parent of this type
+                    val alignment = alignmentReference?.findNextHierarchyParent(COMPLEX_TYPE, false)?.annotationAlign
+                    alignment?.let {
+                        MichelsonBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, Indent.getNoneIndent(), codeStyle, parent = this)
+                    }
                 }
 
                 else -> null
             }
 
-            if (block != null) {
-                blocks.add(block)
+            // fallback to default block if it's not whitespace or a zero-length block, e.g. an error marker which spans no token
+            val finalBlock = block ?: when {
+                childType != WHITE_SPACE && child.textLength > 0 -> {
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), spacing, Indent.getNoneIndent(), codeStyle, parent = this)
+                }
+                else -> null
+            }
+
+            if (finalBlock != null) {
+                blocks.add(finalBlock)
             }
 
             child = child.treeNext
@@ -113,10 +133,10 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
         return blocks
     }
 
-    private fun findClosestHierarchyInstructionBlock(acceptCurrent: Boolean = true): MichelsonBlock? {
+    private fun findNextHierarchyParent(elementType: IElementType, acceptCurrent: Boolean = true): MichelsonBlock? {
         var e: MichelsonBlock? = if (acceptCurrent) this else this.parent
         while (e != null) {
-            if (e.node.elementType == BLOCK_INSTRUCTION) {
+            if (e.node.elementType == elementType) {
                 return e
             }
             e = e.parent

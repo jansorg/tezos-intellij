@@ -31,6 +31,7 @@ class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPrevi
 
         showCustomOption(c, MichelsonCodeStyleSettings::COMPLEX_TYPE_WRAP_FIRST.name, "Wrap first type", COMPLEX_TYPE_GROUP)
         showCustomOption(c, MichelsonCodeStyleSettings::COMPLEX_TYPE_ALIGN.name, "Align types", COMPLEX_TYPE_GROUP)
+        showCustomOption(c, MichelsonCodeStyleSettings::COMPLEX_TYPE_ALIGN_ANNOTATIONS.name, "Align annotations", COMPLEX_TYPE_GROUP)
 
         showCustomOption(c, MichelsonCodeStyleSettings::WRAP_FIRST_BLOCK.name, "Wrap first block", STATEMENT_GROUP)
         showCustomOption(c, MichelsonCodeStyleSettings::ALIGN_BLOCKS.name, "Align blocks", STATEMENT_GROUP)
@@ -45,7 +46,12 @@ class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPrevi
 
 
     override fun getPreviewText(): String = """
-        parameter (pair (or string int) (pair (pair string int) int));
+        parameter (or (key_hash %Initialize)
+              (pair     %Withdraw :var1
+               (key  %from :type)
+               (pair %other :var2
+                (mutez     %amount :var3)
+                (signature %sig :var))));
         storage unit;
         code
           {
