@@ -69,9 +69,11 @@ These are:
 
 A few options which are specific to Michelson are available:
 - Align blocks of statements
+- Align line comments in blocks
+- Align types of complex types
+- Align annotations of complex types
 - Warp first block of statements
 - Wrap first type of complex types
-- Align types of complex types
 
 <img src="docs/codestyle_michelson.png"/>
 

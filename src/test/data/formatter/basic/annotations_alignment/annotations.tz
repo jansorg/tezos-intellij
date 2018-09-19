@@ -1,0 +1,13 @@
+parameter (or (key_hash %Initialize)
+              (pair %Withdraw :var1
+               (key %from :type)
+               (pair %other :var2
+                (mutez %withdraw_amount :var3)
+                (signature %sig :var))));
+storage (or (key_hash             %Initialize)
+                  (pair     %Withdraw
+                  (key %from)
+                   (pair    %pair
+                   (mutez         %withdraw_amount)
+                   (signature                     %signature))));
+code {};

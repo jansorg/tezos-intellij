@@ -1,0 +1,18 @@
+# comment at first line of script
+# comment at second line of script
+#
+# comment
+# comment
+#  comment
+#       comment     at  third        line of script
+parameter unit;
+storage unit;
+code {
+       #
+       #
+       # comment within script
+       # comment within script
+       #  comment within script
+       NIL operation; # comment
+       PAIR;
+     };

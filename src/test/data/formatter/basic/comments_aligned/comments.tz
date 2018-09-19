@@ -1,0 +1,26 @@
+# comment
+parameter unit;
+# comment
+storage unit;
+code {
+  CDR;#comment
+              DROP;#  comment
+  DROP;     #comment
+ # comment on IF block
+  IF { CDR; #comment
+      DROP; #comment
+      CDR;#comment
+      DIP{};    #comment
+   # comment on IF block
+      IF {
+          DROP; #comment
+          CDR;#comment
+         }
+      #comment on else
+         {}
+     }
+  # comment on else
+     {
+
+    }
+}

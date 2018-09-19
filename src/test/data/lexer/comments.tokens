@@ -1,0 +1,155 @@
+[0 : 1] COMMENT_LINE
+#
+-----
+[2 : 10] COMMENT_LINE
+#comment
+-----
+[11 : 20] COMMENT_LINE
+# comment
+-----
+[21 : 36] COMMENT_LINE
+#       comment
+-----
+[37 : 46] SECTION_NAME
+parameter
+-----
+[47 : 51] TYPE_NAME
+unit
+-----
+[51 : 52] ;
+;
+-----
+[53 : 60] SECTION_NAME
+storage
+-----
+[61 : 65] TYPE_NAME
+unit
+-----
+[65 : 66] ;
+;
+-----
+[67 : 71] SECTION_NAME
+code
+-----
+[72 : 73] {
+{
+-----
+[78 : 79] COMMENT_LINE
+#
+-----
+[84 : 92] COMMENT_LINE
+#comment
+-----
+[97 : 106] COMMENT_LINE
+# comment
+-----
+[111 : 126] COMMENT_LINE
+#       comment
+-----
+[131 : 135] INSTRUCTION_TOKEN
+PUSH
+-----
+[136 : 142] TYPE_NAME_COMPARABLE
+string
+-----
+[143 : 144] "
+"
+-----
+[144 : 145] "
+"
+-----
+[145 : 146] ;
+;
+-----
+[151 : 155] INSTRUCTION_TOKEN
+PUSH
+-----
+[156 : 162] TYPE_NAME_COMPARABLE
+string
+-----
+[163 : 164] "
+"
+-----
+[164 : 179] STRING_CONTENT
+my string value
+-----
+[179 : 180] "
+"
+-----
+[180 : 181] ;
+;
+-----
+[186 : 190] INSTRUCTION_TOKEN
+PUSH
+-----
+[191 : 197] TYPE_NAME_COMPARABLE
+string
+-----
+[198 : 199] "
+"
+-----
+[199 : 201] STRING_ESCAPE
+\"
+-----
+[201 : 202] "
+"
+-----
+[202 : 203] ;
+;
+-----
+[208 : 212] INSTRUCTION_TOKEN
+PUSH
+-----
+[213 : 219] TYPE_NAME_COMPARABLE
+string
+-----
+[220 : 221] "
+"
+-----
+[221 : 230] STRING_CONTENT
+my string
+-----
+[230 : 232] STRING_ESCAPE
+\n
+-----
+[232 : 234] STRING_ESCAPE
+\t
+-----
+[234 : 236] STRING_ESCAPE
+\b
+-----
+[236 : 238] STRING_ESCAPE
+\r
+-----
+[238 : 240] STRING_ESCAPE
+\\
+-----
+[240 : 242] STRING_ESCAPE
+\"
+-----
+[242 : 249] STRING_CONTENT
+ value!
+-----
+[249 : 250] "
+"
+-----
+[250 : 251] ;
+;
+-----
+[256 : 275] COMMENT_MULTI_LINE
+/* block comment */
+-----
+[280 : 311] COMMENT_MULTI_LINE
+/*
+        block comment
+    */
+-----
+[312 : 316] INSTRUCTION_TOKEN
+DROP
+-----
+[316 : 317] ;
+;
+-----
+[318 : 319] }
+}
+-----
