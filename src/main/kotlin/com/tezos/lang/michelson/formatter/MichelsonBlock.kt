@@ -16,12 +16,14 @@ import com.tezos.lang.michelson.psi.PsiComplexType
  */
 class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private val spacing: SpacingBuilder, private val _indent: Indent? = null, val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
     private val blockChildAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
+    private val lineCommentAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
 
     companion object {
         val WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
     }
 
     override fun buildChildren(): MutableList<Block> {
+        val michelsonSettings = codeStyle.getCustomSettings(MichelsonCodeStyleSettings::class.java)
         val blocks = ArrayList<Block>()
         val nodePsi = node.psi
 
@@ -32,7 +34,12 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                 // special block for line comments
                 childType == COMMENT_LINE -> {
                     val indent = if (node.elementType == BLOCK_INSTRUCTION) Indent.getNormalIndent() else Indent.getNoneIndent()
-                    MichelsonLineCommentBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), spacing, indent, codeStyle, parent = this)
+                    val alignment = when {
+                        michelsonSettings.LINE_COMMENT_ALIGN -> findClosestInstructionBlock()?.lineCommentAlign
+                        else -> null
+                    } ?: Alignment.createAlignment()
+
+                    MichelsonLineCommentBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, indent, codeStyle, parent = this)
                 }
 
                 WRAPPED_BLOCKS.contains(childType) -> {
@@ -71,6 +78,17 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
         }
 
         return blocks
+    }
+
+    private fun findClosestInstructionBlock(acceptCurrent: Boolean = true): MichelsonBlock? {
+        var e: MichelsonBlock? = if (acceptCurrent) this else this.parent
+        while (e != null) {
+            if (e.node.elementType == BLOCK_INSTRUCTION) {
+                return e
+            }
+            e = e.parent
+        }
+        return null
     }
 
     override fun getIndent(): Indent? {

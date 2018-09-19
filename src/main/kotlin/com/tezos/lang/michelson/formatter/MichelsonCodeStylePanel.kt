@@ -36,6 +36,7 @@ class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPrevi
         showCustomOption(c, MichelsonCodeStyleSettings::ALIGN_BLOCKS.name, "Align blocks", STATEMENT_GROUP)
 
         showCustomOption(c, MichelsonCodeStyleSettings::LINE_COMMENT_LEADING_SPACE.name, "Leading space in line comment", COMMENT_GROUP)
+        showCustomOption(c, MichelsonCodeStyleSettings::LINE_COMMENT_ALIGN.name, "Align line comments in blocks", COMMENT_GROUP)
 
         initCustomOptions(STATEMENT_GROUP)
         initCustomOptions(COMPLEX_TYPE_GROUP)
@@ -49,6 +50,11 @@ class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPrevi
         code
           {
             IF { DROP; } { IF { CDR; } { DROP; } };
+            IF {
+                  CDR;#comment
+                  DROP;#comment
+                }
+                { DROP; }
             NIL operation;
             PAIR;
           }

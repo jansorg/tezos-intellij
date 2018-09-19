@@ -10,6 +10,8 @@ import com.tezos.lang.michelson.MichelsonLanguage
 class MichelsonCodeStyleSettings(container: CodeStyleSettings) : CustomCodeStyleSettings(MichelsonLanguage.id, container) {
     @JvmField
     var LINE_COMMENT_LEADING_SPACE = false
+    @JvmField
+    var LINE_COMMENT_ALIGN = false
 
     @JvmField
     var WRAP_FIRST_BLOCK = false
