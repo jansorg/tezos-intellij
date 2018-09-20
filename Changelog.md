@@ -3,6 +3,7 @@
 - Formatter: new option to align end-of-line comments inside of instruction blocks, disabled by default
 - Formatter: new option to align annotations insode of complex types, disabled by default
 - Brace matcher to highlight pairs of () and {}
+- Structure view for Michelson files
 
 # Version 0.2
 - Highlighting errors in macro names and macro arguments

@@ -77,6 +77,11 @@ A few options which are specific to Michelson are available:
 
 <img src="docs/codestyle_michelson.png"/>
 
+### Structure view
+There's basic support for structure view of Michelson files.
+
+<img src="docs/structureview_michelson.png"/>
+
 # License
 This software is licensed under the BSD-3-clause license, see LICENSE.txt for details.
 
