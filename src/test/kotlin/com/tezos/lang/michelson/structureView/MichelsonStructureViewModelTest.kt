@@ -13,9 +13,9 @@ class MichelsonStructureViewModelTest : MichelsonFixtureTest() {
         assertStructureView("""
             -file
              -Contract
-              +Section parameter
-              +Section storage
-              +Section code""".trimIndent())
+              Section parameter
+              Section storage
+              Section code""".trimIndent())
 
         assertTreeStructure("""
             MICHELSON_FILE
@@ -50,8 +50,8 @@ class MichelsonStructureViewModelTest : MichelsonFixtureTest() {
         assertStructureView("""
             -file
              -Contract
-              +Section parameter
-              +Section storage
+              Section parameter
+              Section storage
               +Section code""".trimIndent())
 
         assertTreeStructure("""
