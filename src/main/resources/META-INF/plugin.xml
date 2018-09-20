@@ -54,6 +54,7 @@
         <internalFileTemplate name="Michelson File" />
         <internalFileTemplate name="Michelson Contract" />
         <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonBraceMatcher"/>
+        <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.structureView.MichelsonStructureViewFactory" />
 
         <!-- formatter -->
         <lang.formatter language="Michelson" implementationClass="com.tezos.lang.michelson.formatter.MichelsonFormattingModelBuilder"/>

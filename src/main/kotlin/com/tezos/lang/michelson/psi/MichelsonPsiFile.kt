@@ -6,5 +6,5 @@ import com.intellij.psi.PsiFile
  * @author jansorg
  */
 interface MichelsonPsiFile : PsiFile {
-
+    fun getContract(): PsiContract?
 }
