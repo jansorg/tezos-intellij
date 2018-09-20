@@ -6,7 +6,7 @@ import com.tezos.lang.michelson.psi.PsiContract
 import com.tezos.lang.michelson.ui.Icons
 import javax.swing.Icon
 
-class MichelsonContractViewElement(private val contract: PsiContract) : PsiTreeElementBase<PsiContract>(contract) {
+internal class MichelsonContractViewElement(private val contract: PsiContract) : PsiTreeElementBase<PsiContract>(contract) {
     override fun getPresentableText(): String? = "Contract"
 
     override fun getIcon(open: Boolean): Icon? = Icons.Tezos

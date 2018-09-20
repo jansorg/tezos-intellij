@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.structureView
 
+import com.intellij.testFramework.PlatformTestUtil
 import com.tezos.lang.michelson.MichelsonFixtureTest
-import org.junit.Assert
 
 /**
  * @author jansorg
@@ -9,23 +9,73 @@ import org.junit.Assert
 class MichelsonStructureViewModelTest : MichelsonFixtureTest() {
     fun testStrucutureView() {
         configureByCode("CDR; NIL operation; PAIR;")
+
+        assertStructureView("""
+            -file
+             -Contract
+              +Section parameter
+              +Section storage
+              +Section code""".trimIndent())
+
+        assertTreeStructure("""
+            MICHELSON_FILE
+             PsiElement(CONTRACT)
+              PsiElement(SECTION)
+              PsiElement(SECTION)
+              PsiElement(SECTION)""".trimIndent())
+    }
+
+    fun testNestedContractStructureView() {
+        configureByCode {
+            """
+           DROP; NIL int; # starting storage for contract
+           AMOUNT;                   # Push the starting balance
+           PUSH bool False;          # Not spendable
+           DUP;                      # Or delegatable
+           NONE key_hash;                 # No delegate
+           PUSH key_hash "tz1cxcwwnzENRdhe2Kb8ZdTrdNy4bFNyScx5";
+           CREATE_CONTRACT          # Create the contract
+             { parameter (list int) ;
+               storage (list int) ;
+               code
+                 { CAR;
+                   MAP {PUSH int 1; ADD};
+                   NIL operation;
+                   PAIR } };
+           NIL operation; SWAP; CONS; PAIR} # Ending calling convention stuff
+        """.trimIndent()
+        }
+
+
+        assertStructureView("""
+            -file
+             -Contract
+              +Section parameter
+              +Section storage
+              +Section code""".trimIndent())
+
+        assertTreeStructure("""
+            MICHELSON_FILE
+             PsiElement(CONTRACT)
+              PsiElement(SECTION)
+              PsiElement(SECTION)
+              PsiElement(SECTION)
+               PsiElement(CREATE_CONTRACT_INSTRUCTION)
+                PsiElement(CONTRACT)
+                 PsiElement(SECTION)
+                 PsiElement(SECTION)
+                 PsiElement(SECTION)""".trimIndent())
+    }
+
+    private fun assertTreeStructure(expected: String) {
         myFixture.testStructureView { view ->
-            val tree = view.treeStructure
+            PlatformTestUtil.assertTreeStructureEquals(view.treeStructure, expected + "\n")
+        }
+    }
 
-            val root = tree.rootElement
-            Assert.assertEquals("file", root.toString())
-
-            val contracts = tree.getChildElements(root)
-            Assert.assertEquals(1, contracts.size)
-
-            val contract = contracts[0]
-            Assert.assertEquals("Contract", contract.toString())
-
-            val sections = tree.getChildElements(contract)
-            Assert.assertEquals(3, sections.size)
-            Assert.assertEquals("Section parameter", sections[0].toString())
-            Assert.assertEquals("Section storage", sections[1].toString())
-            Assert.assertEquals("Section code", sections[2].toString())
+    private fun assertStructureView(expected: String) {
+        myFixture.testStructureView { view ->
+            PlatformTestUtil.assertTreeEqual(view.tree, expected + "\n")
         }
     }
 }
