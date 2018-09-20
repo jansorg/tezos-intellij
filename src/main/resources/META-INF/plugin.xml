@@ -53,6 +53,7 @@
         <!-- basic features -->
         <internalFileTemplate name="Michelson File" />
         <internalFileTemplate name="Michelson Contract" />
+        <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonBraceMatcher"/>
 
         <!-- formatter -->
         <lang.formatter language="Michelson" implementationClass="com.tezos.lang.michelson.formatter.MichelsonFormattingModelBuilder"/>
