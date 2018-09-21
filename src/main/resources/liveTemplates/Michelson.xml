@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<templateSet group="Michelson">
+    <template name="contract" value="parameter $IN$;&#10;storage $OUT$;&#10;code {&#10;        $END$;&#10;    }" description="Create an empty Michelson smart contract" toReformat="true" toShortenFQNames="true">
+        <variable name="IN" expression="" defaultValue="&quot;unit&quot;" alwaysStopAt="true" />
+        <variable name="OUT" expression="" defaultValue="&quot;unit&quot;" alwaysStopAt="true" />
+        <context>
+            <option name="MICHELSON_TOPLEVEL" value="true" />
+        </context>
+    </template>
+</templateSet>

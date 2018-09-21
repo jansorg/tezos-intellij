@@ -87,6 +87,10 @@ Blocks of instructions are folded into `{...}` and contracts inside of `CREATE_C
 
 <img src="docs/folding_michelson.png"/>
 
+### Live templates
+The following live templates are available:
+- `contract`: Available at top-level of an michelson file. Insert an empty contract at the position of the caret.
+
 # License
 This software is licensed under the BSD-3-clause license, see LICENSE.txt for details.
 

@@ -1,3 +1,6 @@
+# Version 0.4
+- Live template `contract` to insert a new, empty contract
+
 # Version 0.3
 - Formatter: new option "leading space in line comment". Adds a leading space if there's no space yet betwee # and the comment. Keeps existing spaces.
 - Formatter: new option to align end-of-line comments inside of instruction blocks, disabled by default
