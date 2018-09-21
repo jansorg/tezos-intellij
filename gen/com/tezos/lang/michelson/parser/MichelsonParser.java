@@ -38,6 +38,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == CONTRACT) {
       result = contract(builder, 0);
     }
+    else if (type == CONTRACT_WRAPPER) {
+      result = contract_wrapper(builder, 0);
+    }
     else if (type == CREATE_CONTRACT_INSTRUCTION) {
       result = create_contract_instruction(builder, 0);
     }
@@ -244,7 +247,21 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'CREATE_CONTRACT' annotation* ('{' contract '}')?
+  // '{' contract '}'
+  public static boolean contract_wrapper(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "contract_wrapper")) return false;
+    if (!nextTokenIs(builder, LEFT_CURLY)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, LEFT_CURLY);
+    result = result && contract(builder, level + 1);
+    result = result && consumeToken(builder, RIGHT_CURLY);
+    exit_section_(builder, marker, CONTRACT_WRAPPER, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // 'CREATE_CONTRACT' annotation* contract_wrapper?
   public static boolean create_contract_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "create_contract_instruction")) return false;
     boolean result, pinned;
@@ -268,23 +285,11 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ('{' contract '}')?
+  // contract_wrapper?
   private static boolean create_contract_instruction_2(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "create_contract_instruction_2")) return false;
-    create_contract_instruction_2_0(builder, level + 1);
+    contract_wrapper(builder, level + 1);
     return true;
-  }
-
-  // '{' contract '}'
-  private static boolean create_contract_instruction_2_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "create_contract_instruction_2_0")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, LEFT_CURLY);
-    result = result && contract(builder, level + 1);
-    result = result && consumeToken(builder, RIGHT_CURLY);
-    exit_section_(builder, marker, null, result);
-    return result;
   }
 
   /* ********************************************************** */

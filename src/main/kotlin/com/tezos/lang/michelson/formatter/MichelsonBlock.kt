@@ -100,6 +100,13 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private va
                     MichelsonBlock(child, Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG, true), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
+                childType == CONTRACT_WRAPPER && node.elementType == CREATE_CONTRACT_INSTRUCTION -> {
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
+                }
+                childType == CONTRACT && node.elementType == CONTRACT_WRAPPER -> {
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
+                }
+
                 MichelsonTokenSets.ANNOTATIONS.contains(childType) && michelsonSettings.COMPLEX_TYPE_ALIGN_ANNOTATIONS -> {
                     val isInComplexType = (nodePsi as PsiAnnotation).findParentType() != null
                     val alignmentReference = if (isInComplexType) parent else this

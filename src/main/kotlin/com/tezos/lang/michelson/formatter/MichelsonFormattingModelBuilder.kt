@@ -71,6 +71,9 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.between(allArguments, allArguments).lineBreakOrForceSpace(false, true)
         builder.between(instructions, SEMI).lineBreakOrForceSpace(false, false)
 
+        // nested contracts
+        builder.betweenInside(INSTRUCTION_TOKEN, CONTRACT_WRAPPER, CREATE_CONTRACT_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
+
         // blocks
         builder.between(LEFT_CURLY, RIGHT_CURLY).none() // {}
         builder.before(RIGHT_CURLY).parentDependentLFSpacing(1, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);

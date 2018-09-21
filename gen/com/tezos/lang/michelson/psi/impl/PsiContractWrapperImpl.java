@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiCreateContractInstructionImpl extends PsiGenericInstructionImpl implements PsiCreateContractInstruction {
+public class PsiContractWrapperImpl extends MichelsonCompositeImpl implements PsiContractWrapper {
 
-  public PsiCreateContractInstructionImpl(@NotNull IElementType type) {
+  public PsiContractWrapperImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitCreateContractInstruction(this);
+    return visitor.visitContractWrapper(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,9 +27,9 @@ public class PsiCreateContractInstructionImpl extends PsiGenericInstructionImpl 
   }
 
   @Override
-  @Nullable
-  public PsiContractWrapper getContractWrapper() {
-    return PsiTreeUtil.getChildOfType(this, PsiContractWrapper.class);
+  @NotNull
+  public PsiContract getContract() {
+    return PsiTreeUtil.getChildOfType(this, PsiContract.class);
   }
 
 }

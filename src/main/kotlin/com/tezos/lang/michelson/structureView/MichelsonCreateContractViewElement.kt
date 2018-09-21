@@ -9,7 +9,7 @@ internal class MichelsonCreateContractViewElement(private val instruction: PsiCr
     override fun getPresentableText(): String = "Create contract"
 
     override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> {
-        val contract = instruction.contract
+        val contract = instruction.contractWrapper?.contract
         return when (contract) {
             null -> Collections.emptyList()
             else -> mutableListOf(MichelsonContractViewElement(contract))
