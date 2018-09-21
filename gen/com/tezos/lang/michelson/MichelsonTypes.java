@@ -16,6 +16,7 @@ public interface MichelsonTypes {
   IElementType COMPARABLE_TYPE = new MichelsonCompositeElementType("COMPARABLE_TYPE");
   IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
+  IElementType CONTRACT_WRAPPER = new MichelsonCompositeElementType("CONTRACT_WRAPPER");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
   IElementType FIELD_ANNOTATION = new MichelsonCompositeElementType("FIELD_ANNOTATION");
@@ -73,6 +74,9 @@ public interface MichelsonTypes {
       }
       else if (type == CONTRACT) {
         return new PsiContractImpl(type);
+      }
+      else if (type == CONTRACT_WRAPPER) {
+        return new PsiContractWrapperImpl(type);
       }
       else if (type == CREATE_CONTRACT_INSTRUCTION) {
         return new PsiCreateContractInstructionImpl(type);

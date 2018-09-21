@@ -16,7 +16,7 @@ import java.nio.file.Paths
  * @author jansorg
  */
 @RunWith(Parameterized::class)
-class MichelsonFoldingBuilderTest(val file: String) : MichelsonFixtureTest() {
+class AllMichelsonFoldingTest(val file: String) : MichelsonFixtureTest() {
     companion object {
         private val dataRootPath = MichelsonTestUtils.dataPath()
 

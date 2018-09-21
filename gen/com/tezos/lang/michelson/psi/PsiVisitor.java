@@ -26,6 +26,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitMichelsonComposite(o);
   }
 
+  public R visitContractWrapper(@NotNull PsiContractWrapper o) {
+    return visitMichelsonComposite(o);
+  }
+
   public R visitCreateContractInstruction(@NotNull PsiCreateContractInstruction o) {
     return visitGenericInstruction(o);
   }
