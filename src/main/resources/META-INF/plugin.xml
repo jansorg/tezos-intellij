@@ -8,7 +8,7 @@
     <vendor url="https://www.plugin-dev.com/" email="mail@plugin-dev.com">Joachim Ansorg</vendor>
 
     <!-- Compatible with IDEA 2016.1 and later, up to 183.x -->
-    <idea-version since-build="145.0" />
+    <idea-version since-build="145.0"/>
     <depends>com.intellij.modules.lang</depends>
 
     <description><![CDATA[<html>
@@ -54,7 +54,8 @@
         <internalFileTemplate name="Michelson File" />
         <internalFileTemplate name="Michelson Contract" />
         <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonBraceMatcher"/>
-        <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.structureView.MichelsonStructureViewFactory" />
+        <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.structureView.MichelsonStructureViewFactory"/>
+        <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.folding.MichelsonFoldingBuilder"/>
 
         <!-- formatter -->
         <lang.formatter language="Michelson" implementationClass="com.tezos.lang.michelson.formatter.MichelsonFormattingModelBuilder"/>

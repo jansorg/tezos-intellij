@@ -1,0 +1,21 @@
+parameter (or key_hash address);
+storage unit;
+code <fold text='{ ... }'>{ CAR;
+                 IF_LEFT
+                 <fold text='{ ...}'>{ DIP <fold text='{ ... }'>{ PUSH string "dummy";
+                                                                              PUSH mutez 100000000; PUSH bool False;
+                                                                                                              PUSH bool False; NONE key_hash }</fold>;
+                                                                                                                                               CREATE_CONTRACT
+                                                                                                                                               {
+                                                                                                                                               <fold text='CONTRACT ...'>parameter string;
+                 storage string;
+                 code <fold text='{... }'>{ CAR; NIL operation; PAIR }</fold></fold>
+                                                                               };
+                                                                               DIP <fold text='{ ... }'>{ RIGHT key_hash ; DIP <fold text='{ ... }'>{ SELF; PUSH mutez 0 }</fold>; TRANSFER_TOKENS;
+                                                                                                                                                                         NIL operation ; SWAP; CONS }</fold>;
+                                                     CONS; UNIT; SWAP; PAIR }</fold>
+                                                                               <fold text='{
+                                                                               ... }'>{ SELF; ADDRESS; SENDER ; IFCMPNEQ <fold text='{ ... }'>{ FAIL }</fold> {};
+                                                                                                                                                            CONTRACT string; IF_SOME {} <fold text='{ ... }'>{ FAIL }</fold>;
+PUSH mutez 0; PUSH string "abcdefg"; TRANSFER_TOKENS;
+                                     NIL operation; SWAP; CONS; UNIT ; SWAP; PAIR }</fold> }</fold>;
