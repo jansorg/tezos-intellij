@@ -16,13 +16,6 @@ class MichelsonStructureViewModelTest : MichelsonFixtureTest() {
               Section parameter
               Section storage
               Section code""".trimIndent())
-
-        assertTreeStructure("""
-            MICHELSON_FILE
-             PsiElement(CONTRACT)
-              PsiElement(SECTION)
-              PsiElement(SECTION)
-              PsiElement(SECTION)""".trimIndent())
     }
 
     fun testNestedContractStructureView() {
@@ -53,24 +46,6 @@ class MichelsonStructureViewModelTest : MichelsonFixtureTest() {
               Section parameter
               Section storage
               +Section code""".trimIndent())
-
-        assertTreeStructure("""
-            MICHELSON_FILE
-             PsiElement(CONTRACT)
-              PsiElement(SECTION)
-              PsiElement(SECTION)
-              PsiElement(SECTION)
-               PsiElement(CREATE_CONTRACT_INSTRUCTION)
-                PsiElement(CONTRACT)
-                 PsiElement(SECTION)
-                 PsiElement(SECTION)
-                 PsiElement(SECTION)""".trimIndent())
-    }
-
-    private fun assertTreeStructure(expected: String) {
-        myFixture.testStructureView { view ->
-            PlatformTestUtil.assertTreeStructureEquals(view.treeStructure, expected + "\n")
-        }
     }
 
     private fun assertStructureView(expected: String) {

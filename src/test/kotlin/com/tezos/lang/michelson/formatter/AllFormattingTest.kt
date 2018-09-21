@@ -83,8 +83,12 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
         } catch (e: Throwable) {
             // workaround to force IntelliJ to show the "compare" link in the console output of the test case
             // this doesn't seem to work well for wrapped exceptions
-            val cause = e.cause?.cause as? FileComparisonFailure
-            if (cause != null) {
+            var cause: Throwable? = e
+            while (cause != null && cause !is FileComparisonFailure) {
+                cause = cause.cause
+            }
+
+            if (cause is FileComparisonFailure) {
                 TestCase.assertEquals("File $relativeFile", cause.expected, cause.actual)
             } else {
                 throw e

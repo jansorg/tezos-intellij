@@ -19,8 +19,8 @@ class MichelsonFoldingBuilder : FoldingBuilder, DumbAware {
 
     override fun getPlaceholderText(node: ASTNode): String? {
         return when {
-            node.elementType == MichelsonTypes.BLOCK_INSTRUCTION -> "{...}"
-            node.elementType == MichelsonTypes.CONTRACT_WRAPPER -> "{CONTRACT ...}"
+            node.elementType == MichelsonTypes.BLOCK_INSTRUCTION -> "{ ... }"
+            node.elementType == MichelsonTypes.CONTRACT_WRAPPER -> "{ CONTRACT ... }"
             else -> null
         }
     }
