@@ -12,7 +12,7 @@
     <depends>com.intellij.modules.lang</depends>
 
     <description><![CDATA[<html>
-        IntelliJ support for the Tezos platform.
+        IntelliJ support for the Tezos platform. It provides smart support for the Michelson language.
     </html>]]></description>
 
     <change-notes><![CDATA[
