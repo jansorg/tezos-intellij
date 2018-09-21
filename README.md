@@ -82,6 +82,11 @@ There's basic support for structure view of Michelson files.
 
 <img src="docs/structureview_michelson.png"/>
 
+### Code folding
+Blocks of instructions are folded into `{...}` and contracts of `CREATE_CONTRACT` are folded into `CONTRACT ...`.
+
+<img src="docs/folding_michelson.png"/>
+
 # License
 This software is licensed under the BSD-3-clause license, see LICENSE.txt for details.
 

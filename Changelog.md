@@ -4,6 +4,7 @@
 - Formatter: new option to align annotations insode of complex types, disabled by default
 - Brace matcher to highlight pairs of () and {}
 - Structure view for Michelson files
+- Folding builder for Michelson files
 
 # Version 0.2
 - Highlighting errors in macro names and macro arguments

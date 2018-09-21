@@ -5,6 +5,7 @@ import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.impl.source.tree.TreeUtil
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
@@ -35,11 +36,12 @@ class MichelsonFoldingBuilder : FoldingBuilder, DumbAware {
     }
 
     private fun buildRecursively(node: ASTNode, document: Document, result: MutableList<FoldingDescriptor>) {
-        if (node.elementType == MichelsonTypes.CONTRACT) {
-            val notTopLevel = TreeUtil.findParent(node, MichelsonTypes.CREATE_CONTRACT_INSTRUCTION) != null
-            if (notTopLevel) {
-                result += FoldingDescriptor(node, node.textRange)
-            }
+        if (node.elementType == MichelsonTypes.CONTRACT && TreeUtil.findParent(node, MichelsonTypes.CREATE_CONTRACT_INSTRUCTION) != null) {
+            // add leading { and the trailing } to the folded region
+            val start = TreeUtil.findSiblingBackward(node, MichelsonTypes.LEFT_CURLY) ?: node
+            val end = TreeUtil.findSibling(node, MichelsonTypes.RIGHT_CURLY) ?: node
+
+            result += FoldingDescriptor(node, TextRange.create(start.startOffset, end.textRange.endOffset))
         } else if (foldedTypes.contains(node.elementType) && node.textLength > 2) {
             result += FoldingDescriptor(node, node.textRange)
         }
