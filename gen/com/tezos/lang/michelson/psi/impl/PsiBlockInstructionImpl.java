@@ -26,4 +26,8 @@ public class PsiBlockInstructionImpl extends PsiInstructionImpl implements PsiBl
     else super.accept(visitor);
   }
 
+  public boolean isWhitespceOnly() {
+    return MichelsonPsiUtil.isWhitespceOnly(this);
+  }
+
 }

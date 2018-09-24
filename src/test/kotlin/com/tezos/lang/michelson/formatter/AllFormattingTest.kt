@@ -18,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.lang.reflect.Field
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -55,10 +56,10 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
 
     @Test
     fun testFile() {
-        testFileFormatting(dataRootPath.resolve(michelsonFile))
+        testFileFormatting(dataRootPath.resolve(michelsonFile), updateReferenceData = System.getenv("UPDATE_MICHELSON_DATA") == "true")
     }
 
-    private fun testFileFormatting(file: Path, settingsOverride: CodeStyleSettings? = null) {
+    private fun testFileFormatting(file: Path, settingsOverride: CodeStyleSettings? = null, updateReferenceData: Boolean = false) {
         val relativeFile = dataRootPath.relativize(file)
         myFixture.configureByFiles(relativeFile.toString())
 
@@ -73,14 +74,18 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
             }
         }
 
+        val formattedFile = file.resolveSibling(file.fileName.toString().replace(".tz", ".formatted.tz"))
         try {
-            val formattedFile = file.resolveSibling(file.fileName.toString().replace(".tz", ".formatted.tz"))
             if (Files.exists(formattedFile)) {
                 myFixture.checkResultByFile(dataRootPath.relativize(formattedFile).toString())
             } else {
                 myFixture.checkResult("")
             }
         } catch (e: Throwable) {
+            if (updateReferenceData) {
+                Files.write(formattedFile, myFixture.file.text.toByteArray(StandardCharsets.UTF_8))
+            }
+
             // workaround to force IntelliJ to show the "compare" link in the console output of the test case
             // this doesn't seem to work well for wrapped exceptions
             var cause: Throwable? = e

@@ -1,6 +1,9 @@
 package com.tezos.lang.michelson.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.TreeUtil
+import com.tezos.lang.michelson.lexer.MichelsonTokenSets
+import com.tezos.lang.michelson.parser.MichelsonParserDefinition
 
 /**
  * @author jansorg
@@ -56,12 +59,12 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
-    fun hasSimpleTypes(type: PsiComplexType) : Boolean{
+    fun hasSimpleTypes(type: PsiComplexType): Boolean {
         return type.typeList.filter { it is PsiGenericType }.isNotEmpty()
     }
 
     @JvmStatic
-    fun hasComplexTypes(type: PsiComplexType) : Boolean{
+    fun hasComplexTypes(type: PsiComplexType): Boolean {
         return type.typeList.filter { it is PsiComplexType }.isNotEmpty()
     }
 
@@ -113,4 +116,10 @@ object MichelsonPsiUtil {
 
     @JvmStatic
     fun findParentData(psi: PsiAnnotation): PsiData? = psi.parent as? PsiData
+
+    @JvmStatic
+    fun isWhitespceOnly(psi: PsiBlockInstruction): Boolean {
+        val next = TreeUtil.skipElements(psi.firstChild.node.treeNext, MichelsonTokenSets.WHITESPACE_TOKENS)
+        return next == psi.lastChild.node
+    }
 }
