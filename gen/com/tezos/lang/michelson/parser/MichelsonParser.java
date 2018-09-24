@@ -119,7 +119,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // block_instruction_inner
+  // <<parse_instruction_block instruction>>
   public static boolean block_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "block_instruction")) return false;
     boolean result;

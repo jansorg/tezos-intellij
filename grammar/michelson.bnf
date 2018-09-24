@@ -118,8 +118,7 @@ map_entry_data ::= 'Elt' toplevel_data toplevel_data
 //-- instructions
 
 instruction ::= block_instruction | simple_instruction {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getInstructionName getInstructionToken]}
-block_instruction ::= block_instruction_inner {methods=[isWhitespceOnly]}
-external block_instruction_inner ::= parse_instruction_block instruction
+block_instruction ::= <<parse_instruction_block instruction>> {methods=[isWhitespceOnly]}
 
 private simple_instruction ::=
     create_contract_instruction
