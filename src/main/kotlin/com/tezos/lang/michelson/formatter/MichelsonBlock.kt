@@ -74,14 +74,14 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                             blockChildAlign
                         }
                         else -> null
-                    } ?: Alignment.createAlignment()
+                    }
 
                     MichelsonLineCommentBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, indent, codeStyle, parent = this)
                 }
 
                 WRAPPED_BLOCKS.contains(childType) -> {
                     val indent = if (node.elementType == BLOCK_INSTRUCTION) Indent.getNormalIndent() else Indent.getNoneIndent()
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment(), spacing, indent, codeStyle, parent = this)
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), null, spacing, indent, codeStyle, parent = this)
                 }
 
                 // align chained blocks in instructions
@@ -97,14 +97,14 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 }
 
                 MichelsonElementSets.INSTRUCTIONS.contains(childType) -> {
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG, true), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG, true), null, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
                 childType == CONTRACT_WRAPPER && node.elementType == CREATE_CONTRACT_INSTRUCTION -> {
                     MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
                 childType == CONTRACT && node.elementType == CONTRACT_WRAPPER -> {
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), Alignment.createAlignment(), spacing, Indent.getNormalIndent(), codeStyle, parent = this)
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), null, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
                 MichelsonTokenSets.ANNOTATIONS.contains(childType) && michelsonSettings.COMPLEX_TYPE_ALIGN_ANNOTATIONS -> {
@@ -156,19 +156,18 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-        val v = spacing.getSpacing(this, child1, child2)
-        return v
-    }
-
-    override fun getChildIndent(): Indent? {
-        return if (node.elementType == BLOCK_INSTRUCTION) {
-            Indent.getNormalIndent()
-        } else {
-            null
-        }
+        return spacing.getSpacing(this, child1, child2)
     }
 
     override fun isLeaf(): Boolean {
         return node.firstChildNode == null
+    }
+
+    override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
+        if (node.elementType == BLOCK_INSTRUCTION) {
+            // force no child alignment and indent of first element in empty blocks
+            return ChildAttributes(Indent.getIndent(Indent.Type.NORMAL, true, false), null)
+        }
+        return super.getChildAttributes(newChildIndex)
     }
 }
