@@ -17,7 +17,7 @@ import com.tezos.lang.michelson.psi.PsiComplexType
 /**
  * @author jansorg
  */
-class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private val spacing: SpacingBuilder, private val _indent: Indent? = null, val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
+class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private val spacing: SpacingBuilder, private val _indent: Indent? = null, val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
     private val blockChildAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
     private val lineCommentAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
     private val annotationAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)

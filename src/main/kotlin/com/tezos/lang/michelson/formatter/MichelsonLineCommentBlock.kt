@@ -15,7 +15,7 @@ import java.util.*
  *
  * @author jansorg
  */
-class MichelsonLineCommentBlock(node: ASTNode, wrap: Wrap, alignment: Alignment, private val spacing: SpacingBuilder, private val indent: Indent?, codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
+class MichelsonLineCommentBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private val spacing: SpacingBuilder, private val indent: Indent?, codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
     private val michelsonStyle = codeStyle.getCustomSettings(MichelsonCodeStyleSettings::class.java)
 
     override fun buildChildren(): MutableList<Block> {
