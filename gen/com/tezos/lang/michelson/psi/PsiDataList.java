@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiData extends MichelsonComposite {
+public interface PsiDataList extends PsiData {
 
-  @Nullable
-  PsiData getData();
+  @NotNull
+  List<PsiData> getDataList();
 
 }

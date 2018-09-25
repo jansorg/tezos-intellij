@@ -1,0 +1,13 @@
+parameter unit;
+storage unit;
+code {
+       PUSH (map int string) {Elt 1 "1"; Elt 2 "42" };
+       DROP;
+
+       PUSH (map int string) {Elt 1 "1"; Elt 2 "42"; }; #trailing semicolon
+       DROP;
+
+       CDR;
+       NIL operation;
+       PAIR;
+     }

@@ -19,6 +19,8 @@ public interface MichelsonTypes {
   IElementType CONTRACT_WRAPPER = new MichelsonCompositeElementType("CONTRACT_WRAPPER");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
+  IElementType DATA_LIST = new MichelsonCompositeElementType("DATA_LIST");
+  IElementType DATA_MAP = new MichelsonCompositeElementType("DATA_MAP");
   IElementType FIELD_ANNOTATION = new MichelsonCompositeElementType("FIELD_ANNOTATION");
   IElementType GENERIC_DATA = new MichelsonCompositeElementType("GENERIC_DATA");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
@@ -83,6 +85,12 @@ public interface MichelsonTypes {
       }
       else if (type == DATA) {
         return new PsiDataImpl(type);
+      }
+      else if (type == DATA_LIST) {
+        return new PsiDataListImpl(type);
+      }
+      else if (type == DATA_MAP) {
+        return new PsiDataMapImpl(type);
       }
       else if (type == FIELD_ANNOTATION) {
         return new PsiFieldAnnotationImpl(type);

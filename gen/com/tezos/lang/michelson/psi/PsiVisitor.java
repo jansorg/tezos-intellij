@@ -38,6 +38,14 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitMichelsonComposite(o);
   }
 
+  public R visitDataList(@NotNull PsiDataList o) {
+    return visitData(o);
+  }
+
+  public R visitDataMap(@NotNull PsiDataMap o) {
+    return visitData(o);
+  }
+
   public R visitFieldAnnotation(@NotNull PsiFieldAnnotation o) {
     return visitAnnotation(o);
   }

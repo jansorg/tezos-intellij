@@ -79,6 +79,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.before(RIGHT_CURLY).parentDependentLFSpacing(1, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
         builder.betweenInside(LEFT_CURLY, COMMENT_LINE, BLOCK_INSTRUCTION).spaces(1) // IF { # comment
         builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).none()  // IF {...}
+//        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, DATA_LIST).none()  // {123; ...}
+//        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, DATA_MAP).none()  // {Elt ...}
         builder.after(LEFT_CURLY).spaces(1, true)
 
         builder.before(SEMI).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON)
