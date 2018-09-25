@@ -10,7 +10,7 @@ class MichelsonIndentationTest : MichelsonFixtureTest() {
     fun testIndent() {
         configureByCode("<caret>")
 
-        myFixture.type("\n")
+        myFixture.type("\b\n") //backspace to remove space in code{...}
         myFixture.type("DROP;")
         myFixture.checkResult("""
             parameter unit;
