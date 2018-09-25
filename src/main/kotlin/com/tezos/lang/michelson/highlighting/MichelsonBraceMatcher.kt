@@ -15,7 +15,7 @@ import com.tezos.lang.michelson.psi.PsiMacroInstruction
 class MichelsonBraceMatcher : PairedBraceMatcher {
     companion object {
         val allPairs = arrayOf(
-                BracePair(LEFT_PAREN, RIGHT_PAREN, true),
+                BracePair(LEFT_PAREN, RIGHT_PAREN, false),
                 BracePair(LEFT_CURLY, RIGHT_CURLY, true))
     }
 
