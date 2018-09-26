@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="AllFilesHighlightingTest" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+  <configuration default="false" name="AllFilesHighlightingTest" type="JUnit" factoryName="JUnit">
     <module name="tezos-intellij-plugin" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.tezos.lang.michelson.highlighting.*" />
+        <option name="PATTERN" value="com.tezos.lang.michelson.editor.highlighting.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.highlighting" />
-    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.highlighting.AllFilesHighlightingTest" />
+    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.editor.highlighting" />
+    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.editor.highlighting.AllFilesHighlightingTest" />
     <option name="METHOD_NAME" value="" />
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />

@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.highlighting
+package com.tezos.lang.michelson.editor.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator

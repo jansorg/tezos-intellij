@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.highlighting
+package com.tezos.lang.michelson.editor.highlighting
 
 import com.intellij.testFramework.EdtTestUtil
 import com.intellij.util.ThrowableRunnable
@@ -13,19 +13,19 @@ import org.junit.runners.Parameterized
 import java.nio.file.Paths
 
 /**
- * Parmeterized JUnit4 test which makes sure that all our valid michelson files will not contain highlighting errors.
+ * Parmeterized JUnit4 test which collects all michelson files at src/test/data/contracts.
  *
  * @author jansorg
  */
 @RunWith(Parameterized::class)
-class AllValidContractsHighlightingTest(val michelsonFile: String) : MichelsonFixtureTest() {
+class AllFilesHighlightingTest(val michelsonFile: String) : MichelsonFixtureTest() {
     companion object {
         private val dataRootPath = dataPath()
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun data(): Iterable<String> {
-            return locateMichelsonFiles(Paths.get("contracts", "tezos-repo")).map { dataRootPath.relativize(it).toString() }.toList()
+            return locateMichelsonFiles(Paths.get("highlighting")).map { dataRootPath.relativize(it).toString() }.toList()
         }
     }
 

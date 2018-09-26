@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.highlighting
+package com.tezos.lang.michelson.editor.highlighting
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter

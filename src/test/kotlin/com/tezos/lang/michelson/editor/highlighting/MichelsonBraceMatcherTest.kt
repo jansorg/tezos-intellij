@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.highlighting
+package com.tezos.lang.michelson.editor.highlighting
 
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import org.junit.Assert

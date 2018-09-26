@@ -54,16 +54,16 @@
         <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
 
         <!--Highlighting and basic validation-->
-        <colorSettingsPage implementation="com.tezos.lang.michelson.highlighting.MichelsonColorSettingsPage"/>
-        <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="com.tezos.lang.michelson.editor.highlighting.MichelsonColorSettingsPage"/>
+        <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighterFactory"/>
         <additionalTextAttributes scheme="Default" file="colors/michelson_default.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colors/michelson_darcula.xml"/>
-        <annotator language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonHighlightingAnnotator"/>
+        <annotator language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonHighlightingAnnotator"/>
 
         <!-- basic features -->
         <internalFileTemplate name="Michelson File" />
         <internalFileTemplate name="Michelson Contract" />
-        <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.highlighting.MichelsonBraceMatcher"/>
+        <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonBraceMatcher"/>
         <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.structureView.MichelsonStructureViewFactory"/>
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
 
