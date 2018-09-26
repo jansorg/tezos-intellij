@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="AllFormattingTest" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+  <configuration default="false" name="AllFormattingTest" type="JUnit" factoryName="JUnit">
     <module name="tezos-intellij-plugin" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.tezos.lang.michelson.formatter.*" />
+        <option name="PATTERN" value="com.tezos.lang.michelson.editor.formatter.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.formatter" />
-    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.formatter.AllFormattingTest" />
+    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.editor.formatter" />
+    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.editor.formatter.AllFormattingTest" />
     <option name="METHOD_NAME" value="" />
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />

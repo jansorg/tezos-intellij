@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.formatter
+package com.tezos.lang.michelson.editor.formatter
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.util.TextRange
