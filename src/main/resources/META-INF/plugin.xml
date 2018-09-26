@@ -64,7 +64,7 @@
         <internalFileTemplate name="Michelson File" />
         <internalFileTemplate name="Michelson Contract" />
         <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonBraceMatcher"/>
-        <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.structureView.MichelsonStructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.structureView.MichelsonStructureViewFactory"/>
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
 
         <defaultLiveTemplatesProvider implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonLiveTemplatesProvider"/>

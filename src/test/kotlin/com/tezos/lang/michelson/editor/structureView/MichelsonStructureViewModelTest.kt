@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.structureView
+package com.tezos.lang.michelson.editor.structureView
 
 import com.intellij.testFramework.PlatformTestUtil
 import com.tezos.lang.michelson.MichelsonFixtureTest
