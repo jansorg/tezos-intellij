@@ -10,6 +10,7 @@ import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTypes.*
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
+import com.tezos.lang.michelson.parser.MichelsonElementSets
 
 /**
  * Formatter for the Michelson language.
@@ -24,7 +25,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
         val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG, COMPLEX_TYPE), MichelsonTokenSets.TYPE_NAMES)
         val allArguments = TokenSet.orSet(types, literals, MichelsonTokenSets.TYPE_NAMES, MichelsonTokenSets.LITERAL_TOKENS, annotations)
-        val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION)
+        val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION, EMPTY_BLOCK)
     }
 
 
@@ -79,6 +80,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.before(RIGHT_CURLY).parentDependentLFSpacing(1, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
         builder.betweenInside(LEFT_CURLY, COMMENT_LINE, BLOCK_INSTRUCTION).spaces(1) // IF { # comment
         builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, BLOCK_INSTRUCTION).none()  // IF {...}
+        builder.betweenInside(LEFT_CURLY, COMMENT_LINE, EMPTY_BLOCK).spaces(1) // IF { # comment
+        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, EMPTY_BLOCK).none()  // IF {...}
 //        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, DATA_LIST).none()  // {123; ...}
 //        builder.betweenInside(LEFT_CURLY, RIGHT_CURLY, DATA_MAP).none()  // {Elt ...}
         builder.after(LEFT_CURLY).spaces(1, true)
@@ -89,7 +92,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         // wrapping before initial block in instructions
         builder.betweenInside(MichelsonTokenSets.INTRUCTIONS_TOKENS, blockInstructionSet, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.WRAP_FIRST_BLOCK, true)
         // wrapping between blocks to enable alignment, e.g. in IF {} {}
-        builder.betweenInside(BLOCK_INSTRUCTION, BLOCK_INSTRUCTION, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.ALIGN_BLOCKS, true)
+        builder.betweenInside(MichelsonElementSets.BLOCKS, MichelsonElementSets.BLOCKS, GENERIC_INSTRUCTION).lineBreakOrForceSpace(michelsonSettings.ALIGN_BLOCKS, true)
 
         return builder
     }

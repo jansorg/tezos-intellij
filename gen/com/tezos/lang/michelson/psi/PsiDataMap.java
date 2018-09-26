@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface PsiDataMap extends PsiData {
 
   @NotNull
-  List<PsiMapEntryData> getMapEntryDataList();
+  List<PsiMapEntry> getMapEntryList();
 
 }

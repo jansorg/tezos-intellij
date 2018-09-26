@@ -53,6 +53,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == DATA_MAP) {
       result = data_map(builder, 0);
     }
+    else if (type == EMPTY_BLOCK) {
+      result = empty_block(builder, 0);
+    }
     else if (type == FIELD_ANNOTATION) {
       result = field_annotation(builder, 0);
     }
@@ -74,8 +77,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == MACRO_INSTRUCTION) {
       result = macro_instruction(builder, 0);
     }
-    else if (type == MAP_ENTRY_DATA) {
-      result = map_entry_data(builder, 0);
+    else if (type == MAP_ENTRY) {
+      result = map_entry(builder, 0);
     }
     else if (type == SECTION) {
       result = section(builder, 0);
@@ -105,10 +108,10 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMPARABLE_TYPE, COMPLEX_TYPE, GENERIC_TYPE, TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
-    create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, GENERIC_INSTRUCTION, INSTRUCTION,
-      MACRO_INSTRUCTION),
     create_token_set_(DATA, DATA_LIST, DATA_MAP, GENERIC_DATA,
-      LITERAL_DATA, MAP_ENTRY_DATA, STRING_LITERAL),
+      LITERAL_DATA, STRING_LITERAL),
+    create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, EMPTY_BLOCK, GENERIC_INSTRUCTION,
+      INSTRUCTION, MACRO_INSTRUCTION),
   };
 
   /* ********************************************************** */
@@ -299,8 +302,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // toplevel_data
-  //   | generic_data
+  // toplevel_data | generic_data
   public static boolean data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data")) return false;
     boolean result;
@@ -324,7 +326,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' (toplevel_data (';' (toplevel_data | &'}'))*) '}'
+  // '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}'
   public static boolean data_list(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_list")) return false;
     if (!nextTokenIs(builder, LEFT_CURLY)) return false;
@@ -332,58 +334,56 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, LEFT_CURLY);
     result = result && data_list_1(builder, level + 1);
+    result = result && toplevel_data(builder, level + 1);
+    result = result && data_list_3(builder, level + 1);
     result = result && consumeToken(builder, RIGHT_CURLY);
     exit_section_(builder, marker, DATA_LIST, result);
     return result;
   }
 
-  // toplevel_data (';' (toplevel_data | &'}'))*
+  // ';'?
   private static boolean data_list_1(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_list_1")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = toplevel_data(builder, level + 1);
-    result = result && data_list_1_1(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
+    consumeToken(builder, SEMI);
+    return true;
   }
 
   // (';' (toplevel_data | &'}'))*
-  private static boolean data_list_1_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_list_1_1")) return false;
+  private static boolean data_list_3(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_list_3")) return false;
     while (true) {
       int pos = current_position_(builder);
-      if (!data_list_1_1_0(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "data_list_1_1", pos)) break;
+      if (!data_list_3_0(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "data_list_3", pos)) break;
     }
     return true;
   }
 
   // ';' (toplevel_data | &'}')
-  private static boolean data_list_1_1_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_list_1_1_0")) return false;
+  private static boolean data_list_3_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_list_3_0")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, SEMI);
-    result = result && data_list_1_1_0_1(builder, level + 1);
+    result = result && data_list_3_0_1(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
   }
 
   // toplevel_data | &'}'
-  private static boolean data_list_1_1_0_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_list_1_1_0_1")) return false;
+  private static boolean data_list_3_0_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_list_3_0_1")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = toplevel_data(builder, level + 1);
-    if (!result) result = data_list_1_1_0_1_1(builder, level + 1);
+    if (!result) result = data_list_3_0_1_1(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
   }
 
   // &'}'
-  private static boolean data_list_1_1_0_1_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_list_1_1_0_1_1")) return false;
+  private static boolean data_list_3_0_1_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_list_3_0_1_1")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _AND_);
     result = consumeToken(builder, RIGHT_CURLY);
@@ -392,56 +392,64 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' map_entry_data (';' (map_entry_data | &'}'))* '}'
+  // '{' ';'? map_entry (';' (map_entry | &'}'))* '}'
   public static boolean data_map(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_map")) return false;
     if (!nextTokenIs(builder, LEFT_CURLY)) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, LEFT_CURLY);
-    result = result && map_entry_data(builder, level + 1);
-    result = result && data_map_2(builder, level + 1);
+    result = result && data_map_1(builder, level + 1);
+    result = result && map_entry(builder, level + 1);
+    result = result && data_map_3(builder, level + 1);
     result = result && consumeToken(builder, RIGHT_CURLY);
     exit_section_(builder, marker, DATA_MAP, result);
     return result;
   }
 
-  // (';' (map_entry_data | &'}'))*
-  private static boolean data_map_2(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_map_2")) return false;
+  // ';'?
+  private static boolean data_map_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_map_1")) return false;
+    consumeToken(builder, SEMI);
+    return true;
+  }
+
+  // (';' (map_entry | &'}'))*
+  private static boolean data_map_3(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_map_3")) return false;
     while (true) {
       int pos = current_position_(builder);
-      if (!data_map_2_0(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "data_map_2", pos)) break;
+      if (!data_map_3_0(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "data_map_3", pos)) break;
     }
     return true;
   }
 
-  // ';' (map_entry_data | &'}')
-  private static boolean data_map_2_0(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_map_2_0")) return false;
+  // ';' (map_entry | &'}')
+  private static boolean data_map_3_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_map_3_0")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, SEMI);
-    result = result && data_map_2_0_1(builder, level + 1);
+    result = result && data_map_3_0_1(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
   }
 
-  // map_entry_data | &'}'
-  private static boolean data_map_2_0_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_map_2_0_1")) return false;
+  // map_entry | &'}'
+  private static boolean data_map_3_0_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_map_3_0_1")) return false;
     boolean result;
     Marker marker = enter_section_(builder);
-    result = map_entry_data(builder, level + 1);
-    if (!result) result = data_map_2_0_1_1(builder, level + 1);
+    result = map_entry(builder, level + 1);
+    if (!result) result = data_map_3_0_1_1(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
   }
 
   // &'}'
-  private static boolean data_map_2_0_1_1(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_map_2_0_1_1")) return false;
+  private static boolean data_map_3_0_1_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "data_map_3_0_1_1")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _AND_);
     result = consumeToken(builder, RIGHT_CURLY);
@@ -484,6 +492,27 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = result && toplevel_data(builder, level + 1);
     exit_section_(builder, marker, null, result);
     return result;
+  }
+
+  /* ********************************************************** */
+  // '{' ';'? '}'
+  public static boolean empty_block(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "empty_block")) return false;
+    if (!nextTokenIs(builder, LEFT_CURLY)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, LEFT_CURLY);
+    result = result && empty_block_1(builder, level + 1);
+    result = result && consumeToken(builder, RIGHT_CURLY);
+    exit_section_(builder, marker, EMPTY_BLOCK, result);
+    return result;
+  }
+
+  // ';'?
+  private static boolean empty_block_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "empty_block_1")) return false;
+    consumeToken(builder, SEMI);
+    return true;
   }
 
   /* ********************************************************** */
@@ -654,10 +683,10 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // 'Elt' toplevel_data toplevel_data
-  public static boolean map_entry_data(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "map_entry_data")) return false;
+  public static boolean map_entry(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "map_entry")) return false;
     boolean result;
-    Marker marker = enter_section_(builder, level, _NONE_, MAP_ENTRY_DATA, "<map entry data>");
+    Marker marker = enter_section_(builder, level, _NONE_, MAP_ENTRY, "<map entry>");
     result = consumeToken(builder, "Elt");
     result = result && toplevel_data(builder, level + 1);
     result = result && toplevel_data(builder, level + 1);
@@ -805,7 +834,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // nested_data | literal_data | data_map | data_list
+  // nested_data | literal_data | data_map | data_list | empty_block
   static boolean toplevel_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "toplevel_data")) return false;
     boolean result;
@@ -813,6 +842,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = literal_data(builder, level + 1);
     if (!result) result = data_map(builder, level + 1);
     if (!result) result = data_list(builder, level + 1);
+    if (!result) result = empty_block(builder, level + 1);
     return result;
   }
 

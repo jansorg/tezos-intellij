@@ -56,18 +56,18 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 // special block for line comments
                 childType == COMMENT_LINE -> {
                     // align comments in instruction blocks
-                    val indent = when (node.elementType == BLOCK_INSTRUCTION) {
+                    val indent = when (node.elementType.isMichelsonBlock()) {
                         true -> Indent.getNormalIndent()
                         false -> Indent.getNoneIndent()
                     }
 
                     val commentCoversLine = child.isCompleteLineComment()
-                    val nextIsBlock = child.nextNonWhitespace()?.elementType == BLOCK_INSTRUCTION
+                    val nextIsBlock = child.nextNonWhitespace()?.elementType.isMichelsonBlock()
 
                     val alignment = when {
                         !commentCoversLine && michelsonSettings.LINE_COMMENT_ALIGN -> {
                             // align end-of-line comments with other eol-style comments of the same block
-                            findNextHierarchyParent(BLOCK_INSTRUCTION)?.lineCommentAlign
+                            findNextHierarchyParent(MichelsonElementSets.BLOCKS)?.lineCommentAlign
                         }
                         commentCoversLine && nextIsBlock -> {
                             // align comments with the blocks if a comment directly precedes the block, i.e. is a note on that particular block
@@ -80,12 +80,12 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 }
 
                 WRAPPED_BLOCKS.contains(childType) -> {
-                    val indent = if (node.elementType == BLOCK_INSTRUCTION) Indent.getNormalIndent() else Indent.getNoneIndent()
+                    val indent = if (node.elementType.isMichelsonBlock()) Indent.getNormalIndent() else Indent.getNoneIndent()
                     MichelsonBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), null, spacing, indent, codeStyle, parent = this)
                 }
 
                 // align chained blocks in instructions
-                childType == BLOCK_INSTRUCTION -> {
+                childType.isMichelsonBlock() -> {
                     val wrap = Wrap.createWrap(WrapType.ALWAYS, false)
                     val indent = Indent.getIndent(Indent.Type.NORMAL, true, true)
                     MichelsonBlock(child, wrap, blockChildAlign, spacing, indent, codeStyle, parent = this)
@@ -113,7 +113,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
 
                     // align all annotations of top-level elements of a complex type with each other
                     // an annotation on a complex type itself must be aligned with the next parent of this type
-                    val alignment = alignmentReference?.findNextHierarchyParent(COMPLEX_TYPE, false)?.annotationAlign
+                    val alignment = alignmentReference?.findNextHierarchyParent(TokenSet.create(COMPLEX_TYPE), false)?.annotationAlign
                     alignment?.let {
                         MichelsonBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, Indent.getNoneIndent(), codeStyle, parent = this)
                     }
@@ -140,10 +140,10 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
         return blocks
     }
 
-    private fun findNextHierarchyParent(elementType: IElementType, acceptCurrent: Boolean = true): MichelsonBlock? {
+    private fun findNextHierarchyParent(elementTypes: TokenSet, acceptCurrent: Boolean = true): MichelsonBlock? {
         var e: MichelsonBlock? = if (acceptCurrent) this else this.parent
         while (e != null) {
-            if (e.node.elementType == elementType) {
+            if (elementTypes.contains(e.node.elementType)) {
                 return e
             }
             e = e.parent
@@ -164,10 +164,12 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
     }
 
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
-        if (node.elementType == BLOCK_INSTRUCTION) {
+        if (node.elementType.isMichelsonBlock()) {
             // force no child alignment and indent of first element in empty blocks
             return ChildAttributes(Indent.getIndent(Indent.Type.NORMAL, true, false), null)
         }
         return super.getChildAttributes(newChildIndex)
     }
 }
+
+inline fun IElementType?.isMichelsonBlock(): Boolean = this != null && MichelsonElementSets.BLOCKS.contains(this)

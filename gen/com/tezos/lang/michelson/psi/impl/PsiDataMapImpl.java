@@ -28,8 +28,8 @@ public class PsiDataMapImpl extends PsiDataImpl implements PsiDataMap {
 
   @Override
   @NotNull
-  public List<PsiMapEntryData> getMapEntryDataList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiMapEntryData.class);
+  public List<PsiMapEntry> getMapEntryList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiMapEntry.class);
   }
 
 }

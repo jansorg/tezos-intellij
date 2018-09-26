@@ -10,4 +10,7 @@ public interface PsiGenericData extends PsiData {
   @NotNull
   List<PsiData> getDataList();
 
+  @NotNull
+  List<PsiEmptyBlock> getEmptyBlockList();
+
 }

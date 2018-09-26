@@ -1,0 +1,15 @@
+parameter unit;
+storage unit;
+code <fold text='{ ... }'>{
+       PUSH (list int) {};
+       DROP;
+       PUSH (list int) <fold text='{ list ... }'>{1}</fold>;
+       DROP;
+       PUSH (list int) <fold text='{ list ... }'>{1;}</fold>;
+       DROP;
+       PUSH (list int) <fold text='{ list ... }'>{ 1; 2; 3; 4; 5 }</fold>;
+       DROP;
+       CDR;
+       NIL operation;
+       PAIR;
+     }</fold>

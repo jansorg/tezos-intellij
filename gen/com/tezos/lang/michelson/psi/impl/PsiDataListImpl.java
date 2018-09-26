@@ -32,4 +32,10 @@ public class PsiDataListImpl extends PsiDataImpl implements PsiDataList {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiData.class);
   }
 
+  @Override
+  @NotNull
+  public List<PsiEmptyBlock> getEmptyBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiEmptyBlock.class);
+  }
+
 }

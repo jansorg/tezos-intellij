@@ -9,4 +9,5 @@ import com.tezos.lang.michelson.MichelsonTypes
  */
 object MichelsonElementSets {
     val INSTRUCTIONS = TokenSet.create(MichelsonTypes.GENERIC_INSTRUCTION, MichelsonTypes.MACRO_INSTRUCTION, MichelsonTypes.CREATE_CONTRACT_INSTRUCTION)
+    val BLOCKS = TokenSet.create(MichelsonTypes.BLOCK_INSTRUCTION, MichelsonTypes.EMPTY_BLOCK)
 }

@@ -10,4 +10,7 @@ public interface PsiDataList extends PsiData {
   @NotNull
   List<PsiData> getDataList();
 
+  @NotNull
+  List<PsiEmptyBlock> getEmptyBlockList();
+
 }

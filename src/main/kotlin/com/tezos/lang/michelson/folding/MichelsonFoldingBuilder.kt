@@ -14,13 +14,15 @@ import com.tezos.lang.michelson.MichelsonTypes
  */
 class MichelsonFoldingBuilder : FoldingBuilder, DumbAware {
     companion object {
-        private val foldedTypes = TokenSet.create(MichelsonTypes.BLOCK_INSTRUCTION)
+        private val foldedTypes = TokenSet.create(MichelsonTypes.BLOCK_INSTRUCTION, MichelsonTypes.DATA_LIST, MichelsonTypes.DATA_MAP)
     }
 
     override fun getPlaceholderText(node: ASTNode): String? {
         return when {
             node.elementType == MichelsonTypes.BLOCK_INSTRUCTION -> "{ ... }"
             node.elementType == MichelsonTypes.CONTRACT_WRAPPER -> "{ CONTRACT ... }"
+            node.elementType == MichelsonTypes.DATA_LIST -> "{ list ... }"
+            node.elementType == MichelsonTypes.DATA_MAP -> "{ map ... }"
             else -> null
         }
     }
