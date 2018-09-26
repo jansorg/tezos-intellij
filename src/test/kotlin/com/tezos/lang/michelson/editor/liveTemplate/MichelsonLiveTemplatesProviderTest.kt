@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.liveTemplate
+package com.tezos.lang.michelson.editor.liveTemplate
 
 import com.tezos.lang.michelson.MichelsonFixtureTest
 

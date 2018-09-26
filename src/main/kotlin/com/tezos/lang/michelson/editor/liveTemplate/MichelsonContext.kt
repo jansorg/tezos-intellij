@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.liveTemplate
+package com.tezos.lang.michelson.editor.liveTemplate
 
 import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.psi.PsiFile

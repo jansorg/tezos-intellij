@@ -67,10 +67,10 @@
         <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.structureView.MichelsonStructureViewFactory"/>
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
 
-        <defaultLiveTemplatesProvider implementation="com.tezos.lang.michelson.liveTemplate.MichelsonLiveTemplatesProvider"/>
-        <liveTemplateContext implementation="com.tezos.lang.michelson.liveTemplate.MichelsonContext"/>
-        <liveTemplateContext implementation="com.tezos.lang.michelson.liveTemplate.MichelsonToplevelContext"/>
-        <liveTemplateContext implementation="com.tezos.lang.michelson.liveTemplate.MichelsonCodeContext"/>
+        <defaultLiveTemplatesProvider implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonLiveTemplatesProvider"/>
+        <liveTemplateContext implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonContext"/>
+        <liveTemplateContext implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonToplevelContext"/>
+        <liveTemplateContext implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonCodeContext"/>
 
         <!-- formatter -->
         <lang.formatter language="Michelson" implementationClass="com.tezos.lang.michelson.editor.formatter.MichelsonFormattingModelBuilder"/>

@@ -1,21 +1,22 @@
-package com.tezos.lang.michelson.liveTemplate
+package com.tezos.lang.michelson.editor.liveTemplate
 
 import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiUtil
 import com.tezos.lang.michelson.MichelsonLanguage
-import com.tezos.lang.michelson.psi.MichelsonPsiFile
+import com.tezos.lang.michelson.psi.PsiBlockInstruction
 
 /**
  * @author jansorg
  */
-class MichelsonToplevelContext : TemplateContextType("MICHELSON_TOPLEVEL", "Michelson toplevel", MichelsonContext::class.java) {
+class MichelsonCodeContext : TemplateContextType("MICHELSON_CODE", "Michelson code block", MichelsonContext::class.java) {
     override fun isInContext(file: PsiFile, offset: Int): Boolean {
         if (PsiUtil.getLanguageAtOffset(file, offset) != MichelsonLanguage) {
             return false
         }
 
         val psi = file.findElementAt(offset)
-        return psi == null || psi.parent is MichelsonPsiFile
+        return psi is PsiWhiteSpace && psi.parent is PsiBlockInstruction
     }
 }

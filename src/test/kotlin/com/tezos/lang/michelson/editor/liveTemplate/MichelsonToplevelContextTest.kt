@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.liveTemplate
+package com.tezos.lang.michelson.editor.liveTemplate
 
 import com.intellij.json.JsonFileType
 import com.tezos.lang.michelson.MichelsonFileType
