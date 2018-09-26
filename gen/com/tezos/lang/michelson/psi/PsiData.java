@@ -11,6 +11,6 @@ public interface PsiData extends MichelsonComposite {
   PsiData getData();
 
   @Nullable
-  PsiInstruction getInstruction();
+  PsiEmptyBlock getEmptyBlock();
 
 }

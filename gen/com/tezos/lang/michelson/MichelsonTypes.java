@@ -19,6 +19,9 @@ public interface MichelsonTypes {
   IElementType CONTRACT_WRAPPER = new MichelsonCompositeElementType("CONTRACT_WRAPPER");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
   IElementType DATA = new MichelsonCompositeElementType("DATA");
+  IElementType DATA_LIST = new MichelsonCompositeElementType("DATA_LIST");
+  IElementType DATA_MAP = new MichelsonCompositeElementType("DATA_MAP");
+  IElementType EMPTY_BLOCK = new MichelsonCompositeElementType("EMPTY_BLOCK");
   IElementType FIELD_ANNOTATION = new MichelsonCompositeElementType("FIELD_ANNOTATION");
   IElementType GENERIC_DATA = new MichelsonCompositeElementType("GENERIC_DATA");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
@@ -26,7 +29,7 @@ public interface MichelsonTypes {
   IElementType INSTRUCTION = new MichelsonCompositeElementType("INSTRUCTION");
   IElementType LITERAL_DATA = new MichelsonCompositeElementType("LITERAL_DATA");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
-  IElementType MAP_ENTRY_DATA = new MichelsonCompositeElementType("MAP_ENTRY_DATA");
+  IElementType MAP_ENTRY = new MichelsonCompositeElementType("MAP_ENTRY");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
@@ -84,6 +87,15 @@ public interface MichelsonTypes {
       else if (type == DATA) {
         return new PsiDataImpl(type);
       }
+      else if (type == DATA_LIST) {
+        return new PsiDataListImpl(type);
+      }
+      else if (type == DATA_MAP) {
+        return new PsiDataMapImpl(type);
+      }
+      else if (type == EMPTY_BLOCK) {
+        return new PsiEmptyBlockImpl(type);
+      }
       else if (type == FIELD_ANNOTATION) {
         return new PsiFieldAnnotationImpl(type);
       }
@@ -102,8 +114,8 @@ public interface MichelsonTypes {
       else if (type == MACRO_INSTRUCTION) {
         return new PsiMacroInstructionImpl(type);
       }
-      else if (type == MAP_ENTRY_DATA) {
-        return new PsiMapEntryDataImpl(type);
+      else if (type == MAP_ENTRY) {
+        return new PsiMapEntryImpl(type);
       }
       else if (type == SECTION) {
         return new PsiSectionImpl(type);

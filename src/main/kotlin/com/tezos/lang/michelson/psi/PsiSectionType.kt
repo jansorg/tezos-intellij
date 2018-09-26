@@ -6,7 +6,7 @@ package com.tezos.lang.michelson.psi
  */
 enum class PsiSectionType {
     PARAMETER,
-    RETURN,
+    //RETURN, //unknown section for now
     STORAGE,
     CODE;
 }

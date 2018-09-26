@@ -95,25 +95,26 @@ private storage_section ::= 'storage' toplevel_type ';'
 private code_section ::= 'code' instruction ';'?
 
 //-- data
-data ::=
-    toplevel_data
-  | generic_data
-  | instruction //fixme is this valid in every context?
+data ::= toplevel_data | generic_data
+
+empty_block ::= '{' ';'? '}' {extends=block_instruction}
 
 // data_toplevel is our extension to match data which may be used as argument to an instruction or tag
-private toplevel_data ::= nested_data | literal_data
+private toplevel_data ::= nested_data | literal_data | data_map | data_list | empty_block
 private nested_data ::= '(' data ')'
 literal_data ::= 'None' | 'True' | 'False' | 'Unit' | INT | string_literal
 string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)* '"' {extends=literal_data}
-generic_data ::= data_pair | data_left | data_right | data_some | data_list | data_map
+generic_data ::= data_pair | data_left | data_right | data_some
 // helpers for data, mostly to be able to introduce pin attributes
 private data_some ::= 'Some' toplevel_data
 private data_pair ::= 'Pair' toplevel_data toplevel_data
 private data_left ::= 'Left' toplevel_data
 private data_right ::= 'Right' toplevel_data
-private data_list ::= '{' (toplevel_data (';' toplevel_data)*)? '}'// {} is an empty list, not an empty map //fixme
-private data_map ::= '{' map_entry_data (';' map_entry_data)* '}' // {} not allowed here
-map_entry_data ::= 'Elt' toplevel_data toplevel_data
+// don't pin on { as it's also the start marker for a block and a list literal
+data_map ::= '{' ';'? map_entry (';' (map_entry | &'}'))* '}'  // empty list {} is not allowed here
+map_entry ::= 'Elt' toplevel_data toplevel_data
+// don't pin on { as it's the start marker for a block and a map literal
+data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
 
 //-- instructions
 
@@ -126,7 +127,7 @@ private simple_instruction ::=
   | macro_instruction
 
 // types must be validated by annotator, method "annotations" implements interface PsiAnnotated
-generic_instruction ::= INSTRUCTION_TOKEN annotation* (block_instruction | toplevel_type | toplevel_data)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
+generic_instruction ::= INSTRUCTION_TOKEN annotation* (toplevel_data | toplevel_type | block_instruction)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
 create_contract_instruction ::= 'CREATE_CONTRACT' annotation* contract_wrapper? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"] extends=generic_instruction}
 // generic parsing of macros, needs further validation in annotator
 macro_instruction ::= MACRO_TOKEN annotation* block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}

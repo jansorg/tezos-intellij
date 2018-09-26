@@ -1,0 +1,15 @@
+parameter unit;
+storage unit;
+code {
+       PUSH (list int) {};
+       DROP;
+       PUSH (list int) {1};
+       DROP;
+       PUSH (list int) {1;};
+       DROP;
+       PUSH (list int) { 1; 2; 3; 4; 5 };
+       DROP;
+       CDR;
+       NIL operation;
+       PAIR;
+     }

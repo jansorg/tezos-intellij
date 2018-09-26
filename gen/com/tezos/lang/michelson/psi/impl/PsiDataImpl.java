@@ -34,8 +34,8 @@ public class PsiDataImpl extends MichelsonCompositeImpl implements PsiData {
 
   @Override
   @Nullable
-  public PsiInstruction getInstruction() {
-    return PsiTreeUtil.getChildOfType(this, PsiInstruction.class);
+  public PsiEmptyBlock getEmptyBlock() {
+    return PsiTreeUtil.getChildOfType(this, PsiEmptyBlock.class);
   }
 
 }

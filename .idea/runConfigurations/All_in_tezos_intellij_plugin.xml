@@ -1,6 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="All in tezos-intellij-plugin" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+  <configuration default="false" name="All in tezos-intellij-plugin" type="JUnit" factoryName="JUnit">
     <module name="tezos-intellij-plugin" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.tezos.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
     <option name="PACKAGE_NAME" value="" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />

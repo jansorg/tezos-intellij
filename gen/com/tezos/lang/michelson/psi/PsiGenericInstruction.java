@@ -11,6 +11,9 @@ public interface PsiGenericInstruction extends PsiInstruction {
   List<PsiData> getDataList();
 
   @NotNull
+  List<PsiEmptyBlock> getEmptyBlockList();
+
+  @NotNull
   List<PsiType> getTypeList();
 
   @NotNull

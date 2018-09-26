@@ -32,4 +32,10 @@ public class PsiGenericDataImpl extends PsiDataImpl implements PsiGenericData {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiData.class);
   }
 
+  @Override
+  @NotNull
+  public List<PsiEmptyBlock> getEmptyBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiEmptyBlock.class);
+  }
+
 }

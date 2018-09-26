@@ -34,6 +34,12 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
 
   @Override
   @NotNull
+  public List<PsiEmptyBlock> getEmptyBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiEmptyBlock.class);
+  }
+
+  @Override
+  @NotNull
   public List<PsiType> getTypeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiType.class);
   }

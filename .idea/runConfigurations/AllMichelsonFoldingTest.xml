@@ -3,12 +3,12 @@
     <module name="tezos-intellij-plugin" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.tezos.lang.michelson.folding.*" />
+        <option name="PATTERN" value="com.tezos.lang.michelson.editor.folding.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.folding" />
-    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.folding.AllMichelsonFoldingTest" />
+    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.editor.folding" />
+    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.editor.folding.AllMichelsonFoldingTest" />
     <option name="METHOD_NAME" value="" />
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />

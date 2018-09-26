@@ -16,6 +16,8 @@ class PsiTypeTest : MichelsonFixtureTest() {
         val parent = currentType!!.findComposedParentType()
         Assert.assertNotNull(parent)
         Assert.assertEquals("pair", parent!!.typeNameString)
+
+        Assert.assertTrue(currentType.hasComposedParentType())
     }
 
     fun testFindChildrenType() {
