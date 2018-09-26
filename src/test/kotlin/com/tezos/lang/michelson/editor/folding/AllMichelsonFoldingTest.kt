@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.folding
+package com.tezos.lang.michelson.editor.folding
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.tezos.lang.michelson.MichelsonFixtureTest

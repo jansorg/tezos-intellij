@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.folding
+package com.tezos.lang.michelson.editor.folding
 
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilder
