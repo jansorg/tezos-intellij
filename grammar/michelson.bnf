@@ -89,10 +89,10 @@ private script_file ::= contract?
 contract ::= section+ { methods=[sections="section"] }
 
 section ::= parameter_section | return_section | storage_section | code_section {methods=[instructions="instruction" getSectionType]}
-private parameter_section ::= 'parameter' toplevel_type ';'
-private return_section ::= 'return' toplevel_type ';'
-private storage_section ::= 'storage' toplevel_type ';'
-private code_section ::= 'code' instruction ';'?
+private parameter_section ::= 'parameter' toplevel_type ';' {pin=1}
+private return_section ::= 'return' toplevel_type ';' {pin=1}
+private storage_section ::= 'storage' toplevel_type ';' {pin=1}
+private code_section ::= 'code' instruction ';'? {pin=1}
 
 //-- data
 data ::= toplevel_data | generic_data

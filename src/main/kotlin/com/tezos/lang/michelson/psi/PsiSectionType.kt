@@ -9,4 +9,6 @@ enum class PsiSectionType {
     //RETURN, //unknown section for now
     STORAGE,
     CODE;
+
+    fun codeName() = name.toLowerCase()
 }
