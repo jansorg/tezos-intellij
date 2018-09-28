@@ -17,7 +17,18 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Version 0.3</b>
+        <b>Version 0.4.0</b>
+        <ul>
+            <li>Live template `contract` to insert a new, empty contract</li>
+            <li>Indentation in empty blocks</li>
+            <li>Code completion for sections (basic and smart)</li>
+            <li>Code completion for instructions</li>
+            <li>Code completion for type names</li>
+            <li>Parser: Handle map literals and list literals</li>
+            <li>Parser: Handle list literals and empty lists / blocks</li>
+        </ul><br><br>
+
+        <b>Version 0.3.0</b>
         <ul>
             <li>Brace matcher to highlight pairs of () and {}</li>
             <li>Structure view for Michelson files</li>
@@ -27,13 +38,13 @@
             <li>Formatter: new option to align annotations insode of complex types, disabled by default</li>
         </ul><br><br>
 
-        <b>Version 0.2</b>
+        <b>Version 0.2.0</b>
         <ul>
             <li>Highlighting errors in macro names and macro arguments (DUP, DIP, PAIR, UNPAIR, CADR, SET_CADR, MAP_CADR and variants)</li>
             <li>Basic formatting of Michelson files</li>
         </ul><br><br>
 
-        <b>Version 0.1</b>
+        <b>Version 0.1.0</b>
         <ul>
             <li>Initial release</li>
             <li>Michelson parsing and error highlighting</li>
