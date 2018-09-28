@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
@@ -11,6 +11,8 @@ class DupMacroMetadata : MacroMetadata {
     private companion object {
         val regexp = Pattern.compile("DU+P")
     }
+
+    override fun staticMacroName(): Collection<String> = listOf("DUP")
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (regexp.matcher(macro).matches()) {

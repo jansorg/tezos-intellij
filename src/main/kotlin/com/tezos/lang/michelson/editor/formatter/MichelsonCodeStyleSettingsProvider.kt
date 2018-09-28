@@ -6,7 +6,7 @@ import com.intellij.application.options.TabbedLanguageCodeStylePanel
 import com.intellij.openapi.options.Configurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 /**
  * @author jansorg

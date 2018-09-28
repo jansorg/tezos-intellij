@@ -2,7 +2,7 @@ package com.tezos.lang.michelson.editor.formatter
 
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 /**
  * @author jansorg

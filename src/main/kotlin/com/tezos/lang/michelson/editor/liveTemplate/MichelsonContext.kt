@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.editor.liveTemplate
 import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtil
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 /**
  * @author jansorg

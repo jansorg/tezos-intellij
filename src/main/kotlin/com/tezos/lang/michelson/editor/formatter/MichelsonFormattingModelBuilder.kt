@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTypes.*
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.parser.MichelsonElementSets

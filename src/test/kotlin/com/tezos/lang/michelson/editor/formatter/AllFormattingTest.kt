@@ -8,7 +8,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.rt.execution.junit.FileComparisonFailure
 import com.intellij.util.containers.ContainerUtil
 import com.tezos.lang.michelson.MichelsonFixtureTest
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTestUtils.dataPath
 import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
 import junit.framework.TestCase

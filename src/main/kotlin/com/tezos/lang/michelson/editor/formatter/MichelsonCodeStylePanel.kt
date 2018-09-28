@@ -5,8 +5,8 @@ import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
-import com.tezos.lang.michelson.MichelsonFileType
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonFileType
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 /**
  */

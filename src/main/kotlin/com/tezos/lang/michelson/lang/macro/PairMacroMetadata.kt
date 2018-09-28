@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
@@ -77,6 +77,8 @@ class PairMacroMetadata : MacroMetadata {
             }
         }
     }
+
+    override fun staticMacroName(): Collection<String> = listOf("PAIR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

@@ -1,6 +1,6 @@
 package com.tezos.lang.michelson.parser
 
-import com.tezos.lang.michelson.parser.macro.CompareMacroMetadata
+import com.tezos.lang.michelson.lang.macro.CompareMacroMetadata
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
