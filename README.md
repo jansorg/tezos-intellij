@@ -91,6 +91,13 @@ Blocks of instructions are folded into `{...}` and contracts inside of `CREATE_C
 The following live templates are available:
 - `contract`: Available at top-level of an michelson file. Insert an empty contract at the position of the caret.
 
+### Code completion
+#### Sections
+Code completion suggests sections. All sections are suggested when basic completion is performed.
+With smart completion only those sections, which are not yet present in the current contract, are suggested.
+
+<img src="docs/completion_section.png"/>
+
 # License
 This software is licensed under the BSD-3-clause license, see LICENSE.txt for details.
 
