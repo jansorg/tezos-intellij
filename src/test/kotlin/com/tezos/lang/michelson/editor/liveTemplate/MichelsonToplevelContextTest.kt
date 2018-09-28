@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.editor.liveTemplate
 
 import com.intellij.json.JsonFileType
-import com.tezos.lang.michelson.MichelsonFileType
+import com.tezos.lang.michelson.lang.MichelsonFileType
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import org.junit.Assert
 

@@ -49,7 +49,7 @@
 
     <!-- @formatter:off -->
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.tezos.lang.michelson.MichelsonFileTypeFactory"/>
+        <fileTypeFactory implementation="com.tezos.lang.michelson.lang.MichelsonFileTypeFactory"/>
         <lang.ast.factory language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonAstFactory" />
         <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
 
@@ -79,7 +79,8 @@
         <langCodeStyleSettingsProvider implementation="com.tezos.lang.michelson.editor.formatter.MichelsonLangCodeStyleSettingsProvider" />
 
         <!-- code completion -->
-        <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonFileCompletionContributor" />
+        <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonCompletionContributor" />
+        <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonTypeCompletionContributor" />
 
         <!-- inspections -->
 

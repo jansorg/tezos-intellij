@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
@@ -7,6 +7,8 @@ import com.tezos.lang.michelson.psi.PsiAnnotationType
  * @author jansorg
  */
 interface MacroMetadata {
+    fun staticMacroName(): Collection<String>
+
     /**
      * @return None when valid, an error message and the offset where that error was detected when invalid.
      */

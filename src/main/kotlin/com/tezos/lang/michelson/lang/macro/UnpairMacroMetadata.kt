@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
@@ -17,6 +17,8 @@ class UnpairMacroMetadata : MacroMetadata {
     private companion object {
         val regexp = Pattern.compile("UNP[AIP]+R")
     }
+
+    override fun staticMacroName(): Collection<String> = listOf("UNPAIR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

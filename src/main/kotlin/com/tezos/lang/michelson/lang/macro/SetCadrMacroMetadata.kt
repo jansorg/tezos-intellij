@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
@@ -14,6 +14,8 @@ class SetCadrMacroMetadata : MacroMetadata {
     private companion object {
         val regexp = Pattern.compile("SET_C[AD]+R")
     }
+
+    override fun staticMacroName(): Collection<String> = listOf("SET_CDR", "SET_CAR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

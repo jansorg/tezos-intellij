@@ -2,14 +2,14 @@ package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.completion.CompletionType
-import com.tezos.lang.michelson.MichelsonFileType
+import com.tezos.lang.michelson.lang.MichelsonFileType
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import org.junit.Assert
 
 /**
  * @author jansorg
  */
-class MichelsonFileCompletionContributorTest : MichelsonFixtureTest() {
+class MichelsonCompletionContributorTest : MichelsonCompletionTest() {
     fun testSectionCompletion() {
         // basic
         myFixture.configureByText(MichelsonFileType, "")
@@ -30,28 +30,5 @@ class MichelsonFileCompletionContributorTest : MichelsonFixtureTest() {
 
         myFixture.configureByText(MichelsonFileType, "parameter <caret>")
         assertCompletions(type = CompletionType.SMART)
-    }
-
-    private fun assertCompletions(vararg items: String, type: CompletionType = CompletionType.BASIC) {
-        val sortedItems = items.sorted()
-        val completions = completionStrings(type)?.sorted()
-
-        Assert.assertEquals(sortedItems, completions)
-    }
-
-    private fun completionStrings(type: CompletionType = CompletionType.BASIC): List<String>? {
-        val oldBasic = CodeInsightSettings.getInstance().AUTOCOMPLETE_ON_CODE_COMPLETION
-        val oldSmart = CodeInsightSettings.getInstance().AUTOCOMPLETE_ON_SMART_TYPE_COMPLETION
-
-        CodeInsightSettings.getInstance().AUTOCOMPLETE_ON_CODE_COMPLETION = false
-        CodeInsightSettings.getInstance().AUTOCOMPLETE_ON_SMART_TYPE_COMPLETION = false
-
-        try {
-            myFixture.complete(type)
-            return myFixture.lookupElementStrings
-        } finally {
-            CodeInsightSettings.getInstance().AUTOCOMPLETE_ON_CODE_COMPLETION = oldBasic
-            CodeInsightSettings.getInstance().AUTOCOMPLETE_ON_SMART_TYPE_COMPLETION = oldSmart
-        }
     }
 }

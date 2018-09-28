@@ -1,6 +1,6 @@
 package com.tezos.lang.michelson.parser
 
-import com.tezos.lang.michelson.parser.macro.DupMacroMetadata
+import com.tezos.lang.michelson.lang.macro.DupMacroMetadata
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import org.junit.Assert.*
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson
+package com.tezos.lang.michelson.lang
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.tezos.lang.michelson.ui.Icons

@@ -1,0 +1,5 @@
+parameter unit;
+storage unit;
+code {
+       <error descr="Unknown instruction">PAIRpair</error> int 123; # this is invalid, but must be lexed as a tag, the annotator will add the error highlighting
+     }

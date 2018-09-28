@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
@@ -8,6 +8,8 @@ class ConditionalMacroMetadata : MacroMetadata {
                 "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
                 "IF_SOME")
     }
+
+    override fun staticMacroName(): Collection<String> = NAMES
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (macro in NAMES) {

@@ -1,0 +1,24 @@
+[0 : 4] SECTION_NAME
+code
+-----
+[5 : 6] {
+{
+-----
+[13 : 21] INSTRUCTION_TOKEN
+PAIRpair
+-----
+[22 : 25] TYPE_NAME_COMPARABLE
+int
+-----
+[26 : 29] INT
+123
+-----
+[29 : 30] ;
+;
+-----
+[31 : 123] COMMENT_LINE
+# this is invalid, but must be lexed as a tag, the annotator will add the error highlighting
+-----
+[129 : 130] }
+}
+-----

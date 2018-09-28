@@ -3,8 +3,8 @@ package com.tezos.lang.michelson.psi.impl
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
-import com.tezos.lang.michelson.MichelsonFileType
-import com.tezos.lang.michelson.MichelsonLanguage
+import com.tezos.lang.michelson.lang.MichelsonFileType
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.psi.PsiContract
 

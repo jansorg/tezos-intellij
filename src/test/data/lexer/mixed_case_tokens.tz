@@ -1,0 +1,3 @@
+code {
+      PAIRpair int 123; # this is invalid, but must be lexed as a tag, the annotator will add the error highlighting
+     }

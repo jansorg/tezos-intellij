@@ -6,8 +6,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTypes
-import com.tezos.lang.michelson.parser.macro.*
+import com.tezos.lang.michelson.lang.macro.*
 import com.tezos.lang.michelson.psi.*
 
 /**
@@ -21,59 +22,6 @@ import com.tezos.lang.michelson.psi.*
 class MichelsonHighlightingAnnotator : Annotator {
     private companion object {
         val LEAF_TOKENS = TokenSet.create(MichelsonTypes.STRING_ESCAPE_INVALID)
-
-        // the supported generic types in the Michelson language, doesn't contain the comparable types.
-        // the lexer takes care to match comparable types
-        val TYPES = setOf("key", "unit", "signature", "option", "list", "set", "operation", "contract", "pair", "or", "lambda", "map", "big_map")
-
-        // instructions which do not support arguments
-        val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "ADDRESS", "AMOUNT", "AND", "BALANCE", "BLAKE2B",
-                "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT", "CONS",
-                "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP",
-                "EDIV", "EQ", "EXEC", "FAILWITH", "GE", "GET", "GT",
-                "HASH_KEY", "IMPLICIT_ACCOUNT", "INT", "LE", "LSL", "LSR", "LT", "MEM", "MOD", "MUL", "NEG", "NEQ", "NOT", "NOW",
-                "OR", "PACK", "PAIR", "RENAME",
-                "SELF", "SENDER", "SET_DELEGATE", "SHA256", "SHA512", "SIZE", "SLICE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
-                "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR")
-
-        // instructions which are not fully explained in the whitepaper
-        val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT", "REDUCE")
-
-        // instructions which expect one instruction block
-        val INSTRUCTIONS_ONE_BLOCK = setOf("DIP", "ITER", "LOOP", "LOOP_LEFT", "MAP")
-        // instructions which expect two instruction blocks
-        val INSTRUCTIONS_TWO_BLOCKS = setOf("IF", "IF_CONS", "IF_LEFT", "IF_RIGHT", "IF_NONE")
-        // instructions which expect one type as argument
-        val INSTRUCTIONS_ONE_TYPE = setOf("CONTRACT", "EMPTY_SET", "LEFT", "NIL", "NONE", "RIGHT", "UNPACK")
-
-        val INSTRUCTIONS_NO_ANNOTATION = setOf("DROP", "SWAP", "IF_NONE", "IF_LEFT", "IF_CONS", "ITER", "IF", "LOOP", "LOOP_LEFT", "DIP", "FAILWITH")
-
-        val INSTRUCTIONS_ONE_VAR_ANNOTATION = setOf("DUP", "PUSH", "UNIT", "SOME", "NONE", "PAIR", "CAR", "CDR", "LEFT", "RIGHT", "NIL", "CONS", "SIZE",
-                "MAP", "MEM", "EMPTY_SET", "EMPTY_MAP", "UPDATE", "GET", "LAMBDA", "EXEC", "ADD", "SUB", "CONCAT", "MUL", "OR", "AND", "XOR", "NOT",
-                "ABS", "IS_NAT", "INT", "NEG", "EDIV", "LSL", "LSR", "COMPARE", "EQ", "NEQ", "LT", "GT", "LE", "GE",
-                "ADDRESS", "CONTRACT", "SET_DELEGATE", "IMPLICIT_ACCOUNT", "NOW", "AMOUNT", "BALANCE", "HASH_KEY",
-                "CHECK_SIGNATURE", "BLAKE2B", "STEPS_TO_QUOTA", "SOURCE", "SENDER", "SELF", "CAST", "RENAME")
-        val INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE = setOf("TRANSFER_TOKENS", "SLICE", "UNIT")
-        val INSTRUCTIONS_TWO_VAR_ANNOTATIONS = setOf("CREATE_ACCOUNT", "CREATE_CONTRACT")
-
-        val INSTRUCTIONS_ONE_TYPE_ANNOTATION = setOf("UNIT", "PAIR", "SOME", "NONE", "LEFT", "RIGHT", "NIL", "EMPTY_SET", "EMPTY_MAP")
-
-        val INSTRUCTIONS_ONE_FIELD_ANNOTATION = setOf("NONE", "SOME")
-        val INSTRUCTIONS_TWO_FIELD_ANNOTATIONS = setOf("PAIR", "LEFT", "RIGHT")
-
-        val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
-
-        // macros
-        val ASSERT_MACROS: MacroMetadata = AssertMacroMetadata()
-        val COMPARE_MACROS: MacroMetadata = CompareMacroMetadata()
-        val IF_MACROS: MacroMetadata = ConditionalMacroMetadata()
-        val DUUP_MACRO: MacroMetadata = DupMacroMetadata()
-        val DIIP_MACRO: MacroMetadata = DipMacroMetadata()
-        val PAIR_MACRO: MacroMetadata = PairMacroMetadata()
-        val UNPAIR_MACRO: MacroMetadata = UnpairMacroMetadata()
-        val CADR_MACRO: MacroMetadata = CadrMacroMetadata()
-        val SET_CADR_MACRO: MacroMetadata = SetCadrMacroMetadata()
-        val MAP_CADR_MACRO: MacroMetadata = MapCadrMacroMetadata()
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -110,7 +58,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         when {
             // mark annotations on instructions which do not support them
-            instructionName in INSTRUCTIONS_NO_ANNOTATION && annotationCount > 0 -> {
+            instructionName in MichelsonLanguage.INSTRUCTIONS_NO_ANNOTATION && annotationCount > 0 -> {
                 for (annotation in annotations) {
                     holder.createErrorAnnotation(annotation, "Unexpected annotation")
                 }
@@ -119,22 +67,22 @@ class MichelsonHighlightingAnnotator : Annotator {
             annotationCount != 0 -> {
                 var varAnnotations = 0
                 val maxVarAnnotations = when (instructionName) {
-                    in INSTRUCTIONS_ONE_VAR_ANNOTATION -> 1
-                    in INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE -> 1 //fixme
-                    in INSTRUCTIONS_TWO_VAR_ANNOTATIONS -> 2
+                    in MichelsonLanguage.INSTRUCTIONS_ONE_VAR_ANNOTATION -> 1
+                    in MichelsonLanguage.INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE -> 1 //fixme
+                    in MichelsonLanguage.INSTRUCTIONS_TWO_VAR_ANNOTATIONS -> 2
                     else -> 0
                 }
 
                 var fieldAnnotations = 0
                 val maxFieldAnnotations = when {
-                    instructionName in INSTRUCTIONS_ONE_FIELD_ANNOTATION -> 1
-                    instructionName in INSTRUCTIONS_TWO_FIELD_ANNOTATIONS -> 2
+                    instructionName in MichelsonLanguage.INSTRUCTIONS_ONE_FIELD_ANNOTATION -> 1
+                    instructionName in MichelsonLanguage.INSTRUCTIONS_TWO_FIELD_ANNOTATIONS -> 2
                     else -> 0
                 }
 
                 var typeAnnotations = 0
                 val maxTypeAnnotations = when {
-                    instructionName in INSTRUCTIONS_ONE_TYPE_ANNOTATION -> 1
+                    instructionName in MichelsonLanguage.INSTRUCTIONS_ONE_TYPE_ANNOTATION -> 1
                     else -> 0
                 }
 
@@ -203,7 +151,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                             val componentType = a.findParentType()?.findComposedParentType()
                             val componentTypeName = componentType?.typeNameString
 
-                            val supported = componentTypeName in TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS
+                            val supported = componentTypeName in MichelsonLanguage.TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS
                             when {
                                 supported && fieldAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one field annotation supported")
                                 supported -> fieldAnnotations++
@@ -236,11 +184,11 @@ class MichelsonHighlightingAnnotator : Annotator {
         val types = psi.typeList
         val datas = psi.dataList
 
-        val oneBlockCommand = name in INSTRUCTIONS_ONE_BLOCK
-        val twoBlocksCommand = name in INSTRUCTIONS_TWO_BLOCKS
-        val noArgsCommand = name in INSTRUCTIONS_NO_ARGS
-        val oneTypeCommand = INSTRUCTIONS_ONE_TYPE.contains(name)
-        val unknownCommand = !oneBlockCommand && !twoBlocksCommand && !noArgsCommand && !oneTypeCommand && name !in QUESTIONABLE_INSTRUCTIONS
+        val oneBlockCommand = name in MichelsonLanguage.INSTRUCTIONS_ONE_BLOCK
+        val twoBlocksCommand = name in MichelsonLanguage.INSTRUCTIONS_TWO_BLOCKS
+        val noArgsCommand = name in MichelsonLanguage.INSTRUCTIONS_NO_ARGS
+        val oneTypeCommand = MichelsonLanguage.INSTRUCTIONS_ONE_TYPE.contains(name)
+        val unknownCommand = !oneBlockCommand && !twoBlocksCommand && !noArgsCommand && !oneTypeCommand && name !in MichelsonLanguage.QUESTIONABLE_INSTRUCTIONS
 
         val blockCount = blocks.size
         val typeCount = types.size
@@ -300,7 +248,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateGenericType(element: PsiGenericType, holder: AnnotationHolder) {
         val typeName = element.typeNameString
-        if (!TYPES.contains(typeName)) {
+        if (!MichelsonLanguage.TYPES.contains(typeName)) {
             holder.createErrorAnnotation(element.typeToken, "Unknown type")
             return
         }
@@ -310,18 +258,18 @@ class MichelsonHighlightingAnnotator : Annotator {
         val macroName = psi.instructionName ?: throw IllegalStateException("macro name not found")
         when {
             // static macros
-            macroName.startsWith("ASSERT") -> annotateMacro(ASSERT_MACROS, psi, holder)
-            macroName.startsWith("ASSERT") -> annotateMacro(COMPARE_MACROS, psi, holder)
-            macroName.startsWith("IF") -> annotateMacro(IF_MACROS, psi, holder)
+            macroName.startsWith("ASSERT") -> annotateMacro(MichelsonLanguage.ASSERT_MACROS, psi, holder)
+            macroName.startsWith("ASSERT") -> annotateMacro(MichelsonLanguage.COMPARE_MACROS, psi, holder)
+            macroName.startsWith("IF") -> annotateMacro(MichelsonLanguage.IF_MACROS, psi, holder)
 
             // macros with dynamic name
-            macroName.startsWith("DII") -> annotateMacro(DIIP_MACRO, psi, holder)
-            macroName.startsWith("DUU") -> annotateMacro(DUUP_MACRO, psi, holder)
-            macroName.startsWith('P') -> annotateMacro(PAIR_MACRO, psi, holder)
-            macroName.startsWith('U') -> annotateMacro(UNPAIR_MACRO, psi, holder)
-            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateMacro(CADR_MACRO, psi, holder)
-            macroName.startsWith("SET_C") -> annotateMacro(SET_CADR_MACRO, psi, holder)
-            macroName.startsWith("MAP_C") -> annotateMacro(MAP_CADR_MACRO, psi, holder)
+            macroName.startsWith("DII") -> annotateMacro(MichelsonLanguage.DIIP_MACRO, psi, holder)
+            macroName.startsWith("DUU") -> annotateMacro(MichelsonLanguage.DUUP_MACRO, psi, holder)
+            macroName.startsWith('P') -> annotateMacro(MichelsonLanguage.PAIR_MACRO, psi, holder)
+            macroName.startsWith('U') -> annotateMacro(MichelsonLanguage.UNPAIR_MACRO, psi, holder)
+            macroName.startsWith("CA") || macroName.startsWith("CD") -> annotateMacro(MichelsonLanguage.CADR_MACRO, psi, holder)
+            macroName.startsWith("SET_C") -> annotateMacro(MichelsonLanguage.SET_CADR_MACRO, psi, holder)
+            macroName.startsWith("MAP_C") -> annotateMacro(MichelsonLanguage.MAP_CADR_MACRO, psi, holder)
         }
     }
 

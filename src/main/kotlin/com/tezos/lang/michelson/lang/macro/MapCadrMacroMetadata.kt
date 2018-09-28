@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.parser.macro
+package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
@@ -18,6 +18,8 @@ class MapCadrMacroMetadata : MacroMetadata {
     private companion object {
         val regexp = Pattern.compile("MAP_C[AD]+R")
     }
+
+    override fun staticMacroName(): Collection<String> = listOf("MPA_CDR", "MAP_CAR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

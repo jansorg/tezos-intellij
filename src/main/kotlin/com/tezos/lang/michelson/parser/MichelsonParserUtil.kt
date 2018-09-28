@@ -79,6 +79,7 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
 
     private fun instruction_block_recover_while(builder: PsiBuilder): Boolean {
         val current = builder.lookAhead(0)
-        return current !== SEMI && current !== LEFT_CURLY
+        val next = builder.lookAhead(1)
+        return (current !== SEMI && current !== LEFT_CURLY) || (current == SEMI && next == RIGHT_CURLY)
     }
 }
