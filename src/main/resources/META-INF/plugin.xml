@@ -80,6 +80,7 @@
 
         <!-- code completion -->
         <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonCompletionContributor" />
+        <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonTypeCompletionContributor" />
 
         <!-- inspections -->
 

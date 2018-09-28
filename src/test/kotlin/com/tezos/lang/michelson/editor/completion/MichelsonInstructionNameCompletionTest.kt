@@ -14,10 +14,9 @@ class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
         assertCompletions(*insertedInstructions)
 
         configureByCode("IF<caret>")
-        assertCompletions(* insertedInstructions.filter { it.startsWith("IF") }.toTypedArray())
+        assertCompletions(* insertedInstructions.filter { it.contains("IF") }.toTypedArray())
 
         configureByCode("DROP <caret>;")
-        assertCompletions() // no completions here
-
+        assertCompletionsNoneOf(*insertedInstructions) // no instruction completions here
     }
 }
