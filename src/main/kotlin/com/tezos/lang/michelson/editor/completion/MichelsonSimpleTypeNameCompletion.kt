@@ -10,8 +10,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 class MichelsonSimpleTypeNameCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         for (name in MichelsonLanguage.COMPARABLE_TYPES) {
-            val item = LookupElementBuilder.create("$name ")
-                    .withPresentableText(name)
+            val item = LookupElementBuilder.create(name)
                     .withTypeText("comparable type", true)
             result.addElement(item)
         }

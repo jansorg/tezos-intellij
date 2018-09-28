@@ -4,6 +4,8 @@
 - Parser: Handle map literals and list literals
 - Parser: Handle list literals and empty lists / blocks
 - Code completion for sections (basic and smart)
+- Code completion for instructions
+- Code completion for type names
 
 # Version 0.3
 - Formatter: new option "leading space in line comment". Adds a leading space if there's no space yet betwee # and the comment. Keeps existing spaces.

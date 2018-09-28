@@ -7,7 +7,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonSimpleTypeNameCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val reference = MichelsonLanguage.COMPARABLE_TYPES.map { "$it " }.toTypedArray()
+        val reference = MichelsonLanguage.COMPARABLE_TYPES.toTypedArray()
 
         // basic
         configureByCode("PUSH <caret>")

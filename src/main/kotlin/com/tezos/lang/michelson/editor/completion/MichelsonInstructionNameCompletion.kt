@@ -10,8 +10,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 internal class MichelsonInstructionNameCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         for (name in MichelsonLanguage.INSTRUCTIONS) {
-            val item = LookupElementBuilder.create("$name ")
-                    .withPresentableText(name)
+            val item = LookupElementBuilder.create(name)
                     .withTypeText("instruction", true)
             result.addElement(item)
         }

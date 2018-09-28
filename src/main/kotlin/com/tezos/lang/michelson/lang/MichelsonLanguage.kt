@@ -13,6 +13,7 @@ object MichelsonLanguage : Language("Michelson") {
     // the lexer takes care to match comparable types
     val TYPES = setOf("key", "unit", "signature", "option", "list", "set", "operation", "contract", "pair", "or", "lambda", "map", "big_map")
     val COMPARABLE_TYPES = setOf("int", "nat", "string", "tez", "bool", "key_hash", "timestamp", "bytes", "mutez", "address")
+    val COMPLEX_TYPES = setOf("option", "list", "operation", "pair", "or", "lambda", "map", "big_map")
 
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 

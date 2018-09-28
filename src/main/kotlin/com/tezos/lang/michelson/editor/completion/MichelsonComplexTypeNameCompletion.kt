@@ -9,17 +9,9 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 class MichelsonComplexTypeNameCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        for (name in MichelsonLanguage.COMPARABLE_TYPES) {
-            val item = LookupElementBuilder.create("$name ")
-                    .withPresentableText(name)
-                    .withTypeText("comparable type")
-            result.addElement(item)
-        }
-
-        for (name in MichelsonLanguage.TYPES) {
-            val item = LookupElementBuilder.create("$name ")
-                    .withPresentableText(name)
-                    .withTypeText("type")
+        for (name in MichelsonLanguage.COMPLEX_TYPES) {
+            val item = LookupElementBuilder.create(name)
+                    .withTypeText("type", true)
             result.addElement(item)
         }
     }

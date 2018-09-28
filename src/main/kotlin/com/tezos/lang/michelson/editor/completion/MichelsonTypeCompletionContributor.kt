@@ -2,10 +2,7 @@ package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionInitializationContext
-import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.PsiElement
-import com.intellij.util.ProcessingContext
 import com.tezos.lang.michelson.psi.PsiInstruction
 
 /**
@@ -13,16 +10,17 @@ import com.tezos.lang.michelson.psi.PsiInstruction
  */
 class MichelsonTypeCompletionContributor : CompletionContributor() {
     init {
-        extend(null, PlatformPatterns.psiElement()
+        val AFTER_LEFT_PAREN_PATTERN = PlatformPatterns.psiElement().afterLeaf("(")
+
+        val SIMPLE_TYPE_PATTERN = PlatformPatterns.psiElement()
                 .inside(PlatformPatterns.psiElement(PsiInstruction::class.java))
                 .andNot(PATTERN_INSTRUCTION_TOKEN)
                 .andNot(PATTERN_WITH_BLOCK_PARENT)
-                .with(object : PatternCondition<PsiElement?>("debug") {
-                    override fun accepts(t: PsiElement, context: ProcessingContext?): Boolean {
-                        return true
-                    }
-                }), MichelsonSimpleTypeNameCompletion())
-//        extend(null, PlatformPatterns.psiElement(), MichelsonComplexTypeNameCompletion())
+
+        val COMPLEX_TYPE_PATTERN = PATTERN_IN_MICHELSON_FILE.and(AFTER_LEFT_PAREN_PATTERN).and(SIMPLE_TYPE_PATTERN)
+
+        extend(null, SIMPLE_TYPE_PATTERN, MichelsonSimpleTypeNameCompletion())
+        extend(null, COMPLEX_TYPE_PATTERN, MichelsonComplexTypeNameCompletion())
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

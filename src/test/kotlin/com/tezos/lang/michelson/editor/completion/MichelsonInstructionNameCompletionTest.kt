@@ -7,7 +7,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val insertedInstructions = MichelsonLanguage.INSTRUCTIONS.map { "$it " }.toTypedArray()
+        val insertedInstructions = MichelsonLanguage.INSTRUCTIONS.toTypedArray()
 
         // basic
         configureByCode("<caret>")
