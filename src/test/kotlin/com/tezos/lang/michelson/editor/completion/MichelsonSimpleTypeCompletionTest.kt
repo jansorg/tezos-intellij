@@ -19,8 +19,14 @@ class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
         configureByCode("PUSH n<caret>")
         assertCompletionsAtLeast(* reference.filter { it.contains("n") }.toTypedArray())
 
+        // no completions
         configureByCode("PUSH abcde<caret>;")
         assertCompletions() // no completions here
 
+        configureByCode("PUSH 123<caret>;")
+        assertCompletions() //
+
+        configureByCode("PUSH (pair int int) (Pair 123<caret>);")
+        assertCompletions() //
     }
 }
