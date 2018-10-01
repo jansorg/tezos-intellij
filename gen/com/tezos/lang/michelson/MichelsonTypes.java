@@ -18,12 +18,10 @@ public interface MichelsonTypes {
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
   IElementType CONTRACT_WRAPPER = new MichelsonCompositeElementType("CONTRACT_WRAPPER");
   IElementType CREATE_CONTRACT_INSTRUCTION = new MichelsonCompositeElementType("CREATE_CONTRACT_INSTRUCTION");
-  IElementType DATA = new MichelsonCompositeElementType("DATA");
   IElementType DATA_LIST = new MichelsonCompositeElementType("DATA_LIST");
   IElementType DATA_MAP = new MichelsonCompositeElementType("DATA_MAP");
   IElementType EMPTY_BLOCK = new MichelsonCompositeElementType("EMPTY_BLOCK");
   IElementType FIELD_ANNOTATION = new MichelsonCompositeElementType("FIELD_ANNOTATION");
-  IElementType GENERIC_DATA = new MichelsonCompositeElementType("GENERIC_DATA");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
   IElementType GENERIC_TYPE = new MichelsonCompositeElementType("GENERIC_TYPE");
   IElementType INSTRUCTION = new MichelsonCompositeElementType("INSTRUCTION");
@@ -32,6 +30,7 @@ public interface MichelsonTypes {
   IElementType MAP_ENTRY = new MichelsonCompositeElementType("MAP_ENTRY");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
+  IElementType TAG_DATA = new MichelsonCompositeElementType("TAG_DATA");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
   IElementType VARIABLE_ANNOTATION = new MichelsonCompositeElementType("VARIABLE_ANNOTATION");
@@ -39,14 +38,12 @@ public interface MichelsonTypes {
   IElementType BYTE = new MichelsonElementType("BYTE");
   IElementType COMMENT_LINE = new MichelsonElementType("COMMENT_LINE");
   IElementType COMMENT_MULTI_LINE = new MichelsonElementType("COMMENT_MULTI_LINE");
-  IElementType FALSE = new MichelsonElementType("False");
   IElementType FIELD_ANNOTATION_TOKEN = new MichelsonElementType("FIELD_ANNOTATION_TOKEN");
   IElementType INSTRUCTION_TOKEN = new MichelsonElementType("INSTRUCTION_TOKEN");
   IElementType INT = new MichelsonElementType("INT");
   IElementType LEFT_CURLY = new MichelsonElementType("{");
   IElementType LEFT_PAREN = new MichelsonElementType("(");
   IElementType MACRO_TOKEN = new MichelsonElementType("MACRO_TOKEN");
-  IElementType NONE = new MichelsonElementType("None");
   IElementType QUOTE = new MichelsonElementType("\"");
   IElementType RIGHT_CURLY = new MichelsonElementType("}");
   IElementType RIGHT_PAREN = new MichelsonElementType(")");
@@ -56,11 +53,9 @@ public interface MichelsonTypes {
   IElementType STRING_ESCAPE = new MichelsonElementType("STRING_ESCAPE");
   IElementType STRING_ESCAPE_INVALID = new MichelsonElementType("STRING_ESCAPE_INVALID");
   IElementType TAG = new MichelsonElementType("TAG");
-  IElementType TRUE = new MichelsonElementType("True");
   IElementType TYPE_ANNOTATION_TOKEN = new MichelsonElementType("TYPE_ANNOTATION_TOKEN");
   IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
   IElementType TYPE_NAME_COMPARABLE = new MichelsonElementType("TYPE_NAME_COMPARABLE");
-  IElementType UNIT = new MichelsonElementType("Unit");
   IElementType VAR_ANNOTATION_TOKEN = new MichelsonElementType("VAR_ANNOTATION_TOKEN");
 
   class Factory {
@@ -84,9 +79,6 @@ public interface MichelsonTypes {
       else if (type == CREATE_CONTRACT_INSTRUCTION) {
         return new PsiCreateContractInstructionImpl(type);
       }
-      else if (type == DATA) {
-        return new PsiDataImpl(type);
-      }
       else if (type == DATA_LIST) {
         return new PsiDataListImpl(type);
       }
@@ -98,9 +90,6 @@ public interface MichelsonTypes {
       }
       else if (type == FIELD_ANNOTATION) {
         return new PsiFieldAnnotationImpl(type);
-      }
-      else if (type == GENERIC_DATA) {
-        return new PsiGenericDataImpl(type);
       }
       else if (type == GENERIC_INSTRUCTION) {
         return new PsiGenericInstructionImpl(type);
@@ -122,6 +111,9 @@ public interface MichelsonTypes {
       }
       else if (type == STRING_LITERAL) {
         return new PsiStringLiteralImpl(type);
+      }
+      else if (type == TAG_DATA) {
+        return new PsiTagDataImpl(type);
       }
       else if (type == TYPE) {
         return new PsiTypeImpl(type);

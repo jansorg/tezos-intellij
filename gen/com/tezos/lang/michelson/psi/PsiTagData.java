@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiGenericData extends PsiData {
+public interface PsiTagData extends PsiData {
 
   @NotNull
   List<PsiData> getDataList();
 
   @NotNull
   List<PsiEmptyBlock> getEmptyBlockList();
+
+  @NotNull
+  PsiElement getTag();
 
 }

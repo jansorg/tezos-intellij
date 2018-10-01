@@ -16,6 +16,17 @@ abstract class MichelsonCompletionTest() : MichelsonFixtureTest() {
         Assert.assertEquals(sortedItems, completions)
     }
 
+    fun assertCompletionsAtLeast(vararg items: String, type: CompletionType = CompletionType.BASIC) {
+        val sortedItems = items.sorted()
+        val completions = completionStrings(type)?.sorted()
+        if (completions == null) {
+            Assert.fail("no completions available")
+            return
+        }
+
+        Assert.assertTrue("Completions missing. Expected: ${items.joinToString(",")}, found: ${completions.joinToString(",")}", completions.containsAll(sortedItems))
+    }
+
     fun assertCompletionsNoneOf(vararg items: String, type: CompletionType = CompletionType.BASIC) {
         val completions = completionStrings(type)?.sorted()
         if (completions == null || completions.isEmpty()) {

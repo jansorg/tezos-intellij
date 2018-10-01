@@ -19,10 +19,6 @@ object MichelsonTokenSets {
 
     val MACROS = TokenSet.create(MichelsonTypes.MACRO_TOKEN)
 
-    val BOOLEAN = TokenSet.create(
-            MichelsonTypes.TRUE,
-            MichelsonTypes.FALSE)
-
     val PARENTHESES = TokenSet.create(
             MichelsonTypes.LEFT_PAREN,
             MichelsonTypes.RIGHT_PAREN)
@@ -43,9 +39,7 @@ object MichelsonTokenSets {
     val INTRUCTIONS_TOKENS = TokenSet.create(MichelsonTypes.INSTRUCTION_TOKEN, MichelsonTypes.MACRO_TOKEN)
 
     val LITERAL_TOKENS = TokenSet.create(
-            MichelsonTypes.NONE,
-            MichelsonTypes.TRUE,
-            MichelsonTypes.FALSE,
-            MichelsonTypes.UNIT,
+            //fixme missing nat?
+            MichelsonTypes.BYTE,
             MichelsonTypes.INT)
 }

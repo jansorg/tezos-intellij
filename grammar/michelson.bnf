@@ -64,12 +64,6 @@
         // macro tokens
         MACRO_TOKEN='regexp: (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | IFEQ | IFNEQ | IFLT | IFGT | IFLE | IFGE | IFCMPEQ | IFCMPNEQ | IFCMPLT | IFCMPGT | IFCMPLE | IFCMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR | IF_SOME) | DII+P | DUU+P | P[AIP]+R | UNP[PAI]+R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R'
 
-        // literals
-        TRUE='True'
-        FALSE='False'
-        UNIT='Unit'
-        NONE='None'
-
         // from https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
         INSTRUCTION_TOKEN='regexp:[A-Z][A-Z_0-9]*'
 
@@ -94,27 +88,21 @@ private return_section ::= 'return' toplevel_type ';' {pin=1}
 private storage_section ::= 'storage' toplevel_type ';' {pin=1}
 private code_section ::= 'code' instruction ';'? {pin=1}
 
-//-- data
-data ::= toplevel_data | generic_data
-
 empty_block ::= '{' ';'? '}' {extends=block_instruction}
 
+//-- data
+fake data ::=
 // data_toplevel is our extension to match data which may be used as argument to an instruction or tag
-private toplevel_data ::= nested_data | literal_data | data_map | data_list | empty_block
-private nested_data ::= '(' data ')'
-literal_data ::= 'None' | 'True' | 'False' | 'Unit' | INT | string_literal
+private toplevel_data ::= literal_data | data_map | data_list | empty_block | nested_data
+private nested_data ::= '(' (toplevel_data | tag_data) ')'
+literal_data ::= 'True' | 'False' | 'Unit' | 'None' | INT | BYTE | string_literal
 string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)* '"' {extends=literal_data}
-generic_data ::= data_pair | data_left | data_right | data_some
-// helpers for data, mostly to be able to introduce pin attributes
-private data_some ::= 'Some' toplevel_data
-private data_pair ::= 'Pair' toplevel_data toplevel_data
-private data_left ::= 'Left' toplevel_data
-private data_right ::= 'Right' toplevel_data
+tag_data ::= TAG toplevel_data+
+// don't pin on { as it's the start marker for a block and a map literal
+data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
 // don't pin on { as it's also the start marker for a block and a list literal
 data_map ::= '{' ';'? map_entry (';' (map_entry | &'}'))* '}'  // empty list {} is not allowed here
 map_entry ::= 'Elt' toplevel_data toplevel_data
-// don't pin on { as it's the start marker for a block and a map literal
-data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
 
 //-- instructions
 

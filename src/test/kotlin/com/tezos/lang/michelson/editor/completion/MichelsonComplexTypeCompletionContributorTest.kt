@@ -5,7 +5,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 /**
  * @author jansorg
  */
-class MichelsonTypeCompletionContributorTest:MichelsonCompletionTest(){
+class MichelsonComplexTypeCompletionContributorTest:MichelsonCompletionTest(){
     fun testCompletion() {
         val referenceComplex = MichelsonLanguage.COMPLEX_TYPES.toTypedArray()
         val referenceComparable = MichelsonLanguage.COMPARABLE_TYPES.toTypedArray()
@@ -16,19 +16,19 @@ class MichelsonTypeCompletionContributorTest:MichelsonCompletionTest(){
         assertCompletionsNoneOf(*referenceComplex)
 
         configureByCode("PUSH (<caret>)")
-        assertCompletions(*all)
+        assertCompletionsAtLeast(*all)
         configureByCode("MAP string (<caret>)")
-        assertCompletions(*all)
+        assertCompletionsAtLeast(*all)
         configureByCode("MAP (Pair (<caret>))")
-        assertCompletions(*all)
+        assertCompletionsAtLeast(*all)
         configureByCode("MAP (Pair int (<caret>))")
-        assertCompletions(*all)
+        assertCompletionsAtLeast(*all)
 
         configureByCode("PUSH (P<caret>)")
-        assertCompletions(*all.filter { it.contains("P") }.toTypedArray())
+        assertCompletionsAtLeast(*all.filter { it.contains("P") }.toTypedArray())
         configureByCode("PUSH (Pair (P<caret>) int)")
-        assertCompletions(*all.filter { it.contains("P") }.toTypedArray())
+        assertCompletionsAtLeast(*all.filter { it.contains("P") }.toTypedArray())
         configureByCode("PUSH (Pair int (P<caret>))")
-        assertCompletions(*all.filter { it.contains("P") }.toTypedArray())
+        assertCompletionsAtLeast(*all.filter { it.contains("P") }.toTypedArray())
     }
 }

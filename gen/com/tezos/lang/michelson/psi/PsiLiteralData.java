@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface PsiLiteralData extends PsiData {
 
   @Nullable
+  PsiElement getByte();
+
+  @Nullable
   PsiElement getInt();
 
 }

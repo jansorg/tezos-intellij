@@ -7,16 +7,19 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val insertedInstructions = MichelsonLanguage.INSTRUCTIONS.toTypedArray()
+        val instructions = MichelsonLanguage.INSTRUCTIONS.toTypedArray()
 
         // basic
         configureByCode("<caret>")
-        assertCompletions(*insertedInstructions)
+        assertCompletions(*instructions)
 
         configureByCode("IF<caret>")
-        assertCompletions(* insertedInstructions.filter { it.contains("IF") }.toTypedArray())
+        assertCompletions(* instructions.filter { it.contains("IF") }.toTypedArray())
 
         configureByCode("DROP <caret>;")
-        assertCompletionsNoneOf(*insertedInstructions) // no instruction completions here
+        assertCompletionsNoneOf(*instructions) // no instruction completions here
+
+        configureByCode("PUSH int F<caret>;")
+        assertCompletionsNoneOf(*instructions) // no instruction completions here
     }
 }

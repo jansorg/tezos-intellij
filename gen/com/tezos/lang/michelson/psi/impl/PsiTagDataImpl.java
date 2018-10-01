@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiGenericDataImpl extends PsiDataImpl implements PsiGenericData {
+public class PsiTagDataImpl extends PsiDataImpl implements PsiTagData {
 
-  public PsiGenericDataImpl(@NotNull IElementType type) {
+  public PsiTagDataImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitGenericData(this);
+    return visitor.visitTagData(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -36,6 +36,12 @@ public class PsiGenericDataImpl extends PsiDataImpl implements PsiGenericData {
   @NotNull
   public List<PsiEmptyBlock> getEmptyBlockList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiEmptyBlock.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getTag() {
+    return findPsiChildByType(TAG);
   }
 
 }

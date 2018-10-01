@@ -45,8 +45,8 @@ class MichelsonColorSettingsPage : ColorSettingsPage {
 
                 AttributesDescriptor("Literals//Number literal", MichelsonSyntaxHighlighter.INT_LITERAL),
                 AttributesDescriptor("Literals//Byte literal", MichelsonSyntaxHighlighter.BYTE_LITERAL),
-                AttributesDescriptor("Literals//Boolean literal", MichelsonSyntaxHighlighter.BOOLEAN_LITERAL),
-                AttributesDescriptor("Literals//Unit literal", MichelsonSyntaxHighlighter.UNIT_LITERAL),
+                AttributesDescriptor("Literals//Boolean literal", MichelsonSyntaxHighlighter.BOOLEAN_TAG),
+                AttributesDescriptor("Literals//Unit literal", MichelsonSyntaxHighlighter.UNIT_TAG),
                 AttributesDescriptor("Literals//String literal", MichelsonSyntaxHighlighter.STRING_LITERAL),
                 AttributesDescriptor("Literals//Escape sequence/Valid", MichelsonSyntaxHighlighter.VALID_STRING_ESCAPE),
                 AttributesDescriptor("Literals//Escape sequence/Invalid", MichelsonSyntaxHighlighter.ILLEGAL_STRING_ESCAPE),

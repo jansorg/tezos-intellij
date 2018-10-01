@@ -1,0 +1,16 @@
+parameter unit;
+storage unit;
+code {
+    PUSH string "abc";
+    PUSH nat 123;
+    PUSH int 123;
+    PUSH bytes 0x123;
+    PUSH unit Unit;
+    PUSH (list int) {1; 2; 3};
+    PUSH (pair string int) (Pair "abc" 123);
+    PUSH (option string) None;
+    PUSH (option string) (Some "abc");
+    PUSH (set string) {  "a"; "b"; "c" };
+    PUSH (map int string) {Elt 123 "abc"; Elt 234 "def"}
+    PUSH (big_map int string) {Elt 123 "abc"; Elt 234 "def"}
+}

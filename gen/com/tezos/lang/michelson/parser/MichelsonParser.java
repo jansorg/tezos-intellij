@@ -44,9 +44,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == CREATE_CONTRACT_INSTRUCTION) {
       result = create_contract_instruction(builder, 0);
     }
-    else if (type == DATA) {
-      result = data(builder, 0);
-    }
     else if (type == DATA_LIST) {
       result = data_list(builder, 0);
     }
@@ -58,9 +55,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     }
     else if (type == FIELD_ANNOTATION) {
       result = field_annotation(builder, 0);
-    }
-    else if (type == GENERIC_DATA) {
-      result = generic_data(builder, 0);
     }
     else if (type == GENERIC_INSTRUCTION) {
       result = generic_instruction(builder, 0);
@@ -86,6 +80,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == STRING_LITERAL) {
       result = string_literal(builder, 0);
     }
+    else if (type == TAG_DATA) {
+      result = tag_data(builder, 0);
+    }
     else if (type == TYPE) {
       result = type(builder, 0);
     }
@@ -108,8 +105,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMPARABLE_TYPE, COMPLEX_TYPE, GENERIC_TYPE, TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
-    create_token_set_(DATA, DATA_LIST, DATA_MAP, GENERIC_DATA,
-      LITERAL_DATA, STRING_LITERAL),
+    create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, STRING_LITERAL,
+      TAG_DATA),
     create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, EMPTY_BLOCK, GENERIC_INSTRUCTION,
       INSTRUCTION, MACRO_INSTRUCTION),
   };
@@ -303,30 +300,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // toplevel_data | generic_data
-  public static boolean data(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder, level, _COLLAPSE_, DATA, "<data>");
-    result = toplevel_data(builder, level + 1);
-    if (!result) result = generic_data(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // 'Left' toplevel_data
-  static boolean data_left(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_left")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, "Left");
-    result = result && toplevel_data(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
   // '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}'
   public static boolean data_list(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "data_list")) return false;
@@ -459,43 +432,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'Pair' toplevel_data toplevel_data
-  static boolean data_pair(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_pair")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, "Pair");
-    result = result && toplevel_data(builder, level + 1);
-    result = result && toplevel_data(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // 'Right' toplevel_data
-  static boolean data_right(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_right")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, "Right");
-    result = result && toplevel_data(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // 'Some' toplevel_data
-  static boolean data_some(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "data_some")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, "Some");
-    result = result && toplevel_data(builder, level + 1);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
   // '{' ';'? '}'
   public static boolean empty_block(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "empty_block")) return false;
@@ -525,20 +461,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, FIELD_ANNOTATION_TOKEN);
     exit_section_(builder, marker, FIELD_ANNOTATION, result);
-    return result;
-  }
-
-  /* ********************************************************** */
-  // data_pair | data_left | data_right | data_some
-  public static boolean generic_data(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_data")) return false;
-    boolean result;
-    Marker marker = enter_section_(builder, level, _NONE_, GENERIC_DATA, "<generic data>");
-    result = data_pair(builder, level + 1);
-    if (!result) result = data_left(builder, level + 1);
-    if (!result) result = data_right(builder, level + 1);
-    if (!result) result = data_some(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
     return result;
   }
 
@@ -631,16 +553,17 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'None' | 'True' | 'False' | 'Unit' | INT | string_literal
+  // 'True' | 'False' | 'Unit' | 'None' | INT | BYTE | string_literal
   public static boolean literal_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "literal_data")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _COLLAPSE_, LITERAL_DATA, "<literal data>");
-    result = consumeToken(builder, NONE);
-    if (!result) result = consumeToken(builder, TRUE);
-    if (!result) result = consumeToken(builder, FALSE);
-    if (!result) result = consumeToken(builder, UNIT);
+    result = consumeToken(builder, "True");
+    if (!result) result = consumeToken(builder, "False");
+    if (!result) result = consumeToken(builder, "Unit");
+    if (!result) result = consumeToken(builder, "None");
     if (!result) result = consumeToken(builder, INT);
+    if (!result) result = consumeToken(builder, BYTE);
     if (!result) result = string_literal(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
@@ -696,16 +619,25 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '(' data ')'
+  // '(' (toplevel_data | tag_data) ')'
   static boolean nested_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "nested_data")) return false;
     if (!nextTokenIs(builder, LEFT_PAREN)) return false;
     boolean result;
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, LEFT_PAREN);
-    result = result && data(builder, level + 1);
+    result = result && nested_data_1(builder, level + 1);
     result = result && consumeToken(builder, RIGHT_PAREN);
     exit_section_(builder, marker, null, result);
+    return result;
+  }
+
+  // toplevel_data | tag_data
+  private static boolean nested_data_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "nested_data_1")) return false;
+    boolean result;
+    result = toplevel_data(builder, level + 1);
+    if (!result) result = tag_data(builder, level + 1);
     return result;
   }
 
@@ -838,15 +770,44 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // nested_data | literal_data | data_map | data_list | empty_block
+  // TAG toplevel_data+
+  public static boolean tag_data(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "tag_data")) return false;
+    if (!nextTokenIs(builder, TAG)) return false;
+    boolean result, pinned;
+    Marker marker = enter_section_(builder, level, _NONE_, TAG_DATA, null);
+    result = consumeToken(builder, TAG);
+    pinned = result; // pin = 1
+    result = result && tag_data_1(builder, level + 1);
+    exit_section_(builder, level, marker, result, pinned, null);
+    return result || pinned;
+  }
+
+  // toplevel_data+
+  private static boolean tag_data_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "tag_data_1")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = toplevel_data(builder, level + 1);
+    while (result) {
+      int pos = current_position_(builder);
+      if (!toplevel_data(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "tag_data_1", pos)) break;
+    }
+    exit_section_(builder, marker, null, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // literal_data | data_map | data_list | empty_block | nested_data
   static boolean toplevel_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "toplevel_data")) return false;
     boolean result;
-    result = nested_data(builder, level + 1);
-    if (!result) result = literal_data(builder, level + 1);
+    result = literal_data(builder, level + 1);
     if (!result) result = data_map(builder, level + 1);
     if (!result) result = data_list(builder, level + 1);
     if (!result) result = empty_block(builder, level + 1);
+    if (!result) result = nested_data(builder, level + 1);
     return result;
   }
 

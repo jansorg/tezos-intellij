@@ -13,11 +13,18 @@ code { <error descr="Type argument expected">EMPTY_SET</error>; # all commands e
     <error descr="Type argument expected">NONE</error><error descr="expected ';'"> </error>DROP;
     <error descr="Type argument expected">RIGHT</error><error descr="expected ';'"> </error>DROP;
 
-    EMPTY_SET (Pair int int); # all commands expect a single type argument, but data is passed as argument
+    # all these commands expect a single type argument, but data is passed as argument
+    EMPTY_SET (Pair int int);
     LEFT (Pair int int);
     NIL (Pair int int);
     NONE (Pair int int);
     RIGHT (Pair int int);
+
+    EMPTY_SET 123;
+    LEFT 123;
+    NIL 123;
+    NONE 123;
+    RIGHT 123;
 
     <error descr="Type argument expected">EMPTY_SET</error> { DROP; }; # all commands expect a single type argument, but an instruction block is passed as argument
     <error descr="Type argument expected">LEFT</error> { DROP; };
