@@ -20,6 +20,3 @@ val TOPLEVEL_PATTERN = PlatformPatterns
 val ERROR_PATTERN = PlatformPatterns.psiElement(TokenType.ERROR_ELEMENT)!!
 val WHITESPACE_PATTERN = PlatformPatterns.psiElement(TokenType.WHITE_SPACE)!!
 val AFTER_ERROR = PlatformPatterns.psiElement().afterSiblingSkipping(WHITESPACE_PATTERN, ERROR_PATTERN)!!
-
-// the suffix completion of an instruction token or a top-level instruction in a block
-val INSTRUCTION_PATTERN = PlatformPatterns.or(PATTERN_INSTRUCTION_TOKEN, PATTERN_WITH_BLOCK_PARENT.andNot(AFTER_ERROR))!!

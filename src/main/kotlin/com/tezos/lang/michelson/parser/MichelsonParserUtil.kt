@@ -11,7 +11,8 @@ import com.tezos.lang.michelson.MichelsonTypes.*
  * @author jansorg
  */
 object MichelsonParserUtil : GeneratedParserUtilBase() {
-    private val STOP_TOKENS = TokenSet.create(SEMI, LEFT_CURLY, RIGHT_CURLY, MACRO_TOKEN)
+    private val STOP_TOKENS_INSTRUCTION = TokenSet.create(SEMI, LEFT_CURLY, RIGHT_CURLY, MACRO_TOKEN)
+    private val STOP_TOKENS_NESTED_TAG = TokenSet.create(RIGHT_PAREN)
 
     @JvmStatic
     fun parse_instruction_block(builder: PsiBuilder, level: Int, instructionParser: GeneratedParserUtilBase.Parser): Boolean {
@@ -49,8 +50,19 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
         }
 
         // do recovery only when the instruction parsing returned an error
-        while (error && !GeneratedParserUtilBase.eof(builder, level) && instruction_block_recover_while(builder)) {
-            builder.advanceLexer()
+        if (error) {
+            var shownError = false
+            while (!GeneratedParserUtilBase.eof(builder, level) && instruction_block_recover_while(builder)) {
+                if (shownError) {
+                    builder.advanceLexer()
+                } else {
+                    val marker = builder.mark()
+                    builder.advanceLexer()
+                    marker.error("Unexpected token")
+
+                    shownError = true
+                }
+            }
         }
 
         return true
@@ -67,19 +79,28 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun instruction_recover_while(builder: PsiBuilder, level: Int): Boolean {
         val current = builder.lookAhead(0)
-        val next = builder.lookAhead(1)
-
-        val currentStops = STOP_TOKENS.contains(current)
-        if (currentStops) {
+        if (STOP_TOKENS_INSTRUCTION.contains(current)) {
+            //builder.error("Unexpected token (instruction)")
             return false
         }
 
-        return !STOP_TOKENS.contains(next)
+        val next = builder.lookAhead(1)
+        return !STOP_TOKENS_INSTRUCTION.contains(next)
     }
 
     private fun instruction_block_recover_while(builder: PsiBuilder): Boolean {
         val current = builder.lookAhead(0)
         val next = builder.lookAhead(1)
-        return (current !== SEMI && current !== LEFT_CURLY) || (current == SEMI && next == RIGHT_CURLY)
+        return (current != SEMI && current != LEFT_CURLY) || (current == SEMI && next == RIGHT_CURLY)
+    }
+
+    @JvmStatic
+    fun tag_data_recover_while(builder: PsiBuilder, level: Int): Boolean {
+        val current = builder.tokenType
+        val stop = STOP_TOKENS_NESTED_TAG.contains(current)
+        if (!stop) {
+            builder.error("Unexpected token")
+        }
+        return !stop
     }
 }

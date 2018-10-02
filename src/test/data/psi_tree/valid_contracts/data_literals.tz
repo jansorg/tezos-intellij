@@ -11,6 +11,6 @@ code {
     PUSH (option string) None;
     PUSH (option string) (Some "abc");
     PUSH (set string) {  "a"; "b"; "c" };
-    PUSH (map int string) {Elt 123 "abc"; Elt 234 "def"}
+    PUSH (map int string) {Elt 123 "abc"; Elt 234 "def"};
     PUSH (big_map int string) {Elt 123 "abc"; Elt 234 "def"}
 }

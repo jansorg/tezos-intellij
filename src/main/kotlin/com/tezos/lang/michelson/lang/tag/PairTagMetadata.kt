@@ -4,4 +4,6 @@ class PairTagMetadata : TagMetadata {
     override fun names(): Set<String> = setOf("Pair")
 
     override fun supportedValues(): Short = 2
+
+    override fun isComplex(): Boolean = true
 }

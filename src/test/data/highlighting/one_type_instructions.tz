@@ -14,17 +14,17 @@ code { <error descr="Type argument expected">EMPTY_SET</error>; # all commands e
     <error descr="Type argument expected">RIGHT</error><error descr="expected ';'"> </error>DROP;
 
     # all these commands expect a single type argument, but data is passed as argument
-    EMPTY_SET (Pair int int);
-    LEFT (Pair int int);
-    NIL (Pair int int);
-    NONE (Pair int int);
-    RIGHT (Pair int int);
+    EMPTY_SET (Pair<error descr="Unexpected token"> </error><error descr="'(', <literal data> or '{' expected, got 'int'">int</error><error descr="Unexpected token"> </error>int);
+    LEFT (Pair<error descr="Unexpected token"> </error><error descr="'(', <literal data> or '{' expected, got 'int'">int</error><error descr="Unexpected token"> </error>int);
+    NIL (Pair<error descr="Unexpected token"> </error><error descr="'(', <literal data> or '{' expected, got 'int'">int</error><error descr="Unexpected token"> </error>int);
+    NONE (Pair<error descr="Unexpected token"> </error><error descr="'(', <literal data> or '{' expected, got 'int'">int</error><error descr="Unexpected token"> </error>int);
+    RIGHT (Pair<error descr="Unexpected token"> </error><error descr="'(', <literal data> or '{' expected, got 'int'">int</error><error descr="Unexpected token"> </error>int);
 
-    EMPTY_SET 123;
-    LEFT 123;
-    NIL 123;
-    NONE 123;
-    RIGHT 123;
+    <error descr="Type argument expected">EMPTY_SET</error> 123;
+    <error descr="Type argument expected">LEFT</error> 123;
+    <error descr="Type argument expected">NIL</error> 123;
+    <error descr="Type argument expected">NONE</error> 123;
+    <error descr="Type argument expected">RIGHT</error> 123;
 
     <error descr="Type argument expected">EMPTY_SET</error> { DROP; }; # all commands expect a single type argument, but an instruction block is passed as argument
     <error descr="Type argument expected">LEFT</error> { DROP; };

@@ -11,7 +11,7 @@ import com.tezos.lang.michelson.psi.PsiInstruction
 /**
  * @author jansorg
  */
-class MichelsonTypeCompletionContributor : CompletionContributor() {
+class MichelsonTypeCompletionContributor : AbstractInstructionCompletionContributor(atInstructionStart = false) {
     init {
         val AFTER_LEFT_PAREN_PATTERN = PlatformPatterns.psiElement().afterLeaf("(")
 

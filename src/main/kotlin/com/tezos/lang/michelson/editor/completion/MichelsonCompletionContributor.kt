@@ -8,7 +8,6 @@ import com.intellij.codeInsight.completion.CompletionContributor
 class MichelsonCompletionContributor : CompletionContributor() {
     init {
         extend(null, TOPLEVEL_PATTERN, MichelsonSectionCompletion())
-        extend(null, INSTRUCTION_PATTERN, MichelsonInstructionNameCompletion())
     }
 }
 

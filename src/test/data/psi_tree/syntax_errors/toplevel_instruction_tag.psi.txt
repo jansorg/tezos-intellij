@@ -1,0 +1,22 @@
+MICHELSON_FILE
+  PsiElement(CONTRACT)
+    PsiElement(SECTION)
+      PsiElement(SECTION_NAME)('code')
+      PsiElement(BLOCK_INSTRUCTION)
+        PsiElement({)('{')
+        PsiElement(GENERIC_INSTRUCTION)
+          PsiElement(INSTRUCTION_TOKEN)('PUSH')
+          PsiElement(COMPARABLE_TYPE)
+            PsiElement(TYPE_NAME_COMPARABLE)('int')
+          PsiElement(()('(')
+          PsiElement(TAG_DATA)
+            PsiElement(TAG)('Pair')
+            PsiErrorElement:Unexpected token
+              <empty list>
+            PsiErrorElement:'(', <literal data> or '{' expected, got 'int'
+              PsiElement(TYPE_NAME_COMPARABLE)('int')
+            PsiErrorElement:Unexpected token
+              <empty list>
+            PsiElement(TYPE_NAME_COMPARABLE)('int')
+          PsiElement())(')')
+        PsiElement(})('}')

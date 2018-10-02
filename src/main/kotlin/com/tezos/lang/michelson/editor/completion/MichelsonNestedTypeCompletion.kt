@@ -10,8 +10,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 class MichelsonNestedTypeCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         for (name in MichelsonLanguage.COMPLEX_TYPES) {
-            val item = LookupElementBuilder.create(name)
-                    .withTypeText("type", true)
+            val item = LookupElementBuilder.create(name).withTypeText("type", true);
             result.addElement(item)
         }
     }

@@ -23,10 +23,13 @@ class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
         configureByCode("PUSH abcde<caret>;")
         assertCompletions() // no completions here
 
+        configureByCode("PUSH int 123<caret>;")
+        assertCompletions()
+
         configureByCode("PUSH 123<caret>;")
-        assertCompletions() //
+        assertCompletions()
 
         configureByCode("PUSH (pair int int) (Pair 123<caret>);")
-        assertCompletions() //
+        assertCompletions()
     }
 }

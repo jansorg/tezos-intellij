@@ -636,8 +636,10 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   private static boolean nested_data_1(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "nested_data_1")) return false;
     boolean result;
+    Marker marker = enter_section_(builder);
     result = toplevel_data(builder, level + 1);
     if (!result) result = tag_data(builder, level + 1);
+    exit_section_(builder, marker, null, result);
     return result;
   }
 
@@ -773,13 +775,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   // TAG toplevel_data+
   public static boolean tag_data(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "tag_data")) return false;
-    if (!nextTokenIs(builder, TAG)) return false;
     boolean result, pinned;
-    Marker marker = enter_section_(builder, level, _NONE_, TAG_DATA, null);
+    Marker marker = enter_section_(builder, level, _NONE_, TAG_DATA, "<tag data>");
     result = consumeToken(builder, TAG);
     pinned = result; // pin = 1
     result = result && tag_data_1(builder, level + 1);
-    exit_section_(builder, level, marker, result, pinned, null);
+    exit_section_(builder, level, marker, result, pinned, tag_data_recovery_parser_);
     return result || pinned;
   }
 
@@ -796,6 +797,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     }
     exit_section_(builder, marker, null, result);
     return result;
+  }
+
+  /* ********************************************************** */
+  // <<tag_data_recover_while>>
+  static boolean tag_data_recovery(PsiBuilder builder, int level) {
+    return tag_data_recover_while(builder, level + 1);
   }
 
   /* ********************************************************** */
@@ -866,6 +873,11 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   final static Parser instruction_recover_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return instruction_recover(builder, level + 1);
+    }
+  };
+  final static Parser tag_data_recovery_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder, int level) {
+      return tag_data_recovery(builder, level + 1);
     }
   };
 }

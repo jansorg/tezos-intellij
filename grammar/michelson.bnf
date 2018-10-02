@@ -97,7 +97,8 @@ private toplevel_data ::= literal_data | data_map | data_list | empty_block | ne
 private nested_data ::= '(' (toplevel_data | tag_data) ')'
 literal_data ::= 'True' | 'False' | 'Unit' | 'None' | INT | BYTE | string_literal
 string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)* '"' {extends=literal_data}
-tag_data ::= TAG toplevel_data+
+tag_data ::= TAG toplevel_data+ {pin=1 recoverWhile=tag_data_recovery}
+private tag_data_recovery ::= <<tag_data_recover_while>>
 // don't pin on { as it's the start marker for a block and a map literal
 data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
 // don't pin on { as it's also the start marker for a block and a list literal
@@ -114,15 +115,15 @@ private simple_instruction ::=
   | generic_instruction
   | macro_instruction
 
-// types must be validated by annotator, method "annotations" implements interface PsiAnnotated
+// types and arguments must be validated by annotator, method "annotations" implements interface PsiAnnotated
 generic_instruction ::= INSTRUCTION_TOKEN annotation* (toplevel_data | toplevel_type | block_instruction)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
 create_contract_instruction ::= 'CREATE_CONTRACT' annotation* contract_wrapper? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"] extends=generic_instruction}
 // generic parsing of macros, needs further validation in annotator
 macro_instruction ::= MACRO_TOKEN annotation* block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
-// uses an external rule because the GrammarKit doesn't seem to handle look-aheads without consuming tokens
+// uses an external rule because the GrammarKit doesn't seem to handle recover look-aheads without consuming tokens
 private instruction_recover ::= <<instruction_recover_while>>
 
-contract_wrapper ::= ('{' contract '}')
+contract_wrapper ::= '{' contract '}'
 
 //-- types
 
