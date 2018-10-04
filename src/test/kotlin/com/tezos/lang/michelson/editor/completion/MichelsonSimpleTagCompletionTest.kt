@@ -22,6 +22,15 @@ class MichelsonSimpleTagCompletionTest : MichelsonCompletionTest() {
         configureByCode("PUSH unit Fal<caret>")
         assertCompletionsAtLeast(*reference.filter { it.contains("Fal") }.toTypedArray())
 
+        configureByCode("PUSH unit (<caret>)")
+        assertCompletionsAtLeast(*reference)
+
+        configureByCode("PUSH unit (Tr<caret>)")
+        assertCompletionsAtLeast(*reference.filter { it.contains("Tr") }.toTypedArray())
+
+        configureByCode("PUSH unit (Fal<caret>)")
+        assertCompletionsAtLeast(*reference.filter { it.contains("Fal") }.toTypedArray())
+
         configureByCode("<caret>")
         assertCompletionsNoneOf(*reference)
     }

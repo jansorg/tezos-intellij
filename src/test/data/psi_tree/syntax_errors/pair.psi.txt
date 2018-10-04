@@ -9,21 +9,19 @@ MICHELSON_FILE
           PsiElement(()('(')
           PsiElement(COMPLEX_TYPE)
             PsiElement(TYPE_NAME)('pair')
-            PsiElement(COMPARABLE_TYPE)
-              PsiElement(TYPE_NAME_COMPARABLE)('int')
-            PsiElement(COMPARABLE_TYPE)
-              PsiElement(TYPE_NAME_COMPARABLE)('int')
+            PsiElement(GENERIC_TYPE)
+              PsiElement(TYPE_NAME)('int')
+            PsiElement(GENERIC_TYPE)
+              PsiElement(TYPE_NAME)('int')
           PsiElement())(')')
           PsiElement(()('(')
           PsiElement(TAG_DATA)
             PsiElement(TAG)('Pair')
-            PsiErrorElement:Unexpected token
-              <empty list>
-            PsiErrorElement:'(', <literal data> or '{' expected, got 'int'
-              PsiElement(TYPE_NAME_COMPARABLE)('int')
-            PsiErrorElement:Unexpected token
-              <empty list>
-            PsiElement(TYPE_NAME_COMPARABLE)('int')
+          PsiErrorElement:Unexpected token
+            PsiElement(TYPE_NAME)('int')
+          PsiElement(TYPE_NAME)('int')
+          PsiErrorElement:'(' or '{' expected, got ')'
+            <empty list>
           PsiElement())(')')
         PsiElement(;)(';')
         PsiElement(GENERIC_INSTRUCTION)
@@ -31,10 +29,10 @@ MICHELSON_FILE
           PsiElement(()('(')
           PsiElement(COMPLEX_TYPE)
             PsiElement(TYPE_NAME)('pair')
-            PsiElement(COMPARABLE_TYPE)
-              PsiElement(TYPE_NAME_COMPARABLE)('int')
-            PsiElement(COMPARABLE_TYPE)
-              PsiElement(TYPE_NAME_COMPARABLE)('int')
+            PsiElement(GENERIC_TYPE)
+              PsiElement(TYPE_NAME)('int')
+            PsiElement(GENERIC_TYPE)
+              PsiElement(TYPE_NAME)('int')
           PsiElement())(')')
           PsiElement(()('(')
           PsiElement(TAG_DATA)

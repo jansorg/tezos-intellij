@@ -22,7 +22,7 @@ pair
 [33 : 34] (
 (
 -----
-[34 : 37] TYPE_NAME_COMPARABLE
+[34 : 37] TYPE_NAME
 int
 -----
 [38 : 40] TYPE_ANNOTATION_TOKEN
@@ -34,7 +34,7 @@ int
 [42 : 43] (
 (
 -----
-[43 : 49] TYPE_NAME_COMPARABLE
+[43 : 49] TYPE_NAME
 string
 -----
 [50 : 52] TYPE_ANNOTATION_TOKEN
@@ -70,7 +70,7 @@ PUSH
 [87 : 88] (
 (
 -----
-[88 : 91] TYPE_NAME_COMPARABLE
+[88 : 91] TYPE_NAME
 int
 -----
 [92 : 94] TYPE_ANNOTATION_TOKEN
@@ -94,7 +94,7 @@ PUSH
 [113 : 114] (
 (
 -----
-[114 : 120] TYPE_NAME_COMPARABLE
+[114 : 120] TYPE_NAME
 string
 -----
 [121 : 123] TYPE_ANNOTATION_TOKEN

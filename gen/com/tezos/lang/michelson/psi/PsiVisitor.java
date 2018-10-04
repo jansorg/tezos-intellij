@@ -14,10 +14,6 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitInstruction(o);
   }
 
-  public R visitComparableType(@NotNull PsiComparableType o) {
-    return visitType(o);
-  }
-
   public R visitComplexType(@NotNull PsiComplexType o) {
     return visitType(o);
   }

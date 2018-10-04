@@ -31,10 +31,10 @@ PUSH
 [50 : 53] TYPE_NAME
 map
 -----
-[54 : 57] TYPE_NAME_COMPARABLE
+[54 : 57] TYPE_NAME
 int
 -----
-[58 : 64] TYPE_NAME_COMPARABLE
+[58 : 64] TYPE_NAME
 string
 -----
 [64 : 65] )

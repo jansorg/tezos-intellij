@@ -7,14 +7,7 @@ MICHELSON_FILE
         PsiElement(GENERIC_INSTRUCTION)
           PsiElement(INSTRUCTION_TOKEN)('PUSH')
           PsiElement(GENERIC_TYPE)
-            PsiElement(TYPE_NAME)('int')
-          PsiElement(()('(')
+            PsiElement(TYPE_NAME)('bool')
           PsiElement(TAG_DATA)
-            PsiElement(TAG)('Pair')
-          PsiErrorElement:Unexpected token
-            PsiElement(TYPE_NAME)('int')
-          PsiElement(TYPE_NAME)('int')
-          PsiErrorElement:'(' or '{' expected, got ')'
-            <empty list>
-          PsiElement())(')')
+            PsiElement(TAG)('Tr')
         PsiElement(})('}')

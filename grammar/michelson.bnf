@@ -93,11 +93,11 @@ empty_block ::= '{' ';'? '}' {extends=block_instruction}
 //-- data
 fake data ::=
 // data_toplevel is our extension to match data which may be used as argument to an instruction or tag
-private toplevel_data ::= literal_data | data_map | data_list | empty_block | nested_data
-private nested_data ::= '(' (toplevel_data | tag_data) ')'
-literal_data ::= 'True' | 'False' | 'Unit' | 'None' | INT | BYTE | string_literal
+private toplevel_data ::= literal_data | tag_data | data_map | data_list | empty_block | nested_data
+private nested_data ::= '(' toplevel_data ')'
+literal_data ::= INT | BYTE | string_literal
 string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)* '"' {extends=literal_data}
-tag_data ::= TAG toplevel_data+ {pin=1 recoverWhile=tag_data_recovery}
+tag_data ::= TAG toplevel_data* {pin=1 recoverWhile=tag_data_recovery}
 private tag_data_recovery ::= <<tag_data_recover_while>>
 // don't pin on { as it's the start marker for a block and a map literal
 data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
@@ -129,10 +129,9 @@ contract_wrapper ::= '{' contract '}'
 
 type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString isComparable findComposedParentType findChildrenTypes hasComposedParentType]}
 complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeToken hasSimpleTypes hasComplexTypes]} //handle annotations at the end?
-private toplevel_type ::= nested_type | generic_type | comparable_type // extension to define the tokens which can be used as arguments to instructions or tags
+private toplevel_type ::= nested_type | generic_type // extension to define the tokens which can be used as arguments to instructions or tags
 private nested_type ::= '(' type ')'
-generic_type ::= TYPE_NAME annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
-comparable_type ::= TYPE_NAME_COMPARABLE annotation* {name="comparable type" methods=[annotations="annotation" typeToken="TYPE_NAME_COMPARABLE"]}
+generic_type ::= TYPE_NAME annotation* {name="type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
 
 //-- annotations
 

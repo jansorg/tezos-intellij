@@ -2,8 +2,8 @@ package com.tezos.lang.michelson.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.TreeUtil
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
-import com.tezos.lang.michelson.parser.MichelsonParserDefinition
 
 /**
  * @author jansorg
@@ -24,7 +24,6 @@ object MichelsonPsiUtil {
     @JvmStatic
     fun getTypeNameString(type: PsiType): String {
         return when (type) {
-            is PsiComparableType -> type.typeToken.text
             is PsiGenericType -> type.typeToken.text
             is PsiComplexType -> type.typeToken.text
             else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
@@ -32,7 +31,7 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
-    fun isComparable(type: PsiType) = type is PsiComparableType
+    fun isComparable(type: PsiType) = MichelsonLanguage.TYPES_COMPARABLE.contains(type.typeNameString)
 
     @JvmStatic
     fun findComposedParentType(type: PsiType): PsiType? {

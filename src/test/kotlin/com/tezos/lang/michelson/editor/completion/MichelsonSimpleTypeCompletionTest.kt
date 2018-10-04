@@ -7,17 +7,17 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val reference = MichelsonLanguage.COMPARABLE_TYPES.toTypedArray()
+        val reference = MichelsonLanguage.TYPES_COMPARABLE.toTypedArray()
 
         // basic
         configureByCode("PUSH <caret>")
         assertCompletionsAtLeast(*reference)
 
         configureByCode("PUSH i<caret>")
-        assertCompletionsAtLeast(* reference.filter { it.contains("i") }.toTypedArray())
+        assertCompletionsAtLeast(reference.filter { it.contains("i") })
 
         configureByCode("PUSH n<caret>")
-        assertCompletionsAtLeast(* reference.filter { it.contains("n") }.toTypedArray())
+        assertCompletionsAtLeast(reference.filter { it.contains("n") })
 
         // no completions
         configureByCode("PUSH abcde<caret>;")

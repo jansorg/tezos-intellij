@@ -16,10 +16,11 @@ class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
         configureByCode("IF<caret>")
         assertCompletions(* instructions.filter { it.contains("IF") }.toTypedArray())
 
-        configureByCode("DROP <caret>;")
-        assertCompletionsNoneOf(*instructions) // no instruction completions here
-
         configureByCode("PUSH int F<caret>;")
+        // we expect instruction completion here, it's the user's choice. We could avoid this in smart mode, if we want
+        assertCompletionsAtLeast(instructions.filter { it.contains("F") })
+
+        configureByCode("DROP <caret>;")
         assertCompletionsNoneOf(*instructions) // no instruction completions here
     }
 }

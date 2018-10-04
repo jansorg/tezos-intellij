@@ -25,7 +25,7 @@ code
 [41 : 45] INSTRUCTION_TOKEN
 PUSH
 -----
-[46 : 52] TYPE_NAME_COMPARABLE
+[46 : 52] TYPE_NAME
 string
 -----
 [53 : 54] "
@@ -43,7 +43,7 @@ abc
 [64 : 68] INSTRUCTION_TOKEN
 PUSH
 -----
-[69 : 72] TYPE_NAME_COMPARABLE
+[69 : 72] TYPE_NAME
 nat
 -----
 [73 : 76] INT
@@ -55,7 +55,7 @@ nat
 [82 : 86] INSTRUCTION_TOKEN
 PUSH
 -----
-[87 : 90] TYPE_NAME_COMPARABLE
+[87 : 90] TYPE_NAME
 int
 -----
 [91 : 94] INT
@@ -67,7 +67,7 @@ int
 [100 : 104] INSTRUCTION_TOKEN
 PUSH
 -----
-[105 : 110] TYPE_NAME_COMPARABLE
+[105 : 110] TYPE_NAME
 bytes
 -----
 [111 : 116] BYTE
@@ -97,7 +97,7 @@ PUSH
 [148 : 152] TYPE_NAME
 list
 -----
-[153 : 156] TYPE_NAME_COMPARABLE
+[153 : 156] TYPE_NAME
 int
 -----
 [156 : 157] )
@@ -136,10 +136,10 @@ PUSH
 [179 : 183] TYPE_NAME
 pair
 -----
-[184 : 190] TYPE_NAME_COMPARABLE
+[184 : 190] TYPE_NAME
 string
 -----
-[191 : 194] TYPE_NAME_COMPARABLE
+[191 : 194] TYPE_NAME
 int
 -----
 [194 : 195] )
@@ -178,7 +178,7 @@ PUSH
 [224 : 230] TYPE_NAME
 option
 -----
-[231 : 237] TYPE_NAME_COMPARABLE
+[231 : 237] TYPE_NAME
 string
 -----
 [237 : 238] )
@@ -199,7 +199,7 @@ PUSH
 [255 : 261] TYPE_NAME
 option
 -----
-[262 : 268] TYPE_NAME_COMPARABLE
+[262 : 268] TYPE_NAME
 string
 -----
 [268 : 269] )
@@ -235,7 +235,7 @@ PUSH
 [294 : 297] TYPE_NAME
 set
 -----
-[298 : 304] TYPE_NAME_COMPARABLE
+[298 : 304] TYPE_NAME
 string
 -----
 [304 : 305] )
@@ -292,10 +292,10 @@ PUSH
 [336 : 339] TYPE_NAME
 map
 -----
-[340 : 343] TYPE_NAME_COMPARABLE
+[340 : 343] TYPE_NAME
 int
 -----
-[344 : 350] TYPE_NAME_COMPARABLE
+[344 : 350] TYPE_NAME
 string
 -----
 [350 : 351] )
@@ -349,10 +349,10 @@ PUSH
 [393 : 400] TYPE_NAME
 big_map
 -----
-[401 : 404] TYPE_NAME_COMPARABLE
+[401 : 404] TYPE_NAME
 int
 -----
-[405 : 411] TYPE_NAME_COMPARABLE
+[405 : 411] TYPE_NAME
 string
 -----
 [411 : 412] )

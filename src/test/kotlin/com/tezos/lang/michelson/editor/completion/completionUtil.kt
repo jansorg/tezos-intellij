@@ -16,6 +16,8 @@ abstract class MichelsonCompletionTest() : MichelsonFixtureTest() {
         Assert.assertEquals(sortedItems, completions)
     }
 
+    fun assertCompletionsAtLeast(items: List<String>, type: CompletionType = CompletionType.BASIC) = assertCompletionsAtLeast(*items.toTypedArray(), type = type)
+
     fun assertCompletionsAtLeast(vararg items: String, type: CompletionType = CompletionType.BASIC) {
         val sortedItems = items.sorted()
         val completions = completionStrings(type)?.sorted()

@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.editor.completion
+package com.tezos.lang.michelson.editor.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
@@ -9,7 +9,7 @@ import com.intellij.util.ProcessingContext
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.psi.PsiSectionType
 
-internal class MichelsonSectionCompletion : CompletionProvider<CompletionParameters>() {
+internal class SectionCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val skippedSections: Set<PsiSectionType> = when (parameters.completionType) {
             CompletionType.SMART -> {

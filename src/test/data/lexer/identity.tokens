@@ -1,7 +1,7 @@
 [0 : 9] SECTION_NAME
 parameter
 -----
-[10 : 16] TYPE_NAME_COMPARABLE
+[10 : 16] TYPE_NAME
 string
 -----
 [16 : 17] ;
@@ -10,7 +10,7 @@ string
 [18 : 24] SECTION_NAME
 return
 -----
-[25 : 31] TYPE_NAME_COMPARABLE
+[25 : 31] TYPE_NAME
 string
 -----
 [31 : 32] ;

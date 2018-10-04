@@ -7,8 +7,8 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonComplexTypeCompletionContributorTest:MichelsonCompletionTest(){
     fun testCompletion() {
-        val referenceComplex = MichelsonLanguage.COMPLEX_TYPES.toTypedArray()
-        val referenceComparable = MichelsonLanguage.COMPARABLE_TYPES.toTypedArray()
+        val referenceComplex = MichelsonLanguage.TYPES_COMPLEX.toTypedArray()
+        val referenceComparable = MichelsonLanguage.TYPES_COMPARABLE.toTypedArray()
         val all = referenceComplex + referenceComparable
 
         // basic

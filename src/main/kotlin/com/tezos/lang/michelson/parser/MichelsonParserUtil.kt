@@ -1,6 +1,8 @@
 package com.tezos.lang.michelson.parser
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.psi.TokenType.WHITE_SPACE
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes.*
 
@@ -12,7 +14,9 @@ import com.tezos.lang.michelson.MichelsonTypes.*
  */
 object MichelsonParserUtil : GeneratedParserUtilBase() {
     private val STOP_TOKENS_INSTRUCTION = TokenSet.create(SEMI, LEFT_CURLY, RIGHT_CURLY, MACRO_TOKEN)
-    private val STOP_TOKENS_NESTED_TAG = TokenSet.create(RIGHT_PAREN)
+    private val STOP_TOKENS_NESTED_TAG = TokenSet.create(RIGHT_PAREN, SEMI, LEFT_CURLY)
+    private val STOP_TOKENS_TAG = TokenSet.create(LEFT_PAREN, SEMI, INSTRUCTION_TOKEN, LEFT_CURLY, RIGHT_CURLY)
+    private val BEFORE_TAG = TokenSet.create(LEFT_CURLY, RIGHT_CURLY, SEMI, LEFT_PAREN)
 
     @JvmStatic
     fun parse_instruction_block(builder: PsiBuilder, level: Int, instructionParser: GeneratedParserUtilBase.Parser): Boolean {
@@ -94,12 +98,56 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
         return (current != SEMI && current != LEFT_CURLY) || (current == SEMI && next == RIGHT_CURLY)
     }
 
+    private fun rawBackwardsSkippingWhitespace(builder: PsiBuilder, steps: Int): IElementType? {
+        var i = steps
+        var type = builder.rawLookup(i)
+        while (type == WHITE_SPACE) {
+            i--
+            type = builder.rawLookup(i)
+        }
+        return type
+    }
+
+    private fun rawBackwardsSkippingFirstBefore(builder: PsiBuilder, stopBefore: TokenSet): IElementType? {
+        var i = 0
+
+        var current = builder.rawLookup(i)
+        while (current != null) {
+            val prev = builder.rawLookup(i - 1)
+            if (stopBefore.contains(prev)) {
+                return current
+            }
+
+            i--
+            current = builder.rawLookup(i)
+        }
+
+        return null
+    }
+
     @JvmStatic
     fun tag_data_recover_while(builder: PsiBuilder, level: Int): Boolean {
+        if (builder.eof()) {
+            return false
+        }
+
+        val isParsingTag = rawBackwardsSkippingFirstBefore(builder, BEFORE_TAG) == TAG
+        if (!isParsingTag) {
+            return false
+        }
+
         val current = builder.tokenType
-        val stop = STOP_TOKENS_NESTED_TAG.contains(current)
-        if (!stop) {
-            builder.error("Unexpected token")
+
+        val isNested = rawBackwardsSkippingFirstBefore(builder, TokenSet.create(LEFT_PAREN)) == TAG
+        val stop = when (isNested) {
+            true -> STOP_TOKENS_NESTED_TAG.contains(current)
+            false -> STOP_TOKENS_TAG.contains(current)
+        }
+
+        if (!stop && current != WHITE_SPACE) {
+            val m = builder.mark()
+            builder.advanceLexer()
+            m.error("Unexpected token")
         }
         return !stop
     }

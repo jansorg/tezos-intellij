@@ -29,8 +29,7 @@ EOL=\R
 WHITE_SPACE=\s+
 
 SECTION_NAME=parameter|return|storage|code
-TYPE_NAME_COMPARABLE=int | nat | string | tez | bool | key_hash | timestamp | bytes | mutez | address
-TYPE_NAME=[a-z_]+
+TYPE_NAME=[a-z_][a-zA-Z0-9_]*
 INT=-?[0-9]+
 BYTE=0x[A-F0-9]+
 // a single upper-case letter would be correct, but also have to match mixed case names like PAIRpair to avoid that this is lexed as two tokens INSTRUCTION TAG, which would mess up the parsing
@@ -69,7 +68,6 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
 
   {TAG}                         { return TAG; }
   {SECTION_NAME}                { return SECTION_NAME; }
-  {TYPE_NAME_COMPARABLE}        { return TYPE_NAME_COMPARABLE; }
   {TYPE_NAME}                   { return TYPE_NAME; }
   {INT}                         { return INT; }
   {BYTE}                        { return BYTE; }

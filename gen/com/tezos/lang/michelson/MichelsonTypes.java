@@ -13,7 +13,6 @@ public interface MichelsonTypes {
 
   IElementType ANNOTATION = new MichelsonCompositeElementType("ANNOTATION");
   IElementType BLOCK_INSTRUCTION = new MichelsonCompositeElementType("BLOCK_INSTRUCTION");
-  IElementType COMPARABLE_TYPE = new MichelsonCompositeElementType("COMPARABLE_TYPE");
   IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
   IElementType CONTRACT_WRAPPER = new MichelsonCompositeElementType("CONTRACT_WRAPPER");
@@ -63,9 +62,6 @@ public interface MichelsonTypes {
     public static CompositePsiElement createElement(IElementType type) {
        if (type == BLOCK_INSTRUCTION) {
         return new PsiBlockInstructionImpl(type);
-      }
-      else if (type == COMPARABLE_TYPE) {
-        return new PsiComparableTypeImpl(type);
       }
       else if (type == COMPLEX_TYPE) {
         return new PsiComplexTypeImpl(type);

@@ -7,7 +7,7 @@ code
 [13 : 21] INSTRUCTION_TOKEN
 PAIRpair
 -----
-[22 : 25] TYPE_NAME_COMPARABLE
+[22 : 25] TYPE_NAME
 int
 -----
 [26 : 29] INT

@@ -24,7 +24,7 @@ class PsiTypeTest : MichelsonFixtureTest() {
         val (_, current) = configureByCode("PUSH (pair<caret> (timestamp %T) (pair %N mutez string))")
 
         val currentType = current.firstParent<PsiType>()
-        Assert.assertNotNull("expected a PsiType at the current offset", currentType)
+        Assert.assertNotNull("expected a PsiType at the current offset. Found: $currentType", currentType)
 
         var children = currentType!!.findChildrenTypes()
         Assert.assertEquals("expected nested types", 2, children.size)

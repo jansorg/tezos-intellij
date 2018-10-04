@@ -25,7 +25,7 @@ code
 [41 : 45] INSTRUCTION_TOKEN
 PUSH
 -----
-[46 : 52] TYPE_NAME_COMPARABLE
+[46 : 52] TYPE_NAME
 string
 -----
 [53 : 54] "

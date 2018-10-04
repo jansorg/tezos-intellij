@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.psi
 
 import com.intellij.psi.impl.DebugUtil
 import com.tezos.lang.michelson.MichelsonFixtureTest
+import com.tezos.lang.michelson.MichelsonTestUtils
 import com.tezos.lang.michelson.MichelsonTestUtils.dataPath
 import com.tezos.lang.michelson.MichelsonTestUtils.load
 import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
@@ -11,6 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -53,6 +55,10 @@ class AllPsiTreeDumpTest(val michelsonFile: String) : MichelsonFixtureTest() {
         val psiFile = myFixture.configureByText(file.fileName.toString(), michselsonData)
         val psiTree = DebugUtil.psiTreeToString(psiFile, true)
 
-        Assert.assertEquals("expected psi tree to match, dump file ${dataRootPath.relativize(psiDumpFile)}", expectedPsiTree, psiTree)
+        if (MichelsonTestUtils.updateReferenceData()) {
+            Files.write(psiDumpFile, psiTree.toByteArray())
+        } else {
+            Assert.assertEquals("expected psi tree to match, dump file ${dataRootPath.relativize(psiDumpFile)}", expectedPsiTree, psiTree)
+        }
     }
 }
