@@ -1,4 +1,4 @@
-<idea-plugin url="https://www.plugin-dev.com/">
+<idea-plugin url="https://www.plugin-dev.com/project/tezos-michelson/">
     <id>tezos</id>
 
     <name>Tezos</name>
