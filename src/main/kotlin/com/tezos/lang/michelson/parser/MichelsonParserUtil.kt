@@ -131,12 +131,16 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
             return false
         }
 
+        val current = builder.tokenType
+        // we have to stop recovering after the left paren in "Pair ("
+        if (current == LEFT_PAREN) {
+            return false
+        }
+
         val isParsingTag = rawBackwardsSkippingFirstBefore(builder, BEFORE_TAG) == TAG
         if (!isParsingTag) {
             return false
         }
-
-        val current = builder.tokenType
 
         val isNested = rawBackwardsSkippingFirstBefore(builder, TokenSet.create(LEFT_PAREN)) == TAG
         val stop = when (isNested) {
