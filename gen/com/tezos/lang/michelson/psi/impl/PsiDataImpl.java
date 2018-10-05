@@ -26,16 +26,4 @@ public class PsiDataImpl extends MichelsonCompositeImpl implements PsiData {
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiData getData() {
-    return PsiTreeUtil.getChildOfType(this, PsiData.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiEmptyBlock getEmptyBlock() {
-    return PsiTreeUtil.getChildOfType(this, PsiEmptyBlock.class);
-  }
-
 }

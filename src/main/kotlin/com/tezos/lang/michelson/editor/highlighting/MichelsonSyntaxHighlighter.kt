@@ -24,6 +24,10 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         val MACRO = TextAttributesKey.createTextAttributesKey("MI.MACRO", INSTRUCTION)
 
         val TAG = TextAttributesKey.createTextAttributesKey("MI.TAG", DefaultLanguageHighlighterColors.CLASS_REFERENCE)
+        val BOOLEAN_TAG = TextAttributesKey.createTextAttributesKey("MI.BOOL_TAG", TAG)
+        val UNIT_TAG = TextAttributesKey.createTextAttributesKey("MI.UNIT_TAG", TAG)
+        val OPTION_TAG = TextAttributesKey.createTextAttributesKey("MI.OPTION_TAG", TAG)
+        val OR_TAG = TextAttributesKey.createTextAttributesKey("MI.OPTION_OR", TAG)
 
         val TYPE_NAME = TextAttributesKey.createTextAttributesKey("MI.TYPE_NAME", DefaultLanguageHighlighterColors.CLASS_REFERENCE)
         val TYPE_NAME_COMPARABLE = TextAttributesKey.createTextAttributesKey("MI.TYPE_NAME_COMPARABLE", TYPE_NAME)
@@ -39,8 +43,6 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
         val VALID_STRING_ESCAPE = TextAttributesKey.createTextAttributesKey("MI.STRING_ESCAPE_VALID", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
         val ILLEGAL_STRING_ESCAPE = TextAttributesKey.createTextAttributesKey("MI.STRING_ESCAPE_INVALID", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
         val BYTE_LITERAL = TextAttributesKey.createTextAttributesKey("MI.BYTE", DefaultLanguageHighlighterColors.CONSTANT)
-        val BOOLEAN_LITERAL = TextAttributesKey.createTextAttributesKey("MI.BOOL_LITERAL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
-        val UNIT_LITERAL = TextAttributesKey.createTextAttributesKey("MI.UNIT_LITERAL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
 
         // generic symbols
         val SECTION_NAME = TextAttributesKey.createTextAttributesKey("MI.SECTION_NAME", DefaultLanguageHighlighterColors.KEYWORD)
@@ -71,12 +73,11 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
 
             keys.put(MichelsonTypes.INT, INT_LITERAL)
             keys.put(MichelsonTypes.BYTE, BYTE_LITERAL)
-            keys.put(MichelsonTypes.UNIT, UNIT_LITERAL)
             keys.put(MichelsonTypes.QUOTE, STRING_LITERAL)
             keys.put(MichelsonTypes.STRING_CONTENT, STRING_LITERAL)
             keys.put(MichelsonTypes.STRING_ESCAPE, VALID_STRING_ESCAPE)
             keys.put(MichelsonTypes.STRING_ESCAPE_INVALID, ILLEGAL_STRING_ESCAPE)
-            fillMap(keys, MichelsonTokenSets.BOOLEAN, BOOLEAN_LITERAL)
+            keys.put(MichelsonTypes.TAG, TAG)
 
             keys.put(MichelsonTypes.SEMI, SEMI)
             fillMap(keys, MichelsonTokenSets.PARENTHESES, PAREN)

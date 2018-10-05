@@ -25,7 +25,7 @@ code
 [41 : 45] INSTRUCTION_TOKEN
 PUSH
 -----
-[46 : 52] TYPE_NAME_COMPARABLE
+[46 : 52] TYPE_NAME
 string
 -----
 [53 : 54] "
@@ -40,7 +40,7 @@ string
 [61 : 65] INSTRUCTION_TOKEN
 PUSH
 -----
-[66 : 72] TYPE_NAME_COMPARABLE
+[66 : 72] TYPE_NAME
 string
 -----
 [73 : 74] "
@@ -58,7 +58,7 @@ my string value
 [96 : 100] INSTRUCTION_TOKEN
 PUSH
 -----
-[101 : 107] TYPE_NAME_COMPARABLE
+[101 : 107] TYPE_NAME
 string
 -----
 [108 : 109] "
@@ -76,7 +76,7 @@ string
 [118 : 122] INSTRUCTION_TOKEN
 PUSH
 -----
-[123 : 129] TYPE_NAME_COMPARABLE
+[123 : 129] TYPE_NAME
 string
 -----
 [130 : 131] "

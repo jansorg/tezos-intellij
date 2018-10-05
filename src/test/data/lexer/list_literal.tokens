@@ -31,7 +31,7 @@ PUSH
 [50 : 54] TYPE_NAME
 list
 -----
-[55 : 58] TYPE_NAME_COMPARABLE
+[55 : 58] TYPE_NAME
 int
 -----
 [58 : 59] )
@@ -61,7 +61,7 @@ PUSH
 [90 : 94] TYPE_NAME
 list
 -----
-[95 : 98] TYPE_NAME_COMPARABLE
+[95 : 98] TYPE_NAME
 int
 -----
 [98 : 99] )
@@ -94,7 +94,7 @@ PUSH
 [131 : 135] TYPE_NAME
 list
 -----
-[136 : 139] TYPE_NAME_COMPARABLE
+[136 : 139] TYPE_NAME
 int
 -----
 [139 : 140] )
@@ -130,7 +130,7 @@ PUSH
 [173 : 177] TYPE_NAME
 list
 -----
-[178 : 181] TYPE_NAME_COMPARABLE
+[178 : 181] TYPE_NAME
 int
 -----
 [181 : 182] )

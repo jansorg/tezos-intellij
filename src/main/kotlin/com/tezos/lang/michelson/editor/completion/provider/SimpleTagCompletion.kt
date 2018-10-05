@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.editor.completion
+package com.tezos.lang.michelson.editor.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
@@ -7,11 +7,10 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 
-class MichelsonComplexTypeNameCompletion : CompletionProvider<CompletionParameters>() {
+internal class SimpleTagCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        for (name in MichelsonLanguage.COMPLEX_TYPES) {
-            val item = LookupElementBuilder.create(name)
-                    .withTypeText("type", true)
+        MichelsonLanguage.TAGS_METAS.filterNot { it.isComplex() }.flatMap { it.names() }.forEach { name ->
+            val item = LookupElementBuilder.create(name).withTypeText("tag", true)
             result.addElement(item)
         }
     }

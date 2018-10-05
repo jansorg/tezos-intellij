@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiComparableType extends PsiType {
+public interface PsiTagData extends PsiData {
 
   @NotNull
-  List<PsiAnnotation> getAnnotations();
+  List<PsiData> getDataList();
 
   @NotNull
-  PsiElement getTypeToken();
+  List<PsiEmptyBlock> getEmptyBlockList();
+
+  @NotNull
+  PsiElement getTag();
 
 }

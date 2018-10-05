@@ -1,0 +1,12 @@
+MICHELSON_FILE
+  PsiElement(CONTRACT)
+    PsiElement(SECTION)
+      PsiElement(SECTION_NAME)('code')
+      PsiElement(BLOCK_INSTRUCTION)
+        PsiElement({)('{')
+        PsiErrorElement:Unexpected token
+          PsiElement(TAG)('Pair')
+        PsiElement(INT)('123')
+        PsiElement(INT)('123')
+        PsiElement(;)(';')
+        PsiElement(})('}')

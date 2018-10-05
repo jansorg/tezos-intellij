@@ -102,8 +102,14 @@ object MichelsonTestUtils {
             token = l.getTokenType()
         }
 
-        Assert.assertEquals("Unexpected tokens returned by lexer", expectedReport, report.toString())
+        if (updateReferenceData()) {
+            Files.write(tokensFile, report.toString().toByteArray())
+        } else {
+            Assert.assertEquals("Unexpected tokens returned by lexer", expectedReport, report.toString())
+        }
     }
+
+    fun updateReferenceData() = System.getenv("UPDATE_MICHELSON_DATA") == "true"
 
     fun assertNoLexingErrors(file: Path) {
         val finalPath = if (file.isAbsolute) file else Paths.get("lexer").resolve(file)

@@ -1,9 +1,15 @@
-parameter (pair (or (or int string)
-                    (or string int))
-                (pair (pair string int)
-                      (pair int string)));
+parameter (pair (or (or int
+                     string)
+                    (or string
+                     int))
+                (pair (pair string
+                       int)
+                      (pair int
+                       string)));
 storage (pair
-           (pair string int)
+           (pair string
+            int)
 
-           (or string int));
+           (or string
+            int));
 code {}

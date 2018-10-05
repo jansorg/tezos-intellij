@@ -8,6 +8,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.rt.execution.junit.FileComparisonFailure
 import com.intellij.util.containers.ContainerUtil
 import com.tezos.lang.michelson.MichelsonFixtureTest
+import com.tezos.lang.michelson.MichelsonTestUtils
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTestUtils.dataPath
 import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
@@ -56,10 +57,10 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
 
     @Test
     fun testFile() {
-        testFileFormatting(dataRootPath.resolve(michelsonFile), updateReferenceData = System.getenv("UPDATE_MICHELSON_DATA") == "true")
+        testFileFormatting(dataRootPath.resolve(michelsonFile))
     }
 
-    private fun testFileFormatting(file: Path, settingsOverride: CodeStyleSettings? = null, updateReferenceData: Boolean = false) {
+    private fun testFileFormatting(file: Path, settingsOverride: CodeStyleSettings? = null, updateReferenceData: Boolean = MichelsonTestUtils.updateReferenceData()) {
         val relativeFile = dataRootPath.relativize(file)
         myFixture.configureByFiles(relativeFile.toString())
 

@@ -1,0 +1,13 @@
+MICHELSON_FILE
+  PsiElement(CONTRACT)
+    PsiElement(SECTION)
+      PsiElement(SECTION_NAME)('code')
+      PsiElement(BLOCK_INSTRUCTION)
+        PsiElement({)('{')
+        PsiElement(GENERIC_INSTRUCTION)
+          PsiElement(INSTRUCTION_TOKEN)('PUSH')
+          PsiElement(GENERIC_TYPE)
+            PsiElement(TYPE_NAME)('bool')
+          PsiElement(TAG_DATA)
+            PsiElement(TAG)('Tr')
+        PsiElement(})('}')

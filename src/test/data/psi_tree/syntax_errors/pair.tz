@@ -1,0 +1,8 @@
+code {
+       PUSH (pair int int) (Pair int int);
+       PUSH (pair int int) (Pair 123 123);
+       DROP;
+       CDR;
+       NIL operation;
+       PAIR;
+     }

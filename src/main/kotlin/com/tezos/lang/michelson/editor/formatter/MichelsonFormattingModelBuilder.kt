@@ -19,7 +19,7 @@ import com.tezos.lang.michelson.parser.MichelsonElementSets
 class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     private companion object {
         val literals = TokenSet.create(LITERAL_DATA, STRING_LITERAL)
-        val types = TokenSet.create(TYPE, COMPARABLE_TYPE)
+        val types = TokenSet.create(TYPE)
 
         val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
         val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)

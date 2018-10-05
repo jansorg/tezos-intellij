@@ -28,6 +28,12 @@ public class PsiLiteralDataImpl extends PsiDataImpl implements PsiLiteralData {
 
   @Override
   @Nullable
+  public PsiElement getByte() {
+    return findPsiChildByType(BYTE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getInt() {
     return findPsiChildByType(INT);
   }

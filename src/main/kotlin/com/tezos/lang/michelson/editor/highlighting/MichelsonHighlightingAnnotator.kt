@@ -2,13 +2,14 @@ package com.tezos.lang.michelson.editor.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTypes
-import com.tezos.lang.michelson.lang.macro.*
+import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.psi.*
 
 /**
@@ -21,7 +22,7 @@ import com.tezos.lang.michelson.psi.*
  */
 class MichelsonHighlightingAnnotator : Annotator {
     private companion object {
-        val LEAF_TOKENS = TokenSet.create(MichelsonTypes.STRING_ESCAPE_INVALID)
+        val LEAF_TOKENS = TokenSet.create(MichelsonTypes.STRING_ESCAPE_INVALID, MichelsonTypes.TAG)
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -171,8 +172,28 @@ class MichelsonHighlightingAnnotator : Annotator {
     }
 
     private fun annotateLeafElement(psi: PsiElement, nodeType: IElementType, holder: AnnotationHolder) {
+        val name = psi.text
         when (nodeType) {
-            MichelsonTypes.STRING_ESCAPE_INVALID -> holder.createErrorAnnotation(psi, "Illegal escape character ${psi.text}")
+            MichelsonTypes.STRING_ESCAPE_INVALID -> holder.createErrorAnnotation(psi, "Illegal escape character $name")
+            MichelsonTypes.TAG -> when (name) {
+                in MichelsonLanguage.TAG_BOOL.names() -> {
+                    val annotation = holder.createAnnotation(HighlightSeverity.INFORMATION, psi.textRange, null)
+                    annotation.textAttributes = MichelsonSyntaxHighlighter.BOOLEAN_TAG
+                }
+                in MichelsonLanguage.TAG_UNIT.names() -> {
+                    val annotation = holder.createAnnotation(HighlightSeverity.INFORMATION, psi.textRange, null)
+                    annotation.textAttributes = MichelsonSyntaxHighlighter.UNIT_TAG
+                }
+                in MichelsonLanguage.TAG_OPTION_NAMES -> {
+                    val annotation = holder.createAnnotation(HighlightSeverity.INFORMATION, psi.textRange, null)
+                    annotation.textAttributes = MichelsonSyntaxHighlighter.OPTION_TAG
+                }
+                in MichelsonLanguage.TAG_OR.names() -> {
+                    val annotation = holder.createAnnotation(HighlightSeverity.INFORMATION, psi.textRange, null)
+                    annotation.textAttributes = MichelsonSyntaxHighlighter.OR_TAG
+                }
+                !in MichelsonLanguage.TAG_NAMES -> holder.createErrorAnnotation(psi, "Unknown tag $name'")
+            }
         }
     }
 
@@ -248,7 +269,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateGenericType(element: PsiGenericType, holder: AnnotationHolder) {
         val typeName = element.typeNameString
-        if (!MichelsonLanguage.TYPES.contains(typeName)) {
+        if (!MichelsonLanguage.TYPES_ALL.contains(typeName)) {
             holder.createErrorAnnotation(element.typeToken, "Unknown type")
             return
         }

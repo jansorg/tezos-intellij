@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.lang
 
 import com.intellij.lang.Language
 import com.tezos.lang.michelson.lang.macro.*
+import com.tezos.lang.michelson.lang.tag.*
 
 /**
  * @author jansorg
@@ -9,13 +10,27 @@ import com.tezos.lang.michelson.lang.macro.*
 object MichelsonLanguage : Language("Michelson") {
     override fun getDisplayName(): String = "Michelson"
 
-    // the supported generic types in the Michelson language, doesn't contain the comparable types.
-    // the lexer takes care to match comparable types
-    val TYPES = setOf("key", "unit", "signature", "option", "list", "set", "operation", "contract", "pair", "or", "lambda", "map", "big_map")
-    val COMPARABLE_TYPES = setOf("int", "nat", "string", "tez", "bool", "key_hash", "timestamp", "bytes", "mutez", "address")
-    val COMPLEX_TYPES = setOf("option", "list", "operation", "pair", "or", "lambda", "map", "big_map")
+    // Pair and pair are different tokens
+    override fun isCaseSensitive(): Boolean = true
+
+    val TYPES_OTHER = setOf("key", "unit", "signature")
+    val TYPES_COMPARABLE = setOf("int", "nat", "string", "tez", "bool", "key_hash", "timestamp", "bytes", "mutez", "address")
+    val TYPES_COMPLEX = setOf("option", "list", "set", "operation", "pair", "or", "lambda", "map", "big_map")
+    val TYPES_ALL = TYPES_OTHER + TYPES_COMPARABLE + TYPES_COMPLEX
 
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
+
+    // tag names
+    val TAG_UNIT : TagMetadata = UnitTagMetadata()
+    val TAG_NONE : TagMetadata = NoneTagMetadata()
+    val TAG_BOOL : TagMetadata = BooleanTagMetadata()
+    val TAG_PAIR : TagMetadata = PairTagMetadata()
+    val TAG_SOME : TagMetadata = SomeMetadata()
+    val TAG_OR : TagMetadata = OrTagMetadata()
+    val TAG_ELT : TagMetadata = EltTagMetadata()
+    val TAGS_METAS = listOf(TAG_UNIT, TAG_NONE, TAG_BOOL, TAG_PAIR, TAG_SOME, TAG_OR, TAG_ELT)
+    val TAG_NAMES = TAGS_METAS.flatMap { it.names() }.toSet()
+    val TAG_OPTION_NAMES = setOf("None", "Some")
 
     // macros
     val ASSERT_MACROS: MacroMetadata = AssertMacroMetadata()

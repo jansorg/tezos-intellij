@@ -29,8 +29,7 @@ EOL=\R
 WHITE_SPACE=\s+
 
 SECTION_NAME=parameter|return|storage|code
-TYPE_NAME_COMPARABLE=int | nat | string | tez | bool | key_hash | timestamp | bytes | mutez | address
-TYPE_NAME=[a-z_]+
+TYPE_NAME=[a-z_][a-zA-Z0-9_]*
 INT=-?[0-9]+
 BYTE=0x[A-F0-9]+
 // a single upper-case letter would be correct, but also have to match mixed case names like PAIRpair to avoid that this is lexed as two tokens INSTRUCTION TAG, which would mess up the parsing
@@ -40,8 +39,8 @@ STRING_CONTENT=[^\"\\]+
 STRING_ESCAPE=\\[ntbr\\\"]
 STRING_ESCAPE_INVALID=\\[^ntbr\\\"]
 MACRO_TOKEN= (CMPEQ | CMPNEQ | CMPLT | CMPGT | CMPLE | CMPGE | IFEQ | IFNEQ | IFLT | IFGT | IFLE | IFGE | IFCMPEQ | IFCMPNEQ | IFCMPLT | IFCMPGT | IFCMPLE | IFCMPGE | FAIL | ASSERT | ASSERT_EQ | ASSERT_NEQ | ASSERT_LT | ASSERT_LE | ASSERT_GT | ASSERT_GE | ASSERT_CMPEQ | ASSERT_CMPNEQ |ASSERT_CMPLT | ASSERT_CMPLE | ASSERT_CMPGT | ASSERT_CMPGE | ASSERT_NONE | ASSERT_SOME | ASSERT_LEFT | ASSERT_RIGHT | SET_CAR | SET_CDR | MAP_CAR | MAP_CDR | IF_SOME) | DII+P | DUU+P | P[AIP]+R | UNP[PAI]+R | C[AD]+R | SET_C[AD]+R | MAP_C[AD]+R
-INSTRUCTION_TOKEN=[A-Za-z][A-Za-z0-9_]*
 //INSTRUCTION_TOKEN=[A-Z][A-Z_0-9]*
+INSTRUCTION_TOKEN=[A-Za-z][A-Za-z0-9_]*
 TYPE_ANNOTATION_TOKEN=:(@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?
 VAR_ANNOTATION_TOKEN=@(@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?
 FIELD_ANNOTATION_TOKEN=%(@|%|%%|[_a-zA-Z][_0-9a-zA-Z.]*)?
@@ -66,14 +65,9 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
   "}"                           { return RIGHT_CURLY; }
   ";"                           { return SEMI; }
   "\""                          { yybegin(S_STRING); return QUOTE; }
-  "True"                        { return TRUE; }
-  "False"                       { return FALSE; }
-  "Unit"                        { return UNIT; }
-  "None"                        { return NONE; }
 
   {TAG}                         { return TAG; }
   {SECTION_NAME}                { return SECTION_NAME; }
-  {TYPE_NAME_COMPARABLE}        { return TYPE_NAME_COMPARABLE; }
   {TYPE_NAME}                   { return TYPE_NAME; }
   {INT}                         { return INT; }
   {BYTE}                        { return BYTE; }

@@ -1,0 +1,3 @@
+code {
+       PUSH (pair int int) (Pair 123 123);
+     }
