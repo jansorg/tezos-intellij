@@ -5,7 +5,7 @@ MICHELSON_FILE
       PsiElement(BLOCK_INSTRUCTION)
         PsiElement({)('{')
         PsiErrorElement:Unexpected token
-          PsiElement(TAG)('Pair')
+          PsiElement(TAG_TOKEN)('Pair')
         PsiElement(INT)('123')
         PsiElement(INT)('123')
         PsiElement(;)(';')

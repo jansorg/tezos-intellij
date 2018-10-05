@@ -17,18 +17,24 @@ class MichelsonComplexTypeCompletionContributorTest:MichelsonCompletionTest(){
 
         configureByCode("PUSH (<caret>)")
         assertCompletionsAtLeast(*all)
+
         configureByCode("MAP string (<caret>)")
         assertCompletionsAtLeast(*all)
-        configureByCode("MAP (Pair (<caret>))")
-        assertCompletionsAtLeast(*all)
-        configureByCode("MAP (Pair int (<caret>))")
-        assertCompletionsAtLeast(*all)
 
+        // no completions
         configureByCode("PUSH (P<caret>)")
         assertCompletionsAtLeast(*all.filter { it.contains("P") }.toTypedArray())
+
         configureByCode("PUSH (Pair (P<caret>) int)")
         assertCompletionsAtLeast(*all.filter { it.contains("P") }.toTypedArray())
+
         configureByCode("PUSH (Pair int (P<caret>))")
         assertCompletionsAtLeast(*all.filter { it.contains("P") }.toTypedArray())
+
+        configureByCode("MAP (Pair (<caret>))")
+        assertCompletionsNoneOf(*all)
+
+        // configureByCode("MAP (Pair int (<caret>))")
+        // assertCompletionsNoneOf(*all)
     }
 }

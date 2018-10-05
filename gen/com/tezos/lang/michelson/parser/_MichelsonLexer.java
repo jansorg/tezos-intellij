@@ -685,7 +685,7 @@ public class _MichelsonLexer implements FlexLexer {
             // fall through
           case 41: break;
           case 18: 
-            { return TAG;
+            { return TAG_TOKEN;
             } 
             // fall through
           case 42: break;

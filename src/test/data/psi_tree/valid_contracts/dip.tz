@@ -1,0 +1,6 @@
+code {
+       DIP {
+             IF_NONE { PUSH (pair bool bool) (Pair False False) }
+                     {}
+           };
+     }

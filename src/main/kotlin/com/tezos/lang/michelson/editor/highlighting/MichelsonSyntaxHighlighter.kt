@@ -63,7 +63,6 @@ class MichelsonSyntaxHighlighter : SyntaxHighlighterBase() {
 
             keys.put(MichelsonTypes.TYPE_NAME, TYPE_NAME)
             keys.put(MichelsonTypes.TYPE_NAME_COMPARABLE, TYPE_NAME_COMPARABLE)
-            keys.put(MichelsonTypes.TAG, TAG)
             keys.put(MichelsonTypes.INSTRUCTION_TOKEN, INSTRUCTION)
             fillMap(keys, MichelsonTokenSets.MACROS, MACRO)
 

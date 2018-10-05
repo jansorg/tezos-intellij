@@ -1,10 +1,10 @@
 package com.tezos.lang.michelson.parser
 
 import com.intellij.lang.PsiBuilder
-import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.psi.isWhitespace
 
 /**
  * Parser util referenced by /grammars/michelson.bnf.
@@ -72,6 +72,44 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
         return true
     }
 
+    @JvmStatic
+    fun parseNestedData(builder: PsiBuilder, level: Int, nestedParser: GeneratedParserUtilBase.Parser): Boolean {
+        val current = builder.tokenType
+        val next = builder.lookAhead(1)
+        if (current != LEFT_PAREN || next != TAG_TOKEN) {
+            return false
+        }
+
+        var result = consumeToken(builder, LEFT_PAREN)
+        if (!result) {
+            return false
+        }
+
+        result = nestedParser.parse(builder, level + 1)
+        if (!result) {
+            builder.error("Error parsing nested data")
+            // recovery: read up to the closing parent or until a newline is found
+            while (builder.tokenType != RIGHT_PAREN && builder.rawLookup(0) != EOL) {
+                builder.advanceLexer()
+            }
+        }
+
+        result = consumeToken(builder, RIGHT_PAREN)
+        if (!result) {
+            // probably invalid tokens after the initial tag, recover until the next right paren or newline
+            builder.error("Expected )")
+
+            while (!builder.eof() && builder.tokenType != RIGHT_PAREN && builder.rawLookup(0) != EOL) {
+                builder.advanceLexer()
+            }
+            // optional read
+            consumeToken(builder, RIGHT_PAREN)
+        }
+
+        // the rule matched, even with recovery
+        return true
+    }
+
     /**
      * Called in a recover_while rule.
      * A recoverWhile is even called when a rule wasn't matching at all.
@@ -96,16 +134,6 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
         val current = builder.lookAhead(0)
         val next = builder.lookAhead(1)
         return (current != SEMI && current != LEFT_CURLY) || (current == SEMI && next == RIGHT_CURLY)
-    }
-
-    private fun rawBackwardsSkippingWhitespace(builder: PsiBuilder, steps: Int): IElementType? {
-        var i = steps
-        var type = builder.rawLookup(i)
-        while (type == WHITE_SPACE) {
-            i--
-            type = builder.rawLookup(i)
-        }
-        return type
     }
 
     private fun rawBackwardsSkippingFirstBefore(builder: PsiBuilder, stopBefore: TokenSet): IElementType? {
@@ -148,7 +176,7 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
             false -> STOP_TOKENS_TAG.contains(current)
         }
 
-        if (!stop && current != WHITE_SPACE) {
+        if (!stop && !current.isWhitespace()) {
             val m = builder.mark()
             builder.advanceLexer()
             m.error("Unexpected token")

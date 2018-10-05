@@ -23,7 +23,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
 
         val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
         val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
-        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG, COMPLEX_TYPE), MichelsonTokenSets.TYPE_NAMES)
+        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG_TOKEN, COMPLEX_TYPE), MichelsonTokenSets.TYPE_NAMES)
         val allArguments = TokenSet.orSet(types, literals, MichelsonTokenSets.TYPE_NAMES, MichelsonTokenSets.LITERAL_TOKENS, annotations)
         val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION, EMPTY_BLOCK)
     }

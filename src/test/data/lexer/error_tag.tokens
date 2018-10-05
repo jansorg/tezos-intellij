@@ -10,7 +10,7 @@ PUSH
 [19 : 23] TYPE_NAME
 bool
 -----
-[24 : 26] TAG
+[24 : 26] TAG_TOKEN
 Tr
 -----
 [32 : 33] }
