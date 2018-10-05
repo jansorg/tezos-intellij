@@ -12,11 +12,19 @@
     <depends>com.intellij.modules.lang</depends>
 
     <description><![CDATA[<html>
-        IntelliJ support for the Tezos platform. It provides smart support for the Michelson language.
+        IntelliJ support for the Tezos platform.
+        It provides smart support for the Michelson language: parsing, code highlighting, formatting, code completion, live templates, and more.
     </html>]]></description>
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.5.0</b>
+        <ul>
+            <li>Improved code cmpletion for instructions</li>
+            <li>Improved code cmpletion for type names</li>
+            <li>Improved code cmpletion for tag names</li>
+        </ul><br><br>
+
         <b>Version 0.4.0</b>
         <ul>
             <li>Live template `contract` to insert a new, empty contract</li>

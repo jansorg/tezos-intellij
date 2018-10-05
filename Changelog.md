@@ -1,5 +1,7 @@
 # Version 0.5.0
-- Code cmpletion for tag names
+- Improved code cmpletion for instructions
+- Improved code cmpletion for type names
+- Improved code cmpletion for tag names
 
 # Version 0.4.0
 - Live template `contract` to insert a new, empty contract
