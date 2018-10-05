@@ -2,7 +2,6 @@ package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
-import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes.*
@@ -17,9 +16,12 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
         extend(null, TOPLEVEL_PATTERN, SectionCompletion())
 
         // instructions
+        val commandEndPattern = PlatformPatterns.psiElement().withElementType(TokenSet.create(LEFT_CURLY, SEMI))
         val instructionPlace = StandardPatterns.or(
-                WHITESPACE_PATTERN.afterLeaf(PATTERN_LEFT_CURLY),
-                PlatformPatterns.psiElement().withElementType(TokenSet.create(LEFT_CURLY, INSTRUCTION_TOKEN, SEMI)))
+                commandEndPattern,
+                PlatformPatterns.psiElement().afterLeaf(commandEndPattern),
+                PlatformPatterns.psiElement(INSTRUCTION_TOKEN).andNot(AFTER_ERROR_LEAF_SKIPPING_WS)
+        )
         extendOriginal(null, instructionPlace, InstructionNameCompletion())
 
         // types
@@ -38,10 +40,22 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
         val TAG_AFTER_INSTRUCTION_TOKEN = PlatformPatterns.psiElement().withElementType(TokenSet.create(TokenType.WHITE_SPACE, TAG_DATA, TAG))
                 .and(AFTER_INSTRUCTION_TOKEN_LEAF)
 
-        val tag = StandardPatterns.or(TAG_AFTER_INSTRUCTION_TOKEN,
+        val tag = StandardPatterns.or(
+                // e.g. "PUSH |"
+                TAG_AFTER_INSTRUCTION_TOKEN,
+                // e.g. "PUSH | ..." where the parser did error recovery
                 AFTER_INSTRUCTION_ELEMENT,
+                // inside a tag, e.g. "PUSH Tr|ue"
                 PlatformPatterns.psiElement(TAG),
-                PlatformPatterns.psiElement(LEFT_PAREN).inside(INSTRUCTION_ELEMENT_PATTERN))
+                // e.g. PUSH (|)
+                PlatformPatterns.psiElement(LEFT_PAREN).inside(INSTRUCTION_ELEMENT_PATTERN),
+                // e.g. "PUSH int T|" where the parser added an error token before T after error recovery (T is an instruction token here)
+                PATTERN_INSTRUCTION_OR_DATA_TOKEN.and(AFTER_ERROR_LEAF_SKIPPING_WS),
+                // e.g. "PUSH int |T" (T is an instruction token here)
+                AFTER_ERROR_LEAF_SKIPPING_WS.beforeLeaf(PATTERN_INSTRUCTION_TOKEN),
+                // e.g. "PUSH int |Tr" (Tr is a tag here)
+                WHITESPACE_PATTERN.beforeLeaf(PATTERN_TAG)
+        )
         extendOriginal(null, tag, SimpleTagCompletion())
 
         val complexTag = PlatformPatterns.or(LEFT_PAREN_PATTERN, PlatformPatterns.psiElement(TAG).afterLeafSkipping(WHITESPACE_PATTERN, LEFT_PAREN_PATTERN))
