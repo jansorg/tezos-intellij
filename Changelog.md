@@ -1,3 +1,6 @@
+# Version 0.6.0
+- Improved parsing of nested tags
+
 # Version 0.5.0
 - Improved error recovery and error handling in the parser
 - Improved code cmpletion for instructions

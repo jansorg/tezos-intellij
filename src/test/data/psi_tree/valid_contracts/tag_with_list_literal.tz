@@ -1,0 +1,5 @@
+parameter unit;
+storage unit;
+code {
+       PUSH (pair int (list int)) (Pair 123 { 1; 2; 3 })
+     }

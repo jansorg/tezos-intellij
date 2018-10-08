@@ -31,5 +31,11 @@ class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
 
         configureByCode("PUSH (pair int int) (Pair 123<caret>);")
         assertCompletions()
+
+        configureByCode("PUSH (Pair <caret>)")
+        assertCompletionsNoneOf(*reference)
+
+        // configureByCode("PUSH (Pair int <caret>)")
+        // assertCompletionsNoneOf(*reference)
     }
 }

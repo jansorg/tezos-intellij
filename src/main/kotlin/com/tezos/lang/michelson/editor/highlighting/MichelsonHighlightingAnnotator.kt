@@ -22,7 +22,7 @@ import com.tezos.lang.michelson.psi.*
  */
 class MichelsonHighlightingAnnotator : Annotator {
     private companion object {
-        val LEAF_TOKENS = TokenSet.create(MichelsonTypes.STRING_ESCAPE_INVALID, MichelsonTypes.TAG)
+        val LEAF_TOKENS = TokenSet.create(MichelsonTypes.STRING_ESCAPE_INVALID, MichelsonTypes.TAG_TOKEN)
     }
 
     override fun annotate(psi: PsiElement, holder: AnnotationHolder) {
@@ -175,7 +175,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         val name = psi.text
         when (nodeType) {
             MichelsonTypes.STRING_ESCAPE_INVALID -> holder.createErrorAnnotation(psi, "Illegal escape character $name")
-            MichelsonTypes.TAG -> when (name) {
+            MichelsonTypes.TAG_TOKEN -> when (name) {
                 in MichelsonLanguage.TAG_BOOL.names() -> {
                     val annotation = holder.createAnnotation(HighlightSeverity.INFORMATION, psi.textRange, null)
                     annotation.textAttributes = MichelsonSyntaxHighlighter.BOOLEAN_TAG

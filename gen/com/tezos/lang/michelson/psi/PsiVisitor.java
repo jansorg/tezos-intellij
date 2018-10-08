@@ -82,7 +82,7 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitLiteralData(o);
   }
 
-  public R visitTagData(@NotNull PsiTagData o) {
+  public R visitTag(@NotNull PsiTag o) {
     return visitData(o);
   }
 

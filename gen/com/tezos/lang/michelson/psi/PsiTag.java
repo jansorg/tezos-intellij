@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiTagData extends PsiData {
+public interface PsiTag extends PsiData {
 
   @NotNull
   List<PsiData> getDataList();
@@ -13,7 +13,7 @@ public interface PsiTagData extends PsiData {
   @NotNull
   List<PsiEmptyBlock> getEmptyBlockList();
 
-  @NotNull
-  PsiElement getTag();
+  @Nullable
+  PsiElement getTagToken();
 
 }

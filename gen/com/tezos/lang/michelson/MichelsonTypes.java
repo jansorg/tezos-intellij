@@ -29,7 +29,7 @@ public interface MichelsonTypes {
   IElementType MAP_ENTRY = new MichelsonCompositeElementType("MAP_ENTRY");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
-  IElementType TAG_DATA = new MichelsonCompositeElementType("TAG_DATA");
+  IElementType TAG = new MichelsonCompositeElementType("TAG");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
   IElementType VARIABLE_ANNOTATION = new MichelsonCompositeElementType("VARIABLE_ANNOTATION");
@@ -37,6 +37,7 @@ public interface MichelsonTypes {
   IElementType BYTE = new MichelsonElementType("BYTE");
   IElementType COMMENT_LINE = new MichelsonElementType("COMMENT_LINE");
   IElementType COMMENT_MULTI_LINE = new MichelsonElementType("COMMENT_MULTI_LINE");
+  IElementType EOL = new MichelsonElementType("end-of-line-marker");
   IElementType FIELD_ANNOTATION_TOKEN = new MichelsonElementType("FIELD_ANNOTATION_TOKEN");
   IElementType INSTRUCTION_TOKEN = new MichelsonElementType("INSTRUCTION_TOKEN");
   IElementType INT = new MichelsonElementType("INT");
@@ -51,7 +52,7 @@ public interface MichelsonTypes {
   IElementType STRING_CONTENT = new MichelsonElementType("STRING_CONTENT");
   IElementType STRING_ESCAPE = new MichelsonElementType("STRING_ESCAPE");
   IElementType STRING_ESCAPE_INVALID = new MichelsonElementType("STRING_ESCAPE_INVALID");
-  IElementType TAG = new MichelsonElementType("TAG");
+  IElementType TAG_TOKEN = new MichelsonElementType("TAG_TOKEN");
   IElementType TYPE_ANNOTATION_TOKEN = new MichelsonElementType("TYPE_ANNOTATION_TOKEN");
   IElementType TYPE_NAME = new MichelsonElementType("TYPE_NAME");
   IElementType TYPE_NAME_COMPARABLE = new MichelsonElementType("TYPE_NAME_COMPARABLE");
@@ -108,8 +109,8 @@ public interface MichelsonTypes {
       else if (type == STRING_LITERAL) {
         return new PsiStringLiteralImpl(type);
       }
-      else if (type == TAG_DATA) {
-        return new PsiTagDataImpl(type);
+      else if (type == TAG) {
+        return new PsiTagImpl(type);
       }
       else if (type == TYPE) {
         return new PsiTypeImpl(type);
