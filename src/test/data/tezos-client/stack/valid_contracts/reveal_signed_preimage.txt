@@ -1,0 +1,43 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((67 354 (((pair (pair @parameter bytes signature) (pair @storage bytes key)))) (((pair (list operation) (pair @storage bytes key)))))
+           (69 72 (((pair (pair @parameter bytes signature) (pair @storage bytes key)))) (((pair (pair @parameter bytes signature) (pair @storage bytes key))) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (75 81 (((pair (pair @parameter bytes signature) (pair @storage bytes key))) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((@parameter (pair bytes signature)) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (84 87 ((@parameter (pair bytes signature)) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bytes) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (90 96 ((bytes) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bytes) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (99 110 ((bytes) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bytes) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (103 110 ((@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (105 108 ((@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (113 125 ((bytes) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) (((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (135 138 (((pair (pair @parameter bytes signature) (pair @storage bytes key)))) (((pair (pair @parameter bytes signature) (pair @storage bytes key))) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (141 147 (((pair (pair @parameter bytes signature) (pair @storage bytes key))) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((@parameter (pair bytes signature)) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (150 154 ((@parameter (pair bytes signature)) (@storage (pair bytes key)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((@storage (pair bytes key)) (@parameter (pair bytes signature)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (157 178 ((@storage (pair bytes key)) (@parameter (pair bytes signature)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((@storage (pair bytes key)) (signature) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (161 178 ((@parameter (pair bytes signature)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((signature) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (163 169 ((@parameter (pair bytes signature)) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bytes) (signature) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (172 176 ((bytes) (signature) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((signature) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (181 184 ((@storage (pair bytes key)) (signature) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((key) (signature) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (187 202 ((key) (signature) (bytes) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((bool) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (205 211 ((bool) ((pair (pair @parameter bytes signature) (pair @storage bytes key)))) (((pair (pair @parameter bytes signature) (pair @storage bytes key)))))
+           (221 224 (((pair (pair @parameter bytes signature) (pair @storage bytes key)))) ((@storage (pair bytes key))))
+           (227 230 ((@storage (pair bytes key))) ((@storage (pair bytes key)) (@storage (pair bytes key))))
+           (233 236 ((@storage (pair bytes key)) (@storage (pair bytes key))) ((key) (@storage (pair bytes key))))
+           (239 247 ((key) (@storage (pair bytes key))) ((key_hash) (@storage (pair bytes key))))
+           (250 266 ((key_hash) (@storage (pair bytes key))) (((contract unit)) (@storage (pair bytes key))))
+           (276 283 (((contract unit)) (@storage (pair bytes key))) ((@balance mutez) ((contract unit)) (@storage (pair bytes key))))
+           (286 290 ((@balance mutez) ((contract unit)) (@storage (pair bytes key))) ((unit) (@balance mutez) ((contract unit)) (@storage (pair bytes key))))
+           (293 308 ((unit) (@balance mutez) ((contract unit)) (@storage (pair bytes key))) ((operation) (@storage (pair bytes key))))
+           (318 331 ((operation) (@storage (pair bytes key))) (((list operation)) (operation) (@storage (pair bytes key))))
+           (334 338 (((list operation)) (operation) (@storage (pair bytes key))) ((operation) ((list operation)) (@storage (pair bytes key))))
+           (341 345 ((operation) ((list operation)) (@storage (pair bytes key))) (((list operation)) (@storage (pair bytes key))))
+           (348 352 (((list operation)) (@storage (pair bytes key))) (((pair (list operation) (pair @storage bytes key)))))
+           ))
+ (errors . (
+            )))

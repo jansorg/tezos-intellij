@@ -1,4 +1,0 @@
-all
-  types
-  errors
-    error

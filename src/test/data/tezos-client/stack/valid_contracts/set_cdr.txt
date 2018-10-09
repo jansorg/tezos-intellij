@@ -1,0 +1,21 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((57 112 (((pair (nat @parameter) (pair @storage (string %s) (nat %n))))) (((pair (list operation) (pair @storage (string %s @storage.s) (nat %n @parameter))))))
+           (59 62 (((pair (nat @parameter) (pair @storage (string %s) (nat %n))))) (((pair (nat @parameter) (pair @storage (string %s) (nat %n)))) ((pair (nat @parameter) (pair @storage (string %s) (nat %n))))))
+           (64 67 (((pair (nat @parameter) (pair @storage (string %s) (nat %n)))) ((pair (nat @parameter) (pair @storage (string %s) (nat %n))))) ((@storage (pair (string %s) (nat %n))) ((pair (nat @parameter) (pair @storage (string %s) (nat %n))))))
+           (69 77 ((@storage (pair (string %s) (nat %n))) ((pair (nat @parameter) (pair @storage (string %s) (nat %n))))) ((@storage (pair (string %s) (nat %n))) (@parameter nat)))
+           (72 77 (((pair (nat @parameter) (pair @storage (string %s) (nat %n))))) ((@parameter nat)))
+           (73 76 (((pair (nat @parameter) (pair @storage (string %s) (nat %n))))) ((@parameter nat)))
+           (79 86 ((@storage (pair (string %s) (nat %n))) (@parameter nat)) ((@storage (pair (string %s @storage.s) (nat %n @parameter)))))
+           (91 104 ((@storage (pair (string %s @storage.s) (nat %n @parameter)))) (((list operation)) (@storage (pair (string %s @storage.s) (nat %n @parameter)))))
+           (106 110 (((list operation)) (@storage (pair (string %s @storage.s) (nat %n @parameter)))) (((pair (list operation) (pair @storage (string %s @storage.s) (nat %n @parameter))))))
+           ))
+ (errors . (
+            )))

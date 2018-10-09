@@ -1,0 +1,49 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((74 541 (((pair (or @parameter key_hash address) (option @storage (contract unit))))) (((pair (list operation) (option (contract unit))))))
+           (76 79 (((pair (or @parameter key_hash address) (option @storage (contract unit))))) ((@parameter (or key_hash address))))
+           (105 384 ((@parameter.left key_hash)) (((pair (list operation) (option (contract unit))))))
+           (107 169 ((@parameter.left key_hash)) ((@parameter.left key_hash) ((option key_hash)) (bool) (mutez)))
+           (111 169 () (((option key_hash)) (bool) (mutez)))
+           (113 133 () ((mutez)))
+           (136 151 ((mutez)) ((bool) (mutez)))
+           (154 167 ((bool) (mutez)) (((option key_hash)) (bool) (mutez)))
+           (182 196 ((@parameter.left key_hash) ((option key_hash)) (bool) (mutez)) ((operation) (address)))
+           (210 327 ((operation) (address)) ((operation) ((list operation))))
+           (214 327 ((address)) (((list operation))))
+           (216 230 ((address)) (((or key_hash address))))
+           (233 260 (((or key_hash address))) (((or key_hash address)) (mutez) (@self (contract (or key_hash address)))))
+           (237 260 () ((mutez) (@self (contract (or key_hash address)))))
+           (239 243 () ((@self (contract (or key_hash address)))))
+           (246 258 ((@self (contract (or key_hash address)))) ((mutez) (@self (contract (or key_hash address)))))
+           (263 278 (((or key_hash address)) (mutez) (@self (contract (or key_hash address)))) ((operation)))
+           (298 311 ((operation)) (((list operation)) (operation)))
+           (314 318 (((list operation)) (operation)) ((operation) ((list operation))))
+           (321 325 ((operation) ((list operation))) (((list operation))))
+           (341 345 ((operation) ((list operation))) (((list operation))))
+           (348 367 (((list operation))) (((option (contract unit))) ((list operation))))
+           (371 375 (((option (contract unit))) ((list operation))) (((list operation)) ((option (contract unit)))))
+           (378 382 (((list operation)) ((option (contract unit)))) (((pair (list operation) (option (contract unit))))))
+           (394 539 ((@parameter.right address)) (((pair (list operation) (option @parameter.right.contract (contract unit))))))
+           (396 400 ((@parameter.right address)) ((@self (contract (or key_hash address))) (@parameter.right address)))
+           (403 410 ((@self (contract (or key_hash address))) (@parameter.right address)) ((@self.address address) (@parameter.right address)))
+           (413 419 ((@self.address address) (@parameter.right address)) ((@sender address) (@self.address address) (@parameter.right address)))
+           (422 442 ((@sender address) (@self.address address) (@parameter.right address)) ((@parameter.right address)))
+           (440 442 ((@parameter.right address)) ((@parameter.right address)))
+           (456 469 ((@parameter.right address)) ((@parameter.right.contract (option (contract unit)))))
+           (472 475 ((@parameter.right.contract (option (contract unit)))) ((@parameter.right.contract (option (contract unit))) (@parameter.right.contract (option (contract unit)))))
+           (478 503 ((@parameter.right.contract (option (contract unit))) (@parameter.right.contract (option (contract unit)))) ((@parameter.right.contract (option (contract unit)))))
+           (486 494 ((@parameter.right.contract.some (contract unit)) (@parameter.right.contract (option (contract unit)))) ((@parameter.right.contract (option (contract unit)))))
+           (488 492 ((@parameter.right.contract.some (contract unit)) (@parameter.right.contract (option (contract unit)))) ((@parameter.right.contract (option (contract unit)))))
+           (517 530 ((@parameter.right.contract (option (contract unit)))) (((list operation)) (@parameter.right.contract (option (contract unit)))))
+           (533 537 (((list operation)) (@parameter.right.contract (option (contract unit)))) (((pair (list operation) (option @parameter.right.contract (contract unit))))))
+           ))
+ (errors . (
+            )))

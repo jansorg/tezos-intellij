@@ -1,0 +1,27 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((63 258 (((pair (string @parameter) (map @storage address (option string))))) (((pair (list operation) (map @guestbook address (option string))))))
+           (65 71 (((pair (string @parameter) (map @storage address (option string))))) ((@message string) (@guestbook (map address (option string)))))
+           (93 97 ((@message string) (@guestbook (map address (option string)))) ((@guestbook (map address (option string))) (@message string)))
+           (106 109 ((@guestbook (map address (option string))) (@message string)) ((@guestbook (map address (option string))) (@guestbook (map address (option string))) (@message string)))
+           (111 117 ((@guestbook (map address (option string))) (@guestbook (map address (option string))) (@message string)) ((@sender address) (@guestbook (map address (option string))) (@guestbook (map address (option string))) (@message string)))
+           (119 122 ((@sender address) (@guestbook (map address (option string))) (@guestbook (map address (option string))) (@message string)) ((@previous_message (option (option string))) (@guestbook (map address (option string))) (@message string)))
+           (149 160 ((@previous_message (option (option string))) (@guestbook (map address (option string))) (@message string)) ((@previous_message.some (option string)) (@guestbook (map address (option string))) (@message string)))
+           (169 180 ((@previous_message.some (option string)) (@guestbook (map address (option string))) (@message string)) ((@guestbook (map address (option string))) (@message string)))
+           (189 193 ((@guestbook (map address (option string))) (@message string)) ((@message string) (@guestbook (map address (option string)))))
+           (195 199 ((@message string) (@guestbook (map address (option string)))) (((option string)) (@guestbook (map address (option string)))))
+           (201 205 (((option string)) (@guestbook (map address (option string)))) (((option (option string))) (@guestbook (map address (option string)))))
+           (207 213 (((option (option string))) (@guestbook (map address (option string)))) ((@sender address) ((option (option string))) (@guestbook (map address (option string)))))
+           (215 221 ((@sender address) ((option (option string))) (@guestbook (map address (option string)))) ((@guestbook (map address (option string)))))
+           (230 243 ((@guestbook (map address (option string)))) (((list operation)) (@guestbook (map address (option string)))))
+           (252 256 (((list operation)) (@guestbook (map address (option string)))) (((pair (list operation) (map @guestbook address (option string))))))
+           ))
+ (errors . (
+            )))

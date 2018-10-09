@@ -1,0 +1,40 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((74 300 (((pair (map @parameter (int :k) (int :e)) (pair @storage (int :k) (int :e))))) (((pair (list operation) (pair (int :k) (int :e %r))))))
+           (76 79 (((pair (map @parameter (int :k) (int :e)) (pair @storage (int :k) (int :e))))) ((@parameter (map (int :k) (int :e)))))
+           (81 103 ((@parameter (map (int :k) (int :e)))) ((@acc_e (int :e)) (@parameter (map (int :k) (int :e)))))
+           (105 127 ((@acc_e (int :e)) (@parameter (map (int :k) (int :e)))) ((@acc_k (int :k)) (@acc_e (int :e)) (@parameter (map (int :k) (int :e)))))
+           (129 133 ((@acc_k (int :k)) (@acc_e (int :e)) (@parameter (map (int :k) (int :e)))) (((pair (int :k @acc_k) (int :e %r @acc_e))) (@parameter (map (int :k) (int :e)))))
+           (140 144 (((pair (int :k @acc_k) (int :e %r @acc_e))) (@parameter (map (int :k) (int :e)))) ((@parameter (map (int :k) (int :e))) ((pair (int :k @acc_k) (int :e %r @acc_e)))))
+           (153 271 ((@parameter (map (int :k) (int :e))) ((pair (int :k @acc_k) (int :e %r @acc_e)))) (((pair (int :k) (int :e %r)))))
+           (167 271 (((pair (int :k @key) (int :e @elt))) ((pair (int :k @acc_k) (int :e %r @acc_e)))) (((pair (int :k) (int :e %r)))))
+           (169 193 (((pair (int :k @key) (int :e @elt))) ((pair (int :k @acc_k) (int :e %r @acc_e)))) (((pair (int :k @key) (int :e @elt))) (@acc_k (int :k)) (@acc_e (int :e))))
+           (173 193 (((pair (int :k @acc_k) (int :e %r @acc_e)))) ((@acc_k (int :k)) (@acc_e (int :e))))
+           (174 177 (((pair (int :k @acc_k) (int :e %r @acc_e)))) (((pair (int :k @acc_k) (int :e %r @acc_e))) ((pair (int :k @acc_k) (int :e %r @acc_e)))))
+           (179 182 (((pair (int :k @acc_k) (int :e %r @acc_e))) ((pair (int :k @acc_k) (int :e %r @acc_e)))) ((@acc_k (int :k)) ((pair (int :k @acc_k) (int :e %r @acc_e)))))
+           (184 192 ((@acc_k (int :k)) ((pair (int :k @acc_k) (int :e %r @acc_e)))) ((@acc_k (int :k)) (@acc_e (int :e))))
+           (187 192 (((pair (int :k @acc_k) (int :e %r @acc_e)))) ((@acc_e (int :e))))
+           (188 191 (((pair (int :k @acc_k) (int :e %r @acc_e)))) ((@acc_e (int :e))))
+           (195 198 (((pair (int :k @key) (int :e @elt))) (@acc_k (int :k)) (@acc_e (int :e))) (((pair (int :k @key) (int :e @elt))) ((pair (int :k @key) (int :e @elt))) (@acc_k (int :k)) (@acc_e (int :e))))
+           (224 237 (((pair (int :k @key) (int :e @elt))) ((pair (int :k @key) (int :e @elt))) (@acc_k (int :k)) (@acc_e (int :e))) (((pair (int :k @key) (int :e @elt))) ((int :k)) (@acc_e (int :e))))
+           (227 237 (((pair (int :k @key) (int :e @elt))) (@acc_k (int :k)) (@acc_e (int :e))) (((int :k)) (@acc_e (int :e))))
+           (228 231 (((pair (int :k @key) (int :e @elt))) (@acc_k (int :k)) (@acc_e (int :e))) ((@key (int :k)) (@acc_k (int :k)) (@acc_e (int :e))))
+           (233 236 ((@key (int :k)) (@acc_k (int :k)) (@acc_e (int :e))) (((int :k)) (@acc_e (int :e))))
+           (239 243 (((pair (int :k @key) (int :e @elt))) ((int :k)) (@acc_e (int :e))) (((int :k)) ((pair (int :k @key) (int :e @elt))) (@acc_e (int :e))))
+           (245 258 (((int :k)) ((pair (int :k @key) (int :e @elt))) (@acc_e (int :e))) (((int :k)) ((int :e))))
+           (248 258 (((pair (int :k @key) (int :e @elt))) (@acc_e (int :e))) (((int :e))))
+           (249 252 (((pair (int :k @key) (int :e @elt))) (@acc_e (int :e))) ((@elt (int :e)) (@acc_e (int :e))))
+           (254 257 ((@elt (int :e)) (@acc_e (int :e))) (((int :e))))
+           (260 264 (((int :k)) ((int :e))) (((pair (int :k) (int :e %r)))))
+           (280 293 (((pair (int :k) (int :e %r)))) (((list operation)) ((pair (int :k) (int :e %r)))))
+           (295 299 (((list operation)) ((pair (int :k) (int :e %r)))) (((pair (list operation) (pair (int :k) (int :e %r))))))
+           ))
+ (errors . (
+            )))

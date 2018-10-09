@@ -1,0 +1,33 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((72 182 (((pair (pair @parameter mutez mutez) (option @storage (pair mutez mutez))))) (((pair (list operation) (option (pair mutez mutez))))))
+           (73 76 (((pair (pair @parameter mutez mutez) (option @storage (pair mutez mutez))))) ((@parameter (pair mutez mutez))))
+           (78 81 ((@parameter (pair mutez mutez))) ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))))
+           (83 86 ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))) ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))))
+           (88 91 ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))) ((mutez) (@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))))
+           (93 101 ((mutez) (@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))) ((mutez) (mutez) (@parameter (pair mutez mutez))))
+           (96 101 ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))) ((mutez) (@parameter (pair mutez mutez))))
+           (97 100 ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))) ((mutez) (@parameter (pair mutez mutez))))
+           (103 106 ((mutez) (mutez) (@parameter (pair mutez mutez))) ((mutez) (@parameter (pair mutez mutez))))
+           (114 142 ((mutez) (@parameter (pair mutez mutez))) ((mutez) (mutez)))
+           (117 142 ((@parameter (pair mutez mutez))) ((mutez)))
+           (118 121 ((@parameter (pair mutez mutez))) ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))))
+           (123 126 ((@parameter (pair mutez mutez)) (@parameter (pair mutez mutez))) ((mutez) (@parameter (pair mutez mutez))))
+           (128 136 ((mutez) (@parameter (pair mutez mutez))) ((mutez) (mutez)))
+           (131 136 ((@parameter (pair mutez mutez))) ((mutez)))
+           (132 135 ((@parameter (pair mutez mutez))) ((mutez)))
+           (138 141 ((mutez) (mutez)) ((mutez)))
+           (150 154 ((mutez) (mutez)) (((pair mutez mutez))))
+           (156 160 (((pair mutez mutez))) (((option (pair mutez mutez)))))
+           (162 175 (((option (pair mutez mutez)))) (((list operation)) ((option (pair mutez mutez)))))
+           (177 181 (((list operation)) ((option (pair mutez mutez)))) (((pair (list operation) (option (pair mutez mutez))))))
+           ))
+ (errors . (
+            )))

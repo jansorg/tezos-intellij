@@ -1,0 +1,21 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((82 172 (((pair (pair :param @param (bool %first) (bool %second)) (option @storage bool)))) (((pair (list %a @x operation) (option %b @y bool)))))
+           (84 87 (((pair (pair :param @param (bool %first) (bool %second)) (option @storage bool)))) ((@param (pair :param (bool %first) (bool %second)))))
+           (90 96 ((@param (pair :param (bool %first) (bool %second)))) ((bool) (bool)))
+           (98 101 ((bool) (bool)) ((@and bool)))
+           (108 112 ((@and bool)) ((@res (option bool))))
+           (119 138 ((@res (option bool))) ((@noop (list operation)) (@res (option bool))))
+           (140 144 ((@noop (list operation)) (@res (option bool))) (((pair (list @noop operation) (option @res bool)))))
+           (146 152 (((pair (list @noop operation) (option @res bool)))) ((@x (list operation)) (@y (option bool))))
+           (160 164 ((@x (list operation)) (@y (option bool))) (((pair (list %a @x operation) (option %b @y bool)))))
+           ))
+ (errors . (
+            )))

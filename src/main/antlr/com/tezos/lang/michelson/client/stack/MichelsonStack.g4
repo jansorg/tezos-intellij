@@ -2,7 +2,7 @@
 grammar MichelsonStack;
 all: '(' types errors ')' EOF ;
 types: '(' 'types' '.' '(' stackTransformation* ')' ')' ;
-errors: '(' 'errors' '.' error* ')' ;
+errors: '(' 'errors' '.' '(' error* ')' ')' ;
 
 stackTransformation: '(' startOffset=OFFSET endOffset=OFFSET stackBefore=stack stackAfter=stack ')';
 stack: '(' frames=stackFrame* ')';
@@ -13,11 +13,12 @@ simpleType: typename=TYPE annotations=ANNOTATION* ;
 nestedType:   '(' typename=TYPE annotations=ANNOTATION* arguments=type* annotations=ANNOTATION* ')'
             | annotations=ANNOTATION+ arguments=type ;
 
-error: '(' ')';
+error: '(' startOffset=OFFSET endOffset=OFFSET message=STRING ')';
 
 OFFSET: [0-9]+ ;
 ANNOTATION: [%@:]([@%] |'%%' | [_a-zA-Z][_0-9a-zA-Z.]*)? ;
 TYPE: [a-z_]+ ;
 LEFT_PAR: '(';
 RIGHT_PAR: ')';
+STRING : '"' ( '\\"' | . )*? '"' ;
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

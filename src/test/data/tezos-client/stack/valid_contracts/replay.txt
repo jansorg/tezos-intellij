@@ -1,0 +1,25 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((37 163 (((pair (unit @parameter) (unit @storage)))) (((pair (list operation) (unit @storage)))))
+           (39 42 (((pair (unit @parameter) (unit @storage)))) ((@storage unit)))
+           (45 58 ((@storage unit)) (((list operation)) (@storage unit)))
+           (68 72 (((list operation)) (@storage unit)) ((@self (contract unit)) ((list operation)) (@storage unit)))
+           (75 87 ((@self (contract unit)) ((list operation)) (@storage unit)) ((mutez) (@self (contract unit)) ((list operation)) (@storage unit)))
+           (90 94 ((mutez) (@self (contract unit)) ((list operation)) (@storage unit)) ((unit) (mutez) (@self (contract unit)) ((list operation)) (@storage unit)))
+           (97 112 ((unit) (mutez) (@self (contract unit)) ((list operation)) (@storage unit)) ((operation) ((list operation)) (@storage unit)))
+           (122 125 ((operation) ((list operation)) (@storage unit)) ((operation) (operation) ((list operation)) (@storage unit)))
+           (128 140 ((operation) (operation) ((list operation)) (@storage unit)) ((operation) ((list operation)) (@storage unit)))
+           (132 140 ((operation) ((list operation)) (@storage unit)) (((list operation)) (@storage unit)))
+           (134 138 ((operation) ((list operation)) (@storage unit)) (((list operation)) (@storage unit)))
+           (143 147 ((operation) ((list operation)) (@storage unit)) (((list operation)) (@storage unit)))
+           (157 161 (((list operation)) (@storage unit)) (((pair (list operation) (unit @storage)))))
+           ))
+ (errors . (
+            )))

@@ -1,0 +1,8 @@
+parameter unit;
+storage unit;
+code {
+       PUSH int 123;
+       CDR;
+       NIL operation;
+       PAIR;
+     }
