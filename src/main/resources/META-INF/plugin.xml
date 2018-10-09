@@ -86,6 +86,9 @@
         <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.structureView.MichelsonStructureViewFactory"/>
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
 
+        <!-- settings -->
+        <applicationConfigurable id="tezos.configurable" groupId="language" displayName="Tezos" provider="com.tezos.intellij.settings.TezosConfigurableProvider"/>
+
         <!-- live templates -->
         <defaultLiveTemplatesProvider implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonLiveTemplatesProvider"/>
         <liveTemplateContext implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonContext"/>
