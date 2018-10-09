@@ -1,6 +1,0 @@
-(
- (types . (
-    (35 154 (int) (string))
- )
- (errors . ())
-)

@@ -1,0 +1,35 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((53 432 (((pair (unit @parameter) (list @storage (contract unit))))) (((pair (list operation) (list @storage (contract unit))))))
+           (55 58 (((pair (unit @parameter) (list @storage (contract unit))))) ((@storage (list (contract unit)))))
+           (60 63 ((@storage (list (contract unit)))) ((@storage (list (contract unit))) (@storage (list (contract unit)))))
+           (72 91 ((@storage (list (contract unit))) (@storage (list (contract unit)))) ((@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (76 91 ((@storage (list (contract unit)))) (((list operation)) (@storage (list (contract unit)))))
+           (77 90 ((@storage (list (contract unit)))) (((list operation)) (@storage (list (contract unit)))))
+           (93 107 ((@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((bool) (@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (133 375 ((bool) (@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (138 375 ((@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((bool) ((list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (147 264 ((@storage.hd (contract unit)) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((bool) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (149 167 ((@storage.hd (contract unit)) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((mutez) (@storage.hd (contract unit)) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (169 173 ((mutez) (@storage.hd (contract unit)) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((unit) (mutez) (@storage.hd (contract unit)) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (175 190 ((unit) (mutez) (@storage.hd (contract unit)) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((operation) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (231 235 ((operation) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((@storage.tl (list (contract unit))) (operation) ((list operation)) (@storage (list (contract unit)))))
+           (237 247 ((@storage.tl (list (contract unit))) (operation) ((list operation)) (@storage (list (contract unit)))) ((@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (241 247 ((operation) ((list operation)) (@storage (list (contract unit)))) (((list operation)) (@storage (list (contract unit)))))
+           (242 246 ((operation) ((list operation)) (@storage (list (contract unit)))) (((list operation)) (@storage (list (contract unit)))))
+           (249 263 ((@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((bool) (@storage.tl (list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (335 374 (((list operation)) (@storage (list (contract unit)))) ((bool) ((list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (337 355 (((list operation)) (@storage (list (contract unit)))) (((list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (358 373 (((list (contract unit))) ((list operation)) (@storage (list (contract unit)))) ((bool) ((list (contract unit))) ((list operation)) (@storage (list (contract unit)))))
+           (421 425 ((@storage (list (contract unit))) ((list operation)) (@storage (list (contract unit)))) (((list operation)) (@storage (list (contract unit)))))
+           (427 431 (((list operation)) (@storage (list (contract unit)))) (((pair (list operation) (list @storage (contract unit))))))
+           ))
+ (errors . (
+            )))

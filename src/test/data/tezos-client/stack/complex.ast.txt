@@ -131,12 +131,16 @@ all
       stack
         stackFrame
           type
-            simpleType
+            nestedType
+              type
+                simpleType
     stackTransformation
       stack
         stackFrame
           type
-            simpleType
+            nestedType
+              type
+                simpleType
       stack
         stackFrame
           type
@@ -145,7 +149,9 @@ all
                 simpleType
         stackFrame
           type
-            simpleType
+            nestedType
+              type
+                simpleType
     stackTransformation
       stack
         stackFrame
@@ -155,7 +161,9 @@ all
                 simpleType
         stackFrame
           type
-            simpleType
+            nestedType
+              type
+                simpleType
       stack
         stackFrame
           type
@@ -167,3 +175,4 @@ all
               type
                 nestedType
   errors
+    error

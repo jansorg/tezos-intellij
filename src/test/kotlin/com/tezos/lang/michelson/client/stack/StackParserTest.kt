@@ -1,13 +1,13 @@
 package com.tezos.lang.michelson.client.stack
 
 import com.tezos.lang.michelson.MichelsonTestUtils
-import org.antlr.v4.runtime.ANTLRInputStream
-import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import java.lang.IllegalStateException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -35,16 +35,24 @@ class StackParserTest(val file: String) {
     @Test
     fun testParsing() {
         val filePath = dataRootPath.resolve(file)
+        val fixedContent = fixTezosClientStdout(Files.readAllBytes(filePath).toString(StandardCharsets.UTF_8))
+        val input = ANTLRInputStream(fixedContent)
 
-        val input = ANTLRInputStream(Files.readAllBytes(filePath).toString(StandardCharsets.UTF_8))
         val lexer = MichelsonStackLexer(input)
         val tokens = CommonTokenStream(lexer)
 
         val parser = MichelsonStackParser(tokens)
         parser.removeErrorListeners()
+        parser.addErrorListener(object:BaseErrorListener(){
+            override fun syntaxError(recognizer: Recognizer<*, *>?, offendingSymbol: Any?, line: Int, charPositionInLine: Int, msg: String?, e: RecognitionException?) {
+                throw IllegalStateException("$file:$line:$charPositionInLine. Lexing failed: $msg")
+            }
+        })
 
         val stackInfo = parser.all()
-        assertNull(stackInfo.exception)
+        if (stackInfo.exception != null) {
+            assertNull(AntlrAstPrinter.astToString(stackInfo), stackInfo.exception)
+        }
 
         val astFile = filePath.resolveSibling(filePath.fileName.toString().replace(".txt", ".ast.txt"))
         val stack = AntlrAstPrinter.astToString(stackInfo)
@@ -54,6 +62,14 @@ class StackParserTest(val file: String) {
         } else {
             val expectedStack = if (Files.exists(astFile)) Files.readAllBytes(astFile).toString(StandardCharsets.UTF_8) else ""
             assertEquals(expectedStack, stack)
+        }
+    }
+
+    private fun fixTezosClientStdout(content: String): String {
+        val index = content.indexOf("((types")
+        return when (index > 0) {
+            true -> content.substring(index)
+            false -> content
         }
     }
 }

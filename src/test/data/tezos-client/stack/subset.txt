@@ -1,0 +1,41 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((63 473 (((pair (pair @parameter (set string) (set string)) (bool @storage)))) (((pair (list operation) bool))))
+           (65 68 (((pair (pair @parameter (set string) (set string)) (bool @storage)))) ((@parameter (pair (set string) (set string)))))
+           (70 73 ((@parameter (pair (set string) (set string)))) ((@parameter (pair (set string) (set string))) (@parameter (pair (set string) (set string)))))
+           (75 78 ((@parameter (pair (set string) (set string))) (@parameter (pair (set string) (set string)))) (((set string)) (@parameter (pair (set string) (set string)))))
+           (80 88 (((set string)) (@parameter (pair (set string) (set string)))) (((set string)) ((set string))))
+           (83 88 ((@parameter (pair (set string) (set string)))) (((set string))))
+           (84 87 ((@parameter (pair (set string) (set string)))) (((set string))))
+           (112 126 (((set string)) ((set string))) ((bool) ((set string)) ((set string))))
+           (135 139 ((bool) ((set string)) ((set string))) (((pair bool (set string))) ((set string))))
+           (141 145 (((pair bool (set string))) ((set string))) (((set string)) ((pair bool (set string)))))
+           (187 384 (((set string)) ((pair bool (set string)))) (((pair bool (set string)))))
+           (192 384 ((@elt string) ((pair bool (set string)))) (((pair bool (set string)))))
+           (194 252 ((@elt string) ((pair bool (set string)))) ((@elt string) ((set string)) (bool) ((set string))))
+           (197 252 (((pair bool (set string)))) (((set string)) (bool) ((set string))))
+           (199 202 (((pair bool (set string)))) (((pair bool (set string))) ((pair bool (set string)))))
+           (204 207 (((pair bool (set string))) ((pair bool (set string)))) (((pair bool (set string))) ((pair bool (set string))) ((pair bool (set string)))))
+           (209 212 (((pair bool (set string))) ((pair bool (set string))) ((pair bool (set string)))) (((set string)) ((pair bool (set string))) ((pair bool (set string)))))
+           (233 251 (((set string)) ((pair bool (set string))) ((pair bool (set string)))) (((set string)) (bool) ((set string))))
+           (236 251 (((pair bool (set string))) ((pair bool (set string)))) ((bool) ((set string))))
+           (237 240 (((pair bool (set string))) ((pair bool (set string)))) ((bool) ((pair bool (set string)))))
+           (242 250 ((bool) ((pair bool (set string)))) ((bool) ((set string))))
+           (245 250 (((pair bool (set string)))) (((set string))))
+           (246 249 (((pair bool (set string)))) (((set string))))
+           (268 271 ((@elt string) ((set string)) (bool) ((set string))) ((bool) (bool) ((set string))))
+           (317 320 ((bool) (bool) ((set string))) ((bool) ((set string))))
+           (379 383 ((bool) ((set string))) (((pair bool (set string)))))
+           (393 396 (((pair bool (set string)))) ((bool)))
+           (453 466 ((bool)) (((list operation)) (bool)))
+           (468 472 (((list operation)) (bool)) (((pair (list operation) bool))))
+           ))
+ (errors . (
+            )))

@@ -1,0 +1,54 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((89 354 (((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))) (((pair (list operation) (pair (pair key nat) string)))))
+           (91 94 (((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))) (((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string))) ((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))))
+           (96 99 (((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string))) ((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))) ((@parameter (pair signature (pair string nat))) ((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))))
+           (101 114 ((@parameter (pair signature (pair string nat))) ((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))) ((@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string)) (@storage (pair (pair key nat) string))))
+           (104 114 (((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))) ((@storage (pair (pair key nat) string)) (@storage (pair (pair key nat) string))))
+           (105 108 (((pair (pair @parameter signature (pair string nat)) (pair @storage (pair key nat) string)))) ((@storage (pair (pair key nat) string))))
+           (110 113 ((@storage (pair (pair key nat) string))) ((@storage (pair (pair key nat) string)) (@storage (pair (pair key nat) string))))
+           (123 127 ((@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string)) (@storage (pair (pair key nat) string))) ((@storage (pair (pair key nat) string)) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (129 137 ((@storage (pair (pair key nat) string)) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((@storage (pair (pair key nat) string)) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (132 137 ((@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (133 136 ((@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (139 143 ((@storage (pair (pair key nat) string)) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((key) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (145 184 ((key) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((key) (signature) (bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (148 184 ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((signature) (bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (149 152 ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (154 157 ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((signature) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (159 183 ((signature) (@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((signature) (bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (162 183 ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (163 166 ((@parameter (pair signature (pair string nat))) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) (((pair string nat)) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (168 172 (((pair string nat)) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((@packed bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (175 182 ((@packed bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (193 208 ((key) (signature) (bytes) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) ((bool) (@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))))
+           (220 336 ((@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) (((pair (list operation) (pair (pair key nat) string)))))
+           (222 225 ((@parameter (pair signature (pair string nat))) (@storage (pair (pair key nat) string))) (((pair string nat)) (@storage (pair (pair key nat) string))))
+           (227 230 (((pair string nat)) (@storage (pair (pair key nat) string))) (((pair string nat)) ((pair string nat)) (@storage (pair (pair key nat) string))))
+           (232 251 (((pair string nat)) ((pair string nat)) (@storage (pair (pair key nat) string))) (((pair string nat)) (string) (key)))
+           (235 251 (((pair string nat)) (@storage (pair (pair key nat) string))) ((string) (key)))
+           (236 239 (((pair string nat)) (@storage (pair (pair key nat) string))) ((string) (@storage (pair (pair key nat) string))))
+           (241 250 ((string) (@storage (pair (pair key nat) string))) ((string) (key)))
+           (244 250 ((@storage (pair (pair key nat) string))) ((key)))
+           (245 249 ((@storage (pair (pair key nat) string))) ((key)))
+           (253 256 (((pair string nat)) (string) (key)) ((nat) (string) (key)))
+           (258 268 ((nat) (string) (key)) ((nat) (nat) (string) (key)))
+           (270 273 ((nat) (nat) (string) (key)) ((nat) (string) (key)))
+           (287 296 ((nat) (string) (key)) ((nat) (key) (string)))
+           (290 296 ((string) (key)) ((key) (string)))
+           (291 295 ((string) (key)) ((key) (string)))
+           (298 302 ((nat) (key) (string)) ((key) (nat) (string)))
+           (304 308 ((key) (nat) (string)) (((pair key nat)) (string)))
+           (310 314 (((pair key nat)) (string)) (((pair (pair key nat) string))))
+           (316 329 (((pair (pair key nat) string))) (((list operation)) ((pair (pair key nat) string))))
+           (331 335 (((list operation)) ((pair (pair key nat) string))) (((pair (list operation) (pair (pair key nat) string)))))
+           ))
+ (errors . (
+            )))

@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="StackParserTest w/ UPDATE" type="JUnit" factoryName="JUnit">
+    <module name="tezos-intellij-plugin" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.tezos.lang.michelson.client.stack.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.client.stack" />
+    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.client.stack.StackParserTest" />
+    <option name="METHOD_NAME" value="" />
+    <option name="PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+    <envs>
+      <env name="UPDATE_MICHELSON_DATA" value="true" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

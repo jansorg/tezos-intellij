@@ -1,6 +1,0 @@
-all
-  types
-    stackTransformation
-      stack
-      stack
-  errors

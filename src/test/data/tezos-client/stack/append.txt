@@ -1,0 +1,25 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((65 263 (((pair (pair @parameter (list int) (list int)) (list @storage int)))) (((pair (list operation) (list int)))))
+           (67 70 (((pair (pair @parameter (list int) (list int)) (list @storage int)))) ((@parameter (pair (list int) (list int)))))
+           (72 78 ((@parameter (pair (list int) (list int)))) (((list int)) ((list int))))
+           (104 111 (((list int)) ((list int))) (((list int)) ((list int)) ((list int))))
+           (113 117 (((list int)) ((list int)) ((list int))) (((list int)) ((list int)) ((list int))))
+           (154 165 (((list int)) ((list int)) ((list int))) (((list int)) ((list int))))
+           (159 165 ((@elt int) ((list int)) ((list int))) (((list int)) ((list int))))
+           (160 164 ((@elt int) ((list int)) ((list int))) (((list int)) ((list int))))
+           (191 202 (((list int)) ((list int))) (((list int))))
+           (196 202 ((@elt int) ((list int))) (((list int))))
+           (197 201 ((@elt int) ((list int))) (((list int))))
+           (236 249 (((list int))) (((list operation)) ((list int))))
+           (258 262 (((list operation)) ((list int))) (((pair (list operation) (list int)))))
+           ))
+ (errors . (
+            )))
