@@ -1,4 +1,4 @@
-package com.tezos.intellij.settings
+package com.tezos.intellij.settings.ui
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurableProvider

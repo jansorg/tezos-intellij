@@ -87,7 +87,8 @@
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
 
         <!-- settings -->
-        <applicationConfigurable id="tezos.configurable" groupId="language" displayName="Tezos" provider="com.tezos.intellij.settings.TezosConfigurableProvider"/>
+        <applicationConfigurable groupId="language" provider="com.tezos.intellij.settings.ui.TezosConfigurableProvider"/>
+        <applicationService id="tezos.settings" serviceImplementation="com.tezos.intellij.settings.TezosSettingService"/>
 
         <!-- live templates -->
         <defaultLiveTemplatesProvider implementation="com.tezos.lang.michelson.editor.liveTemplate.MichelsonLiveTemplatesProvider"/>
