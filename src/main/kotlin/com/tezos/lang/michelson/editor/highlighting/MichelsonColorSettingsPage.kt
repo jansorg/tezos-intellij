@@ -5,7 +5,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
-import com.tezos.lang.michelson.ui.Icons
+import com.tezos.intellij.ui.Icons
 import javax.swing.Icon
 
 /**

@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.ui
+package com.tezos.intellij.ui
 
 import com.intellij.openapi.util.IconLoader
 

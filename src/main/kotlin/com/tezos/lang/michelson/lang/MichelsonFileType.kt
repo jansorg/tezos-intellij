@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.lang
 
 import com.intellij.openapi.fileTypes.LanguageFileType
-import com.tezos.lang.michelson.ui.Icons
+import com.tezos.intellij.ui.Icons
 import javax.swing.Icon
 
 /**

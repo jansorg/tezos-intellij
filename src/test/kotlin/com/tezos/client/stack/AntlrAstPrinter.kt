@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.client.stack
+package com.tezos.client.stack
 
 import org.antlr.v4.runtime.RuleContext
 import java.io.StringWriter

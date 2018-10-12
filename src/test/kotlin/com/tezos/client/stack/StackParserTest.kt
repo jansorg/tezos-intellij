@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.client.stack
+package com.tezos.client.stack
 
 import com.tezos.lang.michelson.MichelsonTestUtils
 import org.antlr.v4.runtime.*

@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.client
+package com.tezos.client.client
 
 import java.nio.file.Path
 

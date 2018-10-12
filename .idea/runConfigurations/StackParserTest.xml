@@ -3,12 +3,12 @@
     <module name="tezos-intellij-plugin" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.tezos.lang.michelson.client.stack.*" />
+        <option name="PATTERN" value="com.tezos.client.stack.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="com.tezos.lang.michelson.client.stack" />
-    <option name="MAIN_CLASS_NAME" value="com.tezos.lang.michelson.client.stack.StackParserTest" />
+    <option name="PACKAGE_NAME" value="com.tezos.client.stack" />
+    <option name="MAIN_CLASS_NAME" value="com.tezos.client.stack.StackParserTest" />
     <option name="METHOD_NAME" value="" />
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
