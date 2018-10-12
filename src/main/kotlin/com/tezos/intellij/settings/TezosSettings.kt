@@ -15,6 +15,10 @@ class TezosSettings {
         clients.addAll(values)
     }
 
+    fun getDefaultClient(): TezosClientConfig? {
+        return clients.first { it.isDefault }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -32,5 +36,11 @@ class TezosSettings {
 
     override fun toString(): String {
         return "TezosSettings(clients=$clients)"
+    }
+
+    fun copy(): TezosSettings {
+        val v = TezosSettings()
+        v.setClients(clients.map { TezosClientConfig().applyFrom(it) })
+        return v
     }
 }

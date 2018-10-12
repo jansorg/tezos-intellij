@@ -16,6 +16,7 @@ class TezosConfigurable() : Configurable, SearchableConfigurable {
     override fun getDisplayName(): String = "Tezos"
 
     override fun createComponent(): JComponent? {
+        settingsForm.init()
         return settingsForm.mainPanel
     }
 
@@ -24,14 +25,14 @@ class TezosConfigurable() : Configurable, SearchableConfigurable {
     }
 
     override fun reset() {
-        settingsForm.resetTo(TezosSettingService.getSettings())
+        settingsForm.resetTo(TezosSettingService.getSettings().copy())
     }
 
     override fun isModified(): Boolean {
         val current = TezosSettings()
         settingsForm.applyTo(current)
 
-        return !TezosSettingService.getSettings().equals(current)
+        return current != TezosSettingService.getSettings()
     }
 
     override fun getHelpTopic(): String? = null
@@ -39,6 +40,5 @@ class TezosConfigurable() : Configurable, SearchableConfigurable {
     override fun enableSearch(option: String?): Runnable? = null
 
     override fun disposeUIResources() {
-
     }
 }
