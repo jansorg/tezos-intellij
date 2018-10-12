@@ -104,6 +104,9 @@
         <!-- code completion -->
         <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonCompletionContributor" />
 
+        <!-- stack visualization -->
+        <fileEditorProvider implementation="com.tezos.lang.michelson.editor.stack.StackAwareEditorProvider" />
+
         <!-- inspections -->
 
         <!-- intentions -->
