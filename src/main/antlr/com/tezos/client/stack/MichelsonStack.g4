@@ -4,14 +4,14 @@ all: '(' types errors ')' EOF ;
 types: '(' 'types' '.' '(' stackTransformation* ')' ')' ;
 errors: '(' 'errors' '.' '(' error* ')' ')' ;
 
-stackTransformation: '(' startOffset=OFFSET endOffset=OFFSET stackBefore=stack stackAfter=stack ')';
-stack: '(' frames=stackFrame* ')';
+stackTransformation: '(' instructionStart=OFFSET instructionEnd=OFFSET stackBefore=stack stackAfter=stack ')';
+stack: '(' stackFrame* ')';
 stackFrame: '(' type ')';
 
 type: simpleType | nestedType ;
-simpleType: typename=TYPE annotations=ANNOTATION* ;
-nestedType:   '(' typename=TYPE annotations=ANNOTATION* arguments=type* annotations=ANNOTATION* ')'
-            | annotations=ANNOTATION+ arguments=type ;
+simpleType: typename=TYPE ANNOTATION* ;
+nestedType:   '(' typename=TYPE ANNOTATION* type* ANNOTATION* ')'
+            | ANNOTATION+ type ;
 
 error: '(' startOffset=OFFSET endOffset=OFFSET message=STRING ')';
 

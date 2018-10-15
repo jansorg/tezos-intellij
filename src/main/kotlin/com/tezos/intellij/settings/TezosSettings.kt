@@ -10,6 +10,9 @@ class TezosSettings {
     @Tag("clients")
     val clients = mutableListOf<TezosClientConfig>()
 
+    var showStackVisualization = true
+    var showStackSplitHorizontal = true
+
     fun setClients(values: List<TezosClientConfig>) {
         clients.clear()
         clients.addAll(values)

@@ -18,6 +18,11 @@ class TezosClientConfig {
     @NotNull
     var isDefault: Boolean = false
 
+    val isScriptClient: Boolean
+        get() {
+            return executablePath.endsWith(".sh") || executablePath.contains("alphanet")
+        }
+
     fun applyFrom(c: TezosClientConfig): TezosClientConfig {
         this.name = c.name
         this.executablePath = c.executablePath

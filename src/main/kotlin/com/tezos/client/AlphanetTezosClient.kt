@@ -1,4 +1,4 @@
-package com.tezos.client.client
+package com.tezos.client
 
 import java.nio.file.Path
 
