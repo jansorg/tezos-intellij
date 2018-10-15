@@ -1,5 +1,6 @@
 package com.tezos.client
 
+import com.intellij.openapi.diagnostic.Logger
 import com.tezos.client.stack.*
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
@@ -31,8 +32,12 @@ private fun MichelsonStackParser.TypeContext.transform(): MichelsonStackType {
 }
 
 open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
-    override fun typecheck(file: Path): MichelsonStackTransformations? {
-        val clientStdout = typecheckOutput(file) ?: return null
+    companion object {
+        val LOG = Logger.getInstance("#tezos.client")
+    }
+
+    override fun typecheck(content: String): MichelsonStackTransformations? {
+        val clientStdout = typecheckOutput(content) ?: return null
 
         val fixedContent = MichelsonStackUtils.fixTezosClientStdout(clientStdout)
         val input = ANTLRInputStream(fixedContent)
@@ -42,13 +47,19 @@ open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
 
         val parser = MichelsonStackParser(tokens)
 
-        val list = parser.all().types().stackTransformation().map { c ->
+        val all = parser.all()
+        val list = all.types().stackTransformation().map { c ->
             MichelsonStackTransformation(c.instructionStart.text.toInt(), c.instructionEnd.text.toInt(),
                     MichelsonStack(c.stack(0)!!.stackFrame().map { it.transform() }),
                     MichelsonStack(c.stack(1)!!.stackFrame().map { it.transform() }))
         }
 
-        return MichelsonStackTransformations(list)
+
+        val errors = all.errors().error().map {
+            MichelsonStackError(it.startOffset.text.toInt(), it.endOffset.text.toInt(), it.message.text)
+        }
+
+        return MichelsonStackTransformations(list, errors)
     }
 
     protected open fun filename(file: Path): String {
@@ -59,25 +70,29 @@ open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
         return args.toList()
     }
 
-    override fun typecheckOutput(file: Path): String? {
-        val tmpFile = Files.createTempFile("tezos-client", ".txt")
+    override fun typecheckOutput(content: String): String? {
+        val inFile = Files.createTempFile("tezos-intellij-", ".tz")
+        val outFile = Files.createTempFile("tezos-intellij-", ".txt")
+
         try {
+            Files.write(inFile, content.toByteArray(StandardCharsets.UTF_8))
+
+            val escaped = content
             val builder = ProcessBuilder()
-                    .command(listOf(executable.toAbsolutePath().toString()) + clientCommandArgs("typecheck", "script", filename(file), "--emacs", "-v"))
-                    .redirectOutput(tmpFile.toFile())
+                    .command(listOf(executable.toAbsolutePath().toString()) + clientCommandArgs("typecheck", "script", "text:$escaped", "--emacs", "-v"))
+                    .redirectOutput(outFile.toFile())
+
+            LOG.warn("Running client: ${builder.command()}")
 
             val p = builder.start()
-            p.waitFor(2, TimeUnit.SECONDS)
+            p.waitFor()
             return when {
-                p.exitValue() == 0 -> Files.readAllBytes(tmpFile).toString(StandardCharsets.UTF_8)
+                p.exitValue() == 0 -> Files.readAllBytes(outFile).toString(StandardCharsets.UTF_8)
                 else -> null
             }
         } finally {
-            try {
-                Files.deleteIfExists(tmpFile)
-            } catch (e: Exception) {
-                //ignored
-            }
+            Files.deleteIfExists(inFile)
+            Files.deleteIfExists(outFile)
         }
     }
 }

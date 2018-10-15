@@ -14,7 +14,7 @@ interface TezosClient {
     /**
      * Calls the typechecking functionality using the Emacs output mode.
      */
-    fun typecheckOutput(file: Path): String?
+    fun typecheckOutput(content: String): String?
 
-    fun typecheck(file: Path): MichelsonStackTransformations?
+    fun typecheck(content: String): MichelsonStackTransformations?
 }

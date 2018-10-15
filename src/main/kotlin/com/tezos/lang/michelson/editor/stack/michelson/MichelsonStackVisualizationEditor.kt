@@ -16,20 +16,18 @@ import com.intellij.util.ui.UIUtil
 import com.tezos.client.AlphanetTezosClient
 import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.intellij.settings.TezosSettingService
 import java.awt.BorderLayout
-import java.awt.Color
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.beans.PropertyChangeListener
 import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.border.LineBorder
 
 class MichelsonStackVisualizationEditor(private val project: Project, private val file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private lateinit var rootComponent: JPanel
-    private var toplevelComponent: JPanel? = null
 
     override fun isModified(): Boolean = false
 
@@ -75,18 +73,32 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
     override fun dispose() {
     }
 
-    fun updateStack(offset: Int) {
-        if (toplevelComponent != null) {
-            rootComponent.remove(toplevelComponent)
+    fun updateStack(content: String, offset: Int) {
+        rootComponent.removeAll()
+
+        val clientConfig = TezosSettingService.getSettings().getDefaultClient()
+        if (clientConfig == null) {
+            rootComponent.add(JBLabel("Please set a default Tezos client configured to see the stack visualization."))
+            return
         }
 
-        val clientConfig = TezosSettingService.getSettings().getDefaultClient() ?: return
         val client = when (clientConfig.isScriptClient) {
             true -> AlphanetTezosClient(Paths.get(clientConfig.executablePath))
             false -> StandaloneTezosClient(Paths.get(clientConfig.executablePath))
         }
 
-        val result = client.typecheck(VfsUtilCore.virtualToIoFile(file).toPath()) ?: return
+        //fixme push into background
+        val result = client.typecheck(content)
+        if (result == null) {
+            rootComponent.add(JBLabel("Error while executing default Tezos client."))
+            return
+        }
+
+        if (result.hasErrors) {
+            rootComponent.add(JBLabel("Errors found"))
+            return
+        }
+
         val matching = result.elementAt(offset) ?: return
         val maxStackSize = Math.max(matching.before.size, matching.after.size)
 
@@ -98,7 +110,7 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
         c.gridheight = 1
         c.gridwidth = 1
         c.weightx = 0.5
-        c.insets = JBInsets(4, 4, 4, 4)
+        c.insets = JBInsets(5, 5, 5, 5)
 
         c.gridx = 0
         c.gridy = 0
@@ -121,8 +133,8 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
         c.weighty = 1.0
         top.add(JPanel(), c)
 
-        toplevelComponent = top
         rootComponent.add(top, BorderLayout.CENTER)
+        rootComponent.updateUI()
     }
 
     private fun heading(title: String): JComponent {
@@ -131,10 +143,27 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
 
     private fun addStackTo(stack: MichelsonStack, c: GridBagConstraints, parent: JComponent) {
         for (f in stack.frames) {
-            val label = JBLabel(f.type.name + f.type.annotations.map { it.value }.joinToString(" "))
-            //label.border = LineBorder(Color.blue, 1)
+            val html = typeToString(f.type)
+            val label = JBLabel("<html>$html</html>")
             parent.add(label, c)
             c.gridy++
         }
+    }
+
+    private fun typeToString(type: MichelsonStackType, wrap: Boolean = false): String {
+        if (type.arguments.isEmpty()) {
+            return type.name
+        }
+
+        var s = if (wrap) "(" else ""
+
+        s += type.name
+        for (a in type.arguments) {
+            s += " " + typeToString(a, true)
+        }
+
+        s += if (wrap) ")" else ""
+
+        return s
     }
 }
