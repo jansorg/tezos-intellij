@@ -51,17 +51,17 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
     @Volatile
     private var stack: StackInfo? = null
 
-    override fun isModified(): Boolean = false
-
-    override fun getState(level: FileEditorStateLevel): FileEditorState {
-        return FileEditorState.INSTANCE
-    }
-
     override fun getName(): String {
         return "Michelson Stack Visualization"
     }
 
     override fun isValid(): Boolean = file.isValid
+
+    override fun isModified(): Boolean = false
+
+    override fun getState(level: FileEditorStateLevel): FileEditorState {
+        return FileEditorState.INSTANCE
+    }
 
     override fun setState(state: FileEditorState) {
     }
@@ -127,8 +127,6 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
         }
 
         val matching = stackInfo.elementAt(offset) ?: return
-        val maxStackSize = Math.max(matching.before.size, matching.after.size)
-
         val top = JPanel(GridBagLayout())
 
         val c = GridBagConstraints()
@@ -148,11 +146,11 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
         top.add(heading("After"), c)
 
         c.gridx = 0
-        c.gridy = 1 + maxStackSize - matching.before.size
+        c.gridy = 1
         addStackTo(matching.before, c, top)
 
         c.gridx = 1
-        c.gridy = 1 + maxStackSize - matching.after.size
+        c.gridy = 1
         addStackTo(matching.after, c, top)
 
         // add spacer in last row
