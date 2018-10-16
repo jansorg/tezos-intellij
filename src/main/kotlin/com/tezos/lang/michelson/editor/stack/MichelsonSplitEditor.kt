@@ -14,16 +14,15 @@ import javax.swing.JComponent
  * @author jansorg
  */
 class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor) : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>(mainEditor, stackEditor) {
-    companion object {
+    private companion object {
         val LOG = Logger.getInstance("#tezos.client")
     }
 
-    override fun getName(): String = "michelson.splitEditor"
-
+    private val alarm = Alarm(this)
     @Volatile
     private var caretListener: CaretListener? = null
 
-    private val alarm = Alarm(this)
+    override fun getName(): String = "michelson.splitEditor"
 
     override fun getComponent(): JComponent {
         if (caretListener == null) {
@@ -32,7 +31,6 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
                     // debounce
                     alarm.cancelAllRequests()
                     alarm.addRequest({
-                        //fixme handle content not yet saved to disk
                         LOG.warn("Updating stack info for offset ${e.caret?.offset}...")
                         e.caret?.offset?.let {
                             try {

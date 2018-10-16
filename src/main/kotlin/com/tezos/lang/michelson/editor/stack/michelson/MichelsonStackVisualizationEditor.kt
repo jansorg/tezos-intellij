@@ -2,22 +2,22 @@ package com.tezos.lang.michelson.editor.stack.michelson
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
 import com.intellij.ide.structureView.StructureViewBuilder
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBInsets
 import com.intellij.util.ui.UIUtil
-import com.tezos.client.AlphanetTezosClient
 import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackTransformations
 import com.tezos.client.stack.MichelsonStackType
 import com.tezos.intellij.settings.TezosSettingService
+import org.apache.commons.codec.digest.DigestUtils
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -26,8 +26,30 @@ import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class MichelsonStackVisualizationEditor(private val project: Project, private val file: VirtualFile) : UserDataHolderBase(), FileEditor {
+data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
+    fun matches(content: String): Boolean {
+        return contentMD5.equals(md5(content))
+    }
+
+    companion object {
+        private fun md5(content: String): String {
+            return DigestUtils.md5Hex(content)
+        }
+
+        fun createFromContent(content: String, stack: MichelsonStackTransformations): StackInfo {
+            return StackInfo(md5(content), stack)
+        }
+    }
+}
+
+class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor {
+    private companion object {
+        val LOG = Logger.getInstance("#tezos.stack")
+    }
+
     private lateinit var rootComponent: JPanel
+    @Volatile
+    private var stack: StackInfo? = null
 
     override fun isModified(): Boolean = false
 
@@ -43,7 +65,6 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
 
     override fun setState(state: FileEditorState) {
     }
-
 
     override fun getComponent(): JComponent {
         rootComponent = JPanel(BorderLayout())
@@ -76,30 +97,36 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
     fun updateStack(content: String, offset: Int) {
         rootComponent.removeAll()
 
-        val clientConfig = TezosSettingService.getSettings().getDefaultClient()
-        if (clientConfig == null) {
-            rootComponent.add(JBLabel("Please set a default Tezos client configured to see the stack visualization."))
+        val cached = stack
+        val stackInfo = when (cached?.matches(content)) {
+            true -> cached.stack
+            else -> {
+                val clientConfig = TezosSettingService.getSettings().getDefaultClient()
+                if (clientConfig == null) {
+                    showError("Please set a default Tezos client configured to see the stack visualization.")
+                    return
+                }
+
+                //fixme push into background
+                val client = StandaloneTezosClient(Paths.get(clientConfig.executablePath))
+                try {
+                    val result = client.typecheck(content)
+                    stack = StackInfo.createFromContent(content, result)
+                    result
+                } catch (e: Exception) {
+                    LOG.warn("Error executing Tezos client", e)
+                    showError("Error while executing default Tezos client.")
+                    return
+                }
+            }
+        }
+
+        if (stackInfo.hasErrors) {
+            showError("Errors found")
             return
         }
 
-        val client = when (clientConfig.isScriptClient) {
-            true -> AlphanetTezosClient(Paths.get(clientConfig.executablePath))
-            false -> StandaloneTezosClient(Paths.get(clientConfig.executablePath))
-        }
-
-        //fixme push into background
-        val result = client.typecheck(content)
-        if (result == null) {
-            rootComponent.add(JBLabel("Error while executing default Tezos client."))
-            return
-        }
-
-        if (result.hasErrors) {
-            rootComponent.add(JBLabel("Errors found"))
-            return
-        }
-
-        val matching = result.elementAt(offset) ?: return
+        val matching = stackInfo.elementAt(offset) ?: return
         val maxStackSize = Math.max(matching.before.size, matching.after.size)
 
         val top = JPanel(GridBagLayout())
@@ -135,6 +162,10 @@ class MichelsonStackVisualizationEditor(private val project: Project, private va
 
         rootComponent.add(top, BorderLayout.CENTER)
         rootComponent.updateUI()
+    }
+
+    private fun showError(message: String) {
+        rootComponent.add(JBLabel(message))
     }
 
     private fun heading(title: String): JComponent {
