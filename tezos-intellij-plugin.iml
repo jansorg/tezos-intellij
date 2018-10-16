@@ -23,5 +23,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71" level="project" />
     <orderEntry type="library" name="org.antlr:antlr4-runtime:4.7.1" level="project" />
+    <orderEntry type="library" name="kotlinx-html-jvm-0.6.10" level="project" />
   </component>
 </module>

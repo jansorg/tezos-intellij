@@ -20,7 +20,23 @@ data class MichelsonStack(val frames: List<MichelsonStackFrame>) {
 
 data class MichelsonStackFrame(val type: MichelsonStackType)
 
-data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType>, val annotations: List<MichelsonStackAnnotation>)
+data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType>, val annotations: List<MichelsonStackAnnotation>) {
+    fun asString(showAnnotations: Boolean = false): String {
+        val wrap = arguments.size >= 1 && name.isNotEmpty()
+
+        val (prefix, suffix) = when (wrap) {
+            true -> arrayOf("(", ")")
+            false -> arrayOf("", "")
+        }
+
+        var out = prefix + name + " " + arguments.map { it.asString(showAnnotations) }.joinToString(" ")
+        if (showAnnotations) {
+            out += annotations.map { it.value }.joinToString(" ")
+        }
+
+        return out.trim() + suffix
+    }
+}
 
 data class MichelsonStackAnnotation(val value: String)
 

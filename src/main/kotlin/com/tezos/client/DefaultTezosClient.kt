@@ -47,6 +47,7 @@ open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
         val parser = MichelsonStackParser(tokens)
 
         val all = parser.all()
+        //fixme handle parser errors
         val list = all.types().stackTransformation().map { c ->
             MichelsonStackTransformation(c.instructionStart.text.toInt(), c.instructionEnd.text.toInt(),
                     MichelsonStack(c.stack(0)!!.stackFrame().map { it.transform() }),

@@ -1,6 +1,7 @@
 package com.tezos.lang.michelson.editor.stack.michelson
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
+import com.intellij.codeInsight.hint.HintUtil
 import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditor
@@ -10,20 +11,18 @@ import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBInsets
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
-import com.tezos.client.stack.MichelsonStack
-import com.tezos.client.stack.MichelsonStackTransformations
-import com.tezos.client.stack.MichelsonStackType
+import com.tezos.client.stack.*
 import com.tezos.intellij.settings.TezosSettingService
 import org.apache.commons.codec.digest.DigestUtils
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
 import java.beans.PropertyChangeListener
 import java.nio.file.Paths
 import javax.swing.JComponent
+import javax.swing.JEditorPane
 import javax.swing.JPanel
 
 data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
@@ -114,6 +113,8 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
                     stack = StackInfo.createFromContent(content, result)
                     result
                 } catch (e: Exception) {
+                    stack = null
+
                     LOG.warn("Error executing Tezos client", e)
                     showError("Error while executing default Tezos client.")
                     return
@@ -127,7 +128,25 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
         }
 
         val matching = stackInfo.elementAt(offset) ?: return
-        val top = JPanel(GridBagLayout())
+
+        val html = StackRendering().render(matching, RenderOptions())
+
+        val editorPane = JEditorPane(UIUtil.HTML_MIME, "")
+        editorPane.setEditable(false)
+
+        val kit = UIUtil.getHTMLEditorKit(true)
+        editorPane.editorKit = kit
+        editorPane.document = kit.createDefaultDocument()
+        editorPane.text = html
+        editorPane.background = HintUtil.INFORMATION_COLOR
+
+        // now add it all to a frame
+//        val j = JFrame("HtmlEditorKit Test")
+//        j.getContentPane().add(scrollPane, BorderLayout.CENTER)
+        val scrollPane = JBScrollPane(editorPane)
+        rootComponent.add(scrollPane)
+
+        /*val top = JPanel(GridBagLayout())
 
         val c = GridBagConstraints()
         c.fill = GridBagConstraints.VERTICAL
@@ -156,9 +175,9 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
         // add spacer in last row
         c.gridx = 0
         c.weighty = 1.0
-        top.add(JPanel(), c)
+        top.add(JPanel(), c)*/
 
-        rootComponent.add(top, BorderLayout.CENTER)
+        //rootComponent.add(top, BorderLayout.CENTER)
         rootComponent.updateUI()
     }
 

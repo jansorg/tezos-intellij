@@ -1,5 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.2.71'
+    ext.kotlinx_html_version = "0.6.10"
 
     repositories {
         mavenCentral()
@@ -18,6 +19,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 version = pluginVersion
@@ -30,11 +32,20 @@ tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 apply plugin: "kotlin"
 apply plugin: 'antlr'
 
+configurations {
+    compile {
+        // remove antlr dependencies from compile scope
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile "org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinx_html_version}"
 
     antlr "org.antlr:antlr4:4.7.1"
+    compile group: "org.antlr", name: "antlr4-runtime", version: "4.7.1"
 }
 
 sourceSets {
@@ -127,10 +138,10 @@ test {
 
     testLogging {
         events = [
-                org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-                org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-                org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
         ]
     }
 }
