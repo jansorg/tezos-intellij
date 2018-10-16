@@ -32,13 +32,8 @@ class StackRendering() {
                 table {
                     thead {
                         tr {
-                            th {
-                                +"Before"
-                            }
-
-                            th {
-                                +"After"
-                            }
+                            th { +"Before" }
+                            th { +"After" }
                         }
                     }
 
