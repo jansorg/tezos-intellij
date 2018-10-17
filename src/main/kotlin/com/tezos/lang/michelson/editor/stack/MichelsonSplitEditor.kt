@@ -34,7 +34,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
                         LOG.warn("Updating stack info for offset ${e.caret?.offset}...")
                         e.caret?.offset?.let {
                             try {
-                                stackEditor.updateStack(e.editor.document.text, it)
+                                stackEditor.updateStack(e.editor.colorsScheme, e.editor.document.text, it)
                             } catch (e: Throwable) {
                                 LOG.warn("error running tezos client", e)
                             }

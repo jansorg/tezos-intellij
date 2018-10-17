@@ -4,12 +4,21 @@ import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.StringWriter
 
-data class RenderOptions(val highlightChanges: Boolean = false, val codeFont: String = "monospace", val codeFontSize: String? = null)
+data class RenderOptions(val highlightChanges: Boolean = false, val codeFont: String = "monospace", val codeFontSizePt: Int = 11)
 
 /**
  * @author jansorg
  */
-class StackRendering() {
+class StackRendering {
+    fun defaultStyles(): String {
+        return """
+                table { width:100%; }
+                th { width: 50%; border: none; }
+                th, td { font-size: 105%; text-align:left; }
+                td { margin-bottom: 15px; }
+              """.trimIndent()
+    }
+
     fun render(stack: MichelsonStackTransformation, opts: RenderOptions): String {
         val out = StringWriter()
 
@@ -17,15 +26,10 @@ class StackRendering() {
 
         out.appendHTML().html {
             head {
+                // add our dynamic rules, the custom rules are applied to the global stylesheet
                 style("text/css") {
                     //language=CSS
-                    +"""
-                        table { width:100%; }
-                        th { width: 50%; }
-                        th, td { font-size: 105%; text-align:left; }
-                        td { margin-bottom: 15px; }
-                        .left, .right { font-family: ${opts.codeFont};
-                    """.trimIndent()
+                    +".left, .right { font-family: ${opts.codeFont}; font-size: ${opts.codeFontSizePt}pt; }"
                 }
             }
             body {

@@ -1,29 +1,39 @@
 package com.tezos.lang.michelson.editor.stack.michelson
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
-import com.intellij.codeInsight.hint.HintUtil
 import com.intellij.ide.structureView.StructureViewBuilder
+import com.intellij.ide.ui.UISettings
+import com.intellij.ide.ui.UISettingsListener
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
-import com.tezos.client.stack.*
+import com.tezos.client.stack.MichelsonClientError
+import com.tezos.client.stack.MichelsonStackTransformations
+import com.tezos.client.stack.RenderOptions
+import com.tezos.client.stack.StackRendering
 import com.tezos.intellij.settings.TezosSettingService
+import kotlinx.html.body
+import kotlinx.html.div
+import kotlinx.html.html
+import kotlinx.html.stream.appendHTML
 import org.apache.commons.codec.digest.DigestUtils
 import java.awt.BorderLayout
-import java.awt.GridBagConstraints
 import java.beans.PropertyChangeListener
+import java.io.StringWriter
 import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.JEditorPane
 import javax.swing.JPanel
+import javax.swing.text.html.HTMLEditorKit
+import javax.swing.text.html.StyleSheet
 
 data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
     fun matches(content: String): Boolean {
@@ -41,12 +51,50 @@ data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransforma
     }
 }
 
-class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor {
+class CustomStylSsheet : StyleSheet()
+
+class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor, UISettingsListener {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stack")
+
+        private val stackRenderer = StackRendering()
+
+        private fun applyCustomStyles(kit: HTMLEditorKit): HTMLEditorKit {
+            kit.styleSheet.styleSheets.forEach {
+                if (it is CustomStylSsheet) {
+                    kit.styleSheet.removeStyleSheet(it)
+                }
+            }
+
+            val newStyle = CustomStylSsheet()
+            newStyle.addRule(stackRenderer.defaultStyles())
+
+            kit.styleSheet.addStyleSheet(newStyle)
+
+            return kit
+        }
+
+        /**
+         * Applies the styling to the HTML renderer. This can be called at the time of init and when the the UI theme changed
+         * to update the rendering of the current content to the new styling.
+         */
+        private fun applyStyling(editorPane: JEditorPane) {
+            // editorPane.background = HintUtil.INFORMATION_COLOR
+
+            val html = editorPane.text
+
+            val kit = UIUtil.getHTMLEditorKit(true)
+            editorPane.editorKit = applyCustomStyles(kit)
+            editorPane.document = kit.createDefaultDocument()
+            editorPane.text = html
+        }
     }
 
     private lateinit var rootComponent: JPanel
+    private lateinit var editorPane: JEditorPane
+    @Volatile
+    private var customStyles: StyleSheet? = null
+
     @Volatile
     private var stack: StackInfo? = null
 
@@ -65,8 +113,21 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
     override fun setState(state: FileEditorState) {
     }
 
+    override fun uiSettingsChanged(source: UISettings) {
+        LOG.debug("UI settings changed")
+        applyStyling(editorPane)
+    }
+
     override fun getComponent(): JComponent {
+        UISettings.getInstance().addUISettingsListener(this, this)
+
         rootComponent = JPanel(BorderLayout())
+
+        editorPane = JEditorPane(UIUtil.HTML_MIME, "")
+        editorPane.setEditable(false)
+        applyStyling(editorPane)
+
+        rootComponent.add(ScrollPaneFactory.createScrollPane(editorPane))
         return rootComponent
     }
 
@@ -93,9 +154,7 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
     override fun dispose() {
     }
 
-    fun updateStack(content: String, offset: Int) {
-        rootComponent.removeAll()
-
+    fun updateStack(settings: EditorColorsScheme, content: String, offset: Int) {
         val cached = stack
         val stackInfo = when (cached?.matches(content)) {
             true -> cached.stack
@@ -112,11 +171,15 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
                     val result = client.typecheck(content)
                     stack = StackInfo.createFromContent(content, result)
                     result
+                } catch (e: MichelsonClientError) {
+                    stack = null
+                    LOG.warn("Error executing Tezos client", e)
+                    showError(e.message ?: "Error while executing the Tezos client command.")
+                    return
                 } catch (e: Exception) {
                     stack = null
-
                     LOG.warn("Error executing Tezos client", e)
-                    showError("Error while executing default Tezos client.")
+                    showError("Error while executing the default Tezos client command.")
                     return
                 }
             }
@@ -129,89 +192,19 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
 
         val matching = stackInfo.elementAt(offset) ?: return
 
-        val html = StackRendering().render(matching, RenderOptions())
-
-        val editorPane = JEditorPane(UIUtil.HTML_MIME, "")
-        editorPane.setEditable(false)
-
-        val kit = UIUtil.getHTMLEditorKit(true)
-        editorPane.editorKit = kit
-        editorPane.document = kit.createDefaultDocument()
+        val html = stackRenderer.render(matching, RenderOptions(codeFont = settings.editorFontName, codeFontSizePt = settings.editorFontSize))
         editorPane.text = html
-        editorPane.background = HintUtil.INFORMATION_COLOR
 
-        // now add it all to a frame
-//        val j = JFrame("HtmlEditorKit Test")
-//        j.getContentPane().add(scrollPane, BorderLayout.CENTER)
-        val scrollPane = JBScrollPane(editorPane)
-        rootComponent.add(scrollPane)
-
-        /*val top = JPanel(GridBagLayout())
-
-        val c = GridBagConstraints()
-        c.fill = GridBagConstraints.VERTICAL
-        c.anchor = GridBagConstraints.LINE_START
-        c.gridheight = 1
-        c.gridwidth = 1
-        c.weightx = 0.5
-        c.insets = JBInsets(5, 5, 5, 5)
-
-        c.gridx = 0
-        c.gridy = 0
-        top.add(heading("Before"), c)
-
-        c.gridx = 1
-        c.gridy = 0
-        top.add(heading("After"), c)
-
-        c.gridx = 0
-        c.gridy = 1
-        addStackTo(matching.before, c, top)
-
-        c.gridx = 1
-        c.gridy = 1
-        addStackTo(matching.after, c, top)
-
-        // add spacer in last row
-        c.gridx = 0
-        c.weighty = 1.0
-        top.add(JPanel(), c)*/
-
-        //rootComponent.add(top, BorderLayout.CENTER)
         rootComponent.updateUI()
     }
 
     private fun showError(message: String) {
-        rootComponent.add(JBLabel(message))
-    }
-
-    private fun heading(title: String): JComponent {
-        return JBLabel("<html><b>$title</b></html>", UIUtil.ComponentStyle.LARGE)
-    }
-
-    private fun addStackTo(stack: MichelsonStack, c: GridBagConstraints, parent: JComponent) {
-        for (f in stack.frames) {
-            val html = typeToString(f.type)
-            val label = JBLabel("<html>$html</html>")
-            parent.add(label, c)
-            c.gridy++
-        }
-    }
-
-    private fun typeToString(type: MichelsonStackType, wrap: Boolean = false): String {
-        if (type.arguments.isEmpty()) {
-            return type.name
-        }
-
-        var s = if (wrap) "(" else ""
-
-        s += type.name
-        for (a in type.arguments) {
-            s += " " + typeToString(a, true)
-        }
-
-        s += if (wrap) ")" else ""
-
-        return s
+        editorPane.text = StringWriter().appendHTML().html {
+            body {
+                div("error") {
+                    +message
+                }
+            }
+        }.toString()
     }
 }
