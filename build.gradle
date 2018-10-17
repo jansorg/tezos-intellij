@@ -44,6 +44,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinx_html_version}"
 
+    compile 'org.xhtmlrenderer:flying-saucer-core:9.1.16'
+
     antlr "org.antlr:antlr4:4.7.1"
     compile group: "org.antlr", name: "antlr4-runtime", version: "4.7.1"
 }

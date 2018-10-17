@@ -4,6 +4,7 @@ import com.intellij.codeHighlighting.BackgroundEditorHighlighter
 import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.ide.ui.UISettings
 import com.intellij.ide.ui.UISettingsListener
+import com.intellij.ide.ui.laf.darcula.DarculaLaf
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.FileEditor
@@ -11,8 +12,10 @@ import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.util.io.StreamUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.MichelsonClientError
@@ -20,20 +23,14 @@ import com.tezos.client.stack.MichelsonStackTransformations
 import com.tezos.client.stack.RenderOptions
 import com.tezos.client.stack.StackRendering
 import com.tezos.intellij.settings.TezosSettingService
-import kotlinx.html.body
-import kotlinx.html.div
-import kotlinx.html.html
-import kotlinx.html.stream.appendHTML
 import org.apache.commons.codec.digest.DigestUtils
+import org.xhtmlrenderer.simple.XHTMLPanel
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
-import java.io.StringWriter
 import java.nio.file.Paths
 import javax.swing.JComponent
-import javax.swing.JEditorPane
 import javax.swing.JPanel
-import javax.swing.text.html.HTMLEditorKit
-import javax.swing.text.html.StyleSheet
+import javax.swing.border.EmptyBorder
 
 data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
     fun matches(content: String): Boolean {
@@ -51,49 +48,16 @@ data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransforma
     }
 }
 
-class CustomStylSsheet : StyleSheet()
-
 class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor, UISettingsListener {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stack")
 
         private val stackRenderer = StackRendering()
-
-        private fun applyCustomStyles(kit: HTMLEditorKit): HTMLEditorKit {
-            kit.styleSheet.styleSheets.forEach {
-                if (it is CustomStylSsheet) {
-                    kit.styleSheet.removeStyleSheet(it)
-                }
-            }
-
-            val newStyle = CustomStylSsheet()
-            newStyle.addRule(stackRenderer.defaultStyles())
-
-            kit.styleSheet.addStyleSheet(newStyle)
-
-            return kit
-        }
-
-        /**
-         * Applies the styling to the HTML renderer. This can be called at the time of init and when the the UI theme changed
-         * to update the rendering of the current content to the new styling.
-         */
-        private fun applyStyling(editorPane: JEditorPane) {
-            // editorPane.background = HintUtil.INFORMATION_COLOR
-
-            val html = editorPane.text
-
-            val kit = UIUtil.getHTMLEditorKit(true)
-            editorPane.editorKit = applyCustomStyles(kit)
-            editorPane.document = kit.createDefaultDocument()
-            editorPane.text = html
-        }
     }
 
     private lateinit var rootComponent: JPanel
-    private lateinit var editorPane: JEditorPane
-    @Volatile
-    private var customStyles: StyleSheet? = null
+
+    private lateinit var htmlPanel: XHTMLPanel
 
     @Volatile
     private var stack: StackInfo? = null
@@ -115,19 +79,17 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
 
     override fun uiSettingsChanged(source: UISettings) {
         LOG.debug("UI settings changed")
-        applyStyling(editorPane)
+
     }
 
     override fun getComponent(): JComponent {
         UISettings.getInstance().addUISettingsListener(this, this)
 
+        htmlPanel = CustomXHTMLPanel()
+        htmlPanel.border = EmptyBorder(5, 5, 5, 5)
+
         rootComponent = JPanel(BorderLayout())
-
-        editorPane = JEditorPane(UIUtil.HTML_MIME, "")
-        editorPane.setEditable(false)
-        applyStyling(editorPane)
-
-        rootComponent.add(ScrollPaneFactory.createScrollPane(editorPane))
+        rootComponent.add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
         return rootComponent
     }
 
@@ -192,19 +154,31 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
 
         val matching = stackInfo.elementAt(offset) ?: return
 
-        val html = stackRenderer.render(matching, RenderOptions(codeFont = settings.editorFontName, codeFontSizePt = settings.editorFontSize))
-        editorPane.text = html
+        val defaultCSS = when (UIUtil.isUnderDarcula()) {
+            true -> {
+                val cssStream = DarculaLaf::class.java.getResourceAsStream("darcula" + if (JBUI.isHiDPI()) "@2x.css" else ".css")
+                StreamUtil.readText(cssStream, "UTF-8")
+            }
+            false -> ""
+        }
 
+        val opts = RenderOptions(
+                highlightUnchanged = true,
+                highlightChanges = true,
+                codeFont = settings.editorFontName,
+                codeFontSizePt = settings.editorFontSize * 1.1,
+                defaultCSS = defaultCSS
+        )
+
+        htmlPanel.setDocument(stackRenderer.render(matching, opts))
         rootComponent.updateUI()
     }
 
     private fun showError(message: String) {
-        editorPane.text = StringWriter().appendHTML().html {
-            body {
-                div("error") {
-                    +message
-                }
-            }
-        }.toString()
+//        editorPane?.text = StringWriter().appendHTML().html {
+//            body {
+//                div("error") { +message }
+//            }
+//        }.toString()
     }
 }
