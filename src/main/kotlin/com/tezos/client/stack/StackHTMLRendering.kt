@@ -1,56 +1,51 @@
+@file:Suppress("CssInvalidPropertyValue")
+
 package com.tezos.client.stack
 
+import com.intellij.ui.JBColor
 import kotlinx.html.*
-import kotlinx.html.dom.append
-import org.w3c.dom.Document
-import javax.xml.parsers.DocumentBuilderFactory
+import kotlinx.html.stream.appendHTML
+import java.awt.Color
 
 data class RenderOptions(
-        val highlightUnchanged: Boolean = false,
+        val markUnchanged: Boolean = false,
         val highlightChanges: Boolean = false,
+        val alignStacks: Boolean = false,
+        val showAnnotations: Boolean = false,
         val codeFont: String = "monospace",
-        val codeFontSizePt: Double = 11.0,
-        val defaultCSS: String = "")
+        val codeFontSizePt: Double = 11.0)
 
 @Suppress("UNUSED_PARAMETER")
 /**
  * @author jansorg
  */
 class StackRendering {
-    fun defaultStyles(): String {
-        //language=CSS
-        return """
-                html, body, p, div, table, tr, td, th { margin: 0; padding: 0; }
-                html { padding: 1em; font-family: Tahoma, sans-serif; }
-                table { width:100%; border-collapse: collapse; }
-                th, td { text-align:left; padding: 0.2em 0; }
-                td { padding-top: 1em;  }
-                th { width: 50%; border-bottom: 1px solid black; }
-
-                .no-change { color:#808080; }
-              """.trimIndent()
-    }
-
     fun styles(opts: RenderOptions): String {
         //language=CSS
         return """
-            td { font-family: "${opts.codeFont}", monospace; font-size: ${opts.codeFontSizePt}px; }
+                html, body, p, div, table, tr, td, th { margin: 0; padding: 0; border: none; border-collapse: collapse; }
+                html { padding: 1em; }
+                table { width:100%; }
+                th, td { text-align:left; }
+                th { width: 50%; font-size:1.1em; border-bottom: 1px solid ${JBColor.black.asHexString()}; }
+                td { font-family: "${opts.codeFont}", monospace; font-size: ${opts.codeFontSizePt}pt; padding: 2px 0 4px 0; }
+
+                .error { font-weight: bold; color: ${JBColor.red.asHexString()}}
         """.trimIndent()
     }
 
-    fun render(stack: MichelsonStackTransformation, opts: RenderOptions): Document {
+    fun render(stack: MichelsonStackTransformation, opts: RenderOptions): String {
         val maxSize = Math.max(stack.before.size, stack.after.size)
         val firstChange = findFirstChange(maxSize, stack)
         val lastChange = findLastChange(maxSize, stack)
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+        val rowOffsetLeft = if (opts.alignStacks) maxSize - stack.before.size else 0
+        val rowOffsetRight = if (opts.alignStacks) maxSize - stack.after.size else 0
 
-        document.append.html {
+        return StringBuilder().appendHTML().html {
             head {
                 style {
                     unsafe {
-                        // +opts.defaultCSS
-                        +defaultStyles()
                         +styles(opts)
                     }
                 }
@@ -70,23 +65,22 @@ class StackRendering {
                                 if (i == lastChange && i < maxSize - 1) classes += "last-change"
                             }
 
-                            val left = stack.before.frames.getOrNull(i)
-                            val right = stack.after.frames.getOrNull(i)
-                            val changed = if (opts.highlightChanges) {
-                                left != right
+                            val left = if (i < rowOffsetLeft) null else stack.before.frames.getOrNull(i - rowOffsetLeft)
+                            val right = if (i < rowOffsetRight) null else stack.after.frames.getOrNull(i - rowOffsetRight)
+
+                            val changed = if (opts.markUnchanged && left != null && right != null) {
+                                !left.equals(right, opts.showAnnotations)
                             } else {
                                 null
                             }
 
-                            column(true, changed, left)
-                            column(false, null, right)
+                            column(true, changed, left, opts.showAnnotations)
+                            column(false, null, right, opts.showAnnotations)
                         }
                     }
                 }
             }
-        }
-
-        return document
+        }.toString()
     }
 
     private fun findFirstChange(maxSize: Int, stack: MichelsonStackTransformation): Int {
@@ -107,13 +101,20 @@ class StackRendering {
         return maxSize + 1
     }
 
-    private fun TR.column(isLeft: Boolean, changed: Boolean?, frame: MichelsonStackFrame?) {
+    private fun TR.column(isLeft: Boolean, changed: Boolean?, frame: MichelsonStackFrame?, showAnnotations: Boolean) {
         td("change") {
             classes += if (isLeft) "left" else "right"
-            changed?.let { classes += if (changed) "change" else "no-change" }
 
             attributes += ("valign" to "top")
-            frame?.let { +it.type.asString(false) }
+            if (changed != null && !changed) {
+                attributes += "style" to "color: ${JBColor.gray.asHexString()};"
+            }
+
+            frame?.let { +it.type.asString(showAnnotations) }
         }
     }
+}
+
+fun Color.asHexString(): String {
+    return String.format("#%x%x%x", red, green, blue)
 }

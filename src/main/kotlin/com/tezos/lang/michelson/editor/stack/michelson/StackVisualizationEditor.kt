@@ -2,9 +2,6 @@ package com.tezos.lang.michelson.editor.stack.michelson
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
 import com.intellij.ide.structureView.StructureViewBuilder
-import com.intellij.ide.ui.UISettings
-import com.intellij.ide.ui.UISettingsListener
-import com.intellij.ide.ui.laf.darcula.DarculaLaf
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.FileEditor
@@ -12,10 +9,8 @@ import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.openapi.util.io.StreamUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.ScrollPaneFactory
-import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.MichelsonClientError
@@ -24,15 +19,16 @@ import com.tezos.client.stack.RenderOptions
 import com.tezos.client.stack.StackRendering
 import com.tezos.intellij.settings.TezosSettingService
 import org.apache.commons.codec.digest.DigestUtils
-import org.xhtmlrenderer.simple.XHTMLPanel
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
+import java.io.StringReader
 import java.nio.file.Paths
 import javax.swing.JComponent
+import javax.swing.JEditorPane
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
-data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
+private data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
     fun matches(content: String): Boolean {
         return contentMD5.equals(md5(content))
     }
@@ -48,19 +44,27 @@ data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransforma
     }
 }
 
-class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor, UISettingsListener {
+class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stack")
 
         private val stackRenderer = StackRendering()
     }
 
-    private lateinit var rootComponent: JPanel
-
-    private lateinit var htmlPanel: XHTMLPanel
+    private val rootComponent: JPanel
+    private val htmlPanel: JEditorPane
 
     @Volatile
     private var stack: StackInfo? = null
+
+    init {
+        htmlPanel = JEditorPane(UIUtil.HTML_MIME, "")
+        htmlPanel.isEditable = false
+        htmlPanel.border = EmptyBorder(7, 7, 7, 7)
+
+        rootComponent = JPanel(BorderLayout())
+        rootComponent.add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
+    }
 
     override fun getName(): String {
         return "Michelson Stack Visualization"
@@ -77,19 +81,7 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
     override fun setState(state: FileEditorState) {
     }
 
-    override fun uiSettingsChanged(source: UISettings) {
-        LOG.debug("UI settings changed")
-
-    }
-
     override fun getComponent(): JComponent {
-        UISettings.getInstance().addUISettingsListener(this, this)
-
-        htmlPanel = CustomXHTMLPanel()
-        htmlPanel.border = EmptyBorder(5, 5, 5, 5)
-
-        rootComponent = JPanel(BorderLayout())
-        rootComponent.add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
         return rootComponent
     }
 
@@ -148,37 +140,45 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
         }
 
         if (stackInfo.hasErrors) {
-            showError("Errors found")
+            // fixme show errors?
+            showError("Unable to display because the Tezos client returned errors or warnings for the current file.")
             return
         }
 
-        val matching = stackInfo.elementAt(offset) ?: return
-
-        val defaultCSS = when (UIUtil.isUnderDarcula()) {
-            true -> {
-                val cssStream = DarculaLaf::class.java.getResourceAsStream("darcula" + if (JBUI.isHiDPI()) "@2x.css" else ".css")
-                StreamUtil.readText(cssStream, "UTF-8")
-            }
-            false -> ""
+        val matching = stackInfo.elementAt(offset)
+        if (matching == null) {
+            showError("No matching stack information found.")
+            return
         }
 
-        val opts = RenderOptions(
-                highlightUnchanged = true,
-                highlightChanges = true,
-                codeFont = settings.editorFontName,
-                codeFontSizePt = settings.editorFontSize * 1.1,
-                defaultCSS = defaultCSS
-        )
+        updateText(stackRenderer.render(matching, renderOptions(settings)))
+    }
 
-        htmlPanel.setDocument(stackRenderer.render(matching, opts))
-        rootComponent.updateUI()
+    private fun updateText(html: String) {
+        // we update the editor kit every time because it depends on the current IDE's theme
+        val htmlKit = UIUtil.getHTMLEditorKit()
+        htmlPanel.editorKit = htmlKit
+
+        val doc = htmlKit.createDefaultDocument()
+        htmlKit.read(StringReader(html), doc, 0)
+
+        htmlPanel.document = doc
+        htmlPanel.caretPosition = 0
+    }
+
+    private fun renderOptions(settings: EditorColorsScheme): RenderOptions {
+        val opts = RenderOptions(
+                markUnchanged = true,
+                highlightChanges = false,
+                alignStacks = true,
+                showAnnotations = false,
+                codeFont = settings.editorFontName,
+                codeFontSizePt = settings.editorFontSize * 1.1
+        )
+        return opts
     }
 
     private fun showError(message: String) {
-//        editorPane?.text = StringWriter().appendHTML().html {
-//            body {
-//                div("error") { +message }
-//            }
-//        }.toString()
+        updateText("<html><div class=\"error\">$message</div></html>")
     }
 }

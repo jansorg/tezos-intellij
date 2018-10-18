@@ -1,7 +1,9 @@
 package com.tezos.lang.michelson.editor.stack
 
+import com.intellij.ide.ui.UISettings
+import com.intellij.ide.ui.UISettingsListener
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.event.CaretAdapter
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.fileEditor.TextEditor
@@ -13,45 +15,50 @@ import javax.swing.JComponent
 /**
  * @author jansorg
  */
-class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor) : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>(mainEditor, stackEditor) {
+class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor) : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>(mainEditor, stackEditor), UISettingsListener, CaretListener {
     private companion object {
         val LOG = Logger.getInstance("#tezos.client")
     }
 
     private val alarm = Alarm(this)
-    @Volatile
-    private var caretListener: CaretListener? = null
 
     override fun getName(): String = "michelson.splitEditor"
 
-    override fun getComponent(): JComponent {
-        if (caretListener == null) {
-            caretListener = object : CaretAdapter() {
-                override fun caretPositionChanged(e: CaretEvent) {
-                    // debounce
-                    alarm.cancelAllRequests()
-                    alarm.addRequest({
-                        LOG.warn("Updating stack info for offset ${e.caret?.offset}...")
-                        e.caret?.offset?.let {
-                            try {
-                                stackEditor.updateStack(e.editor.colorsScheme, e.editor.document.text, it)
-                            } catch (e: Throwable) {
-                                LOG.warn("error running tezos client", e)
-                            }
-                        }
-                    }, 300)
-                }
-            }
+    override fun uiSettingsChanged(source: UISettings) {
+        updateStackRendering(mainEditor.editor)
+    }
 
-            mainEditor.editor.caretModel.addCaretListener(caretListener!!)
-        }
+    override fun getComponent(): JComponent {
+        UISettings.getInstance().addUISettingsListener(this, this)
+        mainEditor.editor.caretModel.addCaretListener(this)
 
         return super.getComponent()
     }
 
-    override fun dispose() {
-        caretListener?.let {
-            mainEditor.editor.caretModel.removeCaretListener(it)
+    private fun updateStackRendering(editor: Editor) {
+        try {
+            stackEditor.updateStack(editor.colorsScheme, editor.document.text, editor.caretModel.offset)
+        } catch (e: Throwable) {
+            LOG.warn("error running tezos client", e)
         }
+    }
+
+    override fun dispose() {
+        alarm.cancelAllRequests()
+        mainEditor.editor.caretModel.removeCaretListener(this)
+    }
+
+    override fun caretPositionChanged(e: CaretEvent) {
+        alarm.cancelAllRequests()
+        alarm.addRequest({
+            LOG.warn("Updating stack info for offset ${e.caret?.offset}...")
+            updateStackRendering(e.editor)
+        }, 300)
+    }
+
+    override fun caretAdded(e: CaretEvent?) {
+    }
+
+    override fun caretRemoved(e: CaretEvent?) {
     }
 }

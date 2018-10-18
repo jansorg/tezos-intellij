@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.JBDimension;
+import com.tezos.intellij.settings.StackVisualizationPosition;
 import com.tezos.intellij.settings.TezosClientConfig;
 import com.tezos.intellij.settings.TezosSettingService;
 import com.tezos.intellij.settings.TezosSettings;
@@ -35,6 +36,7 @@ public class TezosSettingsForm {
     private JLabel nameLabel;
     private JLabel dockerLabel;
     private JLabel executableLabel;
+    private JComboBox<StackVisualizationPosition> stackVisualization;
 
     private CollectionListModel<TezosClientConfig> model;
     private ListSelectionModel selectionModel;
@@ -106,14 +108,14 @@ public class TezosSettingsForm {
         DocumentAdapter listener = new DocumentAdapter() {
             @Override
             protected void textChanged(DocumentEvent e) {
-                applyEditorValues();
+                applyClientEditorValues();
             }
         };
 
         nameTextField.getDocument().addDocumentListener(listener);
         defaultClientCheckbox.addActionListener(e -> {
             //reset existing default clients
-            applyEditorValues();
+            applyClientEditorValues();
 
             if (defaultClientCheckbox.isSelected()) {
                 TezosClientConfig current = model.getElementAt(clientList.getSelectedIndex());
@@ -127,10 +129,14 @@ public class TezosSettingsForm {
         });
         executablePathBrowser.getTextField().getDocument().addDocumentListener(listener);
 
+        for (StackVisualizationPosition position : StackVisualizationPosition.values()) {
+            stackVisualization.addItem(position);
+        }
+
         load(null);
     }
 
-    private void applyEditorValues() {
+    private void applyClientEditorValues() {
         if (listenerSuspended) {
             return;
         }
@@ -178,10 +184,12 @@ public class TezosSettingsForm {
 
     void applyTo(TezosSettings state) {
         state.setClients(model.getItems().stream().map(c -> new TezosClientConfig().applyFrom(c)).collect(Collectors.toList()));
+        state.setStackPanelPosition(stackVisualization.getItemAt(stackVisualization.getSelectedIndex()));
     }
 
     public void resetTo(@NotNull TezosSettings settings) {
         model.replaceAll(settings.clients);
         selectionModel.clearSelection();
+        stackVisualization.setSelectedItem(settings.getStackPanelPosition());
     }
 }

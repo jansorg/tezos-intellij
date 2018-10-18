@@ -33,10 +33,8 @@ import javax.swing.JPanel
  */
 abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private val mainEditor: E1, private val secondEditor: E2) : UserDataHolderBase(), FileEditor {
     private val mainComponent: JComponent
-    private var horizontalSplitOption = TezosSettingService.getInstance().state.showStackSplitHorizontal
-//    private val myListenersGenerator = MyListenersMultimap()
+    private var horizontalSplitOption = TezosSettingService.getInstance().state.stackPanelPosition.isVerticalSplit()
 
-    //    private var myToolbarWrapper: SplitEditorToolbar? = null
     private var splitter: JBSplitter? = null
 
     init {
@@ -87,10 +85,11 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
 */
 
     private fun createComponent(): JComponent {
-        splitter = JBSplitter(!TezosSettingService.getSettings().showStackSplitHorizontal, 0.65f, 0.15f, 0.85f)
-        splitter!!.splitterProportionKey = PROPORTION_KEY
-        splitter!!.setFirstComponent(mainEditor.component)
-        splitter!!.setSecondComponent(secondEditor.component)
+        val newSplitter = JBSplitter(!TezosSettingService.getSettings().stackPanelPosition.isVerticalSplit(), 0.65f, 0.15f, 0.85f)
+        newSplitter.splitterProportionKey = PROPORTION_KEY
+        newSplitter.firstComponent = mainEditor.component
+        newSplitter.secondComponent = secondEditor.component
+        this.splitter = newSplitter
 
 //        myToolbarWrapper = SplitEditorToolbar(splitter)
 //        if (mainEditor is TextEditor) {
@@ -100,12 +99,13 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
 //            myToolbarWrapper!!.addGutterToTrack((secondEditor as TextEditor).editor.gutter as EditorGutterComponentEx)
 //        }
 
-        val result = JPanel(BorderLayout())
+        val panel = JPanel(BorderLayout())
 //        result.add(myToolbarWrapper, BorderLayout.NORTH)
-        result.add(splitter!!, BorderLayout.CENTER)
+        panel.add(newSplitter, BorderLayout.CENTER)
         adjustEditorsVisibility()
 
-        return result
+
+        return panel
     }
 
 //    fun getCurrentEditorLayout(): SplitEditorLayout {
@@ -144,7 +144,7 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
 
     private fun adjustEditorsVisibility() {
 //        mainEditor.component.isVisible = currentEditorLayout.showFirst
-//        secondEditor.component.isVisible = currentEditorLayout.showSecond
+        secondEditor.component.isVisible = TezosSettingService.getSettings().showStackVisualization
     }
 
     override fun getComponent(): JComponent {
@@ -152,7 +152,7 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        return mainComponent
+        return mainEditor.preferredFocusedComponent
     }
 
     override fun getState(level: FileEditorStateLevel): FileEditorState {
@@ -292,6 +292,6 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
     companion object {
         val PARENT_SPLIT_KEY: Key<SplitFileEditor<*, *>> = Key.create("parentSplit")
 
-        private val PROPORTION_KEY = "TezosSplitFileEditor.Proportion"
+        private const val PROPORTION_KEY = "TezosSplitFileEditor.Proportion"
     }
 }

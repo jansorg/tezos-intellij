@@ -5,6 +5,7 @@ import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.tezos.lang.michelson.lang.MichelsonFileType
 import org.jdom.Element
@@ -33,6 +34,6 @@ class StackVisualizationEditorProvider : FileEditorProvider {
     }
 
     override fun disposeEditor(editor: FileEditor) {
-
+        Disposer.dispose(editor)
     }
 }
