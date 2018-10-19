@@ -1,5 +1,8 @@
 # Version 0.6.0
 - Improved parsing of nested tags
+- Feature: stack visualization for Michelson files
+- Feature: settings to configure the appearance of the stack visualization 
+- Feature: settings to configure the available Tezos clients. It supports `tezos-client` and docker scripts (`alphanet.sh`, `mainnet.sh`, etc.)
 
 # Version 0.5.0
 - Improved error recovery and error handling in the parser

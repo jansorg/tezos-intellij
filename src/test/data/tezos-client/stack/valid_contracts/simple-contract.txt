@@ -1,0 +1,7 @@
+((types . ((35 139 (((pair (unit @parameter) (unit @storage)))) (((pair (list operation) (unit @storage)))))
+           (37 40 (((pair (unit @parameter) (unit @storage)))) ((@storage unit)))
+           (79 92 ((@storage unit)) (((list operation)) (@storage unit)))
+           (133 137 (((list operation)) (@storage unit)) (((pair (list operation) (unit @storage)))))
+           ))
+ (errors . (
+            )))

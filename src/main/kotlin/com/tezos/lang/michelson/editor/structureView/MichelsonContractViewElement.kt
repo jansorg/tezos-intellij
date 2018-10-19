@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.editor.structureView
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.tezos.lang.michelson.psi.PsiContract
-import com.tezos.lang.michelson.ui.Icons
+import com.tezos.intellij.ui.Icons
 import javax.swing.Icon
 
 internal class MichelsonContractViewElement(private val contract: PsiContract) : PsiTreeElementBase<PsiContract>(contract) {

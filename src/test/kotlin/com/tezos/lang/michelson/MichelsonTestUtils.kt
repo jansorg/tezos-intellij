@@ -15,12 +15,7 @@ import java.util.stream.Collectors
  * @author jansorg
  */
 object MichelsonTestUtils {
-    /**
-     * Recursively locates all michelson files in directory "path".
-     * @param path If path is relative then it will be reseolved to the data dir at 'src/test/data', absolute paths will be used as is.
-     * @return the list of michelson files
-     */
-    fun locateMichelsonFiles(path: Path): List<Path> {
+    fun locateTestDataFiles(path: Path, condition: (Path) -> Boolean = { true }): List<Path> {
         val sourcePath = when (path.isAbsolute) {
             true -> path
             false -> dataPath().resolve(path)
@@ -30,8 +25,17 @@ object MichelsonTestUtils {
             throw IllegalStateException("Directory $sourcePath not found.")
         }
 
-        val files = Files.find(sourcePath, 10, { p, _ -> isMichelsonFile(p) }, arrayOf(FileVisitOption.FOLLOW_LINKS))
+        val files = Files.find(sourcePath, 10, { p, _ -> condition(p) }, arrayOf(FileVisitOption.FOLLOW_LINKS))
         return files.collect(Collectors.toList())
+    }
+
+    /**
+     * Recursively locates all michelson files in directory "path".
+     * @param path If path is relative then it will be reseolved to the data dir at 'src/test/data', absolute paths will be used as is.
+     * @return the list of michelson files
+     */
+    fun locateMichelsonFiles(path: Path): List<Path> {
+        return locateTestDataFiles(path, ::isMichelsonFile)
     }
 
     fun isMichelsonFile(file: Path): Boolean {

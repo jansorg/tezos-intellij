@@ -1,0 +1,29 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((38 648 (((pair (unit @parameter) (address @storage)))) (((pair (list operation) address))))
+           (40 44 (((pair (unit @parameter) (address @storage)))) ())
+           (46 53 (((pair (list @parameter int) (list @storage int)))) (((pair (list operation) (list int)))))
+           (50 53 (((pair (list @parameter int) (list @storage int)))) ((@parameter (list int))))
+           (94 100 ((@parameter (list int))) (((list int))))
+           (155 170 ((@parameter.elt int)) ((int)))
+           (160 164 ((@parameter.elt int)) ((int) (@parameter.elt int)))
+           (204 207 ((bool) (@amount mutez) ((list int))) ((bool) (bool) (@amount mutez) ((list int))))
+           (254 267 ((int) (@parameter.elt int)) ((int)))
+           (259 267 (((list int))) (((list operation)) ((list int))))
+           (306 358 (((option key_hash)) (bool) (bool) (@amount mutez) ((list int))) ((key_hash) ((option key_hash)) (bool) (bool) (@amount mutez) ((list int))))
+           (311 319 (((list operation)) ((list int))) (((pair (list operation) (list int)))))
+           (367 607 ((key_hash) ((option key_hash)) (bool) (bool) (@amount mutez) ((list int))) ((operation) (address)))
+           (616 629 ((operation) (address)) (((list operation)) (operation) (address)))
+           (631 635 (((list operation)) (operation) (address)) ((operation) ((list operation)) (address)))
+           (637 641 ((operation) ((list operation)) (address)) (((list operation)) (address)))
+           (643 647 (((list operation)) (address)) (((pair (list operation) address))))
+           ))
+ (errors . (
+            )))

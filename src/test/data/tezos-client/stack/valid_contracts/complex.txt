@@ -1,0 +1,11 @@
+((types . ((35 154 (((pair (unit @parameter) (unit @storage)))) (((pair (list operation) (unit @storage)))))
+           (45 57 (((pair (unit @parameter) (unit @storage)))) ((int) ((pair (unit @parameter) (unit @storage)))))
+           (67 84 ((int) ((pair (unit @parameter) (unit @storage)))) ((string) (int) ((pair (unit @parameter) (unit @storage)))))
+           (94 98 ((string) (int) ((pair (unit @parameter) (unit @storage)))) (((pair string int)) ((pair (unit @parameter) (unit @storage)))))
+           (108 112 (((pair string int)) ((pair (unit @parameter) (unit @storage)))) (((pair (unit @parameter) (unit @storage)))))
+           (122 125 (((pair (unit @parameter) (unit @storage)))) ((@storage unit)))
+           (127 140 ((@storage unit)) (((list operation)) (@storage unit)))
+           (142 146 (((list operation)) (@storage unit)) (((pair (list operation) (unit @storage)))))
+           ))
+ (errors . (
+            )))

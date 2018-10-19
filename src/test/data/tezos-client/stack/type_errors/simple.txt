@@ -1,0 +1,13 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ())
+ (errors . (
+            (1 112 "Unregistred error:\n  { \"kind\": \"permanent\",\n    \"id\": \"proto.002-PsYLVpVv.illTypedContractTypeError\",\n    \"illTypedCode\":\n      [ { \"prim\": \"parameter\", \"args\": [ { \"prim\": \"unit\" } ] },\n        { \"prim\": \"storage\", \"args\": [ { \"prim\": \"unit\" } ] },\n        { \"prim\": \"code\",\n          \"args\":\n            [ [ { \"prim\": \"PUSH\",\n                  \"args\": [ { \"prim\": \"int\" }, { \"int\": \"123\" } ] },\n                { \"prim\": \"CDR\" },\n                { \"prim\": \"NIL\", \"args\": [ { \"prim\": \"operation\" } ] },\n                { \"prim\": \"PAIR\" } ] ] } ],\n    \"typeMap\":\n      [ { \"location\": 7,\n          \"stackBefore\":\n            [ [ { \"prim\": \"pair\",\n                  \"args\":\n                    [ { \"prim\": \"unit\", \"annots\": [ \"@parameter\" ] },\n                      { \"prim\": \"unit\", \"annots\": [ \"@storage\" ] } ] }, [] ] ],\n          \"stackAfter\":\n            [ [ { \"prim\": \"int\" }, [] ],\n              [ { \"prim\": \"pair\",\n                  \"args\":\n                    [ { \"prim\": \"unit\", \"annots\": [ \"@parameter\" ] },\n                      { \"prim\": \"unit\", \"annots\": [ \"@storage\" ] } ] }, [] ] ] } ] }")
+            (1 112 "Unregistred error:\n  { \"kind\": \"permanent\", \"id\": \"proto.002-PsYLVpVv.badStackTypeError\",\n    \"location\": 10, \"primitiveName\": \"CDR\", \"relevantStackPortion\": 1,\n    \"wrongStackType\":\n      [ { \"type\": { \"prim\": \"int\" } },\n        { \"type\":\n            { \"prim\": \"pair\",\n              \"args\":\n                [ { \"prim\": \"unit\", \"annots\": [ \"@parameter\" ] },\n                  { \"prim\": \"unit\", \"annots\": [ \"@storage\" ] } ] } } ] }"))))

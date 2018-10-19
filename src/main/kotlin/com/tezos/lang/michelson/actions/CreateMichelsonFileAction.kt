@@ -6,7 +6,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
-import com.tezos.lang.michelson.ui.Icons
+import com.tezos.intellij.ui.Icons
 
 /**
  * @author jansorg

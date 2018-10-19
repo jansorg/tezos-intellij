@@ -1,0 +1,26 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((87 262 (((pair (pair @parameter (pair (pair string (list int)) (set nat)) bytes) (unit @storage)))) (((pair (list operation) unit))))
+           (89 92 (((pair (pair @parameter (pair (pair string (list int)) (set nat)) bytes) (unit @storage)))) ((@parameter (pair (pair (pair string (list int)) (set nat)) bytes))))
+           (95 101 ((@parameter (pair (pair (pair string (list int)) (set nat)) bytes))) (((pair (pair string (list int)) (set nat))) (bytes)))
+           (104 115 (((pair (pair string (list int)) (set nat))) (bytes)) (((pair (pair string (list int)) (set nat))) (bytes) (bytes)))
+           (108 115 ((bytes)) ((bytes) (bytes)))
+           (110 113 ((bytes)) ((bytes) (bytes)))
+           (125 129 (((pair (pair string (list int)) (set nat))) (bytes) (bytes)) ((@packed bytes) (bytes) (bytes)))
+           (132 144 ((@packed bytes) (bytes) (bytes)) ((bytes)))
+           (154 200 ((bytes)) (((option (pair (pair string (list int)) (set nat))))))
+           (205 216 (((option (pair (pair string (list int)) (set nat))))) (((pair (pair string (list int)) (set nat)))))
+           (219 223 (((pair (pair string (list int)) (set nat)))) ())
+           (233 237 () ((unit)))
+           (240 253 ((unit)) (((list operation)) (unit)))
+           (256 260 (((list operation)) (unit)) (((pair (list operation) unit))))
+           ))
+ (errors . (
+            )))

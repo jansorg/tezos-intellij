@@ -1,0 +1,49 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((73 525 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) (((pair (list operation) (pair timestamp (pair (mutez @amount) (key_hash @parameter)))))))
+           (75 78 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))))
+           (80 84 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) ((timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))))
+           (86 89 ((timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) ((timestamp) (timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))))
+           (91 94 ((timestamp) (timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) ((@now timestamp) (timestamp) (timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))))
+           (96 101 ((@now timestamp) (timestamp) (timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) ((bool) (timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))))
+           (113 115 ((timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) ((timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))))
+           (117 121 ((timestamp) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash))))) (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)))
+           (159 162 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)) (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)))
+           (164 167 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)) ((@parameter key_hash) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)))
+           (169 178 ((@parameter key_hash) ((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)) ((@parameter key_hash) ((pair mutez key_hash)) (timestamp)))
+           (172 178 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)) (((pair mutez key_hash)) (timestamp)))
+           (173 177 (((pair (key_hash @parameter) (pair @storage timestamp (pair mutez key_hash)))) (timestamp)) (((pair mutez key_hash)) (timestamp)))
+           (180 186 ((@parameter key_hash) ((pair mutez key_hash)) (timestamp)) ((@amount mutez) (@parameter key_hash) ((pair mutez key_hash)) (timestamp)))
+           (188 192 ((@amount mutez) (@parameter key_hash) ((pair mutez key_hash)) (timestamp)) (((pair (mutez @amount) (key_hash @parameter))) ((pair mutez key_hash)) (timestamp)))
+           (194 198 (((pair (mutez @amount) (key_hash @parameter))) ((pair mutez key_hash)) (timestamp)) (((pair mutez key_hash)) ((pair (mutez @amount) (key_hash @parameter))) (timestamp)))
+           (200 215 (((pair mutez key_hash)) ((pair (mutez @amount) (key_hash @parameter))) (timestamp)) (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (203 215 (((pair (mutez @amount) (key_hash @parameter))) (timestamp)) (((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (204 208 (((pair (mutez @amount) (key_hash @parameter))) (timestamp)) ((timestamp) ((pair (mutez @amount) (key_hash @parameter)))))
+           (210 214 ((timestamp) ((pair (mutez @amount) (key_hash @parameter)))) (((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (252 255 (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((pair mutez key_hash)) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (257 260 (((pair mutez key_hash)) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((mutez) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (262 268 ((mutez) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((@amount mutez) (mutez) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (270 275 ((@amount mutez) (mutez) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((bool) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (287 289 (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (351 354 (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((pair mutez key_hash)) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (356 359 (((pair mutez key_hash)) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((mutez) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (421 447 ((mutez) ((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((mutez) ((contract unit)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (424 447 (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((contract unit)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (425 428 (((pair mutez key_hash)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((key_hash) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (430 446 ((key_hash) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((contract unit)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (449 453 ((mutez) ((contract unit)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((unit) (mutez) ((contract unit)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (455 470 ((unit) (mutez) ((contract unit)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((operation) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (493 506 ((operation) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((list operation)) (operation) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (508 512 (((list operation)) (operation) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) ((operation) ((list operation)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (514 518 ((operation) ((list operation)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((list operation)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))))
+           (520 524 (((list operation)) ((pair timestamp (pair (mutez @amount) (key_hash @parameter))))) (((pair (list operation) (pair timestamp (pair (mutez @amount) (key_hash @parameter)))))))
+           ))
+ (errors . (
+            )))

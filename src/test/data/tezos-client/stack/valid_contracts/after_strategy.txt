@@ -1,0 +1,25 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((62 135 (((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))) (((pair (list operation) (pair (pair (nat @parameter) bool) timestamp)))))
+           (63 66 (((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))) (((pair (nat @parameter) (pair @storage (pair nat bool) timestamp))) ((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))))
+           (68 71 (((pair (nat @parameter) (pair @storage (pair nat bool) timestamp))) ((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))) ((@parameter nat) ((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))))
+           (73 99 ((@parameter nat) ((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))) ((@parameter nat) (bool) (timestamp)))
+           (76 99 (((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))) ((bool) (timestamp)))
+           (77 81 (((pair (nat @parameter) (pair @storage (pair nat bool) timestamp)))) ((timestamp)))
+           (83 86 ((timestamp)) ((timestamp) (timestamp)))
+           (88 91 ((timestamp) (timestamp)) ((@now timestamp) (timestamp) (timestamp)))
+           (93 98 ((@now timestamp) (timestamp) (timestamp)) ((bool) (timestamp)))
+           (101 105 ((@parameter nat) (bool) (timestamp)) (((pair (nat @parameter) bool)) (timestamp)))
+           (107 111 (((pair (nat @parameter) bool)) (timestamp)) (((pair (pair (nat @parameter) bool) timestamp))))
+           (114 127 (((pair (pair (nat @parameter) bool) timestamp))) (((list operation)) ((pair (pair (nat @parameter) bool) timestamp))))
+           (130 134 (((list operation)) ((pair (pair (nat @parameter) bool) timestamp))) (((pair (list operation) (pair (pair (nat @parameter) bool) timestamp)))))
+           ))
+ (errors . (
+            )))

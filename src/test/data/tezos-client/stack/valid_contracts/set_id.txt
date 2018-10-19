@@ -1,0 +1,16 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((51 81 (((pair (set @parameter string) (set @storage string)))) (((pair (list operation) (set @parameter string)))))
+           (53 56 (((pair (set @parameter string) (set @storage string)))) ((@parameter (set string))))
+           (59 72 ((@parameter (set string))) (((list operation)) (@parameter (set string))))
+           (75 79 (((list operation)) (@parameter (set string))) (((pair (list operation) (set @parameter string)))))
+           ))
+ (errors . (
+            )))

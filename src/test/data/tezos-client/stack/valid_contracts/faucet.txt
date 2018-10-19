@@ -1,0 +1,30 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((46 269 (((pair (key_hash @parameter) (timestamp @storage)))) (((pair (list operation) (timestamp @now)))))
+           (48 54 (((pair (key_hash @parameter) (timestamp @storage)))) ((@parameter key_hash) (@storage timestamp)))
+           (57 61 ((@parameter key_hash) (@storage timestamp)) ((@storage timestamp) (@parameter key_hash)))
+           (71 83 ((@storage timestamp) (@parameter key_hash)) ((int) (@storage timestamp) (@parameter key_hash)))
+           (86 89 ((int) (@storage timestamp) (@parameter key_hash)) ((@FIVE_MINUTES_LATER timestamp) (@parameter key_hash)))
+           (119 122 ((@FIVE_MINUTES_LATER timestamp) (@parameter key_hash)) ((@now timestamp) (@FIVE_MINUTES_LATER timestamp) (@parameter key_hash)))
+           (125 137 ((@now timestamp) (@FIVE_MINUTES_LATER timestamp) (@parameter key_hash)) ((@parameter key_hash)))
+           (147 163 ((@parameter key_hash)) (((contract unit))))
+           (166 184 (((contract unit))) ((mutez) ((contract unit))))
+           (187 191 ((mutez) ((contract unit))) ((unit) (mutez) ((contract unit))))
+           (194 209 ((unit) (mutez) ((contract unit))) ((operation)))
+           (219 232 ((operation)) (((list operation)) (operation)))
+           (235 239 (((list operation)) (operation)) ((operation) ((list operation))))
+           (242 246 ((operation) ((list operation))) (((list operation))))
+           (249 260 (((list operation))) (((list operation)) (@now timestamp)))
+           (253 260 () ((@now timestamp)))
+           (255 258 () ((@now timestamp)))
+           (263 267 (((list operation)) (@now timestamp)) (((pair (list operation) (timestamp @now)))))
+           ))
+ (errors . (
+            )))

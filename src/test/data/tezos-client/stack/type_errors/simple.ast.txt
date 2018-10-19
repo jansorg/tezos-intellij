@@ -1,0 +1,5 @@
+all
+  types
+  errors
+    error
+    error

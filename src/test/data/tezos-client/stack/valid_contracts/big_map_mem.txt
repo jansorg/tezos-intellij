@@ -1,0 +1,30 @@
+[0m[33;1;4m[0m[33;1;4mWarning:[0m[0m[33;1;4m[0m[0m
+  
+                 This is [0m[33;1;4mNOT[0m[0m the Tezos Mainnet.
+  
+     The node you are connecting to claims to be running on the
+               [0m[33;1;4mTezos Alphanet DEVELOPMENT NETWORK.[0m[0m
+          Do [0m[33;1;4mNOT[0m[0m use your fundraiser keys on this network.
+          Alphanet is a testing network, with free tokens.
+
+((types . ((136 264 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) (((pair (list operation) (pair (big_map int unit) unit)))))
+           (138 141 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))))
+           (144 147 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))))
+           (150 154 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) ((bool) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))))
+           (157 196 ((bool) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) ((bool) (bool) ((big_map int unit))))
+           (161 196 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) ((bool) ((big_map int unit))))
+           (163 167 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit))) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) ((int) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))))
+           (170 188 ((int) ((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) ((int) ((big_map int unit)) ((big_map int unit))))
+           (174 188 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) (((big_map int unit)) ((big_map int unit))))
+           (176 180 (((pair (pair @parameter int bool) (pair @storage (big_map int unit) unit)))) (((big_map int unit))))
+           (183 186 (((big_map int unit))) (((big_map int unit)) ((big_map int unit))))
+           (191 194 ((int) ((big_map int unit)) ((big_map int unit))) ((bool) ((big_map int unit))))
+           (206 218 ((bool) (bool) ((big_map int unit))) (((big_map int unit))))
+           (221 225 (((big_map int unit))) ((unit) ((big_map int unit))))
+           (228 232 ((unit) ((big_map int unit))) (((big_map int unit)) (unit)))
+           (235 239 (((big_map int unit)) (unit)) (((pair (big_map int unit) unit))))
+           (242 255 (((pair (big_map int unit) unit))) (((list operation)) ((pair (big_map int unit) unit))))
+           (258 262 (((list operation)) ((pair (big_map int unit) unit))) (((pair (list operation) (pair (big_map int unit) unit)))))
+           ))
+ (errors . (
+            )))
