@@ -5,7 +5,7 @@ DIR="$PWD/src/main/resources/icons"
 cd "$DIR"
 
 rm -f stack*.png
-for i in stack*.svg; do
+for i in svg/stack*.svg; do
     echo "$i"
     if [[ "$i" == *"_dark"*  ]]; then
         inkscape -w 16 -h 16 -e "$(basename -s '_dark.svg' "$i")_dark.png" "$i"
