@@ -41,7 +41,7 @@ class TezosSettings {
         }
 
     fun getDefaultClient(): TezosClientConfig? {
-        return clients.first { it.isDefault }
+        return clients.firstOrNull { it.isDefault }
     }
 
     fun copy(): TezosSettings {

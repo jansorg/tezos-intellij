@@ -10,13 +10,11 @@ import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.JBColor
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
-import com.tezos.client.stack.MichelsonClientError
-import com.tezos.client.stack.MichelsonStackTransformations
-import com.tezos.client.stack.RenderOptions
-import com.tezos.client.stack.StackRendering
+import com.tezos.client.stack.*
 import com.tezos.intellij.settings.TezosSettingService
 import org.apache.commons.codec.digest.DigestUtils
 import java.awt.BorderLayout
@@ -103,7 +101,7 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
             else -> {
                 val clientConfig = TezosSettingService.getSettings().getDefaultClient()
                 if (clientConfig == null) {
-                    showError("Please set a default Tezos client configured to see the stack visualization.")
+                    showError("Default Tezos client isn't configured.")
                     return
                 }
 
@@ -155,6 +153,6 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
     }
 
     private fun showError(message: String) {
-        updateText("<html><div class=\"error\">$message</div></html>")
+        updateText("<html><div style=\"color:${JBColor.red.asHexString()}; font-weight:bold; font-size:1.1em; padding: 10px;\">$message</div></html>")
     }
 }

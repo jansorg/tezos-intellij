@@ -26,11 +26,14 @@ class StackRendering {
                 html, body, p, div, table, tr, td, th { margin: 0; padding: 0; border: none; border-collapse: collapse; }
                 html { padding: 1em; }
                 table { width:100%; }
-                th { text-align:center; width: 50%; font-size:1.1em; font-weight:bold; color:${JBColor.darkGray.asHexString()}; }
-                td { text-align:left; font-family:"${opts.codeFont}",monospace; font-size: ${opts.codeFontSizePt}pt; padding: 2px 0 4px 0; }
+                th { width: 50%; font-size:1.1em; font-weight:bold; color:${JBColor.darkGray.asHexString()}; padding-bottom:6px; }
+                td { font-family:"${opts.codeFont}", monospace; font-size: ${opts.codeFontSizePt}pt; padding: 2px 0 4px 0; }
 
-                .content { border-top: 1px solid ${JBColor(Color(197, 197, 197), Color(90, 90, 90)).asHexString()}; }
-                .error { font-weight: bold; color: ${JBColor.red.asHexString()}}
+                .left { text-align:left; }
+                .right { text-align: right; }
+                .content { border-bottom: 1px solid ${JBColor(Color(197, 197, 197), Color(90, 90, 90)).asHexString()}; }
+
+                .last-row { border-bottom: none; }
         """.trimIndent()
     }
 
@@ -53,12 +56,12 @@ class StackRendering {
             body {
                 table {
                     tr {
-                        th { +"Before" }
-                        th { +"After" }
+                        th(classes = "left") { +"Before" }
+                        th(classes = "right") { +"After" }
                     }
 
                     for (i in 0 until maxSize) {
-                        tr("content") {
+                        tr("content" + if (i == maxSize - 1) " last-row" else "") {
                             if (opts.highlightChanges) {
                                 //classes += if (unchanged) "no-change-row" else "change-row"
                                 if (i == firstChange) classes += "first-change"
@@ -114,5 +117,5 @@ class StackRendering {
 }
 
 fun Color.asHexString(): String {
-    return String.format("#%x%x%x", red, green, blue)
+    return "#" + String.format("%02x%02x%02x", red, green, blue)
 }

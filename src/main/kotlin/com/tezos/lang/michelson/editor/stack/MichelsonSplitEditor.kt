@@ -13,13 +13,17 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
+import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.UIUtil
 import com.tezos.client.stack.RenderOptions
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
 import com.tezos.lang.michelson.editor.stack.split.SplitFileEditor
 import java.awt.BorderLayout
 import javax.swing.JPanel
+import javax.swing.border.EmptyBorder
 
 /**
  * @author jansorg
@@ -67,7 +71,11 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     }
 
     override fun createToolbar(): JPanel? {
-        val toolbar = JPanel(BorderLayout())
+        val s = JBUI.scale(5)
+
+        val toolbar = JPanel(BorderLayout(JBUI.scale(3), 0))
+        toolbar.border = EmptyBorder(0, s, 0, s)
+        toolbar.add(JBLabel("Michelson stack", UIUtil.ComponentStyle.SMALL, UIUtil.FontColor.BRIGHTER), BorderLayout.WEST)
 
         val actions = findActions()
         toolbar.add(actions.component, BorderLayout.EAST)
@@ -84,6 +92,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         val bar = mgr.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, group, true) as ActionToolbarImpl
         bar.isOpaque = false
         bar.setTargetComponent(stackEditor.component)
+        bar.border = EmptyBorder(0, 0, 0, 0)
 
         return bar
     }
