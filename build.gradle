@@ -110,15 +110,6 @@ task generateMichelsonParser(type: GenerateParser) {
     purgeOldFiles = true
 }
 
-task generateLexers {
-    dependsOn generateMichelsonLexer
-}
-
-// not working atm due to classpath issues when Gradle is run
-task generateParsers {
-    dependsOn generateMichelsonParser
-}
-
 // code coverage using the Jacoco engine, see https://docs.gradle.org/current/userguide/jacoco_plugin.html
 // the coverage reports will be available at build/reports/coverage/test/html/index.html
 apply plugin: 'jacoco'
@@ -148,7 +139,6 @@ test {
 
 // antlr config
 generateGrammarSource {
-//    maxHeapSize = "64m"
     arguments += ["-package", "com.tezos.client.stack", "-visitor"]
 }
 
@@ -156,3 +146,13 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.8.1'
 }
 
+task generateLexers {
+    dependsOn generateMichelsonLexer
+}
+
+// not working atm due to classpath issues when Gradle is run
+task generateParsers {
+    dependsOn generateMichelsonParser
+}
+
+compileKotlin.dependsOn generateGrammarSource
