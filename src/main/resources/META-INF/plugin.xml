@@ -18,12 +18,18 @@
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.6.1</b>
+        <ul>
+            <li>Include all changes scheduled for 0.6.0</li>
+        </ul><br><br>
+
         <b>Version 0.6.0</b>
         <ul>
             <li>Feature: stack visualization for Michelson files</li>
             <li>Feature: settings to configure the appearance of the stack visualization</li>
             <li>Feature: settings to configure the available Tezos clients. It supports "tezos-client" and docker scripts ("alphanet.sh", "mainnet.sh", etc.)</li>
         </ul><br><br>
+
         <b>Version 0.5.0</b>
         <ul>
             <li>Improved code cmpletion for instructions</li>

@@ -1,3 +1,6 @@
+# Version 0.6.1
+- Include all changes scheduled for 0.6.0
+
 # Version 0.6.0
 - Improved parsing of nested tags
 - Feature: stack visualization for Michelson files
