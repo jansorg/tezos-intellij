@@ -36,13 +36,11 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
         private const val PROPORTION_KEY = "TezosSplitFileEditor.Proportion"
     }
 
-    private val mainComponent: JComponent
-    private val splitter: JBSplitter
+    private lateinit var mainComponent: JComponent
+    private lateinit var splitter: JBSplitter
+    private var toolbar: JPanel? = null
 
     init {
-        splitter = JBSplitter(isVerticalSplit(), 0.65f, 0.15f, 0.85f)
-        mainComponent = createComponent(splitter)
-
         if (this.mainEditor is TextEditor) {
             this.mainEditor.putUserData<SplitFileEditor<*, *>>(PARENT_SPLIT_KEY, this)
         }
@@ -61,38 +59,38 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
             return
         }
 
-        //myToolbarWrapper!!.refresh()
+        // toolbar.refresh()
         splitter.orientation = isVerticalSplit
         mainComponent.repaint()
     }
 
-    private fun createComponent(splitter: JBSplitter): JComponent {
+    open protected fun createToolbar(): JPanel? = null
+
+    private fun createComponent(): JComponent {
+        toolbar = createToolbar()
+        val second = JPanel(BorderLayout())
+        second.add(toolbar, BorderLayout.NORTH)
+        second.add(secondEditor.component, BorderLayout.CENTER)
+
+        splitter = JBSplitter(isVerticalSplit(), 0.65f, 0.15f, 0.85f)
         splitter.splitterProportionKey = PROPORTION_KEY
         splitter.firstComponent = mainEditor.component
-        splitter.secondComponent = secondEditor.component
+        splitter.secondComponent = second
 
-//        myToolbarWrapper = SplitEditorToolbar(splitter)
-//        if (mainEditor is TextEditor) {
-//            myToolbarWrapper!!.addGutterToTrack((mainEditor as TextEditor).editor.gutter as EditorGutterComponentEx)
-//        }
-//        if (secondEditor is TextEditor) {
-//            myToolbarWrapper!!.addGutterToTrack((secondEditor as TextEditor).editor.gutter as EditorGutterComponentEx)
-//        }
-
-        val panel = JPanel(BorderLayout())
-//        result.add(myToolbarWrapper, BorderLayout.NORTH)
-        panel.add(splitter, BorderLayout.CENTER)
+        val mainPanel = JPanel(BorderLayout())
+        mainPanel.add(splitter, BorderLayout.CENTER)
         adjustEditorsVisibility()
-
-        return panel
+        return mainPanel
     }
 
     private fun invalidateLayout(requestFocus: Boolean) {
         adjustEditorsVisibility()
-//        myToolbarWrapper!!.refresh()
+        toolbar?.repaint()
         mainComponent.repaint()
 
-        if (!requestFocus) return
+        if (!requestFocus) {
+            return
+        }
 
         val focusComponent = preferredFocusedComponent
         if (focusComponent != null) {
@@ -106,6 +104,10 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
     }
 
     override fun getComponent(): JComponent {
+        if (!this::mainComponent.isInitialized) {
+            mainComponent = createComponent()
+        }
+
         return mainComponent
     }
 

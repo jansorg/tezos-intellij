@@ -118,5 +118,11 @@
             <action id="tezos.NewMichelsonFile" class="com.tezos.lang.michelson.actions.CreateMichelsonFileAction"/>
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
         </group>
+
+        <group id="tezos.editorToolbar">
+            <action id="tezos.editorAlignStack" class="com.tezos.lang.michelson.editor.stack.actions.AlignStackAction"/>
+            <action id="tezos.editorHighlightUnchanged" class="com.tezos.lang.michelson.editor.stack.actions.HighlightUnchangedAction"/>
+            <action id="tezos.editorShowAnnotations" class="com.tezos.lang.michelson.editor.stack.actions.ShowAnnotationsAction"/>
+        </group>
     </actions>
 </idea-plugin>

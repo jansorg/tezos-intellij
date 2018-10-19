@@ -96,7 +96,7 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
 
     override fun dispose() {}
 
-    fun updateStack(settings: EditorColorsScheme, content: String, offset: Int) {
+    fun updateStack(content: String, offset: Int, renderOptions: RenderOptions) {
         val cached = stack
         val stackInfo = when (cached?.matches(content)) {
             true -> cached.stack
@@ -139,7 +139,7 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
             return
         }
 
-        updateText(stackRenderer.render(matching, renderOptions(settings)))
+        updateText(stackRenderer.render(matching, renderOptions))
     }
 
     private fun updateText(html: String) {
@@ -152,18 +152,6 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
 
         htmlPanel.document = doc
         htmlPanel.caretPosition = 0
-    }
-
-    private fun renderOptions(settings: EditorColorsScheme): RenderOptions {
-        val opts = RenderOptions(
-                markUnchanged = true,
-                highlightChanges = false,
-                alignStacks = true,
-                showAnnotations = false,
-                codeFont = settings.editorFontName,
-                codeFontSizePt = settings.editorFontSize * 1.1
-        )
-        return opts
     }
 
     private fun showError(message: String) {
