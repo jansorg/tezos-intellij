@@ -24,6 +24,8 @@ class TezosSettings {
     @Tag("clients")
     val clients = mutableListOf<TezosClientConfig>()
 
+    @JvmField
+    @Tag("stackPosition")
     var stackPanelPosition: StackVisualizationPosition = StackVisualizationPosition.RIGHT
 
     fun setClients(values: List<TezosClientConfig>) {
@@ -43,7 +45,7 @@ class TezosSettings {
     fun copy(): TezosSettings {
         val v = TezosSettings()
         v.setClients(clients.map { TezosClientConfig().applyFrom(it) })
-        v.stackPanelPosition = v.stackPanelPosition
+        v.stackPanelPosition = stackPanelPosition
         return v
     }
 

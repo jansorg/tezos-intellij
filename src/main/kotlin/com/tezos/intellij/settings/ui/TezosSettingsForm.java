@@ -184,12 +184,13 @@ public class TezosSettingsForm {
 
     void applyTo(TezosSettings state) {
         state.setClients(model.getItems().stream().map(c -> new TezosClientConfig().applyFrom(c)).collect(Collectors.toList()));
-        state.setStackPanelPosition(stackVisualization.getItemAt(stackVisualization.getSelectedIndex()));
+        state.stackPanelPosition = stackVisualization.getItemAt(stackVisualization.getSelectedIndex());
     }
 
     public void resetTo(@NotNull TezosSettings settings) {
-        model.replaceAll(settings.clients);
         selectionModel.clearSelection();
-        stackVisualization.setSelectedItem(settings.getStackPanelPosition());
+
+        model.replaceAll(settings.clients);
+        stackVisualization.setSelectedItem(settings.stackPanelPosition);
     }
 }

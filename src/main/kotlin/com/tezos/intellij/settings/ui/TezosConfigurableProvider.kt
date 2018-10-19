@@ -7,7 +7,5 @@ import com.intellij.openapi.options.ConfigurableProvider
  * @author jansorg
  */
 class TezosConfigurableProvider : ConfigurableProvider() {
-    override fun createConfigurable(): Configurable? {
-        return TezosConfigurable()
-    }
+    override fun createConfigurable(): Configurable? = TezosConfigurable()
 }
