@@ -3,7 +3,6 @@ package com.tezos.lang.michelson.editor.stack.michelson
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
 import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -42,7 +41,7 @@ private data class StackInfo(val contentMD5: String, val stack: MichelsonStackTr
     }
 }
 
-class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDataHolderBase(), FileEditor {
+class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stack")
 
@@ -66,7 +65,7 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
 
     override fun getName(): String = "Michelson Stack Visualization"
 
-    override fun isValid(): Boolean = file.isValid
+    override fun isValid(): Boolean = _file.isValid
 
     override fun isModified(): Boolean = false
 

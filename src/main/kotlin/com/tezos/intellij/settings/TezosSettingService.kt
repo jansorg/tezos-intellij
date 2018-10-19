@@ -32,7 +32,7 @@ class TezosSettingService() : PersistentStateComponent<TezosSettings> {
     }
 
     @Synchronized
-    override fun loadState(state: TezosSettings?) {
+    override fun loadState(state: TezosSettings) {
         if (state == null) {
             this.settings = TezosSettings()
         } else {

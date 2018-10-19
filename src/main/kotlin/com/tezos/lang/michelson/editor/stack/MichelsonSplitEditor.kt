@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.EditorColorsScheme
@@ -41,7 +42,10 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     var stackShowAnnotations = false
 
     init {
-        UISettings.getInstance().addUISettingsListener(this, this)
+        // UISettings.getInstance() changed from Java to Kotlin (in 182.x at the latest), we're using what 182.x is doing in its implementation
+        // 182.x also deprecated addUISettingsListener()
+        ApplicationManager.getApplication().messageBus.connect(this).subscribe(UISettingsListener.TOPIC, this)
+
         mainEditor.editor.caretModel.addCaretListener(this)
 
         //  ApplicationManager.getApplication().messageBus.connect(this).subscribe<Any>(MarkdownApplicationSettings.SettingsChangedListener.TOPIC, settingsChangedListener)
