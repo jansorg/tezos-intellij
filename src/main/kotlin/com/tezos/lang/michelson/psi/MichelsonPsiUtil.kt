@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.TreeUtil
+import com.intellij.psi.tree.IElementType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 
@@ -120,5 +121,19 @@ object MichelsonPsiUtil {
     fun isWhitespceOnly(psi: PsiBlockInstruction): Boolean {
         val next = TreeUtil.skipElements(psi.firstChild.node.treeNext, MichelsonTokenSets.WHITESPACE_TOKENS)
         return next == psi.lastChild.node
+    }
+}
+
+fun PsiElement?.isWhitespace(): Boolean {
+    return when (this) {
+        null -> false
+        else -> MichelsonTokenSets.WHITESPACE_TOKENS.contains(this.node.elementType)
+    }
+}
+
+fun IElementType?.isWhitespace(): Boolean {
+    return when (this) {
+        null -> false
+        else -> MichelsonTokenSets.WHITESPACE_TOKENS.contains(this)
     }
 }

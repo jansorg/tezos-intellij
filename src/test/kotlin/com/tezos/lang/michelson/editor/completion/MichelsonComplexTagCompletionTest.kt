@@ -31,5 +31,11 @@ class MichelsonComplexTagCompletionTest : MichelsonCompletionTest() {
 
         configureByCode("PUSH unit <caret>")
         assertCompletionsNoneOf(*reference)
+
+        configureByCode("PUSH (Pair <caret>)")
+        assertCompletionsNoneOf(*reference)
+
+        configureByCode("PUSH (Pair int <caret>)")
+        assertCompletionsNoneOf(*reference)
     }
 }

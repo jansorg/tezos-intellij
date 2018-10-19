@@ -9,12 +9,11 @@ MICHELSON_FILE
           PsiElement(GENERIC_TYPE)
             PsiElement(TYPE_NAME)('int')
           PsiElement(()('(')
-          PsiElement(TAG_DATA)
-            PsiElement(TAG)('Pair')
-          PsiErrorElement:Unexpected token
-            PsiElement(TYPE_NAME)('int')
-          PsiElement(TYPE_NAME)('int')
-          PsiErrorElement:'(' or '{' expected, got ')'
+          PsiElement(TAG)
+            PsiElement(TAG_TOKEN)('Pair')
+          PsiErrorElement:Expected )
             <empty list>
+          PsiElement(TYPE_NAME)('int')
+          PsiElement(TYPE_NAME)('int')
           PsiElement())(')')
         PsiElement(})('}')

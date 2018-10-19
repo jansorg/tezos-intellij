@@ -34,7 +34,7 @@ INT=-?[0-9]+
 BYTE=0x[A-F0-9]+
 // a single upper-case letter would be correct, but also have to match mixed case names like PAIRpair to avoid that this is lexed as two tokens INSTRUCTION TAG, which would mess up the parsing
 // our annotator highlights these mixed-case names as errors
-TAG=[A-Z][a-z]+ //fixme
+TAG_TOKEN=[A-Z][a-z]+ //fixme
 STRING_CONTENT=[^\"\\]+
 STRING_ESCAPE=\\[ntbr\\\"]
 STRING_ESCAPE_INVALID=\\[^ntbr\\\"]
@@ -57,6 +57,7 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
 }
 
 <YYINITIAL> {
+  {EOL}                         { return EOL; }
   {WHITE_SPACE}                 { return WHITE_SPACE; }
 
   "("                           { return LEFT_PAREN; }
@@ -66,7 +67,7 @@ COMMENT_MULTI_LINE="/"\* ~\*"/"
   ";"                           { return SEMI; }
   "\""                          { yybegin(S_STRING); return QUOTE; }
 
-  {TAG}                         { return TAG; }
+  {TAG_TOKEN}                   { return TAG_TOKEN; }
   {SECTION_NAME}                { return SECTION_NAME; }
   {TYPE_NAME}                   { return TYPE_NAME; }
   {INT}                         { return INT; }

@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiTagDataImpl extends PsiDataImpl implements PsiTagData {
+public class PsiTagImpl extends PsiDataImpl implements PsiTag {
 
-  public PsiTagDataImpl(@NotNull IElementType type) {
+  public PsiTagImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitTagData(this);
+    return visitor.visitTag(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -39,9 +39,9 @@ public class PsiTagDataImpl extends PsiDataImpl implements PsiTagData {
   }
 
   @Override
-  @NotNull
-  public PsiElement getTag() {
-    return findPsiChildByType(TAG);
+  @Nullable
+  public PsiElement getTagToken() {
+    return findPsiChildByType(TAG_TOKEN);
   }
 
 }

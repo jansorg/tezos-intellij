@@ -37,6 +37,8 @@
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
+        EOL="end-of-line-marker"
+
         // keywords
         SECTION_NAME='regexp:parameter|return|storage|code'
 
@@ -54,7 +56,7 @@
         // literal values
         INT='regexp:-?[0-9]+'
         BYTE='regexp:0x[A-F0-9]+' //fixme: are lowercase characters allowed here?
-        TAG='regexp:[A-Z][a-z]+'
+        TAG_TOKEN='regexp:[A-Z][a-z]+'
         // literal string values, we need this to be able to differentiate between valid and invalid escaped chars
         QUOTE='"'
         STRING_CONTENT='regexp:[^"\\]+' //no string end and no escape code
@@ -93,17 +95,18 @@ empty_block ::= '{' ';'? '}' {extends=block_instruction}
 //-- data
 fake data ::=
 // data_toplevel is our extension to match data which may be used as argument to an instruction or tag
-private toplevel_data ::= literal_data | tag_data | data_map | data_list | empty_block | nested_data
-private nested_data ::= '(' toplevel_data ')'
+private toplevel_data ::= literal_data | tag | data_map | data_list | empty_block | nested_data
+private nested_data ::= <<parseNestedData toplevel_data>>
 literal_data ::= INT | BYTE | string_literal
 string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)* '"' {extends=literal_data}
-tag_data ::= TAG toplevel_data* {pin=1 recoverWhile=tag_data_recovery}
-private tag_data_recovery ::= <<tag_data_recover_while>>
 // don't pin on { as it's the start marker for a block and a map literal
 data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
 // don't pin on { as it's also the start marker for a block and a list literal
 data_map ::= '{' ';'? map_entry (';' (map_entry | &'}'))* '}'  // empty list {} is not allowed here
 map_entry ::= 'Elt' toplevel_data toplevel_data
+
+tag ::= 'Unit' | 'True' | 'False' | 'None' | TAG_TOKEN toplevel_data* {pin=1 recoverWhile=tag_recovery extends=data}
+private tag_recovery ::= <<tag_data_recover_while>>
 
 //-- instructions
 

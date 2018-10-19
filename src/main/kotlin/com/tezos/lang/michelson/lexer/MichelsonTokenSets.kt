@@ -9,7 +9,7 @@ import com.tezos.lang.michelson.MichelsonTypes
  * @author jansorg
  */
 object MichelsonTokenSets {
-    val WHITESPACE_TOKENS = TokenSet.create(TokenType.WHITE_SPACE)
+    val WHITESPACE_TOKENS = TokenSet.create(TokenType.WHITE_SPACE, MichelsonTypes.EOL)
 
     val STRING_TOKENS = TokenSet.create(MichelsonTypes.STRING_CONTENT, MichelsonTypes.STRING_ESCAPE, MichelsonTypes.STRING_ESCAPE_INVALID)
 
