@@ -66,47 +66,35 @@ class MichelsonStackVisualizationEditor(private val file: VirtualFile) : UserDat
         rootComponent.add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
     }
 
-    override fun getName(): String {
-        return "Michelson Stack Visualization"
-    }
+    override fun getName(): String = "Michelson Stack Visualization"
 
     override fun isValid(): Boolean = file.isValid
 
     override fun isModified(): Boolean = false
 
-    override fun getState(level: FileEditorStateLevel): FileEditorState {
-        return FileEditorState.INSTANCE
-    }
+    override fun getState(level: FileEditorStateLevel): FileEditorState = FileEditorState.INSTANCE
 
-    override fun setState(state: FileEditorState) {
-    }
+    override fun setState(state: FileEditorState) {}
 
-    override fun getComponent(): JComponent {
-        return rootComponent
-    }
+    override fun getComponent(): JComponent = rootComponent
 
     override fun getPreferredFocusedComponent(): JComponent? = null
 
-    override fun selectNotify() {
-    }
+    override fun selectNotify() {}
 
     override fun getCurrentLocation(): FileEditorLocation? = null
 
     override fun getStructureViewBuilder(): StructureViewBuilder? = null
 
-    override fun deselectNotify() {
-    }
+    override fun deselectNotify() {}
 
     override fun getBackgroundHighlighter(): BackgroundEditorHighlighter? = null
 
-    override fun addPropertyChangeListener(listener: PropertyChangeListener) {
-    }
+    override fun addPropertyChangeListener(listener: PropertyChangeListener) {}
 
-    override fun removePropertyChangeListener(listener: PropertyChangeListener) {
-    }
+    override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
 
-    override fun dispose() {
-    }
+    override fun dispose() {}
 
     fun updateStack(settings: EditorColorsScheme, content: String, offset: Int) {
         val cached = stack

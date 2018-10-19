@@ -13,7 +13,9 @@ enum class StackVisualizationPosition {
         }
     }
 
-    fun isVerticalSplit() = this == RIGHT
+    fun isVerticalSplit(): Boolean {
+        return this == BOTTOM
+    }
 }
 
 /**
