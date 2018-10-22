@@ -98,7 +98,7 @@ public class TezosSettingsForm {
         });
 
         clientList.addListSelectionListener(e -> {
-            if (clientList.isSelectionEmpty()) {
+            if (clientList.isSelectionEmpty() || clientList.getSelectedIndex() >= model.getSize()) {
                 load(null);
             } else {
                 load(model.getElementAt(clientList.getSelectedIndex()));
