@@ -5,10 +5,9 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorProvider
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.Disposer
-import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
 import com.tezos.lang.michelson.editor.stack.michelson.StackVisualizationEditorProvider
-import com.tezos.lang.michelson.editor.stack.split.SplitTextEditorProvider
+import com.tezos.intellij.editor.split.SplitTextEditorProvider
 
 /**
  * @author jansorg

@@ -21,7 +21,7 @@ import com.intellij.util.ui.UIUtil
 import com.tezos.client.stack.RenderOptions
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
-import com.tezos.lang.michelson.editor.stack.split.SplitFileEditor
+import com.tezos.intellij.editor.split.SplitFileEditor
 import java.awt.BorderLayout
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder

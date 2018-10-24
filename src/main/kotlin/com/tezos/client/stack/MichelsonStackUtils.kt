@@ -12,7 +12,7 @@ object MichelsonStackUtils {
             index > 0 -> content.substring(index)
             index == 0 -> content
             else -> when {
-                content.contains("Node is not running") -> throw MichelsonClientError("Client error. Please make sure that the node is running.", null)
+                content.contains("Node is not running") -> throw MichelsonClientError("The node is not running.", null)
                 else -> throw MichelsonClientError("Invalid output. Make sure that the client is working properly.", null)
             }
         }

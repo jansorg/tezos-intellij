@@ -1,11 +1,14 @@
 package com.tezos.intellij.settings.ui;
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.ui.*;
+import com.intellij.ui.ToolbarDecorator.ElementActionButton;
 import com.intellij.ui.components.JBList;
+import com.intellij.util.PlatformIcons;
 import com.intellij.util.ui.JBDimension;
 import com.intellij.util.ui.StatusText;
 import com.tezos.client.TezosClientDetector;
@@ -71,6 +74,7 @@ public class TezosSettingsForm {
                 String name = value.name.isEmpty() ? "<not available>" : value.name;
                 if (value.isDefault) {
                     append(name, SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+                    append(" (default client)", SimpleTextAttributes.GRAYED_ATTRIBUTES);
                 } else {
                     append(name);
                 }
@@ -84,6 +88,9 @@ public class TezosSettingsForm {
             selectionModel.setSelectionInterval(model.getSize(), model.getSize());
         });
         toolbar.setRemoveAction(button -> model.remove(selectionModel.getMinSelectionIndex()));
+
+        CopyClientAction copyClientAction = new CopyClientAction(clientList, model);
+        toolbar.addExtraAction(copyClientAction);
 
         clientListPanel = new JPanel(new BorderLayout());
         clientListPanel.add(toolbar.createPanel());
@@ -116,7 +123,8 @@ public class TezosSettingsForm {
         });
 
         clientList.addListSelectionListener(e -> {
-            if (clientList.isSelectionEmpty()) {
+            boolean hasSelection = clientList.isSelectionEmpty();
+            if (hasSelection) {
                 load(null);
             } else {
                 load(model.getElementAt(clientList.getSelectedIndex()));
@@ -210,5 +218,33 @@ public class TezosSettingsForm {
 
         model.replaceAll(settings.clients);
         stackVisualization.setSelectedItem(settings.stackPanelPosition);
+    }
+
+    private static class CopyClientAction extends ElementActionButton {
+        private final JBList<TezosClientConfig> list;
+        private final CollectionListModel<TezosClientConfig> model;
+
+        CopyClientAction(JBList<TezosClientConfig> list, CollectionListModel<TezosClientConfig> model) {
+            super("Copy selected client configuration", "Adds a copy of the currently selected item to the list.", PlatformIcons.COPY_ICON);
+            this.list = list;
+            this.model = model;
+        }
+
+        @Override
+        public void actionPerformed(AnActionEvent e) {
+            int index = list.getSelectedIndex();
+            if (index >= 0) {
+                TezosClientConfig current = model.getElementAt(index);
+
+                TezosClientConfig copy = new TezosClientConfig().applyFrom(current);
+                copy.isDefault = false;
+                model.add(copy);
+            }
+        }
+
+        @Override
+        public boolean isDumbAware() {
+            return true;
+        }
     }
 }
