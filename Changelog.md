@@ -1,3 +1,6 @@
+# Version 0.7.0
+- Add option to settings to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)
+
 # Version 0.6.1
 - Include all changes scheduled for 0.6.0
 
