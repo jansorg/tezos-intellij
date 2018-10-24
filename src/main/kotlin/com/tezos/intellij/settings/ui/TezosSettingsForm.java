@@ -82,7 +82,7 @@ public class TezosSettingsForm {
         });
 
         ToolbarDecorator toolbar = ToolbarDecorator.createDecorator(clientList).disableUpDownActions();
-        toolbar.setPreferredSize(new JBDimension(350, 250));
+        toolbar.setPreferredSize(new JBDimension(250, 150));
         toolbar.setAddAction(anActionButton -> {
             model.add(new TezosClientConfig());
             selectionModel.setSelectionInterval(model.getSize(), model.getSize());
