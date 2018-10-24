@@ -1,12 +1,14 @@
 package com.tezos.intellij.settings.ui;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.JBDimension;
+import com.intellij.util.ui.StatusText;
+import com.tezos.client.TezosClientDetector;
 import com.tezos.intellij.settings.StackVisualizationPosition;
 import com.tezos.intellij.settings.TezosClientConfig;
 import com.tezos.intellij.settings.TezosSettingService;
@@ -16,7 +18,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import java.awt.*;
 import java.io.File;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +44,7 @@ public class TezosSettingsForm {
 
     private CollectionListModel<TezosClientConfig> model;
     private ListSelectionModel selectionModel;
-    private JBList clientList;
+    private JBList<TezosClientConfig> clientList;
 
     private boolean listenerSuspended = false;
 
@@ -52,13 +56,18 @@ public class TezosSettingsForm {
         model = new CollectionListModel<>();
         model.add(TezosSettingService.getSettings().clients);
 
-        clientList = new JBList(model);
+        clientList = new JBList<>(model);
         selectionModel = clientList.getSelectionModel();
 
-        clientList.setEmptyText("No Tezos clients configured");
+        StatusText emptyText = clientList.getEmptyText();
+        emptyText.appendText("No Tezos clients configured.");
+        emptyText.appendSecondaryText("Autodetect clients ...", SimpleTextAttributes.LINK_ATTRIBUTES, e -> {
+            detectClient();
+        });
+
         clientList.setCellRenderer(new ColoredListCellRenderer<TezosClientConfig>() {
             @Override
-            protected void customizeCellRenderer(JList list, TezosClientConfig value, int index, boolean selected, boolean hasFocus) {
+            protected void customizeCellRenderer(@NotNull JList list, TezosClientConfig value, int index, boolean selected, boolean hasFocus) {
                 String name = value.name.isEmpty() ? "<not available>" : value.name;
                 if (value.isDefault) {
                     append(name, SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
@@ -74,12 +83,21 @@ public class TezosSettingsForm {
             model.add(new TezosClientConfig());
             selectionModel.setSelectionInterval(model.getSize(), model.getSize());
         });
-        toolbar.setRemoveAction(button -> {
-            model.remove(selectionModel.getMinSelectionIndex());
-        });
+        toolbar.setRemoveAction(button -> model.remove(selectionModel.getMinSelectionIndex()));
 
-        clientListPanel = new JPanel(new VerticalFlowLayout());
+        clientListPanel = new JPanel(new BorderLayout());
         clientListPanel.add(toolbar.createPanel());
+    }
+
+    private void detectClient() {
+        //fixme replace with progress dialog and background job?
+        TezosClientDetector detector = new TezosClientDetector();
+        List<TezosClientConfig> detected = detector.detectClients();
+        if (detected.isEmpty()) {
+            Messages.showInfoMessage(clientList, "No clients could be detected in your configured PATH environment. Please configure a client manually.", "No Clients Found");
+        } else {
+            model.replaceAll(detected);
+        }
     }
 
     public void init() {

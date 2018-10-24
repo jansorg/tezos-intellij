@@ -37,7 +37,7 @@ open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
     }
 
     override fun typecheck(content: String): MichelsonStackTransformations {
-        val clientStdout = typecheckOutput(content)
+        val clientStdout = typecheckResult(content)
 
         val correctedContent = MichelsonStackUtils.fixTezosClientStdout(clientStdout)
         val input = ANTLRInputStream(correctedContent)
@@ -61,7 +61,7 @@ open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
         return MichelsonStackTransformations(list, errors)
     }
 
-    override fun typecheckOutput(content: String): String {
+    private fun typecheckResult(content: String): String {
         val outFile = Files.createTempFile("tezos-intellij-", ".txt")
         try {
             val exePath = when (Files.isExecutable(executable)) {
