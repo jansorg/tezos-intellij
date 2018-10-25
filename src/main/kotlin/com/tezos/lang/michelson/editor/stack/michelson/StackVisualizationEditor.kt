@@ -7,61 +7,29 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.JBColor
-import com.intellij.ui.ScrollPaneFactory
-import com.intellij.util.ui.JBUI
-import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
-import com.tezos.client.stack.*
+import com.tezos.client.stack.RenderOptions
+import com.tezos.client.stack.StackRendering
+import com.tezos.client.stack.TezosClientError
+import com.tezos.client.stack.TezosClientNodeUnavailableError
 import com.tezos.intellij.settings.TezosSettingService
-import org.apache.commons.codec.digest.DigestUtils
-import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
-import java.io.StringReader
 import java.nio.file.Paths
 import javax.swing.JComponent
-import javax.swing.JEditorPane
-import javax.swing.JPanel
 
-private data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
-    fun matches(content: String): Boolean {
-        return contentMD5.equals(md5(content))
-    }
-
-    companion object {
-        private fun md5(content: String): String {
-            return DigestUtils.md5Hex(content)
-        }
-
-        fun createFromContent(content: String, stack: MichelsonStackTransformations): StackInfo {
-            return StackInfo(md5(content), stack)
-        }
-    }
-}
-
-class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
+class MichelsonStackVisualizationEditor(project: Project, private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stack")
-
         private val stackRenderer = StackRendering()
     }
 
-    private val rootComponent: JPanel
-    private val htmlPanel: JEditorPane
+    private val contentPane: StackHtmlPane = StackHtmlPane(project)
 
     @Volatile
     private var stack: StackInfo? = null
-
-    init {
-        htmlPanel = JEditorPane(UIUtil.HTML_MIME, "")
-        htmlPanel.isEditable = false
-        htmlPanel.border = JBUI.Borders.empty(7)
-
-        rootComponent = JPanel(BorderLayout())
-        rootComponent.add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
-    }
 
     override fun getName(): String = "Michelson Stack Visualization"
 
@@ -73,7 +41,7 @@ class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDa
 
     override fun setState(state: FileEditorState) {}
 
-    override fun getComponent(): JComponent = rootComponent
+    override fun getComponent(): JComponent = contentPane
 
     override fun getPreferredFocusedComponent(): JComponent? = null
 
@@ -100,7 +68,7 @@ class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDa
             else -> {
                 val clientConfig = TezosSettingService.getSettings().getDefaultClient()
                 if (clientConfig == null) {
-                    renderError("Default Tezos client isn't configured.")
+                    contentPane.renderClientUnavailable()
                     return
                 }
 
@@ -111,13 +79,20 @@ class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDa
                     val result = client.typecheck(content)
                     stack = StackInfo.createFromContent(content, result)
                     result
-                } catch (e: MichelsonClientError) {
-                    LOG.warn("Error executing Tezos client", e)
-                    renderError(e.message?.let { "Client error:<br>${it}" }  ?: "Error while executing the Tezos client command.")
+                } catch (e: TezosClientNodeUnavailableError) {
+                    LOG.debug("Error executing Tezos client", e)
+                    contentPane.renderError("Tezos node unavailable.", "It seems that the node of the default client is not running.")
+                    return
+                } catch (e: TezosClientError) {
+                    LOG.debug("Error executing Tezos client", e)
+                    when (e.message) {
+                        null -> contentPane.renderError("Error while executing the Tezos client command.")
+                        else -> contentPane.renderError("Client error.", e.message)
+                    }
                     return
                 } catch (e: Exception) {
-                    LOG.warn("Error executing Tezos client", e)
-                    renderError("Error while executing the default Tezos client command.")
+                    LOG.debug("Error executing Tezos client", e)
+                    contentPane.renderError("Error while executing the default Tezos client command.")
                     return
                 }
             }
@@ -125,38 +100,16 @@ class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDa
 
         if (stackInfo.hasErrors) {
             // fixme show errors?
-            renderError("Unable to display because the Tezos client returned errors or warnings for the current file.")
+            contentPane.renderError("Unable to display because the Tezos client returned errors or warnings for the current file.")
             return
         }
 
         val matching = stackInfo.elementAt(offset)
         if (matching == null) {
-            renderInfo("No matching stack information found.")
+            contentPane.renderInfo("No matching stack information found.")
             return
         }
 
-        updateText(stackRenderer.render(matching, renderOptions))
-    }
-
-    private fun updateText(html: String) {
-        // we update the editor kit every time because it depends on the current IDE's theme
-        val htmlKit = UIUtil.getHTMLEditorKit()
-        htmlKit.styleSheet.addRule(".msg-info { font-weight:bold; padding:8px; color: ${JBColor.darkGray.asHexString()}; }")
-        htmlKit.styleSheet.addRule(".msg-error { font-weight:bold; padding:8px; font-size:100%; color:${JBColor.red.asHexString()}; }")
-        htmlPanel.editorKit = htmlKit
-
-        val doc = htmlKit.createDefaultDocument()
-        htmlKit.read(StringReader(html), doc, 0)
-
-        htmlPanel.document = doc
-        htmlPanel.caretPosition = 0
-    }
-
-    private fun renderInfo(message: String) {
-        updateText("<html><div class=\"msg-info\">$message</div></html>")
-    }
-
-    private fun renderError(message: String) {
-        updateText("<html><div class=\"msg-error\">$message</div></html>")
+        contentPane.renderHTML(stackRenderer.render(matching, renderOptions))
     }
 }

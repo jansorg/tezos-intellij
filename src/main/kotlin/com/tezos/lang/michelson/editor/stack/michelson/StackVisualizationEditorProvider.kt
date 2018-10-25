@@ -23,7 +23,7 @@ class StackVisualizationEditorProvider : FileEditorProvider {
     }
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-        return MichelsonStackVisualizationEditor(file)
+        return MichelsonStackVisualizationEditor(project, file)
     }
 
     override fun readState(sourceElement: Element, project: Project, file: VirtualFile): FileEditorState {

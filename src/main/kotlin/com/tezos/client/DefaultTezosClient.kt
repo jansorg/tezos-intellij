@@ -3,7 +3,7 @@ package com.tezos.client
 import com.intellij.execution.configurations.PathEnvironmentVariableUtil
 import com.intellij.openapi.diagnostic.Logger
 import com.tezos.client.stack.*
-import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -31,17 +31,19 @@ private fun MichelsonStackParser.TypeContext.transform(): MichelsonStackType {
     return MichelsonStackType(name, arguments, annotations)
 }
 
-open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
+open class StandaloneTezosClient(private val executable: Path) : TezosClient {
     private companion object {
         val LOG = Logger.getInstance("#tezos.client")
     }
 
+    /**
+     * @throws com.tezos.client.stack.TezosClientError When the client returned an error or exited with a non-zero exit code
+     */
     override fun typecheck(content: String): MichelsonStackTransformations {
         val clientStdout = typecheckResult(content)
+        val fixedContent = MichelsonStackUtils.fixTezosClientStdout(clientStdout)
 
-        val correctedContent = MichelsonStackUtils.fixTezosClientStdout(clientStdout)
-        val input = ANTLRInputStream(correctedContent)
-
+        val input = CharStreams.fromString(fixedContent)
         val lexer = MichelsonStackLexer(input)
         val tokens = CommonTokenStream(lexer)
         val parser = MichelsonStackParser(tokens)
@@ -72,12 +74,15 @@ open class StandaloneTezosClient(protected val executable: Path) : TezosClient {
             } ?: throw IllegalStateException("$executable isn't executable and shell wasn't found.")
 
             val command = exePath + listOf("client", "typecheck", "script", "text:$content", "--emacs", "-v")
-            LOG.warn("Running client: ${command.joinToString(" ")}")
+            if (LOG.isDebugEnabled) {
+                LOG.debug("Running client: ${command.joinToString(" ")}")
+            }
 
             val builder = ProcessBuilder().redirectOutput(outFile.toFile()).command(command)
-
             val p = builder.start()
+            // fixme add timeout
             p.waitFor()
+
             return when {
                 p.exitValue() == 0 -> Files.readAllBytes(outFile).toString(StandardCharsets.UTF_8)
                 else -> throw IllegalStateException("Tezos client exited with code ${p.exitValue()}")
