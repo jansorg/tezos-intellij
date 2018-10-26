@@ -14,6 +14,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
@@ -31,8 +32,8 @@ import javax.swing.border.EmptyBorder
  */
 class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor) : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, CaretListener {
     private companion object {
-        val LOG = Logger.getInstance("#tezos.client")
-        val ACTION_GROUP_ID = "tezos.editorToolbar"
+        private val LOG = Logger.getInstance("#tezos.client")
+        const val ACTION_GROUP_ID = "tezos.editorToolbar"
     }
 
     private val alarm = Alarm(this)
@@ -47,7 +48,6 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         ApplicationManager.getApplication().messageBus.connect(this).subscribe(UISettingsListener.TOPIC, this)
 
         mainEditor.editor.caretModel.addCaretListener(this)
-
         //  ApplicationManager.getApplication().messageBus.connect(this).subscribe<Any>(MarkdownApplicationSettings.SettingsChangedListener.TOPIC, settingsChangedListener)
     }
 
@@ -75,10 +75,8 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     }
 
     override fun createToolbar(): JPanel? {
-        val s = JBUI.scale(5)
-
         val toolbar = JPanel(BorderLayout(JBUI.scale(3), 0))
-        toolbar.border = EmptyBorder(0, s, 0, s)
+        toolbar.border = JBUI.Borders.empty(0, 5, 0, 1)
         toolbar.add(JBLabel("Michelson stack", UIUtil.ComponentStyle.SMALL, UIUtil.FontColor.BRIGHTER), BorderLayout.WEST)
 
         val actions = findActions()
@@ -93,10 +91,11 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         }
 
         val group = mgr.getAction(ACTION_GROUP_ID) as ActionGroup
+
         val bar = mgr.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, group, true) as ActionToolbarImpl
         bar.isOpaque = false
         bar.setTargetComponent(stackEditor.component)
-        bar.border = EmptyBorder(0, 0, 0, 0)
+        bar.border = JBUI.Borders.empty()
 
         return bar
     }

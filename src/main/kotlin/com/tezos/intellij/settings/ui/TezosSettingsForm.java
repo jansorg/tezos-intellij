@@ -47,7 +47,7 @@ public class TezosSettingsForm {
 
     private CollectionListModel<TezosClientConfig> model;
     private ListSelectionModel selectionModel;
-    private JBList<TezosClientConfig> clientList;
+    private JBList clientList;
 
     private boolean listenerSuspended = false;
 
@@ -59,12 +59,12 @@ public class TezosSettingsForm {
         model = new CollectionListModel<>();
         model.add(TezosSettingService.getSettings().clients);
 
-        clientList = new JBList<>(model);
+        clientList = new JBList(model);
         selectionModel = clientList.getSelectionModel();
 
         StatusText emptyText = clientList.getEmptyText();
-        emptyText.appendText("No Tezos clients configured.");
-        emptyText.appendSecondaryText("Autodetect clients ...", SimpleTextAttributes.LINK_ATTRIBUTES, e -> {
+        emptyText.setText("No Tezos clients configured. ");
+        emptyText.appendText("Detect ...", SimpleTextAttributes.LINK_ATTRIBUTES, e -> {
             detectClient();
         });
 
@@ -221,10 +221,10 @@ public class TezosSettingsForm {
     }
 
     private static class CopyClientAction extends ElementActionButton {
-        private final JBList<TezosClientConfig> list;
+        private final JBList list;
         private final CollectionListModel<TezosClientConfig> model;
 
-        CopyClientAction(JBList<TezosClientConfig> list, CollectionListModel<TezosClientConfig> model) {
+        CopyClientAction(JBList list, CollectionListModel<TezosClientConfig> model) {
             super("Copy selected client configuration", "Adds a copy of the currently selected item to the list.", PlatformIcons.COPY_ICON);
             this.list = list;
             this.model = model;
