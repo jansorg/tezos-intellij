@@ -10,6 +10,7 @@ import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.StatusText
 import com.intellij.util.ui.UIUtil
 import com.tezos.intellij.settings.ui.TezosConfigurable
+import com.tezos.intellij.ui.JBStatusText
 import java.awt.BorderLayout
 import java.awt.Graphics
 import java.io.StringReader
@@ -21,10 +22,10 @@ import javax.swing.JEditorPane
  *
  * @author jansorg
  */
-internal class StackHtmlPane(private val project: Project) : JBPanel<StackHtmlPane>(BorderLayout()), ComponentWithEmptyText {
+internal class StackHtmlPane(private val project: Project) : JBPanel<StackHtmlPane>(BorderLayout()) {
     private val htmlPanel: JEditorPane = JEditorPane(UIUtil.HTML_MIME, "")
 
-    private val emptyText = object : StatusText(this) {
+    private val emptyText = object : JBStatusText(this) {
         override fun isStatusVisible(): Boolean {
             // show empty text when no child component is visible
             return components.none { it.isVisible }
@@ -57,7 +58,7 @@ internal class StackHtmlPane(private val project: Project) : JBPanel<StackHtmlPa
 
         emptyText.setText(primary, SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
         if (secondaryText != null) {
-            emptyText.appendText(secondaryText, SimpleTextAttributes.REGULAR_ATTRIBUTES, null)
+            emptyText.appendSecondaryText(secondaryText, SimpleTextAttributes.REGULAR_ATTRIBUTES, null)
         }
     }
 
@@ -69,13 +70,11 @@ internal class StackHtmlPane(private val project: Project) : JBPanel<StackHtmlPa
     fun renderClientUnavailable() {
         showChildren(false)
 
-        emptyText.text = "No default Tezos client configured. "
-        emptyText.appendText("Settings...", SimpleTextAttributes.LINK_ATTRIBUTES) {
+        emptyText.text = "No default Tezos client configured."
+        emptyText.appendSecondaryText("Settings...", SimpleTextAttributes.LINK_ATTRIBUTES) {
             ShowSettingsUtil.getInstance().showSettingsDialog(project, TezosConfigurable::class.java)
         }
     }
-
-    override fun getEmptyText(): StatusText = emptyText
 
     override fun paintComponent(g: Graphics?) {
         super.paintComponent(g)

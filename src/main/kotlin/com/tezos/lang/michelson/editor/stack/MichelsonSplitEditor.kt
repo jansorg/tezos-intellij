@@ -14,18 +14,16 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.fileEditor.TextEditor
-import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.stack.RenderOptions
+import com.tezos.intellij.editor.split.SplitFileEditor
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
-import com.tezos.intellij.editor.split.SplitFileEditor
 import java.awt.BorderLayout
 import javax.swing.JPanel
-import javax.swing.border.EmptyBorder
 
 /**
  * @author jansorg

@@ -64,7 +64,7 @@ public class TezosSettingsForm {
 
         StatusText emptyText = clientList.getEmptyText();
         emptyText.setText("No Tezos clients configured. ");
-        emptyText.appendText("Detect ...", SimpleTextAttributes.LINK_ATTRIBUTES, e -> {
+        emptyText.appendText("Detect...", SimpleTextAttributes.LINK_ATTRIBUTES, e -> {
             detectClient();
         });
 
@@ -124,10 +124,11 @@ public class TezosSettingsForm {
 
         clientList.addListSelectionListener(e -> {
             boolean hasSelection = clientList.isSelectionEmpty();
-            if (hasSelection) {
+            int selectedIndex = clientList.getSelectedIndex();
+            if (hasSelection || selectedIndex >= model.getSize()) {
                 load(null);
             } else {
-                load(model.getElementAt(clientList.getSelectedIndex()));
+                load(model.getElementAt(selectedIndex));
             }
         });
 
