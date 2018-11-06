@@ -7,16 +7,9 @@ import org.jetbrains.annotations.NotNull
  * @author jansorg
  */
 @Tag("client")
-class TezosClientConfig {
-    @JvmField
-    @NotNull
-    var name: String = ""
-    @JvmField
-    @NotNull
-    var executablePath: String = ""
-    @JvmField
-    @NotNull
-    var isDefault: Boolean = false
+class TezosClientConfig(@JvmField @NotNull var name: String = "",
+                        @JvmField @NotNull var executablePath: String = "",
+                        @JvmField @NotNull var isDefault: Boolean = false) {
 
     val isScriptClient: Boolean
         get() {

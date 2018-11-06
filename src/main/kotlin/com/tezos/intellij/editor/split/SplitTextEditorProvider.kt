@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.tezos.lang.michelson.editor.stack.split
+package com.tezos.intellij.editor.split
 
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.DumbAware

@@ -16,6 +16,9 @@ import org.jdom.Element
 class StackVisualizationEditorProvider : FileEditorProvider {
     override fun getEditorTypeId(): String = "tezos.stack"
 
+    /**
+     * None because it's not providing a standalone editor. It's only used by a split editor.
+     */
     override fun getPolicy(): FileEditorPolicy = FileEditorPolicy.NONE
 
     override fun accept(project: Project, file: VirtualFile): Boolean {
@@ -23,7 +26,7 @@ class StackVisualizationEditorProvider : FileEditorProvider {
     }
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-        return MichelsonStackVisualizationEditor(file)
+        return MichelsonStackVisualizationEditor(project, file)
     }
 
     override fun readState(sourceElement: Element, project: Project, file: VirtualFile): FileEditorState {

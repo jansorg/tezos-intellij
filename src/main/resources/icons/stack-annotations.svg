@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg16"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="stack-annotations.svg"
+   inkscape:export-filename="/home/jansorg/self-employment/customers/Tezos Foundation/tezos-intellij-plugin/src/main/resources/icons/annotations_dark.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs10" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-292.76665)">
+    <g
+       aria-label="@"
+       id="text816">
+      <path
+         d="m 8.2910849,298.8843 c 0.8732537,0 1.4360172,0.64039 1.4360172,1.55245 0,1.22256 -0.912065,2.52273 -2.1540258,2.52273 -0.912065,0 -1.4554228,-0.67919 -1.4554228,-1.59126 0,-1.16434 0.8926593,-2.48392 2.1734314,-2.48392 z m 4.1916181,5.87991 c -1.222556,1.0285 -2.9496573,1.22255 -4.4827026,1.22255 -2.9108457,0 -5.0260602,-2.21224 -5.0260602,-5.22011 0,-2.7556 2.251054,-5.22012 5.4917955,-5.22012 2.2898653,0 5.0260603,0.81504 5.0260603,3.97816 0,2.4063 -1.222555,3.43479 -2.192837,3.43479 -0.213462,0 -0.291085,-0.11643 -0.291085,-0.29108 0,-0.17465 0.07762,-0.44633 0.13584,-0.65979 l 1.06731,-4.71557 H 10.58095 l -0.232867,0.93147 c -0.5433583,-0.81504 -1.3195838,-1.24196 -2.2510545,-1.24196 -2.2122427,0 -3.9975613,2.11521 -3.9975613,4.67676 0,1.88234 1.3972059,3.20193 3.0078738,3.20193 0.7956312,0 1.4748285,-0.46574 1.9599694,-1.0091 h 0.038811 c 0.019406,0.6792 0.5045466,1.0091 1.0479043,1.0091 1.280772,0 4.890221,-1.41661 4.890221,-5.39477 0,-3.97816 -3.454204,-5.70526 -6.5785113,-5.70526 -4.3468629,0 -7.50998185,3.14372 -7.50998185,7.00544 0,4.67676 3.66766555,7.00543 7.04424655,7.00543 2.5033276,0 4.6961646,-0.89266 6.1321816,-3.00787 z"
+         id="path866" />
+    </g>
+  </g>
+</svg>

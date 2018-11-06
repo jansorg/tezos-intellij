@@ -11,11 +11,11 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="16"
    height="16"
-   viewBox="0 0 4.2333332 4.2333335"
+   viewBox="0 0 16 16"
    version="1.1"
    id="svg16"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="stack-unchanged.svg"
+   sodipodi:docname="stack-unchanged_dark.svg"
    inkscape:export-filename="/home/jansorg/self-employment/customers/Tezos Foundation/tezos-intellij-plugin/src/main/resources/icons/annotations_dark.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="52.237513"
-     inkscape:cx="7.7032784"
-     inkscape:cy="8"
+     inkscape:cx="5.9474879"
+     inkscape:cy="8.8811029"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -58,25 +58,28 @@
      id="layer1"
      transform="translate(0,-292.76665)">
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.4362874;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect8723"
-       width="3.1757588"
-       height="0.52169567"
-       x="0.50143564"
-       y="296.18958" />
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:2.58585596;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect822"
+       width="15.020553"
+       height="3.8747363"
+       x="0.37783751"
+       y="304.40585"
+       ry="0.9028511" />
     <rect
-       y="295.13123"
-       x="0.50143564"
-       height="0.52169567"
-       width="3.1757588"
-       id="rect8729"
-       style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.4362874;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       ry="0.9028511"
+       y="298.90356"
+       x="0.37783751"
+       height="3.8747363"
+       width="15.020553"
+       id="rect818"
+       style="fill:#333333;fill-opacity:1;stroke:none;stroke-width:2.58585596;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.4362874;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect8731"
-       width="3.1757588"
-       height="0.52169567"
-       x="0.50143564"
-       y="294.07288" />
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:2.58585596;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect820"
+       width="15.020553"
+       height="3.8747363"
+       x="0.51184082"
+       y="293.40131"
+       ry="0.9028511" />
   </g>
 </svg>

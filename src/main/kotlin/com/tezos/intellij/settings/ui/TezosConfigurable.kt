@@ -1,5 +1,6 @@
 package com.tezos.intellij.settings.ui
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.tezos.intellij.settings.TezosSettingService
@@ -21,7 +22,18 @@ class TezosConfigurable() : Configurable, SearchableConfigurable {
     }
 
     override fun apply() {
-        settingsForm.applyTo(TezosSettingService.getSettings())
+        val current = TezosSettingService.getSettings().copy()
+
+        val newSettings = TezosSettingService.getSettings()
+        settingsForm.applyTo(newSettings)
+
+        if (current.getDefaultClient() != newSettings.getDefaultClient()) {
+            ApplicationManager.getApplication().messageBus.syncPublisher(TezosSettingService.TOPIC).defaultTezosClientChanged()
+        }
+
+        if (current.stackPanelPosition != newSettings.stackPanelPosition) {
+            ApplicationManager.getApplication().messageBus.syncPublisher(TezosSettingService.TOPIC).tezosStackPositionChanged()
+        }
     }
 
     override fun reset() {

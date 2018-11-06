@@ -35,10 +35,9 @@ class TezosSettings {
         clients.addAll(values)
     }
 
-    val showStackVisualization: Boolean
-        get() {
-            return stackPanelPosition != StackVisualizationPosition.HIDDEN
-        }
+    fun isShowStackVisualization(): Boolean {
+        return stackPanelPosition != StackVisualizationPosition.HIDDEN
+    }
 
     fun getDefaultClient(): TezosClientConfig? {
         return clients.firstOrNull { it.isDefault }

@@ -19,36 +19,40 @@ import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.stack.RenderOptions
+import com.tezos.intellij.editor.split.SplitFileEditor
 import com.tezos.intellij.settings.TezosSettingService
+import com.tezos.intellij.settings.TezosSettingsListener
 import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
-import com.tezos.lang.michelson.editor.stack.split.SplitFileEditor
 import java.awt.BorderLayout
 import javax.swing.JPanel
-import javax.swing.border.EmptyBorder
 
 /**
+ * A split editor for Michelson files.
+ *
  * @author jansorg
  */
-class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor) : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, CaretListener {
+class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor)
+    : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, CaretListener, TezosSettingsListener {
+
     private companion object {
+        const val ACTION_GROUP_ID = "tezos.editorToolbar"
         val LOG = Logger.getInstance("#tezos.client")
-        val ACTION_GROUP_ID = "tezos.editorToolbar"
     }
 
-    private val alarm = Alarm(this)
+    private val alarm = Alarm(Alarm.ThreadToUse.SWING_THREAD, this)
 
     var stackAlignStacks = true
     var stackHighlightUnchanged = true
     var stackShowAnnotations = false
 
     init {
-        // UISettings.getInstance() changed from Java to Kotlin (in 182.x at the latest), we're using what 182.x is doing in its implementation
-        // 182.x also deprecated addUISettingsListener()
-        ApplicationManager.getApplication().messageBus.connect(this).subscribe(UISettingsListener.TOPIC, this)
-
         mainEditor.editor.caretModel.addCaretListener(this)
 
-        //  ApplicationManager.getApplication().messageBus.connect(this).subscribe<Any>(MarkdownApplicationSettings.SettingsChangedListener.TOPIC, settingsChangedListener)
+        // we can't use UISettings.getInstance() because it switched from Java to Kotlin (in 182.x at the latest)
+        // we're using what 182.x is doing in its implementation
+        // 182.x also deprecated addUISettingsListener()
+        ApplicationManager.getApplication().messageBus.connect(this).subscribe(UISettingsListener.TOPIC, this)
+        ApplicationManager.getApplication().messageBus.connect(this).subscribe(TezosSettingService.TOPIC, this)
     }
 
     override fun dispose() {
@@ -59,7 +63,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     override fun getName(): String = "michelson.splitEditor"
 
     override fun isSecondEditorVisible(): Boolean {
-        return TezosSettingService.getSettings().showStackVisualization
+        return TezosSettingService.getSettings().isShowStackVisualization()
     }
 
     override fun isVerticalSplit(): Boolean {
@@ -74,11 +78,20 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         refreshRendering()
     }
 
-    override fun createToolbar(): JPanel? {
-        val s = JBUI.scale(5)
+    override fun defaultTezosClientChanged() {
+        LOG.info("defaultTezosClientChanged()")
+        stackEditor.reset()
+        refreshRendering()
+    }
 
+    override fun tezosStackPositionChanged() {
+        LOG.info("tezosStackPositionChanged()")
+        triggerSplitOrientationChange(TezosSettingService.getSettings().stackPanelPosition.isVerticalSplit())
+    }
+
+    override fun createToolbar(): JPanel {
         val toolbar = JPanel(BorderLayout(JBUI.scale(3), 0))
-        toolbar.border = EmptyBorder(0, s, 0, s)
+        toolbar.border = JBUI.Borders.empty(0, 5, 0, 1)
         toolbar.add(JBLabel("Michelson stack", UIUtil.ComponentStyle.SMALL, UIUtil.FontColor.BRIGHTER), BorderLayout.WEST)
 
         val actions = findActions()
@@ -93,10 +106,12 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         }
 
         val group = mgr.getAction(ACTION_GROUP_ID) as ActionGroup
+
         val bar = mgr.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, group, true) as ActionToolbarImpl
         bar.isOpaque = false
         bar.setTargetComponent(stackEditor.component)
-        bar.border = EmptyBorder(0, 0, 0, 0)
+        bar.border = JBUI.Borders.empty()
+        bar.layoutPolicy = ActionToolbar.NOWRAP_LAYOUT_POLICY
 
         return bar
     }
@@ -120,7 +135,6 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     private fun renderOptions(settings: EditorColorsScheme): RenderOptions {
         return RenderOptions(
                 markUnchanged = stackHighlightUnchanged,
-                highlightChanges = false,
                 alignStacks = stackAlignStacks,
                 showAnnotations = stackShowAnnotations,
                 codeFont = settings.editorFontName,

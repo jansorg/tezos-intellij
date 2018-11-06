@@ -7,61 +7,31 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.JBColor
-import com.intellij.ui.ScrollPaneFactory
-import com.intellij.util.ui.UIUtil
 import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.*
 import com.tezos.intellij.settings.TezosSettingService
-import org.apache.commons.codec.digest.DigestUtils
-import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
-import java.io.StringReader
 import java.nio.file.Paths
 import javax.swing.JComponent
-import javax.swing.JEditorPane
-import javax.swing.JPanel
-import javax.swing.border.EmptyBorder
+import javax.swing.SwingWorker
 
-private data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
-    fun matches(content: String): Boolean {
-        return contentMD5.equals(md5(content))
-    }
-
-    companion object {
-        private fun md5(content: String): String {
-            return DigestUtils.md5Hex(content)
-        }
-
-        fun createFromContent(content: String, stack: MichelsonStackTransformations): StackInfo {
-            return StackInfo(md5(content), stack)
-        }
-    }
-}
-
-class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
+/**
+ * A file editor which renders a stack. It provides a "updateStack" method to be called when the content of the current file changed.
+ * @author jansorg
+ */
+class MichelsonStackVisualizationEditor(project: Project, private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private companion object {
-        val LOG = Logger.getInstance("#tezos.stack")
-
+        private val LOG = Logger.getInstance("#tezos.stack")
         private val stackRenderer = StackRendering()
     }
 
-    private val rootComponent: JPanel
-    private val htmlPanel: JEditorPane
+    private val contentPane: StackHtmlPane = StackHtmlPane(project)
 
     @Volatile
-    private var stack: StackInfo? = null
-
-    init {
-        htmlPanel = JEditorPane(UIUtil.HTML_MIME, "")
-        htmlPanel.isEditable = false
-        htmlPanel.border = EmptyBorder(7, 7, 7, 7)
-
-        rootComponent = JPanel(BorderLayout())
-        rootComponent.add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
-    }
+    private var stackCache: StackInfo? = null
 
     override fun getName(): String = "Michelson Stack Visualization"
 
@@ -73,9 +43,92 @@ class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDa
 
     override fun setState(state: FileEditorState) {}
 
-    override fun getComponent(): JComponent = rootComponent
+    override fun getComponent(): JComponent = contentPane
 
     override fun getPreferredFocusedComponent(): JComponent? = null
+
+    override fun dispose() {
+        reset()
+    }
+
+    fun reset() {
+        this.stackCache = null
+    }
+
+    /**
+     * Updates the stack rendering.
+     * If the information about "content" was already loaded, then it will be reused.
+     * Otherwise the default client will be executed to retrieve the information about the current file and offset. When successful
+     * this will be rendered. An error will be shown instead when unsuccessful.
+     * The client is executed in the background to not block the EDT.
+     */
+    fun updateStack(content: String, offset: Int, renderOptions: RenderOptions) {
+        val cached = stackCache
+        when (cached?.matches(content)) {
+            true -> render(cached.stack, offset, renderOptions)
+            else -> {
+                stackCache = null
+
+                val worker = object : SwingWorker<StackInfo?, Any>() {
+                    override fun doInBackground(): StackInfo? {
+                        return loadClientStackInfo(content)
+                    }
+
+                    override fun done() {
+                        try {
+                            val value = this.get()
+                            stackCache = value
+
+                            if (value != null) {
+                                render(value.stack, offset, renderOptions)
+                            }
+                        } catch (e: Exception) {
+                            stackCache = null
+
+                            LOG.debug("Error executing Tezos client", e)
+                            when (e.cause) {
+                                is DefaultClientUnavailableException -> contentPane.renderClientUnavailable()
+                                is TezosClientNodeUnavailableError -> contentPane.renderError("Tezos node unavailable.", "The node of the default client is not running.")
+                                is TezosClientError -> when (e.cause!!.message) {
+                                    null -> contentPane.renderError("Error while executing the Tezos client command.")
+                                    else -> contentPane.renderError("Client error.", e.message)
+                                }
+                                else -> contentPane.renderError("Error while executing the default Tezos client command.")
+                            }
+                        }
+
+                    }
+                }
+
+                worker.execute()
+            }
+        }
+    }
+
+    private fun loadClientStackInfo(content: String): StackInfo? {
+        val clientConfig = TezosSettingService.getSettings().getDefaultClient()
+                ?: throw  DefaultClientUnavailableException()
+
+        val client = StandaloneTezosClient(Paths.get(clientConfig.executablePath))
+        val result = client.typecheck(content)
+        return StackInfo.createFromContent(content, result)
+    }
+
+    private fun render(stackInfo: MichelsonStackTransformations, offset: Int, renderOptions: RenderOptions) {
+        if (stackInfo.hasErrors) {
+            // fixme show errors?
+            contentPane.renderError("Unable to display because the Tezos client returned errors or warnings for the current file.")
+            return
+        }
+
+        val matching = stackInfo.elementAt(offset)
+        if (matching == null) {
+            contentPane.renderInfo("No matching stack information found.")
+            return
+        }
+
+        contentPane.renderHTML(stackRenderer.render(matching, renderOptions))
+    }
 
     override fun selectNotify() {}
 
@@ -90,68 +143,4 @@ class MichelsonStackVisualizationEditor(private val _file: VirtualFile) : UserDa
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {}
 
     override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
-
-    override fun dispose() {}
-
-    fun updateStack(content: String, offset: Int, renderOptions: RenderOptions) {
-        val cached = stack
-        val stackInfo = when (cached?.matches(content)) {
-            true -> cached.stack
-            else -> {
-                val clientConfig = TezosSettingService.getSettings().getDefaultClient()
-                if (clientConfig == null) {
-                    showError("Default Tezos client isn't configured.")
-                    return
-                }
-
-                //fixme push into background
-                val client = StandaloneTezosClient(Paths.get(clientConfig.executablePath))
-                try {
-                    val result = client.typecheck(content)
-                    stack = StackInfo.createFromContent(content, result)
-                    result
-                } catch (e: MichelsonClientError) {
-                    stack = null
-                    LOG.warn("Error executing Tezos client", e)
-                    showError(e.message ?: "Error while executing the Tezos client command.")
-                    return
-                } catch (e: Exception) {
-                    stack = null
-                    LOG.warn("Error executing Tezos client", e)
-                    showError("Error while executing the default Tezos client command.")
-                    return
-                }
-            }
-        }
-
-        if (stackInfo.hasErrors) {
-            // fixme show errors?
-            showError("Unable to display because the Tezos client returned errors or warnings for the current file.")
-            return
-        }
-
-        val matching = stackInfo.elementAt(offset)
-        if (matching == null) {
-            showError("No matching stack information found.")
-            return
-        }
-
-        updateText(stackRenderer.render(matching, renderOptions))
-    }
-
-    private fun updateText(html: String) {
-        // we update the editor kit every time because it depends on the current IDE's theme
-        val htmlKit = UIUtil.getHTMLEditorKit()
-        htmlPanel.editorKit = htmlKit
-
-        val doc = htmlKit.createDefaultDocument()
-        htmlKit.read(StringReader(html), doc, 0)
-
-        htmlPanel.document = doc
-        htmlPanel.caretPosition = 0
-    }
-
-    private fun showError(message: String) {
-        updateText("<html><div style=\"color:${JBColor.red.asHexString()}; font-weight:bold; font-size:1.1em; padding: 10px;\">$message</div></html>")
-    }
 }

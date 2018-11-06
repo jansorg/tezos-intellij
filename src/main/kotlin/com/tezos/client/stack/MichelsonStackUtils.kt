@@ -1,6 +1,14 @@
 package com.tezos.client.stack
 
-class MichelsonClientError(message: String, cause: Throwable?) : Exception(message, cause)
+/**
+ * An error which occurred when running the Tezos client.
+ */
+open class TezosClientError(message: String, cause: Throwable?) : Exception(message, cause)
+
+/**
+ * A Tezos client error to signal that the client returned a "Node is not running" error
+ */
+class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : TezosClientError(message, cause)
 
 /**
  * @author jansorg
@@ -12,8 +20,8 @@ object MichelsonStackUtils {
             index > 0 -> content.substring(index)
             index == 0 -> content
             else -> when {
-                content.contains("Node is not running") -> throw MichelsonClientError("Client error. Please make sure that the node is running.", null)
-                else -> throw MichelsonClientError("Invalid output. Make sure that the client is working properly.", null)
+                content.contains("Node is not running") -> throw TezosClientNodeUnavailableError("The Tezos client's not is not running.", null)
+                else -> throw TezosClientError("Invalid output. Make sure that the client is working properly.", null)
             }
         }
     }

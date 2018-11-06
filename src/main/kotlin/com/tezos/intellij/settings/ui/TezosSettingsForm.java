@@ -1,12 +1,17 @@
 package com.tezos.intellij.settings.ui;
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.*;
+import com.intellij.ui.ToolbarDecorator.ElementActionButton;
 import com.intellij.ui.components.JBList;
+import com.intellij.util.PlatformIcons;
 import com.intellij.util.ui.JBDimension;
+import com.intellij.util.ui.StatusText;
+import com.tezos.client.TezosClientDetector;
 import com.tezos.intellij.settings.StackVisualizationPosition;
 import com.tezos.intellij.settings.TezosClientConfig;
 import com.tezos.intellij.settings.TezosSettingService;
@@ -16,7 +21,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import java.awt.*;
 import java.io.File;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -55,13 +62,19 @@ public class TezosSettingsForm {
         clientList = new JBList(model);
         selectionModel = clientList.getSelectionModel();
 
-        clientList.setEmptyText("No Tezos clients configured");
+        StatusText emptyText = clientList.getEmptyText();
+        emptyText.setText("No Tezos clients configured. ");
+        emptyText.appendText("Detect...", SimpleTextAttributes.LINK_ATTRIBUTES, e -> {
+            detectClient();
+        });
+
         clientList.setCellRenderer(new ColoredListCellRenderer<TezosClientConfig>() {
             @Override
-            protected void customizeCellRenderer(JList list, TezosClientConfig value, int index, boolean selected, boolean hasFocus) {
+            protected void customizeCellRenderer(@NotNull JList list, TezosClientConfig value, int index, boolean selected, boolean hasFocus) {
                 String name = value.name.isEmpty() ? "<not available>" : value.name;
                 if (value.isDefault) {
                     append(name, SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+                    append(" (default client)", SimpleTextAttributes.GRAYED_ATTRIBUTES);
                 } else {
                     append(name);
                 }
@@ -69,17 +82,29 @@ public class TezosSettingsForm {
         });
 
         ToolbarDecorator toolbar = ToolbarDecorator.createDecorator(clientList).disableUpDownActions();
-        toolbar.setPreferredSize(new JBDimension(350, 250));
+        toolbar.setPreferredSize(new JBDimension(250, 150));
         toolbar.setAddAction(anActionButton -> {
             model.add(new TezosClientConfig());
             selectionModel.setSelectionInterval(model.getSize(), model.getSize());
         });
-        toolbar.setRemoveAction(button -> {
-            model.remove(selectionModel.getMinSelectionIndex());
-        });
+        toolbar.setRemoveAction(button -> model.remove(selectionModel.getMinSelectionIndex()));
 
-        clientListPanel = new JPanel(new VerticalFlowLayout());
+        CopyClientAction copyClientAction = new CopyClientAction(clientList, model);
+        toolbar.addExtraAction(copyClientAction);
+
+        clientListPanel = new JPanel(new BorderLayout());
         clientListPanel.add(toolbar.createPanel());
+    }
+
+    private void detectClient() {
+        //fixme replace with progress dialog and background job?
+        TezosClientDetector detector = new TezosClientDetector();
+        List<TezosClientConfig> detected = detector.detectClients();
+        if (detected.isEmpty()) {
+            Messages.showInfoMessage(clientList, "No clients could be detected in your configured PATH environment. Please configure a client manually.", "No Clients Found");
+        } else {
+            model.replaceAll(detected);
+        }
     }
 
     public void init() {
@@ -98,10 +123,12 @@ public class TezosSettingsForm {
         });
 
         clientList.addListSelectionListener(e -> {
-            if (clientList.isSelectionEmpty()) {
+            boolean hasSelection = clientList.isSelectionEmpty();
+            int selectedIndex = clientList.getSelectedIndex();
+            if (hasSelection || selectedIndex >= model.getSize()) {
                 load(null);
             } else {
-                load(model.getElementAt(clientList.getSelectedIndex()));
+                load(model.getElementAt(selectedIndex));
             }
         });
 
@@ -192,5 +219,33 @@ public class TezosSettingsForm {
 
         model.replaceAll(settings.clients);
         stackVisualization.setSelectedItem(settings.stackPanelPosition);
+    }
+
+    private static class CopyClientAction extends ElementActionButton {
+        private final JBList list;
+        private final CollectionListModel<TezosClientConfig> model;
+
+        CopyClientAction(JBList list, CollectionListModel<TezosClientConfig> model) {
+            super("Copy selected client configuration", "Adds a copy of the currently selected item to the list.", PlatformIcons.COPY_ICON);
+            this.list = list;
+            this.model = model;
+        }
+
+        @Override
+        public void actionPerformed(AnActionEvent e) {
+            int index = list.getSelectedIndex();
+            if (index >= 0) {
+                TezosClientConfig current = model.getElementAt(index);
+
+                TezosClientConfig copy = new TezosClientConfig().applyFrom(current);
+                copy.isDefault = false;
+                model.add(copy);
+            }
+        }
+
+        @Override
+        public boolean isDumbAware() {
+            return true;
+        }
     }
 }
