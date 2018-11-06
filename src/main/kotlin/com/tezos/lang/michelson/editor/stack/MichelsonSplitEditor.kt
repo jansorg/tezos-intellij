@@ -111,6 +111,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         bar.isOpaque = false
         bar.setTargetComponent(stackEditor.component)
         bar.border = JBUI.Borders.empty()
+        bar.layoutPolicy = ActionToolbar.NOWRAP_LAYOUT_POLICY
 
         return bar
     }
