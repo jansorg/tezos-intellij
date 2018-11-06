@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg5074"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="tezos-icon.svg"
+   inkscape:export-filename="/home/jansorg/self-employment/customers/Tezos Foundation/tezos-intellij-plugin/src/main/resources/icons/tezos@2x.png"
+   inkscape:export-xdpi="35.470001"
+   inkscape:export-ydpi="35.470001">
+  <defs
+     id="defs5068" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="52.237513"
+     inkscape:cx="8"
+     inkscape:cy="7.5656981"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1367"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:measure-start="71.0714,60.5357"
+     inkscape:measure-end="109.286,25.8929"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     units="px" />
+  <metadata
+     id="metadata5071">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-58.404451,-99.851442)">
+    <g
+       id="g822"
+       transform="translate(0.20220338,0.41047825)">
+      <circle
+         r="7.5"
+         inkscape:export-ydpi="70.940002"
+         inkscape:export-xdpi="70.940002"
+         inkscape:export-filename="/home/jansorg/self-employment/customers/Tezos Foundation/tezos-intellij-plugin/src/main/resources/icons/tezos@2x.png"
+         cy="107.44096"
+         cx="66.202248"
+         id="path4529"
+         style="opacity:1;fill:#000000;fill-opacity:1;stroke-width:0.23529406" />
+      <text
+         inkscape:export-ydpi="70.940002"
+         inkscape:export-xdpi="70.940002"
+         inkscape:export-filename="/home/jansorg/self-employment/customers/Tezos Foundation/tezos-intellij-plugin/src/main/resources/icons/tezos@2x.png"
+         transform="scale(0.98259143,1.017717)"
+         id="text5621"
+         y="107.80882"
+         x="62.88076"
+         style="font-style:normal;font-weight:normal;font-size:11.88990211px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.29724747"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Code2000;-inkscape-font-specification:Code2000;fill:#ffffff;stroke-width:0.29724747"
+           y="107.80882"
+           x="62.88076"
+           id="tspan5619"
+           sodipodi:role="line">ꜩ</tspan></text>
+      <text
+         id="text5633"
+         y="103.36142"
+         x="75.966064"
+         style="font-style:normal;font-weight:normal;font-size:6.92783499px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.17319581"
+         xml:space="preserve"><tspan
+           id="tspan5650"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.54020619px;line-height:0;font-family:sans-serif;-inkscape-font-specification:sans-serif;stroke-width:0.17319581"
+           y="109.49093"
+           x="75.966064"
+           sodipodi:role="line" /></text>
+    </g>
+  </g>
+</svg>
