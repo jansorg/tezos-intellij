@@ -27,15 +27,19 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 /**
+ * A split editor for Michelson files.
+ *
  * @author jansorg
  */
-class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor) : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, CaretListener, TezosSettingsListener {
+class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor)
+    : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, CaretListener, TezosSettingsListener {
+
     private companion object {
-        private val LOG = Logger.getInstance("#tezos.client")
         const val ACTION_GROUP_ID = "tezos.editorToolbar"
+        val LOG = Logger.getInstance("#tezos.client")
     }
 
-    private val alarm = Alarm(this)
+    private val alarm = Alarm(Alarm.ThreadToUse.SWING_THREAD, this)
 
     var stackAlignStacks = true
     var stackHighlightUnchanged = true
@@ -44,7 +48,8 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     init {
         mainEditor.editor.caretModel.addCaretListener(this)
 
-        // UISettings.getInstance() changed from Java to Kotlin (in 182.x at the latest), we're using what 182.x is doing in its implementation
+        // we can't use UISettings.getInstance() because it switched from Java to Kotlin (in 182.x at the latest)
+        // we're using what 182.x is doing in its implementation
         // 182.x also deprecated addUISettingsListener()
         ApplicationManager.getApplication().messageBus.connect(this).subscribe(UISettingsListener.TOPIC, this)
         ApplicationManager.getApplication().messageBus.connect(this).subscribe(TezosSettingService.TOPIC, this)
@@ -84,7 +89,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         triggerSplitOrientationChange(TezosSettingService.getSettings().stackPanelPosition.isVerticalSplit())
     }
 
-    override fun createToolbar(): JPanel? {
+    override fun createToolbar(): JPanel {
         val toolbar = JPanel(BorderLayout(JBUI.scale(3), 0))
         toolbar.border = JBUI.Borders.empty(0, 5, 0, 1)
         toolbar.add(JBLabel("Michelson stack", UIUtil.ComponentStyle.SMALL, UIUtil.FontColor.BRIGHTER), BorderLayout.WEST)
@@ -129,7 +134,6 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     private fun renderOptions(settings: EditorColorsScheme): RenderOptions {
         return RenderOptions(
                 markUnchanged = stackHighlightUnchanged,
-                highlightChanges = false,
                 alignStacks = stackAlignStacks,
                 showAnnotations = stackShowAnnotations,
                 codeFont = settings.editorFontName,

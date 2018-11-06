@@ -18,9 +18,13 @@ import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.SwingWorker
 
+/**
+ * A file editor which renders a stack. It provides a "updateStack" method to be called when the content of the current file changed.
+ * @author jansorg
+ */
 class MichelsonStackVisualizationEditor(project: Project, private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private companion object {
-        val LOG = Logger.getInstance("#tezos.stack")
+        private val LOG = Logger.getInstance("#tezos.stack")
         private val stackRenderer = StackRendering()
     }
 
@@ -43,7 +47,9 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
 
     override fun getPreferredFocusedComponent(): JComponent? = null
 
-    override fun dispose() {}
+    override fun dispose() {
+        reset()
+    }
 
     fun reset() {
         this.stackCache = null

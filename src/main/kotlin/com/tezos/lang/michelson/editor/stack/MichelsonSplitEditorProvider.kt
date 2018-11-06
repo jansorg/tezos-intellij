@@ -10,6 +10,7 @@ import com.tezos.lang.michelson.editor.stack.michelson.StackVisualizationEditorP
 import com.tezos.intellij.editor.split.SplitTextEditorProvider
 
 /**
+ * Provider for the split editor for Michelson files.
  * @author jansorg
  */
 class MichelsonSplitEditorProvider : SplitTextEditorProvider(PsiAwareTextEditorProvider(), StackVisualizationEditorProvider()), DumbAware {

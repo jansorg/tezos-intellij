@@ -3,7 +3,11 @@ package com.tezos.lang.michelson.editor.stack.michelson
 import com.tezos.client.stack.MichelsonStackTransformations
 import org.apache.commons.codec.digest.DigestUtils
 
-internal data class StackInfo(val contentMD5: String, val stack: MichelsonStackTransformations) {
+/**
+ * Cache entry for a given file content.
+ * @author jansorg
+ */
+internal data class StackInfo(private val contentMD5: String, val stack: MichelsonStackTransformations) {
     fun matches(content: String): Boolean {
         return contentMD5.equals(md5(content))
     }

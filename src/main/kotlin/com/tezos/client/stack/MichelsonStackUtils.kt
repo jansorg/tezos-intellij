@@ -1,7 +1,13 @@
 package com.tezos.client.stack
 
+/**
+ * An error which occurred when running the Tezos client.
+ */
 open class TezosClientError(message: String, cause: Throwable?) : Exception(message, cause)
 
+/**
+ * A Tezos client error to signal that the client returned a "Node is not running" error
+ */
 class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : TezosClientError(message, cause)
 
 /**

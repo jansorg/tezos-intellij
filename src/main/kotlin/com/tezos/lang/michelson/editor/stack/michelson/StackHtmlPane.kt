@@ -5,9 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.components.JBPanel
-import com.intellij.util.ui.ComponentWithEmptyText
 import com.intellij.util.ui.JBUI
-import com.intellij.util.ui.StatusText
 import com.intellij.util.ui.UIUtil
 import com.tezos.intellij.settings.ui.TezosConfigurable
 import com.tezos.intellij.ui.JBStatusText
@@ -17,8 +15,9 @@ import java.io.StringReader
 import javax.swing.JEditorPane
 
 /**
- * This panel either displays HTML to render the information about the current stack or a message to
- * show why the stack information is unavailable.
+ * A panel which either displays HTML or an message.
+ * The HTML is to render the information about the current stack.
+ * The message is displayed when no stack is available or when an error ocurred.
  *
  * @author jansorg
  */

@@ -79,6 +79,10 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
             }
 
             val builder = ProcessBuilder().redirectOutput(outFile.toFile()).command(command)
+            if (LOG.isDebugEnabled) {
+                LOG.debug("starting tezos client command: ${builder.command().joinToString(" ")}")
+            }
+
             val p = builder.start()
             // fixme add timeout
             p.waitFor()

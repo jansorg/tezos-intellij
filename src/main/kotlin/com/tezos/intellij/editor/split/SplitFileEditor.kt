@@ -42,17 +42,19 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
 
     init {
         if (this.mainEditor is TextEditor) {
+            @Suppress("LeakingThis")
             this.mainEditor.putUserData<SplitFileEditor<*, *>>(PARENT_SPLIT_KEY, this)
         }
 
         if (this.secondEditor is TextEditor) {
+            @Suppress("LeakingThis")
             this.secondEditor.putUserData<SplitFileEditor<*, *>>(PARENT_SPLIT_KEY, this)
         }
     }
 
-    open protected fun isFirstEditorVisible() = true
-    open protected fun isSecondEditorVisible() = true
-    open protected fun isVerticalSplit() = true
+    protected open fun isFirstEditorVisible() = true
+    protected open fun isSecondEditorVisible() = true
+    protected open fun isVerticalSplit() = true
 
     protected fun triggerSplitOrientationChange(isVerticalSplit: Boolean) {
         if (splitter.orientation == isVerticalSplit) {
@@ -64,7 +66,7 @@ abstract class SplitFileEditor<in E1 : FileEditor, in E2 : FileEditor>(private v
         mainComponent.repaint()
     }
 
-    open protected fun createToolbar(): JPanel? = null
+    protected open fun createToolbar(): JPanel? = null
 
     private fun createComponent(): JComponent {
         toolbar = createToolbar()

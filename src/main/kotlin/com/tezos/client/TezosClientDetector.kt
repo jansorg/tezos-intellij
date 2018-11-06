@@ -11,18 +11,15 @@ import com.tezos.intellij.settings.TezosClientConfig
  */
 class TezosClientDetector(private val names: List<String> = clientNames) {
     companion object {
-        private val clientNames = listOf("tezos-client", "alphanet.sh", "mainnet.sh")
+        private val clientNames = listOf("tezos-client", "mainnet.sh", "alphanet.sh")
     }
-
 
     /**
      * Detects the available Tezos clients by checking the entries of $PATH.
      * @return the detected clients. the first item is marked as the default client.
      */
     fun detectClients(): List<TezosClientConfig> {
-        val configs = clientNames.flatMap {
-            PathEnvironmentVariableUtil.findAllExeFilesInPath(it)
-        }.map {
+        val configs = names.flatMap(PathEnvironmentVariableUtil::findAllExeFilesInPath).map {
             val path = it.toPath()
             TezosClientConfig(path.fileName.toString(), path.toString(), false)
         }
