@@ -1,5 +1,5 @@
 # Version 0.7.0
-- Client settings: add buttonto autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)
+- Client settings: add button to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)
 - Client settings: add button to copy the currently selected client configuration
 - Improved layout of the stack visualization panel
 
