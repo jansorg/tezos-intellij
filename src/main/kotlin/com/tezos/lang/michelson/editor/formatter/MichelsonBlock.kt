@@ -172,4 +172,4 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
     }
 }
 
-inline fun IElementType?.isMichelsonBlock(): Boolean = this != null && MichelsonElementSets.BLOCKS.contains(this)
+fun IElementType?.isMichelsonBlock(): Boolean = this != null && MichelsonElementSets.BLOCKS.contains(this)
