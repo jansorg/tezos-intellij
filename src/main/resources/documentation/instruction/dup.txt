@@ -1,0 +1,5 @@
+:: 'a : 'A   ->   'a : 'a : 'A
+
+> DUP / x : S  =>  x : x : S
+
+Duplicate the top of the stack.

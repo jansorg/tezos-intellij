@@ -1,0 +1,5 @@
+:: 'A   ->   unit : 'A
+
+> UNIT / S  =>  Unit : S
+
+Push a unit value onto the stack.

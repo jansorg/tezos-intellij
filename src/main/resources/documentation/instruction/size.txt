@@ -1,0 +1,21 @@
+:: string : 'S   ->   nat : 'S
+Get the number of characters in a string.
+
+:: set 'elt : 'S -> nat : 'S
+
+> SIZE / {} : S  =>  0 : S
+> SIZE / { _ ; <tl> } : S  =>  1 + s : S
+    where SIZE / { <tl> } : S  =>  s : S
+Get the cardinality of a set
+
+:: map 'key 'val : 'S -> nat : 'S
+> SIZE / {} : S  =>  0 : S
+> SIZE / { _ ; <tl> } : S  =>  1 + s : S
+    where  SIZE / { <tl> } : S  =>  s : S
+Get the cardinality of a map.
+
+:: list 'elt : 'S -> nat : 'S
+> SIZE / { _ ; <rest> } : S  =>  1 + s : S
+    where  SIZE / { <rest> } : S  =>  s : S
+> SIZE / {} : S  =>  0 : S
+Get the number of elements in the list.

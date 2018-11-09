@@ -1,0 +1,6 @@
+:: 'a : lambda 'a 'b : 'C   ->   'b : 'C
+
+> EXEC / a : f : S  =>  r : S
+    where f / a : []  =>  r : []
+
+Execute a function from the stack.

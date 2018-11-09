@@ -1,0 +1,14 @@
+:: int : int : 'S   ->   int : 'S
+:: int : nat : 'S   ->   int : 'S
+:: nat : int : 'S   ->   int : 'S
+:: nat : nat : 'S   ->   int : 'S
+> SUB / x : y : S  =>  (x - y) : S
+Subtract two numbers.
+
+:: timestamp : int : 'S -> timestamp : 'S
+> SUB / seconds : nat (t) : S  =>  (seconds - t) : S
+Subtract a number of seconds from a timestamp.
+
+:: timestamp : timestamp : 'S -> int : 'S
+> SUB / seconds(t1) : seconds(t2) : S  =>  (t1 - t2) : S
+Subtract two timestamps.

@@ -1,0 +1,5 @@
+:: 'a : 'b : 'S   ->   pair 'a 'b : 'S
+
+> PAIR / a : b : S  =>  (Pair a b) : S
+
+Build a pair from the stack’s top two elements.

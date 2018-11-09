@@ -1,0 +1,6 @@
+:: 'S -> map 'key 'val : 'S
+
+> EMPTY_MAP _ _ / S  =>  {} : S
+
+Build a new, empty map from keys of a given type to values of another given type.
+The <code>'key</code> type must be comparable (the <code>COMPARE</code> primitive must be defined over it).

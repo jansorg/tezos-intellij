@@ -1,0 +1,12 @@
+:: 'key : map 'key 'val : 'S   ->   option 'val : 'S
+
+> GET / x : {} : S  =>  None : S
+> GET / x : { Elt k v ; <tl> } : S  =>  opt_y : S
+    iff COMPARE / x : k : []  =>  1 : []
+    where GET / x : { <tl> } : S  =>  opt_y : S
+> GET / x : { Elt k v ; <tl> } : S  =>  Some v : S
+    iff COMPARE / x : k : []  =>  0 : []
+> GET / x : { Elt k v ; <tl> } : S  =>  None : S
+    iff COMPARE / x : k : []  =>  -1 : []
+
+Access an element in a map, returns an optional value to be checked with IF_SOME.

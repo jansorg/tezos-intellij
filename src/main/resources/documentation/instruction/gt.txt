@@ -1,0 +1,8 @@
+:: int : 'S   ->   bool : 'S
+
+> GT / v : S  =>  C / True : S
+    iff  v > 0
+> GT / v : S  =>  C / False : S
+    iff v <= 0
+
+Checks that the top of the stack is Greater Than zero.

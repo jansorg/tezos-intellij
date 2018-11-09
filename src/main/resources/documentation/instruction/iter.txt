@@ -1,0 +1,17 @@
+:: (set 'elt) : 'A   ->  'A
+   iff body :: [ 'elt : 'A -> 'A ]
+> ITER body / {} : S  =>  S
+> ITER body / { hd ; <tl> } : S  =>  body; ITER body / hd : { <tl> } : S
+Apply the body expression to each element of a set. The body sequence has access to the stack.
+
+:: (map 'elt 'val) : 'A   ->  'A
+   iff   body :: [ (pair 'elt 'val) : 'A -> 'A ]
+> ITER body / {} : S  =>  S
+> ITER body / { Elt k v ; <tl> } : S  =>  body ; ITER body / (Pair k v) : { <tl> } : S
+Apply the body expression to each element of a map. The body sequence has access to the stack.
+
+:: (list 'elt) : 'A   ->  'A
+     iff body :: [ 'elt : 'A -> 'A ]
+> ITER body / { a ; <rest> } : S  =>  body ; ITER body / a : { <rest> } : S
+> ITER body / {} : S  =>  S
+Apply the body expression to each element of a list. The body sequence has access to the stack.

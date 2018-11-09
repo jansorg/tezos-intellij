@@ -1,0 +1,27 @@
+:: 'elt : set 'elt : 'S   ->  bool : 'S
+
+> MEM / x : {} : S  =>  false : S
+> MEM / x : { hd ; <tl> } : S  =>  r : S
+    iff COMPARE / x : hd : []  =>  1 : []
+    where MEM / x : v : { <tl> } : S  =>  r : S
+> MEM / x : { hd ; <tl> } : S  =>  true : S
+    iff COMPARE / x : hd : []  =>  0 : []
+> MEM / x : { hd ; <tl> } : S  =>  false : S
+    iff COMPARE / x : hd : []  =>  -1 : []
+
+Check for the presence of an element in a set.
+
+Check for the presence of a binding for a key in a map.
+:: 'key : map 'key 'val : 'S   ->  bool : 'S
+
+> MEM / x : {} : S  =>  false : S
+> MEM / x : { Elt k v ; <tl> } : S  =>  r : S
+    iff COMPARE / x : k : []  =>  1 : []
+    where MEM / x : { <tl> } : S  =>  r : S
+> MEM / x : { Elt k v ; <tl> } : S  =>  true : S
+    iff COMPARE / x : k : []  =>  0 : []
+> MEM / x : { Elt k v ; <tl> } : S  =>  false : S
+    iff COMPARE / x : k : []  =>  -1 : []
+
+:: 'key : big_map 'key 'val : 'S   ->  bool : 'S
+Check for the presence of an element in a big_map.

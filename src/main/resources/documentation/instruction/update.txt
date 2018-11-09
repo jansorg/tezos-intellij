@@ -1,0 +1,36 @@
+:: 'elt : bool : set 'elt : 'S   ->   set 'elt : 'S
+
+> UPDATE / x : false : {} : S  =>  {} : S
+> UPDATE / x : true : {} : S  =>  { x } : S
+> UPDATE / x : v : { hd ; <tl> } : S  =>  { hd ; <tl'> } : S
+    iff COMPARE / x : hd : []  =>  1 : []
+    where UPDATE / x : v : { <tl> } : S  =>  { <tl'> } : S
+> UPDATE / x : false : { hd ; <tl> } : S  =>  { <tl> } : S
+    iff COMPARE / x : hd : []  =>  0 : []
+> UPDATE / x : true : { hd ; <tl> } : S  =>  { hd ; <tl> } : S
+    iff COMPARE / x : hd : []  =>  0 : []
+> UPDATE / x : false : { hd ; <tl> } : S  =>  { hd ; <tl> } : S
+    iff COMPARE / x : hd : []  =>  -1 : []
+> UPDATE / x : true : { hd ; <tl> } : S  =>  { x ; hd ; <tl> } : S
+    iff COMPARE / x : hd : []  =>  -1 : []
+Inserts or removes an element in a set, replacing a previous value.
+
+:: 'key : option 'val : map 'key 'val : 'S   ->   map 'key 'val : 'S
+
+> UPDATE / x : None : {} : S  =>  {} : S
+> UPDATE / x : Some y : {} : S  =>  { Elt x y } : S
+> UPDATE / x : opt_y : { Elt k v ; <tl> } : S  =>  { Elt k v ; <tl'> } : S
+    iff COMPARE / x : k : []  =>  1 : []
+          where UPDATE / x : opt_y : { <tl> } : S  =>  { <tl'> } : S
+> UPDATE / x : None : { Elt k v ; <tl> } : S  =>  { <tl> } : S
+    iff COMPARE / x : k : []  =>  0 : []
+> UPDATE / x : Some y : { Elt k v ; <tl> } : S  =>  { Elt k y ; <tl> } : S
+    iff COMPARE / x : k : []  =>  0 : []
+> UPDATE / x : None : { Elt k v ; <tl> } : S  =>  { Elt k v ; <tl> } : S
+    iff COMPARE / x : k : []  =>  -1 : []
+> UPDATE / x : Some y : { Elt k v ; <tl> } : S  =>  { Elt x y ; Elt k v ; <tl> } : S
+    iff COMPARE / x : k : []  =>  -1 : []
+Assign or remove an element in a map.
+
+:: 'key : option 'val : big_map 'key 'val : 'S   ->   big_map 'key 'val : 'S
+Assign or remove an element in a big_map.

@@ -62,6 +62,7 @@
         <lang.braceMatcher language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonBraceMatcher"/>
         <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.structureView.MichelsonStructureViewFactory"/>
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
+        <lang.documentationProvider language="Michelson" implementationClass="com.tezos.lang.michelson.editor.documentation.MichelsonDocumentationProvider" />
 
         <!-- settings -->
         <applicationConfigurable groupId="language" provider="com.tezos.intellij.settings.ui.TezosConfigurableProvider"/>

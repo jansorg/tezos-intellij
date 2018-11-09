@@ -1,0 +1,6 @@
+:: 'A   ->   'a : 'A
+   iff   x :: 'a
+
+> PUSH 'a x / S  =>  x : S
+
+Push a constant value of a given type onto the stack.

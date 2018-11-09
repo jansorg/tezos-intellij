@@ -1,0 +1,12 @@
+:: nat : nat : 'S   ->   nat : 'S
+
+> XOR / x : y : S  =>  (x ^ y) : S
+
+:: bool : bool : 'S   ->   bool : 'S
+
+> XOR / x : y : S  =>  (x ^ y) : S
+
+Perform exclusive logical <code>OR</code> on booleans.
+
+Perform exclusive bitwise <code>OR</code>.
+Only available on unsigned integers.

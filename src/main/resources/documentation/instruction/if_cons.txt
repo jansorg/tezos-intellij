@@ -1,0 +1,8 @@
+:: list 'a : 'S   ->   'b : 'S
+   iff   bt :: [ 'a : list 'a : 'S -> 'b : 'S]
+         bf :: [ 'S -> 'b : 'S]
+
+> IF_CONS bt bf / { a ; <rest> } : S  =>  bt / a : { <rest> } : S
+> IF_CONS bt bf / {} : S  =>  bf / S
+
+Inspect an optional value.

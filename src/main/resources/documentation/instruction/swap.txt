@@ -1,0 +1,5 @@
+:: 'a : 'b : 'A   ->   'b : 'a : 'A
+
+> SWAP / x : y : S  =>  y : x : S
+
+Exchange the top two elements of the stack.

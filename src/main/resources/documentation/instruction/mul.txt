@@ -1,0 +1,8 @@
+:: int : int : 'S   ->   int : 'S
+:: int : nat : 'S   ->   int : 'S
+:: nat : int : 'S   ->   int : 'S
+:: nat : nat : 'S   ->   nat : 'S
+
+> MUL / x : y : S  =>  (x * y) : S
+
+Multiply two numbers.

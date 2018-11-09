@@ -1,0 +1,7 @@
+:: int : 'S   ->   bool : 'S
+
+> NEQ / 0 : S  =>  False : S
+> NEQ / v : S  =>  True : S
+    iff v <> 0
+
+Checks that the top of the stack does Not EQual zero.

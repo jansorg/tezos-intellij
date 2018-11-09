@@ -1,0 +1,7 @@
+:: bool : 'A   ->   'A
+   iff   body :: [ 'A -> bool : 'A ]
+
+> LOOP body / True : S  =>  body ; LOOP body / S
+> LOOP body / False : S  =>  S
+
+A generic loop.

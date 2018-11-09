@@ -1,0 +1,5 @@
+:: 'a : 'S   ->   option 'a : 'S
+
+> SOME / v : S  =>  (Some v) : S
+
+Pack a present optional value.

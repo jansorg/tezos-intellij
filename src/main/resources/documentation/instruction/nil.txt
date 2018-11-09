@@ -1,0 +1,5 @@
+:: 'S   ->   list 'a : 'S
+
+> NIL / S  =>  {} : S
+
+The empty list.

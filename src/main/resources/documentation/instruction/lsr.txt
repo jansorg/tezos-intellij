@@ -1,0 +1,5 @@
+:: nat : nat : 'S   ->   nat : 'S
+
+> LSR / x : s : S  =>  (x >>> s) : S
+
+Perform bitwise shift to the right.
