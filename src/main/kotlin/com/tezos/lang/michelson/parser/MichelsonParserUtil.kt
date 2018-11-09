@@ -118,6 +118,7 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
      * @param level   the current nesting level
      * @return `false` when the recoverWhile should stop to consume tokens, `true` to proceed.
      */
+    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun instruction_recover_while(builder: PsiBuilder, level: Int): Boolean {
         val current = builder.lookAhead(0)
@@ -153,6 +154,7 @@ object MichelsonParserUtil : GeneratedParserUtilBase() {
         return null
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun tag_data_recover_while(builder: PsiBuilder, level: Int): Boolean {
         if (builder.eof()) {

@@ -39,6 +39,9 @@ class MichelsonLangCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
 
             SettingsType.COMMENTER_SETTINGS -> {
             }
+
+            else -> {
+            }
         }
     }
 

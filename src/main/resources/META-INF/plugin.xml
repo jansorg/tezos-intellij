@@ -18,6 +18,13 @@
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.7.0</b>
+        <ul>
+            <li>Client settings: add button to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)</li>
+            <li>Client settings: add button to copy the currently selected client configuration</li>
+            <li>Improved layout of the stack visualization panel</li>
+        </ul><br><br>
+
         <b>Version 0.6.1</b>
         <ul>
             <li>Include all changes scheduled for 0.6.0</li>
