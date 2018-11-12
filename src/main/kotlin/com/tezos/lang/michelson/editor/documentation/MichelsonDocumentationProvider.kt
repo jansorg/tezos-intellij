@@ -66,7 +66,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         }
 
         val expanded = macro.expand(name, true)
-        return report(content ?: "", name, if (expanded != null) {
+        return report(content ?: "", name, "macro", if (expanded != null) {
             "<code>$expanded</code><br><br>"
         } else "")
     }
@@ -74,18 +74,18 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
     private fun buildInstructionDocs(element: PsiInstruction): String? {
         val name = element.instructionName
         return name?.let {
-            loadReport("/documentation/instruction/${it.toLowerCase()}.txt", it)
+            loadReport("/documentation/instruction/${it.toLowerCase()}.txt", it, "Instruction")
         }
     }
 
-    private fun loadReport(classpath: String, title: String, prefix: String = ""): String? {
+    private fun loadReport(classpath: String, title: String, subtitle: String = "", prefix: String = ""): String? {
         return this::class.java.getResource(classpath)?.let {
             val content = ResourceUtil.loadText(it)
-            return report(content, title, prefix)
+            return report(content, title, subtitle, prefix)
         }
     }
 
-    private fun report(content: String, title: String, prefix: String = ""): String? {
+    private fun report(content: String, title: String, subtitle: String = "", prefix: String = ""): String? {
         // lines starting with :: are defining the stack transformation
         // lines starting with > define the logic
         // lines following the last line starting with :: or > provide a textual description of the instruction
@@ -122,8 +122,14 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         val descBlock = if (desc.isEmpty()) "" else "<div>" + desc.joinToString("<br>") + "</div><br>"
 
         //language=HTML
+        val firstLine = if (subtitle.isNotEmpty()) {
+            """<table width='100%'><tr><td><strong>$title</strong></td><td style='text-align:right;'><em>${subtitle.toUpperCase()}</em></td></tr></table>"""
+        }else{
+            """<strong>$title</strong>$subtitle<br>"""
+        }
+
         return """
-            <strong>$title</strong><br>
+            $firstLine
             $prefix
             $descBlock
             $transformBlock

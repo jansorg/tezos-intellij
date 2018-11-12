@@ -25,7 +25,13 @@ class CadrMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
-    override fun helpContentFile(name: String): String? = null
+    override fun helpContentFile(name: String): String? {
+        return when (name) {
+            "CAR" -> "car.txt"
+            "CDR" -> "cdr.txt"
+            else -> "car_macro.txt"
+        }
+    }
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
         return when (type) {
