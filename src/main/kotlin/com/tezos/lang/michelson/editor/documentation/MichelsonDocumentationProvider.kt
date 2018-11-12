@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.DocumentationProviderEx
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ResourceUtil
@@ -17,7 +18,7 @@ import com.tezos.lang.michelson.psi.PsiInstruction
  */
 class MichelsonDocumentationProvider : DocumentationProviderEx() {
     companion object {
-        private val END_TOKENS = TokenSet.create(MichelsonTypes.SEMI, MichelsonTypes.RIGHT_CURLY, MichelsonTypes.RIGHT_PAREN)
+        private val END_TOKENS = TokenSet.create(MichelsonTypes.SEMI, MichelsonTypes.RIGHT_CURLY, MichelsonTypes.RIGHT_PAREN, TokenType.WHITE_SPACE)
     }
 
     override fun getCustomDocumentationElement(editor: Editor, file: PsiFile, contextElement: PsiElement?): PsiElement? {

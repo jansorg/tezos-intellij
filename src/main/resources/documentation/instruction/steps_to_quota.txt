@@ -1,0 +1,3 @@
+:: 'S   ->   nat : 'S
+
+Push the remaining steps before the contract execution must terminate.

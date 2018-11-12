@@ -1,0 +1,3 @@
+:: key : signature : bytes : 'S   ->   bool : 'S
+
+Check that a sequence of bytes has been signed with a given key.

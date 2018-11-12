@@ -1,0 +1,11 @@
+:: key_hash : option key_hash : bool : bool : mutez : lambda (pair 'p 'g) (pair (list operation) 'g) : 'g : 'S
+   -> operation : address : 'S
+Forge a contract creation operation.
+
+:: key_hash : option key_hash : bool : bool : mutez : 'g : 'S
+   -> operation : address : 'S
+
+<code>CREATE_CONTRACT { storage 'g ; parameter 'p ; code ... }</code>
+Forge a new contract from a literal.
+Originate a contract based on a literal. This is currently the only way to include transfers inside of an originated contract.
+The first parameters are the manager, optional delegate, then spendable and delegatable flags and finally the initial amount taken from the currently executed contract.

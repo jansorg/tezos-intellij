@@ -2,7 +2,11 @@
 :: int : nat : 'S   ->   int : 'S
 :: nat : int : 'S   ->   int : 'S
 :: nat : nat : 'S   ->   nat : 'S
-
 > MUL / x : y : S  =>  (x * y) : S
-
 Multiply two numbers.
+
+:: mutez : nat : 'S   ->   mutez : 'S
+:: nat : mutez : 'S   ->   mutez : 'S
+> MUL / x : y : S  =>  [FAILED]   on overflow
+> MUL / x : y : S  =>  (x * y) : S
+Multiply two values of type mutez.

@@ -19,3 +19,6 @@ Get the cardinality of a map.
     where  SIZE / { <rest> } : S  =>  s : S
 > SIZE / {} : S  =>  0 : S
 Get the number of elements in the list.
+
+:: bytes : 'S   ->   nat : 'S
+size of a sequence of bytes.

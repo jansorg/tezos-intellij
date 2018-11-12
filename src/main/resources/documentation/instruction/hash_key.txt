@@ -1,0 +1,3 @@
+:: key : 'S   ->   key_hash : 'S
+
+Compute the b58check of a public key.

@@ -1,0 +1,3 @@
+:: bytes : 'S   ->   bytes : 'S
+
+Compute a cryptographic hash of the value contents using the Blake2B cryptographic hash function.

@@ -12,3 +12,9 @@ Subtract a number of seconds from a timestamp.
 :: timestamp : timestamp : 'S -> int : 'S
 > SUB / seconds(t1) : seconds(t2) : S  =>  (t1 - t2) : S
 Subtract two timestamps.
+
+:: mutez : mutez : 'S   ->   mutez : 'S
+> SUB / x : y : S  =>  [FAILED]
+    iff   x < y
+> SUB / x : y : S  =>  (x - y) : S
+Subtract two values of type <code>mutez</code>.

@@ -1,0 +1,3 @@
+:: 'a : 'S   ->   bytes : 'S
+
+Serializes a piece of data to its optimized binary representation.

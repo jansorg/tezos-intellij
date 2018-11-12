@@ -24,4 +24,30 @@ Compare two two strings.
     iff t1 = t2
 > COMPARE / seconds(t1) : seconds(t2) : S  =>  1 : S
     iff t1 > t2
-imestamp comparison.
+timestamp comparison.
+
+:: mutez : mutez : 'S -> int : 'S
+> COMPARE / x : y : S  =>  -1 : S
+    iff x < y
+> COMPARE / x : y : S  =>  0 : S
+    iff x = y
+> COMPARE / x : y : S  =>  1 : S
+    iff x > y
+mutez comparision.
+
+:: bytes : bytes : 'S   ->   int : 'S
+> COMPARE / s : t : S  =>  -1 : S
+    iff s < t
+> COMPARE / s : t : S  =>  0 : S
+    iff s = t
+> COMPARE / s : t : S  =>  1 : S
+    iff s > t
+Lexicographic comparison of bytes.
+
+:: key_hash : key_hash : 'S   ->   int : 'S
+> COMPARE / x : y : S  =>  -1 : S
+    iff x < y
+> COMPARE / x : y : S  =>  0 : S
+    iff x = y
+> COMPARE / x : y : S  =>  1 : S
+    iff x > y

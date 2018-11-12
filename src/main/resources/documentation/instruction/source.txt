@@ -1,0 +1,5 @@
+:: 'S   ->   address : 'S
+
+Push the contract that initiated the current transaction, i.e. the contract that paid the fees and storage cost,
+and whose manager signed the operation that was sent on the blockchain.
+Note that since TRANSFER_TOKENS instructions can be chained, SOURCE and SENDER are not necessarily the same.

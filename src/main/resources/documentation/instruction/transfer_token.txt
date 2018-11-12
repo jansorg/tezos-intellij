@@ -1,0 +1,4 @@
+:: 'p : mutez : contract 'p : 'S   ->   operation : S
+
+Forge a transaction.
+The parameter must be consistent with the one expected by the contract, unit for an account.

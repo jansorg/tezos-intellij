@@ -1,0 +1,5 @@
+:: key_hash : option key_hash : bool : mutez : 'S
+   ->   operation : contract unit : 'S
+
+Forge an account (a contract without code) creation operation.
+Take as argument the manager, optional delegate, the delegatable flag and finally the initial amount taken from the currently executed contract.

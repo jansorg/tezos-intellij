@@ -1,0 +1,3 @@
+:: 'S   ->   timestamp : 'S
+
+Push the timestamp of the block whose validation triggered this execution (does not change during the execution of the contract).
