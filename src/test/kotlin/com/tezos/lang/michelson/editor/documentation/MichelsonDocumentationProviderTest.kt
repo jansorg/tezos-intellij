@@ -14,14 +14,30 @@ class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
         for (i in MichelsonLanguage.INSTRUCTIONS) {
             configureByCode("$i<caret>")
             val doc = findDocumentation()
+            Assert.assertTrue("documentation for instruction '$i' must not be null or empty.", !doc.isNullOrEmpty() || i in MichelsonLanguage.QUESTIONABLE_INSTRUCTIONS)
+        }
+    }
+
+    fun testPositions() {
+        assertDocs("CREATE_CONTRACT<caret>\n")
+        assertDocs("PAIR<caret>;UNPAIR;")
+        assertDocs("PAIR<caret> ;UNPAIR;")
+    }
+
+    fun testMacros() {
+        assertDocs("FAIL<caret>")
+
+        for (i in MichelsonLanguage.MACRO_NAMES) {
+            configureByCode("$i<caret>")
+            val doc = findDocumentation()
             Assert.assertFalse("documentation for instruction '$i' must not be null or empty.", doc.isNullOrEmpty())
         }
     }
 
-    fun testtestPositions() {
-        assertDocs("CREATE_CONTRACT<caret>\n")
-        assertDocs("PAIR<caret>;UNPAIR;")
-        assertDocs("PAIR<caret> ;UNPAIR;")
+    private fun assertDocs(code: String) {
+        configureByCode(code)
+        val doc = findDocumentation()
+        Assert.assertFalse("documentation not found, must not be null or empty.", doc.isNullOrEmpty())
     }
 
     private fun findDocumentation(): String? {
@@ -35,11 +51,5 @@ class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
         val provider = DocumentationManager.getProviderFromElement(targetElement, originalElement)
         val doc = provider.generateDoc(targetElement, originalElement)
         return if ("No documentation found." == doc) null else doc
-    }
-
-    private fun assertDocs(code: String) {
-        configureByCode(code)
-        val doc = findDocumentation()
-        Assert.assertFalse("documentation not found, must not be null or empty.", doc.isNullOrEmpty())
     }
 }

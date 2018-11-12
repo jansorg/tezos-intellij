@@ -1,0 +1,3 @@
+> DUU(\rest=U*)P / S  =>  DIP (DU(\rest)P) ; SWAP / S
+
+A syntactic sugar for duplicating the n-th element of the stack.

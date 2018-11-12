@@ -1,0 +1,1 @@
+> ASSERT_RIGHT  =>  IF_LEFT {FAIL} {}

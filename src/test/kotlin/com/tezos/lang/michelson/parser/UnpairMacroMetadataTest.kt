@@ -24,4 +24,24 @@ class UnpairMacroMetadataTest {
         assertInvalid(m, "UNPAIAR", 5)
         assertInvalid(m, "UNPAIPR", 6)
     }
+
+    @Test
+    fun expand() {
+        val m = UnpairMacroMetadata()
+
+        assertEquals("DUP; CAR; DIP{CDR}", m.expand("UNPAIR"))
+
+        // stack ((a b) c) -> a, b, c
+        // UNPPAIIR
+        // -> UNPAIR; UNPAIR
+        // -> DUP; CAR; DIP { CDR }; DUP; CAR; DIP { CDR }
+        assertEquals("DUP; CAR; DIP{CDR}; DUP; CAR; DIP{CDR}", m.expand("UNPPAIIR"))
+
+        // stack ((a b) ((c d) e)) -> a, b, c, d, e
+        // UNP PAI PPAII R
+        // -> UNPPAIPPAIIR
+        // -> UNPAIR; UNP AI PPAII R
+        // -> UNPAIR; UNPAI PPAII R
+        assertEquals("", m.expand("UNPPAIPPAIIR"))
+    }
 }

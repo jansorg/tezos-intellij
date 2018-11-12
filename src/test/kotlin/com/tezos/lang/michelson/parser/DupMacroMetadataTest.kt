@@ -25,4 +25,12 @@ class DupMacroMetadataTest {
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "DUUP"))
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.FIELD, "DUUP"))
     }
+
+    @Test
+    fun expand() {
+        val m = DupMacroMetadata()
+        assertNull(m.expand("DUP"))
+        assertEquals("DIP{DUP}; SWAP", m.expand("DUUP"))
+        assertEquals("DIP{DIP{DIP{DUP}; SWAP}; SWAP}; SWAP", m.expand("DUUUUP"))
+    }
 }

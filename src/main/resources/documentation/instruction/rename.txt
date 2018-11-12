@@ -1,0 +1,7 @@
+RENAME @new
+:: @old 'a ; 'S -> @new 'a : 'S
+
+RENAME
+:: @old 'a ; 'S -> 'a : 'S
+
+A no-op instruction RENAME allows to rename variables in the stack or to erase variable annotations in the stack.

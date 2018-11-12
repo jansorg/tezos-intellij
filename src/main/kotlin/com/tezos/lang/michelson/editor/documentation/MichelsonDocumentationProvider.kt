@@ -9,7 +9,9 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ResourceUtil
 import com.tezos.lang.michelson.MichelsonTypes
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.psi.PsiInstruction
+import com.tezos.lang.michelson.psi.PsiMacroInstruction
 
 /**
  * Provides documentation for Michelson instructions.
@@ -47,23 +49,43 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
         return when (element) {
+            is PsiMacroInstruction -> buildMacroInstructionDocs(element)
             is PsiInstruction -> buildInstructionDocs(element)
             else -> null
         }
     }
 
+    private fun buildMacroInstructionDocs(element: PsiMacroInstruction): String? {
+        val name = element.instructionName ?: return null
+        val macro = MichelsonLanguage.MACROS.first { it.validate(name) == null }
+
+        val content = macro.helpContentFile(name)?.let { path ->
+            this::class.java.getResource("/documentation/macro/$path")?.let {
+                ResourceUtil.loadText(it)
+            }
+        }
+
+        val expanded = macro.expand(name, true)
+        return report(content ?: "", name, if (expanded != null) {
+            "<code>$expanded</code><br><br>"
+        } else "")
+    }
+
     private fun buildInstructionDocs(element: PsiInstruction): String? {
         val name = element.instructionName
         return name?.let {
-            loadDefFile("/documentation/instruction/${it.toLowerCase()}.txt", it)
+            loadReport("/documentation/instruction/${it.toLowerCase()}.txt", it)
         }
     }
 
-    private fun loadDefFile(path: String, title: String): String? {
-        val content = this::class.java.getResource(path)?.let {
-            ResourceUtil.loadText(it)
-        } ?: return null
+    private fun loadReport(classpath: String, title: String, prefix: String = ""): String? {
+        return this::class.java.getResource(classpath)?.let {
+            val content = ResourceUtil.loadText(it)
+            return report(content, title, prefix)
+        }
+    }
 
+    private fun report(content: String, title: String, prefix: String = ""): String? {
         // lines starting with :: are defining the stack transformation
         // lines starting with > define the logic
         // lines following the last line starting with :: or > provide a textual description of the instruction
@@ -77,7 +99,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
             val trimmed = line.trim()
             when {
                 line.startsWith("  ") -> when (last) {
-                    null -> throw IllegalStateException("Unhandled continuation in $path")
+                    null -> throw IllegalStateException("Unhandled continuation")
                     else -> last.add(line)
                 }
                 trimmed.startsWith("::") -> {
@@ -102,6 +124,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         //language=HTML
         return """
             <strong>$title</strong><br>
+            $prefix
             $descBlock
             $transformBlock
             $logicBlock

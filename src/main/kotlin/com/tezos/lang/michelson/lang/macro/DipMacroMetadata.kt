@@ -9,7 +9,7 @@ import java.util.regex.Pattern
  */
 class DipMacroMetadata : MacroMetadata {
     private companion object {
-        val regexp = Pattern.compile("DI+P")
+        val regexp: Pattern = Pattern.compile("DI+P")
     }
 
     override fun staticMacroName(): Collection<String> = listOf("DIP")
@@ -25,4 +25,22 @@ class DipMacroMetadata : MacroMetadata {
     override fun requiredBlocks(): Int = 1
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int = 0
+
+    override fun helpContentFile(name: String): String? = "dip.txt"
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        if (validate(macro) != null) {
+            return null
+        }
+
+        val result = StringBuilder()
+
+        val levels = macro.count { it == 'I' }
+        for (i in 0 until levels) {
+            result.insert(0, "DIP{")
+            result.append("}")
+        }
+
+        return result.toString()
+    }
 }

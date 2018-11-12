@@ -101,4 +101,64 @@ class PairMacroMetadata : MacroMetadata {
             PsiAnnotationType.TYPE -> 1 //fixme not clearly defined in the spec
         }
     }
+
+    override fun helpContentFile(name: String): String? {
+        return when (name) {
+            "PAIR" -> "pair.txt"
+            else -> "pair_macro.txt"
+        }
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        if (validate(macro) != null) {
+            return null
+        }
+
+        return doExpand(macro)
+    }
+
+    private fun doExpand(macro: String): String {
+        if (macro == "PAIR") {
+            return "PAIR"
+        }
+
+        if (macro.startsWith("PA")) {
+            val inner = doExpand(macro.substring(2))
+            return "DIP{$inner}; PAIR"
+        }
+
+        if (macro.endsWith("IR")) {
+            val inner = doExpand(macro.substring(1, macro.length - 2) + "R")
+            return "PAIR; $inner"
+        }
+
+        // split into left and right part and expand each part
+        val rest = macro.substring(1, macro.length - 1)
+        val chars = rest.toCharArray()
+
+        // expected numbers of i and a chars
+        var a = 1
+        var i = 1
+
+        var n = 0
+        while (i >= 1 || a >= 1) {
+            val c = chars[n]
+            if (c == 'P') {
+                i++
+                a++
+            } else if (c == 'A') {
+                a--
+            } else if (c == 'I') {
+                i--
+            } else {
+                throw IllegalStateException("unexpected character $c at index ${n + 1} in $macro")
+            }
+
+            n++
+        }
+
+        val left = doExpand(rest.substring(0, n) + "R")
+        val right = doExpand(rest.substring(n) + "R")
+        return "$right; $left; PAIR"
+    }
 }

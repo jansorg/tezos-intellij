@@ -43,4 +43,64 @@ class UnpairMacroMetadata : MacroMetadata {
             PsiAnnotationType.TYPE -> 0
         }
     }
+
+    override fun helpContentFile(name: String): String? {
+        return "unpair.txt"
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        if (validate(macro) != null) {
+            return null
+        }
+        return doExpand(macro)
+    }
+
+    private fun doExpand(macro: String): String {
+        if (macro == "UNPAIR") {
+            return "DUP; CAR; DIP{CDR}"
+        }
+
+        if (macro.startsWith("UNPA")) {
+            val left = doExpand("UNPAIR")
+            val right = doExpand("UN" + macro.substring("UNPA".length))
+            return "$left; DIP{$right}"
+        }
+
+        if (macro.endsWith("IR")) {
+            val rest = macro.substring(3, macro.length - 2)
+
+            val left = doExpand("UNPAIR")
+            val right = doExpand("UN${rest}R")
+            return "$left; $right"
+        }
+
+        // split into left and right part and expand each part
+        val rest = macro.substring("UNP".length, macro.length - 1)
+        val chars = rest.toCharArray()
+
+        // expected numbers of i and a chars
+        var a = 1
+        var i = 1
+
+        var n = 0
+        while (i >= 1 || a >= 1) {
+            val c = chars[n]
+            if (c == 'P') {
+                i++
+                a++
+            } else if (c == 'A') {
+                a--
+            } else if (c == 'I') {
+                i--
+            } else {
+                throw IllegalStateException("unexpected character $c at index ${n + 1} in $macro")
+            }
+
+            n++
+        }
+
+        val left = doExpand("UN" + rest.substring(0, n) + "R")
+        val right = doExpand("UN" + rest.substring(n) + "R")
+        return "$right; $left; PAIR"
+    }
 }

@@ -24,11 +24,33 @@ class DupMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
+    override fun helpContentFile(name: String): String? = "dup.txt"
+
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
         return when (type) {
             // macros that produce n values on the stack accept n variable annotations, DUUP produces one
             PsiAnnotationType.VARIABLE -> 1
             else -> 0
         }
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        if (validate(macro) != null) {
+            return null
+        }
+
+        // DUP is an instrucation
+        if (macro == "DUP") {
+            return null
+        }
+
+        val levels = macro.count { it == 'U' }
+
+        val result = StringBuilder("DUP")
+        for (i in 0 until levels - 1) {
+            result.insert(0, "DIP{")
+            result.append("}; SWAP")
+        }
+        return result.toString()
     }
 }

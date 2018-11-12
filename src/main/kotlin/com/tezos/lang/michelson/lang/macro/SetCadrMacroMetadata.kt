@@ -28,11 +28,23 @@ class SetCadrMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
+    override fun helpContentFile(name: String): String? {
+        return when (name) {
+            "SET_CAR" -> "set_car.txt"
+            "SET_CDR" -> "set_cdr.txt"
+            else -> "set_cadr_macro.txt"
+        }
+    }
+
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
         return when (type) {
             PsiAnnotationType.VARIABLE -> 1
             PsiAnnotationType.FIELD -> 1
             PsiAnnotationType.TYPE -> 0
         }
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        return null
     }
 }

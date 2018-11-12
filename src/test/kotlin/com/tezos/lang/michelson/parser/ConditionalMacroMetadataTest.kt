@@ -26,4 +26,23 @@ class ConditionalMacroMetadataTest {
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "IFEQ"))
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "IFEQ"))
     }
+
+    @Test
+    fun expansion() {
+        val m = ConditionalMacroMetadata()
+        for (n in ConditionalMacroMetadata.NAMES) {
+            if (n == "IF_SOME") {
+                assertNull(m.expand(n, false))
+                assertNull(m.expand(n, true))
+            } else {
+                val short = m.expand(n, false)
+                assertNotNull(short)
+
+                val long = m.expand(n, true)
+                assertNotNull(long)
+
+                assertNotEquals(short, long)
+            }
+        }
+    }
 }

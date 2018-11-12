@@ -19,7 +19,7 @@ class MapCadrMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("MAP_C[AD]+R")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("MPA_CDR", "MAP_CAR")
+    override fun staticMacroName(): Collection<String> = listOf("MAP_CAR", "MAP_CDR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
@@ -32,11 +32,23 @@ class MapCadrMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 1
 
+    override fun helpContentFile(name: String): String? {
+        return when (name) {
+            "MAP_CAR" -> "map_car.txt"
+            "MAP_CDR" -> "map_cdr.txt"
+            else -> "map_cadr_macro.txt"
+        }
+    }
+
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
         return when (type) {
             PsiAnnotationType.VARIABLE -> 1
             PsiAnnotationType.FIELD -> 1
             PsiAnnotationType.TYPE -> 0
         }
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        return null
     }
 }

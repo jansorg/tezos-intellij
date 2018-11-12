@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.lang.macro
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 /**
- * Provides information about a dynamic macro, i.e. about a macro with dynamic length, e.g. DIIIP or DUUP.
+ * Provides information about one macro or a set of similar macros.
  * @author jansorg
  */
 interface MacroMetadata {
@@ -23,4 +23,14 @@ interface MacroMetadata {
      * @return The number of supported annotations for the given type, in the range [0,]
      */
     fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int
+
+    /**
+     * @return The expanded (i.e. de-sugared) form of the macro. If the macro or the expansion is unsupported then null is returned.
+     */
+    fun expand(macro: String, deepExpansion: Boolean = false): String?
+
+    /**
+     * @return the URL pointing to the description as a classpath resource
+     */
+    fun helpContentFile(name: String): String?
 }
