@@ -29,4 +29,15 @@ class CadrMacroMetadataTest{
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "CADR"))
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "CAADDR"))
     }
+
+    @Test
+    fun expand() {
+        val m = CadrMacroMetadata()
+        assertEquals(null, m.expand("CAR"))
+        assertEquals(null, m.expand("CDR"))
+
+        assertEquals("CAR; CDR", m.expand("CADR"))
+        assertEquals("CAR; CAR; CAR", m.expand("CAAAR"))
+        assertEquals("CAR; CDR; CAR", m.expand("CADAR"))
+    }
 }

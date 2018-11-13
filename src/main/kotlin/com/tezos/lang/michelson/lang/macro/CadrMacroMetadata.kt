@@ -42,6 +42,19 @@ class CadrMacroMetadata : MacroMetadata {
     }
 
     override fun expand(macro: String, deepExpansion: Boolean): String? {
-        return null
+        return when (macro) {
+            "CAR", "CDR" -> null
+            else -> doExpand(macro)
+        }
+    }
+
+    private fun doExpand(macro: String): String {
+        return when {
+            macro == "CAR" -> "CAR"
+            macro == "CDR" -> "CDR"
+            macro.startsWith("CA") -> "CAR; ${doExpand("C${macro.substring(2)}")}"
+            macro.startsWith("CD") -> "CDR; ${doExpand("C${macro.substring(2)}")}"
+            else -> throw IllegalStateException("unsupported macro $macro")
+        }
     }
 }

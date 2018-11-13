@@ -45,6 +45,24 @@ class SetCadrMacroMetadata : MacroMetadata {
     }
 
     override fun expand(macro: String, deepExpansion: Boolean): String? {
-        return null
+        return doExpand(macro)
+    }
+
+    private fun doExpand(macro: String): String {
+        return when {
+            macro == "SET_CAR" -> "CDR; SWAP; PAIR"
+            macro == "SET_CDR" -> "CAR; PAIR"
+            macro.startsWith("SET_C") -> {
+                val name = macro.substring(6, macro.length - 1)
+                val inner = doExpand("SET_C${name}R")
+
+                if (macro.startsWith("SET_CA")) {
+                    "{ DUP; DIP{ CAR; $inner }; CDR; SWAP; PAIR }"
+                } else {
+                    "{ DUP; DIP{ CDR; $inner }; CAR; PAIR }"
+                }
+            }
+            else -> throw IllegalStateException("unsupported macro $macro")
+        }
     }
 }

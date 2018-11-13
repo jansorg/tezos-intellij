@@ -1,0 +1,3 @@
+> CMP(\op) / S  =>  COMPARE ; (\op) / S
+
+Invokes <code>COMPARE</code> and then the instruction defined by this macro's name.

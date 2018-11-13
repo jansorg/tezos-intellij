@@ -49,6 +49,26 @@ class MapCadrMacroMetadata : MacroMetadata {
     }
 
     override fun expand(macro: String, deepExpansion: Boolean): String? {
-        return null
+        return doExpand(macro, "<em>CODE</em>")
+    }
+
+    private fun doExpand(macro: String, codeParam: String): String {
+        return when {
+            macro == "MAP_CAR" -> "DUP; CDR; DIP{ CAR; $codeParam }; SWAP; PAIR"
+            macro == "MAP_CDR" -> "DUP; CDR; $codeParam; SWAP; CAR; PAIR"
+
+            macro.startsWith("MAP_C") -> {
+                val rest = macro.substring(6, macro.length - 1)
+                val inner = doExpand("MAP_C${rest}R", codeParam)
+
+                if (macro.startsWith("MAP_CA")) {
+                    "{ DUP; DIP{ CAR; $inner }; CDR; SWAP; PAIR }"
+                } else {
+                    "{ DUP; DIP{ CDR; $inner }; CAR; PAIR }"
+                }
+            }
+
+            else -> throw IllegalStateException("unsupported macro $macro")
+        }
     }
 }

@@ -39,7 +39,7 @@ class DupMacroMetadata : MacroMetadata {
             return null
         }
 
-        // DUP is an instrucation
+        // DUP is an instruction
         if (macro == "DUP") {
             return null
         }

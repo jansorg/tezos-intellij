@@ -21,7 +21,7 @@ class CompareMacroMetadata : MacroMetadata {
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int = 0
 
-    override fun helpContentFile(name: String): String? = null
+    override fun helpContentFile(name: String): String? = "cmp.txt"
 
     override fun expand(macro: String, deepExpansion: Boolean): String? {
         if (validate(macro) != null) {
