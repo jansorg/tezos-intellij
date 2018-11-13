@@ -167,6 +167,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun annotateMacroAnnotations(psi: PsiMacroInstruction, holder: AnnotationHolder) {
         // fixme annotate PAIR, UNPAIR, etc.
     }

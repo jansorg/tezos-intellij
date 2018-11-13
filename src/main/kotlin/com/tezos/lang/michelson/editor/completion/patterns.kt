@@ -21,13 +21,13 @@ val DEBUG_FALSE = PlatformPatterns.psiElement().with(object : PatternCondition<P
     override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
         return false
     }
-})!!
+})
 
-val DEBUG_TRUE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug") {
-    override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
-        return true
-    }
-})!!
+//val DEBUG_TRUE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug") {
+//    override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
+//        return true
+//    }
+//})
 
 // we can't use PlatformPatterns.psiElement().afterLeakSkipping() because it always skips empty-elements, i.e. error elements
 val AFTER_ERROR_LEAF_SKIPPING_WS = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("after-error-skipping-ws") {

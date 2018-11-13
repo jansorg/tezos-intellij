@@ -37,7 +37,7 @@ class StackParserTest(val file: String) {
     fun testParsing() {
         val filePath = dataRootPath.resolve(file)
         val fixedContent = MichelsonStackUtils.fixTezosClientStdout(Files.readAllBytes(filePath).toString(StandardCharsets.UTF_8))
-        val input = ANTLRInputStream(fixedContent)
+        val input = CharStreams.fromString(fixedContent)
 
         val lexer = MichelsonStackLexer(input)
         val tokens = CommonTokenStream(lexer)
