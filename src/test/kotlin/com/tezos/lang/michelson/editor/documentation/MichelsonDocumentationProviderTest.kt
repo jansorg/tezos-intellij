@@ -34,6 +34,31 @@ class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
         }
     }
 
+    fun testTypes(){
+        assertDocs("NIL in<caret>t")
+        assertDocs("NIL string<caret>")
+        assertDocs("NIL nat<caret>")
+        assertDocs("NIL int<caret>")
+        assertDocs("NIL bytes<caret>")
+
+        assertDocs("NIL address<caret>")
+        assertDocs("NIL big_map<caret>")
+        assertDocs("NIL contract<caret>")
+        assertDocs("NIL key<caret>")
+        assertDocs("NIL key_hash<caret>")
+        assertDocs("NIL list<caret>")
+        assertDocs("NIL map<caret>")
+        assertDocs("NIL mutez<caret>")
+        assertDocs("NIL operation<caret>")
+        assertDocs("NIL option<caret>")
+        assertDocs("NIL or<caret>")
+        assertDocs("NIL pair<caret>")
+        assertDocs("NIL set<caret>")
+        assertDocs("NIL signature<caret>")
+        assertDocs("NIL timestamp<caret>")
+        assertDocs("NIL unit<caret>")
+    }
+
     private fun assertDocs(code: String) {
         configureByCode(code)
         val doc = findDocumentation()

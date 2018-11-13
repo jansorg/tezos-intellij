@@ -1,0 +1,1 @@
+The type whose only value is <code>Unit</code>, to use as a placeholder when some result or parameter is non necessary. For instance, when the only goal of a contract is to update its storage.

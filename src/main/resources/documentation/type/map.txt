@@ -1,0 +1,2 @@
+: map (k) (t)
+Immutable maps from keys of type <code>(k)</code> of values of type <code>(t)</code> that we note <code>{ Elt key value ; ... }</code>, with keys sorted.

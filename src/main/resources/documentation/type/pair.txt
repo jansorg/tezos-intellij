@@ -1,0 +1,2 @@
+: pair (l) (r)
+A pair of values a and b of types <code>(l)</code> and <code>(r)</code>, that we write <code>(Pair a b)</code>.

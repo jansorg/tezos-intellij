@@ -12,6 +12,7 @@ import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.psi.PsiInstruction
 import com.tezos.lang.michelson.psi.PsiMacroInstruction
+import com.tezos.lang.michelson.psi.PsiType
 
 /**
  * Provides documentation for Michelson instructions.
@@ -40,6 +41,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
                 PsiTreeUtil.findFirstParent(context) {
                     when (it) {
                         is PsiInstruction -> true
+                        is PsiType -> true
                         else -> false
                     }
                 }
@@ -51,8 +53,33 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         return when (element) {
             is PsiMacroInstruction -> buildMacroInstructionDocs(element)
             is PsiInstruction -> buildInstructionDocs(element)
+            is PsiType -> buildTypeDocs(element)
             else -> null
         }
+    }
+
+    private fun buildTypeDocs(element: PsiType): String? {
+        return buildTypeReport(element.typeNameString)
+    }
+
+    private fun buildTypeReport(name: String): String? {
+        val content = this::class.java.getResource("/documentation/type/$name.txt")?.let {
+            ResourceUtil.loadText(it)
+        } ?: return null
+
+        val (firstLine, finalContent) = if (content.startsWith(": ")) {
+            // the first line has a more specific notation of the type, e.g. with type parameters, use it instead
+            val lines = content.lines()
+            listOf(lines[0].substring(2).trim(), lines.subList(1, lines.size).joinToString("\n"))
+        } else {
+            listOf(name, content)
+        }
+
+        //language=HTML
+        return """
+            <table width='100%'><tr><td><strong><code>$firstLine</code></strong></td><td style="text-align:right;"><em>TYPE</em></td></tr></table>
+            $finalContent
+        """.trimIndent()
     }
 
     private fun buildMacroInstructionDocs(element: PsiMacroInstruction): String? {
@@ -66,7 +93,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         }
 
         val expanded = macro.expand(name, true)
-        return report(content ?: "", name, "macro", if (expanded != null) {
+        return instructionReport(content ?: "", name, "macro", if (expanded != null) {
             "<code>$expanded</code><br><br>"
         } else "")
     }
@@ -81,11 +108,11 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
     private fun loadReport(classpath: String, title: String, subtitle: String = "", prefix: String = ""): String? {
         return this::class.java.getResource(classpath)?.let {
             val content = ResourceUtil.loadText(it)
-            return report(content, title, subtitle, prefix)
+            return instructionReport(content, title, subtitle, prefix)
         }
     }
 
-    private fun report(content: String, title: String, subtitle: String = "", prefix: String = ""): String? {
+    private fun instructionReport(content: String, title: String, subtitle: String = "", prefix: String = ""): String? {
         // lines starting with :: are defining the stack transformation
         // lines starting with > define the logic
         // lines following the last line starting with :: or > provide a textual description of the instruction
@@ -122,14 +149,8 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         val descBlock = if (desc.isEmpty()) "" else "<div>" + desc.joinToString("<br>") + "</div><br>"
 
         //language=HTML
-        val firstLine = if (subtitle.isNotEmpty()) {
-            """<table width='100%'><tr><td><strong>$title</strong></td><td style='text-align:right;'><em>${subtitle.toUpperCase()}</em></td></tr></table>"""
-        }else{
-            """<strong>$title</strong>$subtitle<br>"""
-        }
-
         return """
-            $firstLine
+            <table width='100%'><tr><td><strong><code>$title</code></strong></td><td style='text-align:right;'><em>${subtitle.toUpperCase()}</em></td></tr></table>
             $prefix
             $descBlock
             $transformBlock
