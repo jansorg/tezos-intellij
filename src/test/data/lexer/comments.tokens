@@ -1,14 +1,30 @@
 [0 : 1] COMMENT_LINE
 #
 -----
+[1 : 2] end-of-line-marker
+
+
+-----
 [2 : 10] COMMENT_LINE
 #comment
+-----
+[10 : 11] end-of-line-marker
+
+
 -----
 [11 : 20] COMMENT_LINE
 # comment
 -----
+[20 : 21] end-of-line-marker
+
+
+-----
 [21 : 36] COMMENT_LINE
 #       comment
+-----
+[36 : 37] end-of-line-marker
+
+
 -----
 [37 : 46] SECTION_NAME
 parameter
@@ -19,6 +35,10 @@ unit
 [51 : 52] ;
 ;
 -----
+[52 : 53] end-of-line-marker
+
+
+-----
 [53 : 60] SECTION_NAME
 storage
 -----
@@ -27,6 +47,10 @@ unit
 -----
 [65 : 66] ;
 ;
+-----
+[66 : 67] end-of-line-marker
+
+
 -----
 [67 : 71] SECTION_NAME
 code
@@ -149,6 +173,10 @@ DROP
 -----
 [316 : 317] ;
 ;
+-----
+[317 : 318] end-of-line-marker
+
+
 -----
 [318 : 319] }
 }

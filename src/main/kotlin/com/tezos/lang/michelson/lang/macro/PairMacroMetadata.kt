@@ -114,6 +114,10 @@ class PairMacroMetadata : MacroMetadata {
             return null
         }
 
+        if (macro == "PAIR") {
+            return null
+        }
+
         return doExpand(macro)
     }
 

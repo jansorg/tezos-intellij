@@ -60,13 +60,13 @@ class UnpairMacroMetadata : MacroMetadata {
             return "DUP; CAR; DIP{CDR}"
         }
 
-        if (macro.startsWith("UNPA")) {
+        if (macro.startsWith("UNPAI") || macro.startsWith("UNPAP")) {
             val left = doExpand("UNPAIR")
-            val right = doExpand("UN" + macro.substring("UNPA".length))
+            val right = doExpand("UN" + macro.substring(4))
             return "$left; DIP{$right}"
         }
 
-        if (macro.endsWith("IR")) {
+        if ((macro.startsWith("UNPA") || macro.startsWith("UNPP")) && macro.endsWith("IR")) {
             val rest = macro.substring(3, macro.length - 2)
 
             val left = doExpand("UNPAIR")
@@ -83,13 +83,24 @@ class UnpairMacroMetadata : MacroMetadata {
         var i = 1
 
         var n = 0
+        var nextIsLeft = false
         while (i >= 1 || a >= 1) {
+            if (n >= chars.size) {
+                throw IllegalStateException("unexpected characters length in $macro")
+            }
+
             val c = chars[n]
             if (c == 'P') {
+                if (nextIsLeft) {
+                    i++
+                } else {
+                    a++
+                }
                 i++
-                a++
+                nextIsLeft = true
             } else if (c == 'A') {
                 a--
+                nextIsLeft = false
             } else if (c == 'I') {
                 i--
             } else {

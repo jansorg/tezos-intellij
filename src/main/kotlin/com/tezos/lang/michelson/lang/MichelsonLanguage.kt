@@ -21,13 +21,13 @@ object MichelsonLanguage : Language("Michelson") {
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 
     // tag names
-    val TAG_UNIT : TagMetadata = UnitTagMetadata()
-    val TAG_NONE : TagMetadata = NoneTagMetadata()
-    val TAG_BOOL : TagMetadata = BooleanTagMetadata()
-    val TAG_PAIR : TagMetadata = PairTagMetadata()
-    val TAG_SOME : TagMetadata = SomeMetadata()
-    val TAG_OR : TagMetadata = OrTagMetadata()
-    val TAG_ELT : TagMetadata = EltTagMetadata()
+    val TAG_UNIT: TagMetadata = UnitTagMetadata()
+    val TAG_NONE: TagMetadata = NoneTagMetadata()
+    val TAG_BOOL: TagMetadata = BooleanTagMetadata()
+    val TAG_PAIR: TagMetadata = PairTagMetadata()
+    val TAG_SOME: TagMetadata = SomeMetadata()
+    val TAG_OR: TagMetadata = OrTagMetadata()
+    val TAG_ELT: TagMetadata = EltTagMetadata()
     val TAGS_METAS = listOf(TAG_UNIT, TAG_NONE, TAG_BOOL, TAG_PAIR, TAG_SOME, TAG_OR, TAG_ELT)
     val TAG_NAMES = TAGS_METAS.flatMap { it.names() }.toSet()
     val TAG_OPTION_NAMES = setOf("None", "Some")
@@ -49,7 +49,6 @@ object MichelsonLanguage : Language("Michelson") {
     val MACRO_NAMES = MACROS.flatMap { it.staticMacroName() }
 
     // instructions which do not support arguments
-    //fixme moved  INT and MOD to questionable
     val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "ADDRESS", "AMOUNT", "AND", "BALANCE", "BLAKE2B",
             "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT", "CONS",
             "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP",
@@ -57,10 +56,12 @@ object MichelsonLanguage : Language("Michelson") {
             "HASH_KEY", "IMPLICIT_ACCOUNT", "LE", "LSL", "LSR", "LT", "MEM", "MUL", "NEG", "NEQ", "NOT", "NOW",
             "OR", "PACK", "PAIR", "RENAME",
             "SELF", "SENDER", "SET_DELEGATE", "SHA256", "SHA512", "SIZE", "SLICE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
-            "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR")
+            "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR",
+            "INT", "MOD" //fixme int and mod are not in the whitepaper, but we're pretty sure that they don't accept arguments
+    )
 
     // instructions which are not fully explained in the whitepaper
-    val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT", "REDUCE", "INT", "MOD")
+    val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT", "REDUCE")
 
     // instructions which expect one instruction block
     val INSTRUCTIONS_ONE_BLOCK = setOf("DIP", "ITER", "LOOP", "LOOP_LEFT", "MAP")

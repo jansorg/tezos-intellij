@@ -27,7 +27,8 @@ class DipMacroMetadataTest {
     @Test
     fun expand() {
         val m = DipMacroMetadata()
-        assertEquals("DIP{}", m.expand("DIP"))
+        assertNull(m.expand("DIP"))
+
         assertEquals("DIP{DIP{}}", m.expand("DIIP"))
         assertEquals("DIP{DIP{DIP{DIP{DIP{DIP{}}}}}}", m.expand("DIIIIIIP"))
     }

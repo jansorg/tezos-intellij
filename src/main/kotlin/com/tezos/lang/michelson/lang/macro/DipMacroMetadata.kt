@@ -9,16 +9,16 @@ import java.util.regex.Pattern
  */
 class DipMacroMetadata : MacroMetadata {
     private companion object {
-        val regexp: Pattern = Pattern.compile("DI+P")
+        val regexp: Pattern = Pattern.compile("DII+P")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("DIP")
+    override fun staticMacroName(): Collection<String> = emptyList()
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (regexp.matcher(macro).matches()) {
             null
         } else {
-            "Macro doesn't match DI+P" to 0
+            "Macro doesn't match DII+P" to 0
         }
     }
 

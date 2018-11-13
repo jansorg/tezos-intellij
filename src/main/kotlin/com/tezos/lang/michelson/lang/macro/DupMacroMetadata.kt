@@ -9,16 +9,16 @@ import java.util.regex.Pattern
  */
 class DupMacroMetadata : MacroMetadata {
     private companion object {
-        val regexp = Pattern.compile("DU+P")
+        val regexp = Pattern.compile("DUU+P")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("DUP")
+    override fun staticMacroName(): Collection<String> = emptyList()
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (regexp.matcher(macro).matches()) {
             null
         } else {
-            "Macro doesn't match DU+P" to 0
+            "Macro doesn't match DUU+P" to 0
         }
     }
 

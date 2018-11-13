@@ -8,7 +8,7 @@ import org.junit.Test
  * @author jansorg
  */
 class MacroMetadataTest {
-    private val missingExpansions = setOf("IF_SOME", "DUP", "DIP", "CAR", "CDR")
+    private val missingExpansions = setOf("IF_SOME", "DUP", "DIP", "CAR", "CDR", "PAIR")
 
     @Test
     fun replacements() {

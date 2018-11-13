@@ -7,6 +7,10 @@ string
 [16 : 17] ;
 ;
 -----
+[17 : 18] end-of-line-marker
+
+
+-----
 [18 : 24] SECTION_NAME
 return
 -----
@@ -16,6 +20,10 @@ string
 [31 : 32] ;
 ;
 -----
+[32 : 33] end-of-line-marker
+
+
+-----
 [33 : 40] SECTION_NAME
 storage
 -----
@@ -24,6 +32,10 @@ unit
 -----
 [45 : 46] ;
 ;
+-----
+[46 : 47] end-of-line-marker
+
+
 -----
 [47 : 51] SECTION_NAME
 code
@@ -36,4 +48,8 @@ code
 -----
 [54 : 55] ;
 ;
+-----
+[55 : 56] end-of-line-marker
+
+
 -----

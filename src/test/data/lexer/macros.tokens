@@ -1,6 +1,10 @@
 [0 : 94] COMMENT_LINE
 # This tests contains all macros to make sure that these are not parsed as instruction tokens.
 -----
+[94 : 95] end-of-line-marker
+
+
+-----
 [95 : 104] SECTION_NAME
 parameter
 -----
@@ -9,6 +13,10 @@ unit
 -----
 [109 : 110] ;
 ;
+-----
+[110 : 111] end-of-line-marker
+
+
 -----
 [111 : 117] SECTION_NAME
 return
@@ -19,6 +27,10 @@ unit
 [122 : 123] ;
 ;
 -----
+[123 : 124] end-of-line-marker
+
+
+-----
 [124 : 131] SECTION_NAME
 storage
 -----
@@ -27,6 +39,10 @@ unit
 -----
 [136 : 137] ;
 ;
+-----
+[137 : 138] end-of-line-marker
+
+
 -----
 [138 : 142] SECTION_NAME
 code
@@ -339,6 +355,10 @@ MAP_CAAADDR
 -----
 [716 : 717] ;
 ;
+-----
+[717 : 718] end-of-line-marker
+
+
 -----
 [718 : 719] }
 }
