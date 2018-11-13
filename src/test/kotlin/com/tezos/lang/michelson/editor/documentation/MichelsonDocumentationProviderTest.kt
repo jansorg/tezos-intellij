@@ -59,10 +59,22 @@ class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
         assertDocs("NIL unit<caret>")
     }
 
+    fun testTags(){
+        assertDocs("PUSH (map int int) { Elt<caret> 123 123 }")
+        assertDocs("PUSH bool False<caret>")
+        assertDocs("PUSH bool True<caret>")
+        assertDocs("PUSH (option int int) Left<caret> 42 42")
+        assertDocs("PUSH (option int int) None<caret>")
+        assertDocs("PUSH (pair int int) Pair<caret> 1 2")
+        assertDocs("PUSH (or int int) Right<caret> 42")
+        assertDocs("PUSH (or int int) Some<caret> 42")
+        assertDocs("PUSH unit Unit<caret>")
+    }
+
     private fun assertDocs(code: String) {
         configureByCode(code)
         val doc = findDocumentation()
-        Assert.assertFalse("documentation not found, must not be null or empty.", doc.isNullOrEmpty())
+        Assert.assertFalse("documentation not found, must not be null or empty: $code", doc.isNullOrEmpty())
     }
 
     private fun findDocumentation(): String? {

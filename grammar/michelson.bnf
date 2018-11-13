@@ -103,7 +103,7 @@ string_literal ::= '"' (STRING_CONTENT | STRING_ESCAPE | STRING_ESCAPE_INVALID)*
 data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is an empty list, not an empty map
 // don't pin on { as it's also the start marker for a block and a list literal
 data_map ::= '{' ';'? map_entry (';' (map_entry | &'}'))* '}'  // empty list {} is not allowed here
-map_entry ::= 'Elt' toplevel_data toplevel_data
+map_entry ::= 'Elt' toplevel_data toplevel_data {extends=tag}
 
 tag ::= 'Unit' | 'True' | 'False' | 'None' | TAG_TOKEN toplevel_data* {pin=1 recoverWhile=tag_recovery extends=data}
 private tag_recovery ::= <<tag_data_recover_while>>

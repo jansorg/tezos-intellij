@@ -1,0 +1,2 @@
+: (Some v)
+Denotes a present value of type <code>option t</code> with <code>v</code> being a value of type <code>t</code>.

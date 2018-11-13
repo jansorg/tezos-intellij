@@ -12,6 +12,7 @@ import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.psi.PsiInstruction
 import com.tezos.lang.michelson.psi.PsiMacroInstruction
+import com.tezos.lang.michelson.psi.PsiTag
 import com.tezos.lang.michelson.psi.PsiType
 
 /**
@@ -42,6 +43,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
                     when (it) {
                         is PsiInstruction -> true
                         is PsiType -> true
+                        is PsiTag -> true
                         else -> false
                     }
                 }
@@ -54,6 +56,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
             is PsiMacroInstruction -> buildMacroInstructionDocs(element)
             is PsiInstruction -> buildInstructionDocs(element)
             is PsiType -> buildTypeDocs(element)
+            is PsiTag -> buildTagDocs(element)
             else -> null
         }
     }
@@ -63,7 +66,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
     }
 
     private fun buildTypeReport(name: String): String? {
-        val content = this::class.java.getResource("/documentation/type/$name.txt")?.let {
+        val content = this::class.java.getResource("/documentation/type/${name.toLowerCase()}.txt")?.let {
             ResourceUtil.loadText(it)
         } ?: return null
 
@@ -78,6 +81,31 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
         //language=HTML
         return """
             <table width='100%'><tr><td><strong><code>$firstLine</code></strong></td><td style="text-align:right;"><em>TYPE</em></td></tr></table>
+            $finalContent
+        """.trimIndent()
+    }
+
+    private fun buildTagDocs(element: PsiTag): String? {
+        val name = element.tagToken?.text ?: return null
+        return buildTagReport(name)
+    }
+
+    private fun buildTagReport(name: String): String? {
+        val content = this::class.java.getResource("/documentation/tag/${name.toLowerCase()}.txt")?.let {
+            ResourceUtil.loadText(it)
+        } ?: return null
+
+        val (firstLine, finalContent) = if (content.startsWith(": ")) {
+            // the first line has a more specific notation of the type, e.g. with type parameters, use it instead
+            val lines = content.lines()
+            listOf(lines[0].substring(2).trim(), lines.subList(1, lines.size).joinToString("\n"))
+        } else {
+            listOf(name, content)
+        }
+
+        //language=HTML
+        return """
+            <table width='100%'><tr><td><strong><code>$firstLine</code></strong></td><td style="text-align:right;"><em>CONSTRUCTOR</em></td></tr></table>
             $finalContent
         """.trimIndent()
     }

@@ -1,0 +1,1 @@
+The right alternative of union type <code>or l r</code> which is of type <code>r</code>.

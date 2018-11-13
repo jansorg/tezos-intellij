@@ -11,7 +11,7 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiMapEntryImpl extends MichelsonCompositeImpl implements PsiMapEntry {
+public class PsiMapEntryImpl extends PsiTagImpl implements PsiMapEntry {
 
   public PsiMapEntryImpl(@NotNull IElementType type) {
     super(type);
@@ -24,18 +24,6 @@ public class PsiMapEntryImpl extends MichelsonCompositeImpl implements PsiMapEnt
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<PsiData> getDataList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiData.class);
-  }
-
-  @Override
-  @NotNull
-  public List<PsiEmptyBlock> getEmptyBlockList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiEmptyBlock.class);
   }
 
 }

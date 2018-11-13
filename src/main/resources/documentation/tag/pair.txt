@@ -1,0 +1,2 @@
+: (Pair a b)
+Creates a value of type <code>pair l r</code> with <code>a</code> of type <code>l</code> and <code>b</code> of type <code>r</code>.

@@ -1,0 +1,2 @@
+: Elt key value
+A map entry of type <code>map (k) (v)</code> or <code>big_map (k) (v)</code> where <code>key</code> is a value of type <code>k</code> and value is of type <code>v</code>.

@@ -71,7 +71,7 @@ public class PsiVisitor<R> extends PsiElementVisitor {
   }
 
   public R visitMapEntry(@NotNull PsiMapEntry o) {
-    return visitMichelsonComposite(o);
+    return visitTag(o);
   }
 
   public R visitSection(@NotNull PsiSection o) {
