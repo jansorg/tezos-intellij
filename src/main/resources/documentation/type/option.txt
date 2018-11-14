@@ -1,0 +1,2 @@
+: option (t)
+Optional value of type <code>(t)</code> that we note <code>None</code> or <code>(Some v)</code>.

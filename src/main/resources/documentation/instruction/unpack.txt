@@ -1,0 +1,3 @@
+:: bytes : 'S   ->   option 'a : 'S
+
+Deserializes a piece of data, if valid.

@@ -1,0 +1,6 @@
+:: 'S   ->   set 'elt : 'S
+
+> EMPTY_SET _ / S  =>  {} : S
+
+Build a new, empty set for elements of a given type.
+The <code>'elt</code> type must be comparable (the <code>COMPARE</code> primitive must be defined over it).

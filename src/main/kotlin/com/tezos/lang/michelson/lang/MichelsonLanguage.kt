@@ -21,18 +21,19 @@ object MichelsonLanguage : Language("Michelson") {
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 
     // tag names
-    val TAG_UNIT : TagMetadata = UnitTagMetadata()
-    val TAG_NONE : TagMetadata = NoneTagMetadata()
-    val TAG_BOOL : TagMetadata = BooleanTagMetadata()
-    val TAG_PAIR : TagMetadata = PairTagMetadata()
-    val TAG_SOME : TagMetadata = SomeMetadata()
-    val TAG_OR : TagMetadata = OrTagMetadata()
-    val TAG_ELT : TagMetadata = EltTagMetadata()
+    val TAG_UNIT: TagMetadata = UnitTagMetadata()
+    val TAG_NONE: TagMetadata = NoneTagMetadata()
+    val TAG_BOOL: TagMetadata = BooleanTagMetadata()
+    val TAG_PAIR: TagMetadata = PairTagMetadata()
+    val TAG_SOME: TagMetadata = SomeMetadata()
+    val TAG_OR: TagMetadata = OrTagMetadata()
+    val TAG_ELT: TagMetadata = EltTagMetadata()
     val TAGS_METAS = listOf(TAG_UNIT, TAG_NONE, TAG_BOOL, TAG_PAIR, TAG_SOME, TAG_OR, TAG_ELT)
     val TAG_NAMES = TAGS_METAS.flatMap { it.names() }.toSet()
     val TAG_OPTION_NAMES = setOf("None", "Some")
 
     // macros
+    val FAIL_MACRO: MacroMetadata = FailMacroMetadata()
     val ASSERT_MACROS: MacroMetadata = AssertMacroMetadata()
     val COMPARE_MACROS: MacroMetadata = CompareMacroMetadata()
     val IF_MACROS: MacroMetadata = ConditionalMacroMetadata()
@@ -43,7 +44,7 @@ object MichelsonLanguage : Language("Michelson") {
     val CADR_MACRO: MacroMetadata = CadrMacroMetadata()
     val SET_CADR_MACRO: MacroMetadata = SetCadrMacroMetadata()
     val MAP_CADR_MACRO: MacroMetadata = MapCadrMacroMetadata()
-    val MACROS = listOf(ASSERT_MACROS, COMPARE_MACROS, IF_MACROS, DUUP_MACRO, DIIP_MACRO, PAIR_MACRO, UNPAIR_MACRO, CADR_MACRO, SET_CADR_MACRO, MAP_CADR_MACRO)
+    val MACROS = listOf(FAIL_MACRO, ASSERT_MACROS, COMPARE_MACROS, IF_MACROS, DUUP_MACRO, DIIP_MACRO, PAIR_MACRO, UNPAIR_MACRO, CADR_MACRO, SET_CADR_MACRO, MAP_CADR_MACRO)
     // all available static macro names, dynamic macros like DIIIP or PAPAIR are not part of this list
     val MACRO_NAMES = MACROS.flatMap { it.staticMacroName() }
 
@@ -52,10 +53,12 @@ object MichelsonLanguage : Language("Michelson") {
             "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT", "CONS",
             "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP",
             "EDIV", "EQ", "EXEC", "FAILWITH", "GE", "GET", "GT",
-            "HASH_KEY", "IMPLICIT_ACCOUNT", "INT", "LE", "LSL", "LSR", "LT", "MEM", "MOD", "MUL", "NEG", "NEQ", "NOT", "NOW",
+            "HASH_KEY", "IMPLICIT_ACCOUNT", "LE", "LSL", "LSR", "LT", "MEM", "MUL", "NEG", "NEQ", "NOT", "NOW",
             "OR", "PACK", "PAIR", "RENAME",
             "SELF", "SENDER", "SET_DELEGATE", "SHA256", "SHA512", "SIZE", "SLICE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
-            "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR")
+            "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR",
+            "INT", "MOD" //fixme int and mod are not in the whitepaper, but we're pretty sure that they don't accept arguments
+    )
 
     // instructions which are not fully explained in the whitepaper
     val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT", "REDUCE")

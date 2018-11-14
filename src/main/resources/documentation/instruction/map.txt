@@ -1,0 +1,16 @@
+:: (map 'key 'val) : 'A   ->  (map 'key 'b) : 'A
+   iff   body :: [ (pair 'key 'val) : 'A -> 'b : 'A ]
+
+> MAP body / {} : S  =>  {} : S
+> MAP body / { Elt k v ; <tl> } : S  =>  { Elt k (body (Pair k v)) ; <tl'> } : S
+    where MAP body / { <tl> } : S  =>  { <tl'> } : S
+
+Apply the body expression to each element of a map. The body sequence has access to the stack.
+
+:: (list 'elt) : 'A   ->  (list 'b) : 'A
+   iff   body :: [ 'elt : 'A -> 'b : 'A ]
+
+> MAP body / { a ; <rest> } : S  =>  { body a ; <rest'> } : S
+    where MAP body / { <rest> } : S  =>  { <rest'> } : S
+> MAP body / {} : S  =>  {} : S
+Apply the body expression to each element of the list. The body sequence has access to the stack.

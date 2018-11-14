@@ -1,0 +1,11 @@
+:: nat : nat : 'S   ->   nat : 'S
+
+> OR / x : y : S  =>  (x | y) : S
+
+:: bool : bool : 'S   ->   bool : 'S
+
+> OR / x : y : S  =>  (x | y) : S
+
+Perform logical <code>OR</code> on booleans.
+
+Perform bitwise <code>OR</code> on numbers. Only available on unsigned integers.

@@ -1,0 +1,1 @@
+> IFCMP(\op) / S  =>  COMPARE ; (\op) ; IF bt bf / S

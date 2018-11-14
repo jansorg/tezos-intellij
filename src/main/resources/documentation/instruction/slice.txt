@@ -1,0 +1,22 @@
+:: nat : nat : string : ‘S -> option string : ‘S
+
+> SLICE / offset : length : s : S => Some ss : S
+    where ss is the substring of s at the given offset and of the given length
+    iff offset and (offset + length) are in bounds
+
+> SLICE / offset : length : s : S => None : S
+    iff offset or (offset + length) are out of bounds
+
+String access.
+
+
+:: nat : nat : bytes : ‘S -> option string : ‘S
+
+> SLICE / offset : length : s : S => Some ss : S
+    where ss is the substring of s at the given offset and of the given length
+    iff offset and (offset + length) are in bounds
+
+> SLICE / offset : length : s : S => None : S
+    iff offset or (offset + length) are out of bounds
+
+Bytes access.

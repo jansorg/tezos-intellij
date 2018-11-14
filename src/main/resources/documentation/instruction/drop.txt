@@ -1,0 +1,5 @@
+:: _ : 'A   ->   'A
+
+> DROP / _ : S  =>  S
+
+Drop the top element of the stack.

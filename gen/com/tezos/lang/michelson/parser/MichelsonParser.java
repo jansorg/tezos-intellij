@@ -102,8 +102,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMPLEX_TYPE, GENERIC_TYPE, TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
-    create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, STRING_LITERAL,
-      TAG),
+    create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, MAP_ENTRY,
+      STRING_LITERAL, TAG),
     create_token_set_(BLOCK_INSTRUCTION, CREATE_CONTRACT_INSTRUCTION, EMPTY_BLOCK, GENERIC_INSTRUCTION,
       INSTRUCTION, MACRO_INSTRUCTION),
   };
@@ -827,22 +827,22 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     return result;
   }
 
-  final static Parser instruction_parser_ = new Parser() {
+  static final Parser instruction_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return instruction(builder, level + 1);
     }
   };
-  final static Parser instruction_recover_parser_ = new Parser() {
+  static final Parser instruction_recover_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return instruction_recover(builder, level + 1);
     }
   };
-  final static Parser tag_recovery_parser_ = new Parser() {
+  static final Parser tag_recovery_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return tag_recovery(builder, level + 1);
     }
   };
-  final static Parser toplevel_data_parser_ = new Parser() {
+  static final Parser toplevel_data_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return toplevel_data(builder, level + 1);
     }

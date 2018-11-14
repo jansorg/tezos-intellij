@@ -19,6 +19,10 @@ nat
 [28 : 29] ;
 ;
 -----
+[29 : 30] end-of-line-marker
+
+
+-----
 [30 : 37] SECTION_NAME
 storage
 -----
@@ -189,6 +193,10 @@ unit
 -----
 [333 : 336] COMMENT_LINE
 # W
+-----
+[336 : 337] end-of-line-marker
+
+
 -----
 [337 : 341] SECTION_NAME
 code

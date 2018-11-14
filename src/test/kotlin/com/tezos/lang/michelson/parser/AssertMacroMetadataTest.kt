@@ -26,4 +26,18 @@ class AssertMacroMetadataTest {
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "IFEQ"))
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "IFEQ"))
     }
+
+    @Test
+    fun expansion() {
+        val m = AssertMacroMetadata()
+        for (n in AssertMacroMetadata.NAMES) {
+            val short = m.expand(n, false)
+            assertNotNull(short)
+
+            val long = m.expand(n, true)
+            assertNotNull(long)
+
+            assertNotEquals(short, long)
+        }
+    }
 }

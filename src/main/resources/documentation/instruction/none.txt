@@ -1,0 +1,5 @@
+:: 'S   ->   option 'a : 'S
+
+> NONE / v : S  =>  None : S
+
+The absent optional value.

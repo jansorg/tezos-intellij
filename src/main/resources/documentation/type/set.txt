@@ -1,0 +1,2 @@
+: set (t)
+Immutable sets of values of type <code>(t)</code> that we note as lists <code>{ item ; ... }</code>, of course with their elements unique, and sorted.

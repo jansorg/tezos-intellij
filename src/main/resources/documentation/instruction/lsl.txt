@@ -1,0 +1,9 @@
+:: nat : nat : 'S   ->   nat : 'S
+
+> LSL / x : s : S  =>  (x << s) : S
+    iff   s <= 256
+> LSL / x : s : S  =>  [FAILED]
+    iff   s > 256
+
+
+Perform bitwise shift to the left.

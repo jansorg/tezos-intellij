@@ -1,0 +1,5 @@
+:: int : 'S   ->   nat : 'S
+
+> ABS / x : S  =>  abs (x) : S
+
+Replace an integer with its absolute value on the stack.

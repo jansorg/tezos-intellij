@@ -7,6 +7,10 @@ unit
 [14 : 15] ;
 ;
 -----
+[15 : 16] end-of-line-marker
+
+
+-----
 [16 : 23] SECTION_NAME
 storage
 -----
@@ -15,6 +19,10 @@ unit
 -----
 [28 : 29] ;
 ;
+-----
+[29 : 30] end-of-line-marker
+
+
 -----
 [30 : 34] SECTION_NAME
 code
@@ -396,6 +404,10 @@ def
 -----
 [442 : 443] }
 }
+-----
+[443 : 444] end-of-line-marker
+
+
 -----
 [444 : 445] }
 }

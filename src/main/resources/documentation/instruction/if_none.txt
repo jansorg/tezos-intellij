@@ -1,0 +1,8 @@
+:: option 'a : 'S   ->   'b : 'S
+   iff   bt :: [ 'S -> 'b : 'S]
+         bf :: [ 'a : 'S -> 'b : 'S]
+
+> IF_NONE bt bf / (None) : S  =>  bt / S
+> IF_NONE bt bf / (Some a) : S  =>  bf / a : S
+
+Inspect an optional value.

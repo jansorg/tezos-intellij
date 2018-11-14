@@ -23,4 +23,13 @@ class DipMacroMetadataTest {
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "DIIP"))
         assertEquals(0, m.supportedAnnotations(PsiAnnotationType.FIELD, "DIIP"))
     }
+
+    @Test
+    fun expand() {
+        val m = DipMacroMetadata()
+        assertNull(m.expand("DIP"))
+
+        assertEquals("DIP{DIP{}}", m.expand("DIIP"))
+        assertEquals("DIP{DIP{DIP{DIP{DIP{DIP{}}}}}}", m.expand("DIIIIIIP"))
+    }
 }

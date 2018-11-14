@@ -1,0 +1,13 @@
+:: nat : 'S   ->   int : 'S
+:: int : 'S   ->   int : 'S
+
+> NOT / x : S  =>  ~x : S
+
+:: bool : 'S   ->   bool : 'S
+
+> NOT / x : S  =>  ~x : S
+
+Perform logical negation on a boolean.
+
+Perform bitwise negation on a number.
+The return type of NOT is an int and not a nat. This is because the sign is also negated. The resulting integer is computed using two’s complement. For instance, the boolean negation of 0 is -1. To get a natural back, a possibility is to use AND with an unsigned mask afterwards.

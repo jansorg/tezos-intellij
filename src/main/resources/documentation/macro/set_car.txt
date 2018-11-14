@@ -1,0 +1,3 @@
+> SET_CAR  =>  CDR ; SWAP ; PAIR
+
+Set the first value of a pair.

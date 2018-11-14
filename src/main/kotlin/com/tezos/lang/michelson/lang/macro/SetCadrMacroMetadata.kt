@@ -28,11 +28,41 @@ class SetCadrMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
+    override fun helpContentFile(name: String): String? {
+        return when (name) {
+            "SET_CAR" -> "set_car.txt"
+            "SET_CDR" -> "set_cdr.txt"
+            else -> "set_cadr_macro.txt"
+        }
+    }
+
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
         return when (type) {
             PsiAnnotationType.VARIABLE -> 1
             PsiAnnotationType.FIELD -> 1
             PsiAnnotationType.TYPE -> 0
+        }
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        return doExpand(macro)
+    }
+
+    private fun doExpand(macro: String): String {
+        return when {
+            macro == "SET_CAR" -> "CDR; SWAP; PAIR"
+            macro == "SET_CDR" -> "CAR; PAIR"
+            macro.startsWith("SET_C") -> {
+                val name = macro.substring(6, macro.length - 1)
+                val inner = doExpand("SET_C${name}R")
+
+                if (macro.startsWith("SET_CA")) {
+                    "{ DUP; DIP{ CAR; $inner }; CDR; SWAP; PAIR }"
+                } else {
+                    "{ DUP; DIP{ CDR; $inner }; CAR; PAIR }"
+                }
+            }
+            else -> throw IllegalStateException("unsupported macro $macro")
         }
     }
 }

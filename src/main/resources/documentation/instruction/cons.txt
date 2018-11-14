@@ -1,0 +1,5 @@
+:: 'a : list 'a : 'S   ->   list 'a : 'S
+
+> CONS / a : { <l> } : S  =>  { a ; <l> } : S
+
+Prepend an element to a list.

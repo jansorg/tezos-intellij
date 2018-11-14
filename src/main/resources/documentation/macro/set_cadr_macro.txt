@@ -1,0 +1,6 @@
+> SET_CA(\rest=[AD]+)R / S   =>
+    { DUP ; DIP { CAR ; SET_C(\rest)R } ; CDR ; SWAP ; PAIR } / S
+> SET_CD(\rest=[AD]+)R / S   =>
+    { DUP ; DIP { CDR ; SET_C(\rest)R } ; CAR ; PAIR } / S
+
+A syntactic sugar for setting fields in nested pairs.

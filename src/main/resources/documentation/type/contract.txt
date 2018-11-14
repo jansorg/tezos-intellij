@@ -1,0 +1,2 @@
+: contract 'param
+A contract, with the type of its code.

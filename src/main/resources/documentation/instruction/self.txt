@@ -1,0 +1,4 @@
+:: 'S   ->   contract 'p : 'S
+   where   contract 'p is the type of the current contract
+
+Push the current contract.

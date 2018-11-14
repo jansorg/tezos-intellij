@@ -1,0 +1,4 @@
+> CA(\rest=[AD]+)R / S  =>  CAR ; C(\rest)R / S
+> CD(\rest=[AD]+)R / S  =>  CDR ; C(\rest)R / S
+
+A syntactic sugar for accessing fields in nested pairs.

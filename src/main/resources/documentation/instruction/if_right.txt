@@ -1,0 +1,8 @@
+:: or 'a 'b : 'S   ->   'c : 'S
+   iff   bt :: [ 'b : 'S -> 'c : 'S]
+         bf :: [ 'a : 'S -> 'c : 'S]
+
+> IF_RIGHT bt bf / (Right b) : S  =>  bt / b : S
+> IF_RIGHT bt bf / (Left a) : S  =>  bf / a : S
+
+Inspect a value of a variant type.

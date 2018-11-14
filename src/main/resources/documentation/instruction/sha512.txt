@@ -1,0 +1,3 @@
+:: bytes : 'S   ->   bytes : 'S
+
+Compute a cryptographic hash of the value contents using the Sha512 cryptographic hash function.

@@ -43,4 +43,72 @@ class UnpairMacroMetadata : MacroMetadata {
             PsiAnnotationType.TYPE -> 0
         }
     }
+
+    override fun helpContentFile(name: String): String? {
+        return "unpair.txt"
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        if (validate(macro) != null) {
+            return null
+        }
+        return doExpand(macro)
+    }
+
+    private fun doExpand(macro: String): String {
+        if (macro == "UNPAIR") {
+            return "DUP; CAR; DIP{CDR}"
+        }
+
+        if (macro.startsWith("UNPA") && readRight(macro.substring(4, macro.length-1)).isEmpty()) {
+            val left = doExpand("UNPAIR")
+            val right = doExpand("UN" + macro.substring(4))
+            return "$left; DIP{$right}"
+        }
+
+        if (macro.startsWith("UNP") && macro.endsWith("IR") && readLeft(macro.substring(3, macro.length-2)).isEmpty()) {
+            val rest = macro.substring(3, macro.length - 2)
+
+            val left = doExpand("UNPAIR")
+            val right = doExpand("UN${rest}R")
+            return "$left; $right"
+        }
+
+        val rightPart = readLeft(macro.substring(3, macro.length-1))
+        val leftPart = macro.substring(3, macro.length - 1 - rightPart.length)
+
+        val first = doExpand("UNPAIR")
+        val left = doExpand("UN${leftPart}R")
+        val right = doExpand("UN${rightPart}R")
+        return "$first; $left; $right"
+    }
+
+    /**
+     * returns the remaining part of the macro which follows a left element
+     */
+    private fun readLeft(macro:String):String {
+        if (macro.startsWith("A")) {
+            return macro.substring(1)
+        }
+        return readPair(macro)
+    }
+
+    /**
+     * returns the remaining part of the macro which follows a left element
+     */
+    private fun readRight(macro:String):String {
+        if (macro.startsWith("I")) {
+            return macro.substring(1)
+        }
+        return readPair(macro)
+    }
+
+    private fun readPair(macro: String): String {
+        if (!macro.startsWith("P")) {
+            throw IllegalStateException("unexpected macro $macro")
+        }
+        val afterLeft = readLeft(macro.substring(1))
+        val afterRight = readRight(afterLeft)
+        return afterRight
+    }
 }

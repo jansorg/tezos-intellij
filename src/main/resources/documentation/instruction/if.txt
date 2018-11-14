@@ -1,0 +1,8 @@
+:: bool : 'A   ->   'B
+   iff   bt :: [ 'A -> 'B ]
+         bf :: [ 'A -> 'B ]
+
+> IF bt bf / True : S  =>  bt / S
+> IF bt bf / False : S  =>  bf / S
+
+Conditional branching.

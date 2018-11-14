@@ -1,0 +1,10 @@
+:: address : 'S   ->   contract 'p : 'S
+
+> CONTRACT / addr : S  =>  Some addr : S
+    iff addr exists and is a contract of parameter type 'p
+> CONTRACT / addr : S  =>  Some addr : S
+    iff 'p = unit and addr is an implicit contract
+> CONTRACT / addr : S  =>  None : S
+    otherwise
+
+Push the untyped version of a contract.

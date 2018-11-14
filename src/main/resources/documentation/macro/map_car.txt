@@ -1,0 +1,3 @@
+> MAP_CAR code  =>  DUP ; CDR ; DIP { CAR ; code } ; SWAP ; PAIR
+
+Transform the first value of a pair.

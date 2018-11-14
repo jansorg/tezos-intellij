@@ -12,7 +12,7 @@ class CadrMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("C[AD]+R")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("CDR, CAR")
+    override fun staticMacroName(): Collection<String> = listOf("CAR", "CDR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
@@ -25,11 +25,36 @@ class CadrMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
+    override fun helpContentFile(name: String): String? {
+        return when (name) {
+            "CAR" -> "car.txt"
+            "CDR" -> "cdr.txt"
+            else -> "car_macro.txt"
+        }
+    }
+
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
         return when (type) {
             PsiAnnotationType.VARIABLE -> 1
             PsiAnnotationType.FIELD -> 1
             PsiAnnotationType.TYPE -> 0
+        }
+    }
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        return when (macro) {
+            "CAR", "CDR" -> null
+            else -> doExpand(macro)
+        }
+    }
+
+    private fun doExpand(macro: String): String {
+        return when {
+            macro == "CAR" -> "CAR"
+            macro == "CDR" -> "CDR"
+            macro.startsWith("CA") -> "CAR; ${doExpand("C${macro.substring(2)}")}"
+            macro.startsWith("CD") -> "CDR; ${doExpand("C${macro.substring(2)}")}"
+            else -> throw IllegalStateException("unsupported macro $macro")
         }
     }
 }

@@ -1,0 +1,7 @@
+:: 'b : 'A   ->   'b : 'C
+   iff   code :: [ 'A -> 'C ]
+
+> DIP code / x : S  =>  x : S'
+    where    code / S  =>  S'
+
+Runs code protecting the top of the stack.

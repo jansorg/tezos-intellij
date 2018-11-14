@@ -20,4 +20,15 @@ class CompareMacroMetadata : MacroMetadata {
     override fun requiredBlocks(): Int = 0
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int = 0
+
+    override fun helpContentFile(name: String): String? = "cmp.txt"
+
+    override fun expand(macro: String, deepExpansion: Boolean): String? {
+        if (validate(macro) != null) {
+            return null
+        }
+
+        val name = macro.substring("CMP".length)
+        return "COMPARE; $name"
+    }
 }

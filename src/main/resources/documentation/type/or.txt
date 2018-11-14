@@ -1,0 +1,2 @@
+: or (l) (r)
+A union of two types: a value holding either a value a of type <code>(l)</code> or a value b of type <code>(r)</code>, that we write <code>(Left a)</code> or <code>(Right b)</code>.

@@ -1,0 +1,15 @@
+> PA(\right)R / S => DIP ((\right)R) ; PAIR / S
+> P(\left)IR / S => PAIR ; (\left)R / S
+> P(\left)(\right)R => (\right)R ; (\left)R ; PAIR / S
+
+A syntactic sugar for building nested pairs.
+A good way to quickly figure which macro to use is to mentally parse the macro as P for pair constructor, A for left leaf and I for right leaf. The macro takes as many elements on the stack as there are leaves and constructs a nested pair with the shape given by its name.
+
+Take the macro PAPPAIIR for instance:
+<pre><code>P A  P P A  I    I R
+( l, ( ( l, r ), r ))</code></pre>
+
+A typing rule can be inferred:
+<pre><code>PAPPAIIR
+:: 'a : 'b : 'c : 'd : 'S  ->  (pair 'a (pair (pair 'b 'c) 'd))
+</code></pre>

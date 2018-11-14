@@ -1,0 +1,5 @@
+:: pair 'a _ : 'S   ->   'a : 'S
+
+> CAR / (Pair a _) : S  =>  a : S
+
+Access the left part of a pair.

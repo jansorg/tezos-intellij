@@ -1,0 +1,5 @@
+:: 'A ->  (lambda 'a 'b) : 'A
+
+> LAMBDA _ _ code / S  =>  code : S
+
+Push a lambda with given parameter and return types onto the stack.

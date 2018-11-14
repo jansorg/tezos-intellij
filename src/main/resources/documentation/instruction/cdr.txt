@@ -1,0 +1,5 @@
+:: pair _ 'b : 'S   ->   'b : 'S
+
+> CDR / (Pair _ b) : S  =>  b : S
+
+Access the right part of a pair.

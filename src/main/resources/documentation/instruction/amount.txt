@@ -1,0 +1,3 @@
+:: 'S   ->   mutez : 'S
+
+Push the amount of the current transaction.

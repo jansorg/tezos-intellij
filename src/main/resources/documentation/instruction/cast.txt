@@ -1,0 +1,6 @@
+:: 'a : 'S   ->   'b : 'S
+   iff  'a = 'b
+
+> CAST t / a : S  =>  a : S
+
+A no-op instruction CAST ensures the top of the stack has the specified type, and change its type if it is compatible. In particular, this allows to change or remove type names explicitly.

@@ -1,0 +1,3 @@
+:: option key_hash : 'S   ->   operation : S
+
+Forge a delegation.

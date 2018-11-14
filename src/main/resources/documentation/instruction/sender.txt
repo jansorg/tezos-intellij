@@ -1,0 +1,4 @@
+:: 'S   ->   address : 'S
+
+Push the contract that initiated the current internal transaction.
+It may be the SOURCE, but may also not if the source sent an order to an intermediate smart contract, which then called the current contract.

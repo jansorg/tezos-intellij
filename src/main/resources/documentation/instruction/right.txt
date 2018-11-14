@@ -1,0 +1,5 @@
+:: 'b : 'S   ->   or 'a 'b : 'S
+
+> RIGHT / v : S  =>  (Right v) : S
+
+Pack a value in a union (right case).

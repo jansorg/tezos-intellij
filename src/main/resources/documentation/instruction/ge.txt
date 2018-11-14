@@ -1,0 +1,11 @@
+:: int : 'S   ->   bool : 'S
+
+> GE / v : S  =>  True : S
+    iff  v >= 0
+> GE / v : S  =>  False : S
+    iff v < 0
+
+Checks that the top of the stack is Greater Than of Equal to zero.
+
+:: 'key : big_map 'key 'val : 'S   ->   option 'val : 'S
+Access an element in a big_map, returns an optional value to be checked with IF_SOME.

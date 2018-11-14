@@ -1,0 +1,6 @@
+:: int : 'S   ->   int : 'S
+:: nat : 'S   ->   int : 'S
+
+> NEG / x : S  =>  -x : S
+
+Negate a number.

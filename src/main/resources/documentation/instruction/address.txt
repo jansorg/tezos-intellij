@@ -1,0 +1,3 @@
+:: contract _ : 'S   ->   address : 'S
+
+Push the untyped version of a contract.

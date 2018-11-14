@@ -1,0 +1,4 @@
+: big_map (k) (t)
+Lazily deserialized maps from keys of type <code>(k)</code> of values of type <code>(t)</code> that we note <code>{ Elt key value ; ... }</code>, with keys sorted.
+
+These maps should be used if you intend to store large amounts of data in a map. They have higher gas costs than standard maps as data is lazily deserialized. You are limited to a single <code>big_map</code> per program, which must appear on the left hand side of a pair in the contract’s storage.

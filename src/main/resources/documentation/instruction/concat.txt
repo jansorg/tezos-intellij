@@ -1,0 +1,23 @@
+:: string : string : 'S   -> string : 'S
+
+> CONCAT / s : t : S  =>  (s ^ t) : S
+
+:: string list : 'S   -> string : 'S
+
+> CONCAT / {} : S  =>  "" : S
+> CONCAT / { s ; <ss> } : S  =>  (s ^ r) : S
+   where CONCAT / { <ss> } : S  =>  r : S
+
+String concatenation.
+
+:: bytes : bytes : 'S   -> bytes : 'S
+
+ > CONCAT / s : t : S  =>  (s ^ t) : S
+
+ :: bytes list : 'S   -> bytes : 'S
+
+ > CONCAT / {} : S  =>  0x : S
+ > CONCAT / { s ; <ss> } : S  =>  (s ^ r) : S
+    where CONCAT / { <ss> } : S  =>  r : S
+
+Byte sequence concatenation.

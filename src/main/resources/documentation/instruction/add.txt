@@ -1,0 +1,17 @@
+:: int : int : 'S   ->   int : 'S
+:: int : nat : 'S   ->   int : 'S
+:: nat : int : 'S   ->   int : 'S
+:: nat : nat : 'S   ->   nat : 'S
+> ADD / x : y : S  =>  (x + y) : S
+Add two numbers.
+
+:: timestamp : int : 'S -> timestamp : 'S
+:: int : timestamp : 'S -> timestamp : 'S
+> ADD / seconds : nat (t) : S  =>  (seconds + t) : S
+> ADD / nat (t) : seconds : S  =>  (t + seconds) : S
+Increment / decrement a timestamp of the given number of seconds.
+
+:: mutez : mutez : 'S   ->   mutez : 'S
+> ADD / x : y : S  =>  [FAILED]   on overflow
+> ADD / x : y : S  =>  (x + y) : S
+Add two values of type <code>mutez</code>.

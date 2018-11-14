@@ -1,0 +1,2 @@
+: list (t)
+A single, immutable, homogeneous linked list, whose elements are of type <code>(t)</code>, and that we note <code>{}</code> for the empty list or <code>{ first ; ... }</code>. In the semantics, we use chevrons to denote a subsequence of elements. For instance <code>{ head ; <tail> }</code>.

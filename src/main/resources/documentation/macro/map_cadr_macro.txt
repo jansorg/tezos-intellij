@@ -1,0 +1,6 @@
+> MAP_CA(\rest=[AD]+)R code / S   =>
+    { DUP ; DIP { CAR ; MAP_C(\rest)R code } ; CDR ; SWAP ; PAIR } / S
+> MAP_CD(\rest=[AD]+)R code / S   =>
+    { DUP ; DIP { CDR ; MAP_C(\rest)R code } ; CAR ; PAIR } / S
+
+A syntactic sugar for transforming fields in nested pairs.

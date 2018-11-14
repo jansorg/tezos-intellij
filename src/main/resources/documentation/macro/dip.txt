@@ -1,0 +1,3 @@
+> DII(\rest=I*)P code / S  =>  DIP (DI(\rest)P code) / S
+
+A syntactic sugar for working deeper in the stack.

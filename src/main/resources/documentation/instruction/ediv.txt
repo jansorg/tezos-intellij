@@ -1,0 +1,21 @@
+:: int : int : 'S   ->   option (pair int nat) : 'S
+:: int : nat : 'S   ->   option (pair int nat) : 'S
+:: nat : int : 'S   ->   option (pair int nat) : 'S
+:: nat : nat : 'S   ->   option (pair nat nat) : 'S
+
+> EDIV / x : 0 : S  =>  None : S
+> EDIV / x : y : S  =>  Some (Pair (x / y) (x % y)) : S
+    iff y <> 0
+
+Perform Euclidian division.
+<code>None</code> is returned if the divisor is <code>0</code>.
+
+:: mutez : nat : 'S   ->   option (pair mutez mutez) : 'S
+:: mutez : mutez : 'S   ->   option (pair nat mutez) : 'S
+
+> EDIV / x : 0 : S  =>  None
+> EDIV / x : y : S  =>  Some (Pair (x / y) (x % y)) : S
+    iff y <> 0
+
+Perform Euclidian division.
+<code>None</code> is returned if the divisor is <code>0</code>.

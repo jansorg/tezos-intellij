@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiMapEntry extends MichelsonComposite {
-
-  @NotNull
-  List<PsiData> getDataList();
-
-  @NotNull
-  List<PsiEmptyBlock> getEmptyBlockList();
+public interface PsiMapEntry extends PsiTag {
 
 }
