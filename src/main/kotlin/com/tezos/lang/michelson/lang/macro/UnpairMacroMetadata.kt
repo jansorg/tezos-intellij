@@ -60,13 +60,13 @@ class UnpairMacroMetadata : MacroMetadata {
             return "DUP; CAR; DIP{CDR}"
         }
 
-        if (macro.startsWith("UNPAI") || macro.startsWith("UNPAP")) {
+        if (macro.startsWith("UNPA") && readRight(macro.substring(4, macro.length-1)).isEmpty()) {
             val left = doExpand("UNPAIR")
             val right = doExpand("UN" + macro.substring(4))
             return "$left; DIP{$right}"
         }
 
-        if ((macro.startsWith("UNPA") || macro.startsWith("UNPP")) && macro.endsWith("IR")) {
+        if (macro.startsWith("UNP") && macro.endsWith("IR") && readLeft(macro.substring(3, macro.length-2)).isEmpty()) {
             val rest = macro.substring(3, macro.length - 2)
 
             val left = doExpand("UNPAIR")
@@ -74,44 +74,41 @@ class UnpairMacroMetadata : MacroMetadata {
             return "$left; $right"
         }
 
-        // split into left and right part and expand each part
-        val rest = macro.substring("UNP".length, macro.length - 1)
-        val chars = rest.toCharArray()
+        val rightPart = readLeft(macro.substring(3, macro.length-1))
+        val leftPart = macro.substring(3, macro.length - 1 - rightPart.length)
 
-        // expected numbers of i and a chars
-        var a = 1
-        var i = 1
+        val first = doExpand("UNPAIR")
+        val left = doExpand("UN${leftPart}R")
+        val right = doExpand("UN${rightPart}R")
+        return "$first; $left; $right"
+    }
 
-        var n = 0
-        var nextIsLeft = false
-        while (i >= 1 || a >= 1) {
-            if (n >= chars.size) {
-                throw IllegalStateException("unexpected characters length in $macro")
-            }
-
-            val c = chars[n]
-            if (c == 'P') {
-                if (nextIsLeft) {
-                    i++
-                } else {
-                    a++
-                }
-                i++
-                nextIsLeft = true
-            } else if (c == 'A') {
-                a--
-                nextIsLeft = false
-            } else if (c == 'I') {
-                i--
-            } else {
-                throw IllegalStateException("unexpected character $c at index ${n + 1} in $macro")
-            }
-
-            n++
+    /**
+     * returns the remaining part of the macro which follows a left element
+     */
+    private fun readLeft(macro:String):String {
+        if (macro.startsWith("A")) {
+            return macro.substring(1)
         }
+        return readPair(macro)
+    }
 
-        val left = doExpand("UN" + rest.substring(0, n) + "R")
-        val right = doExpand("UN" + rest.substring(n) + "R")
-        return "$right; $left; PAIR"
+    /**
+     * returns the remaining part of the macro which follows a left element
+     */
+    private fun readRight(macro:String):String {
+        if (macro.startsWith("I")) {
+            return macro.substring(1)
+        }
+        return readPair(macro)
+    }
+
+    private fun readPair(macro: String): String {
+        if (!macro.startsWith("P")) {
+            throw IllegalStateException("unexpected macro $macro")
+        }
+        val afterLeft = readLeft(macro.substring(1))
+        val afterRight = readRight(afterLeft)
+        return afterRight
     }
 }

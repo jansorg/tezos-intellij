@@ -40,8 +40,10 @@ class UnpairMacroMetadataTest {
         // stack ((a b) ((c d) e)) -> a, b, c, d, e
         // UNP PAI PPAII R
         // -> UNPPAIPPAIIR
-        // -> UNPAIR; UNP AI PPAII R
-        // -> UNPAIR; UNPAI PPAII R
-        assertEquals("", m.expand("UNPPAIPPAIIR"))
+        // -> UNPAIR; AI PPAII
+        // -> UNPAIR; UNPAIR; PPAII
+        // -> UNPAIR; UNPAIR; UNPAIR; PAI
+        // -> UNPAIR; UNPAIR; UNPAIR; UNPAIR
+        assertEquals("DUP; CAR; DIP{CDR}; DUP; CAR; DIP{CDR}; DUP; CAR; DIP{CDR}; DUP; CAR; DIP{CDR}", m.expand("UNPPAIPPAIIR"))
     }
 }
