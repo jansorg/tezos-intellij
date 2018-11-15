@@ -3,8 +3,8 @@
     <module name="tezos-intellij-plugin" />
     <option name="VM_PARAMETERS" value="-Xmx1512m -Xms768m -XX:MaxPermSize=250m -ea" />
     <option name="PROGRAM_PARAMETERS" value="" />
-    <alternative-path path="IntelliJ IDEA IU-182.x" alternative-path-enabled="true" />
-    <predefined_log_file id="idea.log" enabled="true" />
+    <alternative-path path="IntelliJ IDEA IU-183.x" alternative-path-enabled="true" />
+    <predefined_log_file enabled="true" id="idea.log" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

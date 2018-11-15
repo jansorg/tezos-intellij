@@ -15,7 +15,7 @@ Compare two numbers.
     iff s = t
 > COMPARE / s : t : S  =>  1 : S
     iff s > t
-Compare two two strings.
+Compare two strings.
 
 :: timestamp : timestamp : 'S   ->   int : 'S
 > COMPARE / seconds(t1) : seconds(t2) : S  =>  -1 : S
@@ -24,7 +24,7 @@ Compare two two strings.
     iff t1 = t2
 > COMPARE / seconds(t1) : seconds(t2) : S  =>  1 : S
     iff t1 > t2
-timestamp comparison.
+Compare two timestamp values.
 
 :: mutez : mutez : 'S -> int : 'S
 > COMPARE / x : y : S  =>  -1 : S
@@ -33,7 +33,7 @@ timestamp comparison.
     iff x = y
 > COMPARE / x : y : S  =>  1 : S
     iff x > y
-mutez comparision.
+Compare two mutez values.
 
 :: bytes : bytes : 'S   ->   int : 'S
 > COMPARE / s : t : S  =>  -1 : S
@@ -51,3 +51,4 @@ Lexicographic comparison of bytes.
     iff x = y
 > COMPARE / x : y : S  =>  1 : S
     iff x > y
+Compare two key_hash values.
