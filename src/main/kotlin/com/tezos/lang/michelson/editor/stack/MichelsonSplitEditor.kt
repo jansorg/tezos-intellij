@@ -58,6 +58,8 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     override fun dispose() {
         alarm.cancelAllRequests()
         mainEditor.editor.caretModel.removeCaretListener(this)
+
+        super.dispose()
     }
 
     override fun getName(): String = "michelson.splitEditor"
