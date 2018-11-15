@@ -1,14 +1,12 @@
 :: nat : nat : 'S   ->   nat : 'S
 :: int : nat : 'S   ->   nat : 'S
-
 > AND / x : y : S  =>  (x & y) : S
-
-:: bool : bool : 'S   ->   bool : 'S
-
-> AND / x : y : S  =>  (x & y) : S
-
-Perform logical AND on booleans.
 
 Perform bitwise AND on integers.
 Only available on unsigned integers.
 Also available when the top operand is signed.
+
+:: bool : bool : 'S   ->   bool : 'S
+> AND / x : y : S  =>  (x & y) : S
+
+Perform logical AND on booleans.
