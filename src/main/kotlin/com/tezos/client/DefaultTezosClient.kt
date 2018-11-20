@@ -40,7 +40,7 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
      * @throws com.tezos.client.stack.TezosClientError When the client returned an error or exited with a non-zero exit code
      */
     override fun typecheck(content: String): MichelsonStackTransformations {
-        val clientStdout = typecheckResult(content)
+        val clientStdout = execClient(content)
         val fixedContent = MichelsonStackUtils.fixTezosClientStdout(clientStdout)
 
         val input = CharStreams.fromString(fixedContent)
@@ -63,7 +63,11 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
         return MichelsonStackTransformations(list, errors)
     }
 
-    private fun typecheckResult(content: String): String {
+    /**
+     * Executes the typecheck operation with the current client.
+     * @return The stdout as output by the tezos client.
+     */
+    private fun execClient(content: String): String {
         val outFile = Files.createTempFile("tezos-intellij-", ".txt")
         try {
             val exePath = when (Files.isExecutable(executable)) {
@@ -79,6 +83,8 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
             }
 
             val builder = ProcessBuilder().redirectOutput(outFile.toFile()).command(command)
+            setupClientEnv(builder.environment())
+
             if (LOG.isDebugEnabled) {
                 LOG.debug("starting tezos client command: ${builder.command().joinToString(" ")}")
             }
@@ -93,6 +99,20 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
             }
         } finally {
             Files.deleteIfExists(outFile)
+        }
+    }
+
+    /**
+     * Setup environment of the tezos client command.
+     * This mirrors the implementation of the emacs mode, see https://gitlab.com/tezos/tezos/blob/master/emacs/michelson-mode.el
+     */
+    private fun setupClientEnv(env: MutableMap<String, String>) {
+        try {
+            env.putIfAbsent("TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER", "Y")
+            env.putIfAbsent("ALPHANET_EMACS", "true")
+            env.putIfAbsent("TEZOS_ALPHANET_DO_NOT_PULL", "yes")
+        } catch (e: UnsupportedOperationException) {
+            // ignore
         }
     }
 }
