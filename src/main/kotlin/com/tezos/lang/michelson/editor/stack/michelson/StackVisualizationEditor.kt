@@ -120,7 +120,8 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
             return
         }
 
-        contentPane.renderHTML(stackRenderer.render(matching, renderOptions))
+        val html = stackRenderer.render(matching, renderOptions)
+        contentPane.renderHTML(html)
     }
 
     override fun selectNotify() {}

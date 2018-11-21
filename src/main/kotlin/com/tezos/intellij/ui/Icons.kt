@@ -13,4 +13,5 @@ object Icons {
     val StackAnnotations = IconLoader.getIcon("/icons/stack-annotations.png")
     val StackAlignment = IconLoader.getIcon("/icons/stack-align.png")
     val StackUnchanged = IconLoader.getIcon("/icons/stack-unchanged.png")
+    val StackColored = IconLoader.getIcon("/icons/tezos.png")
 }

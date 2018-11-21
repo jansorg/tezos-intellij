@@ -19,9 +19,11 @@ import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.tezos.client.stack.RenderOptions
+import com.tezos.client.stack.RenderStyle
 import com.tezos.intellij.editor.split.SplitFileEditor
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.intellij.settings.TezosSettingsListener
+import com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighter
 import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
 import java.awt.BorderLayout
 import javax.swing.JPanel
@@ -45,6 +47,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     var stackAlignStacks = true
     var stackHighlightUnchanged = true
     var stackShowAnnotations = false
+    var stackColored = true
 
     init {
         mainEditor.editor.caretModel.addCaretListener(this)
@@ -143,12 +146,29 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     }
 
     private fun renderOptions(settings: EditorColorsScheme): RenderOptions {
+        var typeNameStyle: RenderStyle? = null
+        var fieldAnnotationStyle: RenderStyle? = null
+        var typeAnnotationStyle: RenderStyle? = null
+        var varAnnotationStyle: RenderStyle? = null
+
+        if (this.stackColored) {
+            typeNameStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_NAME))
+            fieldAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.FIELD_ANNOTATION))
+            typeAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_ANNOTATION))
+            varAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.VARIABLE_ANNOTATION))
+        }
+
         return RenderOptions(
                 markUnchanged = stackHighlightUnchanged,
                 alignStacks = stackAlignStacks,
                 showAnnotations = stackShowAnnotations,
                 codeFont = settings.editorFontName,
-                codeFontSizePt = settings.editorFontSize * 1.1
+                codeFontSizePt = settings.editorFontSize * 1.1,
+                showColors = stackColored,
+                typeNameStyle = typeNameStyle,
+                fieldAnnotationStyle = fieldAnnotationStyle,
+                typeAnnotationStyle = typeAnnotationStyle,
+                varAnnotationStyle = varAnnotationStyle
         )
     }
 

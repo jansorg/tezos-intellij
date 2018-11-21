@@ -2,10 +2,16 @@
 
 package com.tezos.client.stack
 
+import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.JBColor
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.awt.Color
+import java.awt.Font
+
+data class RenderStyle(val textColor: Color?, val bold: Boolean, val italic: Boolean) {
+    constructor(attr: TextAttributes) : this(attr.foregroundColor, attr.fontType and Font.BOLD == Font.BOLD, attr.fontType and Font.ITALIC == Font.ITALIC)
+}
 
 /**
  * Options to configure the HTML rendering of a stack.
@@ -20,13 +26,36 @@ data class RenderOptions(
         val alignStacks: Boolean = false,
         val showAnnotations: Boolean = false,
         val codeFont: String = "monospace",
-        val codeFontSizePt: Double = 11.0)
+        val codeFontSizePt: Double = 11.0,
+        val showColors: Boolean = false,
+        val typeNameStyle: RenderStyle? = null,
+        val typeAnnotationStyle: RenderStyle? = null,
+        val fieldAnnotationStyle: RenderStyle? = null,
+        val varAnnotationStyle: RenderStyle? = null
+)
 
 /**
  * @author jansorg
  */
 @Suppress("CssUnusedSymbol")
 class StackRendering {
+    companion object {
+        private fun style(selector: String, s: RenderStyle?): String {
+            return when (s) {
+                null -> ""
+                else -> {
+                    val color = s.textColor?.let { "color: ${it.asHexString()}; " }
+                    val fontWeight = if (s.bold) "font-weight: \"bold\"; " else ""
+                    val fontStyle = if (s.italic) "font-style: \"italic\"; " else ""
+
+                    return """
+                        $selector { $color $fontWeight $fontStyle }
+                    """.trimIndent()
+                }
+            }
+        }
+    }
+
     private fun styles(opts: RenderOptions): String {
         //language=CSS
         return """
@@ -37,10 +66,15 @@ class StackRendering {
             td { font-family:"${opts.codeFont}", monospace; font-size: ${opts.codeFontSizePt}pt; padding: 2px 0 4px 0; }
 
             .left { text-align:left; }
-            .right { text-align: right; }
-            .content { border-bottom: 1px solid ${JBColor(Color(197, 197, 197), Color(90, 90, 90)).asHexString()}; }
+            .right { text-align:right; }
+            .content { border-bottom:1px solid ${JBColor.LIGHT_GRAY.asHexString()}; }
 
-            .last-row { border-bottom: none; }
+            .last-row { border-bottom:none; }
+
+            ${style(".style-type-name", opts.typeNameStyle)}
+            ${style(".style-annotation-type", opts.typeAnnotationStyle)}
+            ${style(".style-annotation-field", opts.fieldAnnotationStyle)}
+            ${style(".style-annotation-var", opts.varAnnotationStyle)}
         """.trimIndent()
     }
 
@@ -50,7 +84,7 @@ class StackRendering {
         val rowOffsetRight = if (opts.alignStacks) maxSize - stack.after.size else 0
 
         return StringBuilder().appendHTML().html {
-            head { style { unsafe { +styles(opts) } } }
+            head { style(type = "text/css") { unsafe { +styles(opts) } } }
             body {
                 table {
                     tr {
@@ -69,8 +103,8 @@ class StackRendering {
                                 null
                             }
 
-                            column(true, changed, left, opts.showAnnotations)
-                            column(false, null, right, opts.showAnnotations)
+                            column(true, changed, left, opts.showAnnotations, opts.showColors)
+                            column(false, null, right, opts.showAnnotations, opts.showColors)
                         }
                     }
                 }
@@ -78,18 +112,58 @@ class StackRendering {
         }.toString()
     }
 
-    private fun TR.column(isLeft: Boolean, changed: Boolean?, frame: MichelsonStackFrame?, showAnnotations: Boolean) {
+    private fun TR.column(isLeft: Boolean, changed: Boolean?, frame: MichelsonStackFrame?, showAnnotations: Boolean, colored: Boolean) {
         td(if (isLeft) "left" else "right") {
             attributes += ("valign" to "top")
             if (changed != null && !changed) {
                 attributes += "style" to "color: ${JBColor.gray.asHexString()};"
             }
 
-            frame?.let { +it.type.asString(showAnnotations) }
+            if (frame != null) {
+                stackInfo(frame.type, showAnnotations, colored)
+            }
         }
     }
 }
 
-fun Color.asHexString(): String {
+private fun Color.asHexString(): String {
     return "#" + String.format("%02x%02x%02x", red, green, blue)
+}
+
+private fun TD.stackInfo(type: MichelsonStackType, showAnnotations: Boolean = false, colored: Boolean = false) {
+    val wrap = type.arguments.isNotEmpty() && type.name.isNotEmpty()
+
+    val (prefix, suffix) = when (wrap || type.name.isNotEmpty() && showAnnotations && type.annotations.isNotEmpty()) {
+        true -> arrayOf("(", ")")
+        false -> arrayOf<String?>(null, null)
+    }
+
+    if (prefix != null) {
+        +prefix
+    }
+
+    if (type.name.isNotEmpty()) {
+        when {
+            colored -> span("style-type-name") { +type.name }
+            type.name.isNotEmpty() -> +type.name
+        }
+    }
+
+    for (arg in type.arguments) {
+        +" "
+        stackInfo(arg, showAnnotations)
+    }
+
+    if (showAnnotations && type.annotations.isNotEmpty()) {
+        for (annotation in type.annotations) {
+            +" "
+            span("style-annotation-type") {
+                +annotation.value
+            }
+        }
+    }
+
+    if (suffix != null) {
+        +suffix
+    }
 }
