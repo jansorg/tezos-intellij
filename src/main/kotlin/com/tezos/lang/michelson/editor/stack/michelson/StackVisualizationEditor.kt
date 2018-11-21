@@ -116,7 +116,7 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
 
     private fun render(stackInfo: MichelsonStackTransformations, offset: Int, renderOptions: RenderOptions) {
         if (stackInfo.hasErrors) {
-            contentPane.renderError("Errors detected.", "The Tezos client returned errors or warnings for the current file.")
+            contentPane.renderError("Errors detected.", "The Tezos client returned errors for the file.")
             return
         }
 
