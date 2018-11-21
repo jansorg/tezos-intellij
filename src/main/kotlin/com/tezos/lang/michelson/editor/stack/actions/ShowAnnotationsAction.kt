@@ -13,7 +13,7 @@ class ShowAnnotationsAction : ToggleAction("Show annotations", "Show annotations
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val editor = SplitActionUtil.findStackEditor(e)
         editor.stackShowAnnotations = state
-        editor.refreshRendering()
+        editor.triggerStackUpdate()
     }
 
     override fun isSelected(e: AnActionEvent): Boolean {

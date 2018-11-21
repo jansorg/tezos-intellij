@@ -13,7 +13,7 @@ class HighlightUnchangedAction : ToggleAction("Highlight changes", "Highlights u
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val editor = SplitActionUtil.findStackEditor(e)
         editor.stackHighlightUnchanged = state
-        editor.refreshRendering()
+        editor.triggerStackUpdate()
     }
 
     override fun isSelected(e: AnActionEvent): Boolean {

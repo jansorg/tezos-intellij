@@ -36,6 +36,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
 
     private companion object {
         const val ACTION_GROUP_ID = "tezos.editorToolbar"
+        const val UPDATE_DELAY = 200
         val LOG = Logger.getInstance("#tezos.client")
     }
 
@@ -51,8 +52,9 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         // we can't use UISettings.getInstance() because it switched from Java to Kotlin (in 182.x at the latest)
         // we're using what 182.x is doing in its implementation
         // 182.x also deprecated addUISettingsListener()
-        ApplicationManager.getApplication().messageBus.connect(this).subscribe(UISettingsListener.TOPIC, this)
-        ApplicationManager.getApplication().messageBus.connect(this).subscribe(TezosSettingService.TOPIC, this)
+        val bus = ApplicationManager.getApplication().messageBus
+        bus.connect(this).subscribe(UISettingsListener.TOPIC, this)
+        bus.connect(this).subscribe(TezosSettingService.TOPIC, this)
     }
 
     override fun dispose() {
@@ -72,22 +74,18 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         return TezosSettingService.getSettings().stackPanelPosition.isVerticalSplit()
     }
 
-    fun refreshRendering() {
-        updateStackRendering(mainEditor.editor)
-    }
-
     override fun uiSettingsChanged(source: UISettings) {
-        refreshRendering()
+        triggerStackUpdate(mainEditor.editor, 0)
     }
 
     override fun defaultTezosClientChanged() {
         LOG.info("defaultTezosClientChanged()")
         stackEditor.reset()
-        refreshRendering()
+        triggerStackUpdate(mainEditor.editor, 0)
     }
 
     override fun tezosStackPositionChanged() {
-        LOG.info("tezosStackPositionChanged()")
+        LOG.debug("tezosStackPositionChanged()")
         triggerSplitOrientationChange(TezosSettingService.getSettings().stackPanelPosition.isVerticalSplit())
     }
 
@@ -119,19 +117,29 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     }
 
     override fun caretPositionChanged(e: CaretEvent) {
-        alarm.cancelAllRequests()
-        alarm.addRequest({
-            LOG.warn("Updating stack info for offset ${e.caret?.offset}...")
-            updateStackRendering(e.editor)
-        }, 200)
+        triggerStackUpdate(e.editor, UPDATE_DELAY)
     }
 
-    private fun updateStackRendering(editor: Editor) {
-        try {
-            stackEditor.updateStack(editor.document.text, editor.caretModel.offset, renderOptions(editor.colorsScheme))
-        } catch (e: Throwable) {
-            LOG.warn("error updating the stack visualization", e)
-        }
+    fun triggerStackUpdate() {
+        triggerStackUpdate(mainEditor.editor, UPDATE_DELAY)
+    }
+
+    private fun triggerStackUpdate(editor: Editor, delay: Int) {
+        alarm.cancelAllRequests()
+        alarm.addRequest({
+            val offset = editor.caretModel.offset
+            LOG.warn("Updating stack info for offset $offset")
+            try {
+                val content = editor.document.text
+                val renderOptions = renderOptions(editor.colorsScheme)
+
+                ApplicationManager.getApplication().executeOnPooledThread {
+                    stackEditor.updateStackInPooledThread(content, offset, renderOptions)
+                }
+            } catch (e: Throwable) {
+                LOG.warn("error updating the stack visualization", e)
+            }
+        }, delay)
     }
 
     private fun renderOptions(settings: EditorColorsScheme): RenderOptions {

@@ -13,7 +13,7 @@ class AlignStackAction : ToggleAction("Align stacks", "Aligns both stack to star
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val editor = SplitActionUtil.findStackEditor(e)
         editor.stackAlignStacks = state
-        editor.refreshRendering()
+        editor.triggerStackUpdate()
     }
 
     override fun isSelected(e: AnActionEvent): Boolean {

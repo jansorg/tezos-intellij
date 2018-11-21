@@ -1,5 +1,7 @@
 # Version 0.8.0
 - Support `View > Quick documentation` for instructions, types and tags.
+- Improve handling of `tezos-client` and `alphanet.sh`
+- Smaller improvements to stack visualization
 
 # Version 0.7.0
 - Client settings: add button to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)
