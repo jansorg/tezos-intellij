@@ -2,6 +2,8 @@
 - Support `View > Quick documentation` for instructions, types and tags.
 - Improve handling of `tezos-client` and `alphanet.sh`
 - Smaller improvements to stack visualization
+- Remove obsolete section "RETURN" from the grammar
+- Remove obsolete instruction "REDUCE" from the grammar
 
 # Version 0.7.0
 - Client settings: add button to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)
