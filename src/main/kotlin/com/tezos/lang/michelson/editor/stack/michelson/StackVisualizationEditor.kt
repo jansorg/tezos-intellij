@@ -123,8 +123,6 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
 
         val html = stackRenderer.render(matching, renderOptions)
         contentPane.renderHTML(html)
-
-        Files.write(Paths.get("/home/jansorg/test.html"), html.toByteArray())
     }
 
     override fun selectNotify() {}
