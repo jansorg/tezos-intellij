@@ -50,7 +50,7 @@
         SEMI=';'
 
         // type names, spec + 'bytes' + 'mutez' + 'address'
-        TYPE_NAME_COMPARABLE='regexp:int | nat | string | tez | bool | key_hash | timestamp | bytes | mutez | address'
+        TYPE_NAME_COMPARABLE='regexp:int | nat | string | bytes | mutez | bool | key_hash | timestamp'
         TYPE_NAME='regexp:[a-z_]+'
 
         // literal values
