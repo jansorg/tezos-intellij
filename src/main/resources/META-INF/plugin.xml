@@ -98,6 +98,13 @@
     </extensions>
     <!-- @formatter:on -->
 
+    <project-components>
+        <component>
+            <interface-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager</interface-class>
+            <implementation-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManagerImpl</implementation-class>
+        </component>
+    </project-components>
+
     <actions>
         <group id="tezos.NewMichelson" text="Michelson">
             <action id="tezos.NewMichelsonFile" class="com.tezos.lang.michelson.actions.CreateMichelsonFileAction"/>

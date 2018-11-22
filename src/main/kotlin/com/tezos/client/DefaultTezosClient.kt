@@ -9,6 +9,22 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * An error which occurred when running the Tezos client.
+ */
+abstract class TezosClientError(message: String, cause: Throwable?) : Exception(message, cause)
+
+/**
+ * A Tezos client error to signal that the client returned a "Node is not running" error
+ */
+class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : TezosClientError(message, cause)
+
+/**
+ * A Tezos client error to signal that the client returned a "Node is not running" error
+ */
+class TezosClientUnsupportedOutputError(output: String?, cause: Throwable?) : TezosClientError("Invalid output of tezos-client detected.", cause)
+
+
 private fun MichelsonStackParser.StackFrameContext.transform(): MichelsonStackFrame {
     return MichelsonStackFrame(this.type().transform())
 }
@@ -32,18 +48,30 @@ private fun MichelsonStackParser.TypeContext.transform(): MichelsonStackType {
 }
 
 open class StandaloneTezosClient(private val executable: Path) : TezosClient {
-    private companion object {
-        val LOG = Logger.getInstance("#tezos.client")!!
+    companion object {
+        private val LOG = Logger.getInstance("#tezos.client")!!
+
+        /**
+         * Clean up output of Tezos clients.
+         * This removes the disclaimer which is printed before the regular content.
+         * @throws TezosClientError
+         */
+        fun fixTezosClientStdout(content: String): String {
+            val index = content.indexOf("((types")
+            return when {
+                index == 0 -> content
+                index > 0 -> content.substring(index)
+                content.contains("Node is not running") -> throw TezosClientNodeUnavailableError("The Tezos client's not is not running.", null)
+                else -> throw TezosClientUnsupportedOutputError(content, null)
+            }
+        }
     }
 
-    /**
-     * @throws com.tezos.client.stack.TezosClientError When the client returned an error or exited with a non-zero exit code
-     */
     override fun typecheck(content: String): MichelsonStackTransformations {
-        val clientStdout = execClient(content)
+        // we still need to fix the stdout because older versions of alphanet.sh don't pass TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER to the dockerized clients
+        val stdout = execClient(content)
+        val fixedContent = fixTezosClientStdout(stdout)
 
-        // we still need to do this because older versions of alphanet.sh don't pass TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER to the dockerized clients
-        val fixedContent = TezosClientUtils.fixTezosClientStdout(clientStdout)
         val parser = MichelsonStackParser(CommonTokenStream(MichelsonStackLexer(CharStreams.fromString(fixedContent))))
 
         val all = parser.all()

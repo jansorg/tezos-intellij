@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.editor.stack.michelson
+package com.tezos.lang.michelson.stackInfo
 
 import com.tezos.client.stack.MichelsonStackTransformations
 import org.apache.commons.codec.digest.DigestUtils
@@ -7,13 +7,13 @@ import org.apache.commons.codec.digest.DigestUtils
  * Cache entry for a given file content.
  * @author jansorg
  */
-internal data class StackInfo(private val contentMD5: String, val stack: MichelsonStackTransformations) {
+data class StackInfo(private val contentMD5: String, val stack: MichelsonStackTransformations) {
     fun matches(content: String): Boolean {
         return contentMD5.equals(md5(content))
     }
 
-    companion object {
-        private fun md5(content: String): String {
+    internal companion object {
+        fun md5(content: String): String {
             return DigestUtils.md5Hex(content)
         }
 

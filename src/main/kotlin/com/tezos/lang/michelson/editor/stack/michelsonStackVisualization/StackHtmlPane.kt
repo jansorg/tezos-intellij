@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.editor.stack.michelson
+package com.tezos.lang.michelson.editor.stack.michelsonStackVisualization
 
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project

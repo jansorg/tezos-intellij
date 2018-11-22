@@ -18,14 +18,16 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
-import com.tezos.client.stack.RenderOptions
-import com.tezos.client.stack.RenderStyle
 import com.tezos.intellij.editor.split.SplitFileEditor
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.intellij.settings.TezosSettingsListener
+import com.tezos.intellij.stackRendering.RenderOptions
+import com.tezos.intellij.stackRendering.RenderStyle
 import com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighter
-import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
+import com.tezos.lang.michelson.editor.stack.michelsonStackVisualization.MichelsonStackVisualizationEditor
+import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 import java.awt.BorderLayout
+import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
 /**
@@ -59,11 +61,14 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         val bus = ApplicationManager.getApplication().messageBus
         bus.connect(this).subscribe(UISettingsListener.TOPIC, this)
         bus.connect(this).subscribe(TezosSettingService.TOPIC, this)
+
+        MichelsonStackInfoManager.getInstance(mainEditor.editor.project).registerFile(mainEditor.editor.document)
     }
 
     override fun dispose() {
         alarm.cancelAllRequests()
         mainEditor.editor.caretModel.removeCaretListener(this)
+        MichelsonStackInfoManager.getInstance(mainEditor.editor.project).unregisterFile(mainEditor.editor.document)
 
         super.dispose()
     }
@@ -133,15 +138,15 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         alarm.addRequest({
             val offset = editor.caretModel.offset
             LOG.warn("Updating stack info for offset $offset")
-            try {
-                val content = editor.document.text
-                val renderOptions = renderOptions(editor.colorsScheme)
 
-                ApplicationManager.getApplication().executeOnPooledThread {
-                    stackEditor.updateStackInPooledThread(content, offset, renderOptions)
+            try {
+                val stack = MichelsonStackInfoManager.getInstance(editor.project).stackInfo(editor.document, 0, TimeUnit.MILLISECONDS)
+                when (stack) {
+                    null -> stackEditor.showError("error while retrieving stack info")
+                    else -> stackEditor.updateStackInfo(stack, offset, renderOptions(editor.colorsScheme))
                 }
-            } catch (e: Throwable) {
-                LOG.warn("error updating the stack visualization", e)
+            } catch (e: Exception) {
+                stackEditor.showError(e)
             }
         }, delay)
     }
@@ -153,7 +158,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         var varAnnotationStyle: RenderStyle? = null
         var parenStyle: RenderStyle? = null
 
-        if (this.stackColored) {
+        if (stackColored) {
             typeNameStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_NAME))
             fieldAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.FIELD_ANNOTATION))
             typeAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_ANNOTATION))

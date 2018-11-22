@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.editor.stack.michelson
+package com.tezos.lang.michelson.editor.stack.michelsonStackVisualization
 
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
