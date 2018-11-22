@@ -9,14 +9,14 @@ import com.tezos.intellij.ui.Icons
 /**
  * @author jansorg
  */
-class ShowAnnotationsAction : ToggleAction("Show annotations", "Show annotations", Icons.StackAnnotations), DumbAware, RightAlignedToolbarAction {
+class MultilineTypesAction : ToggleAction("Indent nested types", "Wrap and indent nested types lines", Icons.StackIndentation), DumbAware, RightAlignedToolbarAction {
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val editor = SplitActionUtil.findStackEditor(e)
-        editor.stackShowAnnotations = state
+        editor.nestedBlocks = state
         editor.triggerStackUpdate()
     }
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        return SplitActionUtil.findStackEditor(e).stackShowAnnotations
+        return SplitActionUtil.findStackEditor(e).nestedBlocks
     }
 }

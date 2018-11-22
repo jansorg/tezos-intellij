@@ -15,7 +15,7 @@
    version="1.1"
    id="svg16"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="stack-unchanged_dark.svg"
+   sodipodi:docname="stack-colored_dark.svg"
    inkscape:export-filename="/home/jansorg/self-employment/customers/Tezos Foundation/tezos-intellij-plugin/src/main/resources/icons/annotations_dark.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="52.237513"
-     inkscape:cx="4.9983317"
+     inkscape:cx="0.011493984"
      inkscape:cy="8.8811029"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -58,36 +58,12 @@
      id="layer1"
      transform="translate(0,-292.76665)">
     <rect
-       style="fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect820"
-       width="7.2675037"
-       height="7.7608323"
-       x="0"
-       y="300.9899"
-       ry="1.8083491" />
-    <rect
-       ry="1.8083491"
-       y="292.76962"
-       x="8.7213564"
-       height="7.7608323"
-       width="7.2675037"
-       id="rect814"
-       style="fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect
-       ry="1.8083491"
-       y="300.97076"
-       x="8.7596426"
-       height="7.7608323"
-       width="7.2675037"
-       id="rect816"
-       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect
-       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       ry="1.5853201"
+       y="301.60278"
+       x="0.48972368"
+       height="6.8036661"
+       width="15.020553"
        id="rect818"
-       width="7.2675037"
-       height="7.7608323"
-       x="0"
-       y="292.76962"
-       ry="1.8083491" />
+       style="fill:#2a7fff;fill-opacity:1;stroke:none;stroke-width:3.42653155;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </svg>

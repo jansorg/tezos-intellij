@@ -9,14 +9,14 @@ import com.tezos.intellij.ui.Icons
 /**
  * @author jansorg
  */
-class AlignStackAction : ToggleAction("Align stacks", "Aligns both stack to start at the bottom.", Icons.StackAlignment), DumbAware, RightAlignedToolbarAction {
+class UseColoredRenderingAction : ToggleAction("Use colors", "Use colored rendering", Icons.StackColored), DumbAware, RightAlignedToolbarAction {
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val editor = SplitActionUtil.findStackEditor(e)
-        editor.stackAlignStacks = state
-        editor.refreshRendering()
+        editor.stackColored = state
+        editor.triggerStackUpdate()
     }
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        return SplitActionUtil.findStackEditor(e).stackAlignStacks
+        return SplitActionUtil.findStackEditor(e).stackColored
     }
 }

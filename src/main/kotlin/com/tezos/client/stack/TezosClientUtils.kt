@@ -11,9 +11,14 @@ open class TezosClientError(message: String, cause: Throwable?) : Exception(mess
 class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : TezosClientError(message, cause)
 
 /**
+ * Utilities to work with the Tezos client.
  * @author jansorg
  */
-object MichelsonStackUtils {
+object TezosClientUtils {
+    /**
+     * Clean up output of Tezos clients.
+     * This removes the disclaimer which is printed before the regular content.
+     */
     fun fixTezosClientStdout(content: String): String {
         val index = content.indexOf("((types")
         return when {

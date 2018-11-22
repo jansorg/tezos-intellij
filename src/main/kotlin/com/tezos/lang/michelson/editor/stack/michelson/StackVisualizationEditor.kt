@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.editor.stack.michelson
 
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
 import com.intellij.ide.structureView.StructureViewBuilder
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
@@ -14,9 +15,9 @@ import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.*
 import com.tezos.intellij.settings.TezosSettingService
 import java.beans.PropertyChangeListener
+import java.nio.file.Files
 import java.nio.file.Paths
 import javax.swing.JComponent
-import javax.swing.SwingWorker
 
 /**
  * A file editor which renders a stack. It provides a "updateStack" method to be called when the content of the current file changed.
@@ -56,51 +57,45 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
     }
 
     /**
-     * Updates the stack rendering.
+     * Updates the stack rendering. Must not be called from the UI thread.
+     *
      * If the information about "content" was already loaded, then it will be reused.
      * Otherwise the default client will be executed to retrieve the information about the current file and offset. When successful
      * this will be rendered. An error will be shown instead when unsuccessful.
      * The client is executed in the background to not block the EDT.
      */
-    fun updateStack(content: String, offset: Int, renderOptions: RenderOptions) {
+    fun updateStackInPooledThread(content: String, offset: Int, renderOptions: RenderOptions) {
+        val app = ApplicationManager.getApplication()
+        if (app.isDispatchThread) {
+            LOG.warn("stack updated called in ui dispatch tread")
+        }
+
         val cached = stackCache
         when (cached?.matches(content)) {
-            true -> render(cached.stack, offset, renderOptions)
+            true -> app.invokeLater { render(cached.stack, offset, renderOptions) }
             else -> {
-                stackCache = null
+                val stackInfo: StackInfo?
+                try {
+                    stackInfo = loadClientStackInfo(content)
+                    stackCache = stackInfo
 
-                val worker = object : SwingWorker<StackInfo?, Any>() {
-                    override fun doInBackground(): StackInfo? {
-                        return loadClientStackInfo(content)
+                    if (stackInfo != null) {
+                        app.invokeLater { render(stackInfo.stack, offset, renderOptions) }
                     }
-
-                    override fun done() {
-                        try {
-                            val value = this.get()
-                            stackCache = value
-
-                            if (value != null) {
-                                render(value.stack, offset, renderOptions)
+                } catch (e: Exception) {
+                    stackCache = null
+                    app.invokeLater {
+                        when (e.cause) {
+                            is DefaultClientUnavailableException -> contentPane.renderClientUnavailable()
+                            is TezosClientNodeUnavailableError -> contentPane.renderError("Tezos node unavailable.", "The node of the default client is not running.")
+                            is TezosClientError -> when (e.cause!!.message) {
+                                null -> contentPane.renderError("Error while executing the Tezos client command.")
+                                else -> contentPane.renderError("Client error.", e.message)
                             }
-                        } catch (e: Exception) {
-                            stackCache = null
-
-                            LOG.debug("Error executing Tezos client", e)
-                            when (e.cause) {
-                                is DefaultClientUnavailableException -> contentPane.renderClientUnavailable()
-                                is TezosClientNodeUnavailableError -> contentPane.renderError("Tezos node unavailable.", "The node of the default client is not running.")
-                                is TezosClientError -> when (e.cause!!.message) {
-                                    null -> contentPane.renderError("Error while executing the Tezos client command.")
-                                    else -> contentPane.renderError("Client error.", e.message)
-                                }
-                                else -> contentPane.renderError("Error while executing the default Tezos client command.")
-                            }
+                            else -> contentPane.renderError("Error while executing the default Tezos client command.")
                         }
-
                     }
                 }
-
-                worker.execute()
             }
         }
     }
@@ -116,8 +111,7 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
 
     private fun render(stackInfo: MichelsonStackTransformations, offset: Int, renderOptions: RenderOptions) {
         if (stackInfo.hasErrors) {
-            // fixme show errors?
-            contentPane.renderError("Unable to display because the Tezos client returned errors or warnings for the current file.")
+            contentPane.renderError("Errors detected.", "The Tezos client returned errors for the file.")
             return
         }
 
@@ -127,7 +121,8 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
             return
         }
 
-        contentPane.renderHTML(stackRenderer.render(matching, renderOptions))
+        val html = stackRenderer.render(matching, renderOptions)
+        contentPane.renderHTML(html)
     }
 
     override fun selectNotify() {}

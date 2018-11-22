@@ -62,23 +62,6 @@ data class MichelsonStackType(val name: String, val arguments: List<MichelsonSta
 
         return true
     }
-
-    fun asString(showAnnotations: Boolean = false): String {
-        val wrap = arguments.size >= 1 && name.isNotEmpty()
-
-        val (prefix, suffix) = when (wrap || name.isNotEmpty() && showAnnotations && annotations.isNotEmpty()) {
-            true -> arrayOf("(", ")")
-            false -> arrayOf("", "")
-        }
-
-        val n = if (name.isEmpty()) "" else "$name "
-        var out = prefix + n + arguments.map { it.asString(showAnnotations) }.joinToString(" ")
-        if (showAnnotations && annotations.isNotEmpty()) {
-            out += " " + annotations.map { it.value }.joinToString(" ")
-        }
-
-        return out.trim() + suffix
-    }
 }
 
 /**

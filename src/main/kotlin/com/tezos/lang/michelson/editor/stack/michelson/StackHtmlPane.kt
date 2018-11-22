@@ -33,7 +33,7 @@ internal class StackHtmlPane(private val project: Project) : JBPanel<StackHtmlPa
 
     init {
         htmlPanel.isEditable = false
-        htmlPanel.border = JBUI.Borders.empty(7)
+        htmlPanel.border = JBUI.Borders.empty(5)
 
         add(ScrollPaneFactory.createScrollPane(htmlPanel), BorderLayout.CENTER)
     }
