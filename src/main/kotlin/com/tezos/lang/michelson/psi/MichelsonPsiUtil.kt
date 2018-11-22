@@ -16,7 +16,6 @@ object MichelsonPsiUtil {
         return when (token) {
             "parameter" -> PsiSectionType.PARAMETER
             "storage" -> PsiSectionType.STORAGE
-            //"return" -> PsiSectionType.RETURN //fixme unknown section in the spec
             "code" -> PsiSectionType.CODE
             else -> throw IllegalStateException("unsupported section type $token")
         }

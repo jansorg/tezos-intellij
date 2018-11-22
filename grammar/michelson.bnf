@@ -40,7 +40,7 @@
         EOL="end-of-line-marker"
 
         // keywords
-        SECTION_NAME='regexp:parameter|return|storage|code'
+        SECTION_NAME='regexp:parameter|storage|code'
 
         // special characters
         LEFT_PAREN='('
