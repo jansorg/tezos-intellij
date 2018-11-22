@@ -48,6 +48,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     var stackHighlightUnchanged = true
     var stackShowAnnotations = false
     var stackColored = true
+    var nestedBlocks = true
 
     init {
         mainEditor.editor.caretModel.addCaretListener(this)
@@ -164,6 +165,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
                 showAnnotations = stackShowAnnotations,
                 codeFont = settings.editorFontName,
                 codeFontSizePt = settings.editorFontSize * 1.1,
+                nestedBlocks = nestedBlocks,
                 showColors = stackColored,
                 typeNameStyle = typeNameStyle,
                 fieldAnnotationStyle = fieldAnnotationStyle,

@@ -109,6 +109,7 @@
             <action id="tezos.editorHighlightUnchanged" class="com.tezos.lang.michelson.editor.stack.actions.HighlightUnchangedAction"/>
             <action id="tezos.editorShowAnnotations" class="com.tezos.lang.michelson.editor.stack.actions.ShowAnnotationsAction"/>
             <action id="tezos.editorUseColors" class="com.tezos.lang.michelson.editor.stack.actions.UseColoredRenderingAction"/>
+            <action id="tezos.editorMultilineTypes" class="com.tezos.lang.michelson.editor.stack.actions.MultilineTypesAction"/>
         </group>
     </actions>
 </idea-plugin>

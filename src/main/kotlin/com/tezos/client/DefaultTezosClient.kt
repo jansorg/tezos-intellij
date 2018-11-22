@@ -88,7 +88,13 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
             p.waitFor()
 
             return when {
-                p.exitValue() == 0 -> Files.readAllBytes(outFile).toString(StandardCharsets.UTF_8)
+                p.exitValue() == 0 -> {
+                    val out = Files.readAllBytes(outFile).toString(StandardCharsets.UTF_8)
+                    if (LOG.isDebugEnabled) {
+                        LOG.debug("tezos-client finished with exit code ${p.exitValue()} and stdout ${out}")
+                    }
+                    out
+                }
                 else -> throw IllegalStateException("Tezos client exited with code ${p.exitValue()}")
             }
         } finally {

@@ -15,6 +15,7 @@ import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.stack.*
 import com.tezos.intellij.settings.TezosSettingService
 import java.beans.PropertyChangeListener
+import java.nio.file.Files
 import java.nio.file.Paths
 import javax.swing.JComponent
 
@@ -122,6 +123,8 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
 
         val html = stackRenderer.render(matching, renderOptions)
         contentPane.renderHTML(html)
+
+        Files.write(Paths.get("/home/jansorg/test.html"), html.toByteArray())
     }
 
     override fun selectNotify() {}
