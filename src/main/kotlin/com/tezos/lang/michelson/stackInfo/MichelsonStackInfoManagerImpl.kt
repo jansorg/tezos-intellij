@@ -51,7 +51,7 @@ class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonSta
     }
 
     override fun dispose() {
-
+        this.stacks.clear()
     }
 
     override fun registerFile(document: Document) {
