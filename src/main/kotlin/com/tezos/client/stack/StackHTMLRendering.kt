@@ -33,7 +33,8 @@ data class RenderOptions(
         val typeNameStyle: RenderStyle? = null,
         val typeAnnotationStyle: RenderStyle? = null,
         val fieldAnnotationStyle: RenderStyle? = null,
-        val varAnnotationStyle: RenderStyle? = null
+        val varAnnotationStyle: RenderStyle? = null,
+        val parenStyle: RenderStyle? = null
 )
 
 /**
@@ -51,7 +52,7 @@ class StackRendering {
                     val fontStyle = if (s.italic) "font-style: \"italic\"; " else ""
 
                     // the left elemet is shown with a lighter color when unchanged
-                    val opacityColor = s.textColor?.let { "color: ${it.opacity(70, JBColor.white).asHexString()}; " }
+                    val opacityColor = s.textColor?.let { "color: ${it.opacity(60, JBColor.white).asHexString()}; " }
 
                     return """
                         $selector { $color $fontWeight $fontStyle $moreStyles}
@@ -84,6 +85,7 @@ class StackRendering {
             ${style(".style-annotation-type", opts.typeAnnotationStyle)}
             ${style(".style-annotation-field", opts.fieldAnnotationStyle)}
             ${style(".style-annotation-var", opts.varAnnotationStyle)}
+            ${style(".style-paren", opts.parenStyle)}
         """.trimIndent()
     }
 
@@ -140,7 +142,7 @@ class StackRendering {
 }
 
 private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions, colored: Boolean = opts.showColors, level: Int = 0) {
-    val addParens = type.name.isNotEmpty() && (type.arguments.isNotEmpty() || (type.annotations.isNotEmpty() && opts.showAnnotations))
+    val addParens = type.name.isNotEmpty() && level > 0 || (type.arguments.isNotEmpty() || (type.annotations.isNotEmpty() && opts.showAnnotations))
 
     if (level > 0 && opts.nestedBlocks) {
         for (i in 0 until level * 3) {
@@ -149,7 +151,9 @@ private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions
     }
 
     if (addParens) {
-        +"("
+        span("style-paren") {
+            +"("
+        }
     }
 
     if (type.name.isNotEmpty()) {
@@ -162,8 +166,23 @@ private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions
         span(className) { +type.name }
     }
 
+
+    if (opts.showAnnotations && type.annotations.isNotEmpty()) {
+        if (type.name.isNotEmpty()) {
+            +" "
+        }
+        for ((index, annotation) in type.annotations.withIndex()) {
+            span(if (colored) "style-annotation-type" else null) {
+                +annotation.value
+            }
+            if (index < type.annotations.size - 1) {
+                +" "
+            }
+        }
+    }
+
     for (arg in type.arguments) {
-        val lineBreak = addParens && opts.nestedBlocks && type.arguments.size > 1
+        val lineBreak = addParens && opts.nestedBlocks && (type.arguments.size > 1 || type.annotations.isNotEmpty())
         if (lineBreak) {
             br {}
         } else {
@@ -172,17 +191,10 @@ private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions
         stackInfo(arg, opts, colored, if (lineBreak) level + 1 else 0)
     }
 
-    if (opts.showAnnotations && type.annotations.isNotEmpty()) {
-        for (annotation in type.annotations) {
-            +" "
-            span(if (colored) "style-annotation-type" else null) {
-                +annotation.value
-            }
-        }
-    }
-
     if (addParens) {
-        +")"
+        span("style-paren") {
+            +")"
+        }
     }
 }
 

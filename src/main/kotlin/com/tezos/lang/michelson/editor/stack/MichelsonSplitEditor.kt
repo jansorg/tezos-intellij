@@ -151,12 +151,14 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         var fieldAnnotationStyle: RenderStyle? = null
         var typeAnnotationStyle: RenderStyle? = null
         var varAnnotationStyle: RenderStyle? = null
+        var parenStyle: RenderStyle? = null
 
         if (this.stackColored) {
             typeNameStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_NAME))
             fieldAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.FIELD_ANNOTATION))
             typeAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_ANNOTATION))
             varAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.VARIABLE_ANNOTATION))
+            parenStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.PAREN))
         }
 
         return RenderOptions(
@@ -170,7 +172,8 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
                 typeNameStyle = typeNameStyle,
                 fieldAnnotationStyle = fieldAnnotationStyle,
                 typeAnnotationStyle = typeAnnotationStyle,
-                varAnnotationStyle = varAnnotationStyle
+                varAnnotationStyle = varAnnotationStyle,
+                parenStyle = parenStyle
         )
     }
 

@@ -9,7 +9,7 @@ import com.tezos.intellij.ui.Icons
 /**
  * @author jansorg
  */
-class MultilineTypesAction : ToggleAction("Align nested types", "Renders nested types on multiple lines", Icons.StackAlignment), DumbAware, RightAlignedToolbarAction {
+class MultilineTypesAction : ToggleAction("Indent nested types", "Wrap and indent nested types lines", Icons.StackIndentation), DumbAware, RightAlignedToolbarAction {
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val editor = SplitActionUtil.findStackEditor(e)
         editor.nestedBlocks = state
