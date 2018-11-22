@@ -85,7 +85,7 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
                 } catch (e: Exception) {
                     stackCache = null
                     app.invokeLater {
-                        when (e.cause) {
+                        when (e) {
                             is DefaultClientUnavailableException -> contentPane.renderClientUnavailable()
                             is TezosClientNodeUnavailableError -> contentPane.renderError("Tezos node unavailable.", "The node of the default client is not running.")
                             is TezosClientError -> when (e.cause!!.message) {

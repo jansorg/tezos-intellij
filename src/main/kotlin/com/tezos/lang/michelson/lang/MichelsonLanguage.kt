@@ -10,12 +10,13 @@ import com.tezos.lang.michelson.lang.tag.*
 object MichelsonLanguage : Language("Michelson") {
     override fun getDisplayName(): String = "Michelson"
 
-    // Pair and pair are different tokens
+    // PAIR, Pair and pair are different tokens
     override fun isCaseSensitive(): Boolean = true
 
+    val TYPES_COMPARABLE = setOf("int", "nat", "string", "bytes", "mutez", "bool", "key_hash", "timestamp")
+    // contract is handled specially by the parser
+    val TYPES_COMPLEX = setOf("option", "list", "set", "operation", "address", "pair", "or", "lambda", "map", "big_map")
     val TYPES_OTHER = setOf("key", "unit", "signature")
-    val TYPES_COMPARABLE = setOf("int", "nat", "string", "tez", "bool", "key_hash", "timestamp", "bytes", "mutez", "address")
-    val TYPES_COMPLEX = setOf("option", "list", "set", "operation", "pair", "or", "lambda", "map", "big_map")
     val TYPES_ALL = TYPES_OTHER + TYPES_COMPARABLE + TYPES_COMPLEX
 
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
@@ -61,7 +62,7 @@ object MichelsonLanguage : Language("Michelson") {
     )
 
     // instructions which are not fully explained in the whitepaper
-    val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT", "REDUCE")
+    val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT")
 
     // instructions which expect one instruction block
     val INSTRUCTIONS_ONE_BLOCK = setOf("DIP", "ITER", "LOOP", "LOOP_LEFT", "MAP")

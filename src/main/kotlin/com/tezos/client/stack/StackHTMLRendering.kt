@@ -156,21 +156,24 @@ private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions
         }
     }
 
+    var addedContent = false
+
     if (type.name.isNotEmpty()) {
         val className = when {
             level == 0 && addParens && colored -> "style-type-name-first"
             colored -> "style-type-name"
             else -> null
         }
-
         span(className) { +type.name }
+        addedContent = true
     }
 
 
     if (opts.showAnnotations && type.annotations.isNotEmpty()) {
-        if (type.name.isNotEmpty()) {
+        if (addedContent) {
             +" "
         }
+
         for ((index, annotation) in type.annotations.withIndex()) {
             span(if (colored) "style-annotation-type" else null) {
                 +annotation.value
@@ -178,17 +181,19 @@ private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions
             if (index < type.annotations.size - 1) {
                 +" "
             }
+            addedContent = true
         }
     }
 
     for (arg in type.arguments) {
-        val lineBreak = addParens && opts.nestedBlocks && (type.arguments.size > 1 || type.annotations.isNotEmpty())
+        val lineBreak = addParens && opts.nestedBlocks && (type.arguments.size > 1 || (opts.showAnnotations && type.annotations.isNotEmpty()))
         if (lineBreak) {
             br {}
-        } else {
+        } else if (addedContent) {
             +" "
         }
         stackInfo(arg, opts, colored, if (lineBreak) level + 1 else 0)
+        addedContent = true
     }
 
     if (addParens) {
