@@ -48,7 +48,7 @@ data class MichelsonStackFrame(val type: MichelsonStackType) {
  * @param arguments The type arguments if this type is a parametrized type, e.g. "map int string".
  * @param annotations Optional list of annotations which contains the annotations attached to this type.
  */
-data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType>, val annotations: List<MichelsonStackAnnotation>) {
+data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType> = emptyList(), val annotations: List<MichelsonStackAnnotation> = emptyList()) {
     fun asString(showNested: Boolean): String {
         if (arguments.isEmpty() || !showNested) {
             return name

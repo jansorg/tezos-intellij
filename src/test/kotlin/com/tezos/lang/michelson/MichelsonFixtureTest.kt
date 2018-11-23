@@ -12,14 +12,20 @@ import com.tezos.lang.michelson.psi.MichelsonPsiFile
 abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() {
     override fun getTestDataPath(): String = MichelsonTestUtils.dataPath().toString()
 
-    fun configureByCode(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
-        val file = myFixture.configureByText("file.tz", """
-            parameter unit;
-            storage unit;
-            code { $code }
-        """.trimIndent())
+    open fun configureByCode(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
+        val file = myFixture.configureByText("file.tz", codeTemplate(code))
 
         return Pair(file as MichelsonPsiFile, getPsiAtCaret(allowWhitespace))
+    }
+
+    fun codeOffset(code: String): Int = Math.max(0, codeTemplate(code).indexOf("<caret>"))
+
+    private fun codeTemplate(code: String): String {
+        return """
+                parameter unit;
+                storage unit;
+                code { $code }
+            """.trimIndent()
     }
 
     fun configureByCode(code: () -> String): Pair<MichelsonPsiFile, PsiElement?> {

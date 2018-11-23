@@ -24,7 +24,7 @@ import com.tezos.intellij.settings.TezosSettingsListener
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener {
+open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stackInfo")!!
     }
@@ -103,7 +103,7 @@ class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponen
     /**
      * Debounce calls to the tezos client.
      */
-    private fun triggerStackUpdate(document: Document) {
+    protected fun triggerStackUpdate(document: Document) {
         this.client ?: return
 
         alarm.cancelAllRequests()
@@ -112,7 +112,7 @@ class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponen
         }, 150)
     }
 
-    private fun updateStackInfo(document: Document) {
+    protected fun updateStackInfo(document: Document) {
         val client = this.client ?: return
         val file = FileDocumentManager.getInstance().getFile(document) ?: return
         val path = file.toJavaPath()
@@ -158,7 +158,7 @@ class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponen
 
     override fun tezosStackPositionChanged() {}
 
-    private fun defaultTezosClient(): TezosClient? {
+    protected open fun defaultTezosClient(): TezosClient? {
         return TezosSettingService.getInstance().state.getDefaultClient()?.let {
             StandaloneTezosClient(Paths.get(it.executablePath))
         }

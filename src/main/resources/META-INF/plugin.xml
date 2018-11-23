@@ -102,6 +102,7 @@
         <component>
             <interface-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager</interface-class>
             <implementation-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManagerImpl</implementation-class>
+            <headless-implementation-class>com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager</headless-implementation-class>
         </component>
     </project-components>
 

@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.completion.CompletionType
+import com.tezos.client.MockTezosClient
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import org.junit.Assert
 
@@ -9,6 +10,12 @@ import org.junit.Assert
  * @author jansorg
  */
 abstract class MichelsonCompletionTest : MichelsonFixtureTest() {
+    override fun setUp() {
+        super.setUp()
+
+        MockTezosClient.reset()
+    }
+
     fun assertCompletions(vararg items: String, type: CompletionType = CompletionType.BASIC) {
         val completions = completionStrings(type)?.sorted()
 

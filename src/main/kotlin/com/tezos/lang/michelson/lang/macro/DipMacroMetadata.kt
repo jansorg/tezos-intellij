@@ -25,8 +25,9 @@ class DipMacroMetadata : MacroMetadata {
         val result = mutableListOf<DynamicMacroName>()
         // stack depth 2 results in DIP
         // stack depth n results in D I{n-1} P
-        for ((index, frame) in stack.frames.withIndex()) {
-            result += DynamicMacroName("D" + "I".repeat(index+1) + "P", top, frame.type)
+        // we skip the top frame because DIP needs depth 2, i.e. DI{n}P needs stack.size == n+1
+        for ((index, frame) in stack.frames.subList(1, stack.frames.size).withIndex()) {
+            result += DynamicMacroName("D" + "I".repeat(index + 1) + "P", top, frame.type)
         }
         return result
     }
