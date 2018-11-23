@@ -19,7 +19,7 @@ class MapCadrMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("MAP_C[AD]+R")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("MAP_CAR", "MAP_CDR")
+    override fun staticNames(): Collection<String> = listOf("MAP_CAR", "MAP_CDR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

@@ -18,7 +18,7 @@ class UnpairMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("UNP[AIP]+R")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("UNPAIR")
+    override fun staticNames(): Collection<String> = listOf("UNPAIR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

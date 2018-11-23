@@ -78,7 +78,7 @@ class PairMacroMetadata : MacroMetadata {
         }
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("PAIR")
+    override fun staticNames(): Collection<String> = listOf("PAIR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

@@ -10,7 +10,7 @@ class AssertMacroMetadata : MacroMetadata {
                 "ASSERT_RIGHT")
     }
 
-    override fun staticMacroName(): Collection<String> = NAMES
+    override fun staticNames(): Collection<String> = NAMES
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (macro in NAMES) {

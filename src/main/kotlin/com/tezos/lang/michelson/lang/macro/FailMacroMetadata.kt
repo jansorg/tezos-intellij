@@ -7,7 +7,7 @@ class FailMacroMetadata : MacroMetadata {
         val NAMES = listOf("FAIL")
     }
 
-    override fun staticMacroName() = NAMES
+    override fun staticNames() = NAMES
 
     override fun validate(macro: String): Pair<String, Int>? {
         return when (macro == "FAIL") {

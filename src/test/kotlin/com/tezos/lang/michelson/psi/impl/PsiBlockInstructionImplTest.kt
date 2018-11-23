@@ -12,13 +12,13 @@ class PsiBlockInstructionImplTest : MichelsonFixtureTest() {
         val (_, psi) = configureByCode("{<caret>}")
         val block = psi?.parent as? PsiBlockInstruction
         Assert.assertNotNull(block)
-        Assert.assertTrue(block!!.isWhitespceOnly)
+        Assert.assertTrue(block!!.isWhitespaceOnly)
     }
 
     fun testNotWhitespace() {
         val (_, psi) = configureByCode("{ DROP; <caret>}")
         val block = psi?.parent as? PsiBlockInstruction
         Assert.assertNotNull(block)
-        Assert.assertFalse(block!!.isWhitespceOnly)
+        Assert.assertFalse(block!!.isWhitespaceOnly)
     }
 }

@@ -59,6 +59,7 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
                 PlatformPatterns.psiElement(INSTRUCTION_TOKEN).andNot(AFTER_ERROR_LEAF_SKIPPING_WS)
         )
         extendOriginal(null, instructionPlace, InstructionNameCompletion())
+        extendOriginal(null, instructionPlace, MacroNameCompletion())
 
         // types
         extendOriginal(null, SIMPLE_TYPE_PATTERN, SimpleTypeCompletion())

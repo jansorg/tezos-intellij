@@ -7,7 +7,7 @@ class CompareMacroMetadata : MacroMetadata {
         val NAMES = setOf("CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE")
     }
 
-    override fun staticMacroName(): Collection<String> = NAMES
+    override fun staticNames(): Collection<String> = NAMES
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (macro in NAMES) {

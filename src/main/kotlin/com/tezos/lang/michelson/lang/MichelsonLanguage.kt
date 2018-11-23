@@ -47,7 +47,7 @@ object MichelsonLanguage : Language("Michelson") {
     val MAP_CADR_MACRO: MacroMetadata = MapCadrMacroMetadata()
     val MACROS = listOf(FAIL_MACRO, ASSERT_MACROS, COMPARE_MACROS, IF_MACROS, DUUP_MACRO, DIIP_MACRO, PAIR_MACRO, UNPAIR_MACRO, CADR_MACRO, SET_CADR_MACRO, MAP_CADR_MACRO)
     // all available static macro names, dynamic macros like DIIIP or PAPAIR are not part of this list
-    val MACRO_NAMES = MACROS.flatMap { it.staticMacroName() }
+    val MACRO_NAMES = MACROS.flatMap { it.staticNames() }
 
     // instructions which do not support arguments
     val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "ADDRESS", "AMOUNT", "AND", "BALANCE", "BLAKE2B",

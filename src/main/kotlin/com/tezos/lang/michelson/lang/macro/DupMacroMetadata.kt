@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -12,7 +13,26 @@ class DupMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("DUU+P")
     }
 
-    override fun staticMacroName(): Collection<String> = emptyList()
+    override fun staticNames(): Collection<String> = emptyList()
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.size <= 0) {
+            return emptyList()
+        }
+
+        val top = stack.top
+        val result = mutableListOf<DynamicMacroName>()
+        // stack depth 1 results in DUP
+        // stack depth 2 results in DUUP
+        // stack depth n results in D U{n} P
+        // DU+P always puts the same type as top onto the stack
+        // DUU+P accesses frames further down on the stack
+        for ((index, frame) in stack.frames.withIndex()) {
+            val name = "D" + "U".repeat(index + 1) + "P"
+            result += DynamicMacroName(name, top!!.type, frame.type)
+        }
+        return result
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (regexp.matcher(macro).matches()) {

@@ -116,7 +116,7 @@ class StackRendering {
 }
 
 private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions, colored: Boolean = opts.showColors, level: Int = 0) {
-    val addParens = type.name.isNotEmpty() && level > 0 || (type.arguments.isNotEmpty() || (type.annotations.isNotEmpty() && opts.showAnnotations))
+    val addParens = type.name.isNotEmpty() && (level > 0 || (type.arguments.isNotEmpty() || (type.annotations.isNotEmpty() && opts.showAnnotations)))
 
     if (level > 0 && opts.nestedBlocks) {
         for (i in 0 until level * 3) {

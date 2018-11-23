@@ -23,8 +23,14 @@ data class MichelsonStackTransformation(val tokenStartOffset: Int, val tokenEndO
  * Represents a state of the stack. Each frame represents one item on the stack. The first item is the top of the stack.
  */
 data class MichelsonStack(val frames: List<MichelsonStackFrame>) {
+    val isEmpty: Boolean
+        get() = frames.isEmpty()
+
     val size: Int
         get() = frames.size
+
+    val top: MichelsonStackFrame?
+        get() = frames.getOrNull(0)
 }
 
 /**
@@ -43,6 +49,20 @@ data class MichelsonStackFrame(val type: MichelsonStackType) {
  * @param annotations Optional list of annotations which contains the annotations attached to this type.
  */
 data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType>, val annotations: List<MichelsonStackAnnotation>) {
+    fun asString(showNested: Boolean): String {
+        if (arguments.isEmpty() || !showNested) {
+            return name
+        }
+
+        val result = StringBuilder()
+        result.append("(").append(name)
+        for (a in arguments) {
+            result.append(" ").append(a.asString(true))
+        }
+        result.append(")")
+        return result.toString()
+    }
+
     fun equals(other: MichelsonStackType, withAnnotations: Boolean): Boolean {
         if (this === other) {
             return true

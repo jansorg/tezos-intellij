@@ -4,6 +4,8 @@
 - Improvements to stack visualization: colored output, rendering nested types on multiple lines with indentation
 - Remove obsolete section `RETURN` from the grammar
 - Remove obsolete instruction `REDUCE` from the grammar
+- Suggest dynamic macro names which are available for the current stack, needs a running tezos-client
+- Show the type of the new top of the stack for code completion items, only macros for now
 
 # Version 0.7.0
 - Client settings: add button to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)

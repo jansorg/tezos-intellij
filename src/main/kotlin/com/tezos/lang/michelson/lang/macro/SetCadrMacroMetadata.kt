@@ -15,7 +15,7 @@ class SetCadrMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("SET_C[AD]+R")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("SET_CDR", "SET_CAR")
+    override fun staticNames(): Collection<String> = listOf("SET_CDR", "SET_CAR")
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {

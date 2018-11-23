@@ -82,7 +82,7 @@
 // we probably need an external rule to make sure that the required sections are present
 // (we can't define arbitrary order without adding a lot of ruled)
 private script_file ::= contract?
-contract ::= section+ { methods=[sections="section"] }
+contract ::= section+ { methods=[sections="section" isMainContract] }
 
 section ::= parameter_section | return_section | storage_section | code_section {methods=[instructions="instruction" getSectionType]}
 private parameter_section ::= 'parameter' toplevel_type ';' {pin=1}
@@ -111,7 +111,7 @@ private tag_recovery ::= <<tag_data_recover_while>>
 //-- instructions
 
 instruction ::= block_instruction | simple_instruction {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getInstructionName getInstructionToken]}
-block_instruction ::= <<parse_instruction_block instruction>> {methods=[isWhitespceOnly]}
+block_instruction ::= <<parse_instruction_block instruction>> {methods=[isWhitespaceOnly]}
 
 private simple_instruction ::=
     create_contract_instruction

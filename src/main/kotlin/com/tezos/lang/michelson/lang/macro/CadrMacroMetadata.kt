@@ -1,5 +1,7 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -12,7 +14,36 @@ class CadrMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("C[AD]+R")
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("CAR", "CDR")
+    override fun staticNames(): Collection<String> = listOf("CAR", "CDR")
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.isEmpty) {
+            return emptyList()
+        }
+        if (stack.top!!.type.name != "pair") {
+            return emptyList()
+        }
+
+        val result = mutableListOf<DynamicMacroName>()
+        addPairs(stack.top!!.type, "", result)
+        return result.map { it.copy(name = "C${it.name}R") }
+    }
+
+    private fun addPairs(element: MichelsonStackType, prefix: String, result: MutableList<DynamicMacroName>) {
+        assert(element.name == "pair")
+        assert(element.arguments.size == 2)
+        val (left, right) = element.arguments
+
+        result += DynamicMacroName(prefix + "A", left)
+        if (left.name == "pair") {
+            addPairs(left, prefix + "A", result)
+        }
+
+        result += DynamicMacroName(prefix + "D", right)
+        if (right.name == "pair") {
+            addPairs(right, prefix + "D", result)
+        }
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
