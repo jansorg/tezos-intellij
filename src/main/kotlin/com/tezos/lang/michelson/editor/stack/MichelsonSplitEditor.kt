@@ -176,8 +176,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
                 fieldAnnotationStyle = fieldAnnotationStyle,
                 typeAnnotationStyle = typeAnnotationStyle,
                 varAnnotationStyle = varAnnotationStyle,
-                parenStyle = parenStyle
-        )
+                parenStyle = parenStyle)
     }
 
     override fun caretAdded(e: CaretEvent?) {}
