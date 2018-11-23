@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement
 import com.tezos.client.MockTezosClient
 import com.tezos.client.stack.*
 import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.lang.macro.AssertMacroMetadata
+import com.tezos.lang.michelson.lang.macro.CompareMacroMetadata
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
@@ -54,6 +56,43 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
         assertCompletions("CAR", "CDR", "DUP", "DUUP", "DIP", type = CompletionType.SMART)
     }
 
+    fun testDepth1CompareMacro() {
+        // int int
+        prepareFile("<caret>", "int".type(), "int".type())
+        assertCompletionsAtLeast(*CompareMacroMetadata.NAMES.toTypedArray(), type = CompletionType.SMART)
+    }
+
+    fun testDepth1CompareMacroNonComparable() {
+        // int int
+        prepareFile("<caret>", pair("int", "int"), pair("int", "int"))
+        assertCompletions("CAR", "CDR", "DIP", "DUP", "DUUP", type = CompletionType.SMART)
+    }
+
+    fun testDepth1AssertBool() {
+        // bool
+        prepareFile("<caret>", "bool".type())
+        assertCompletionsAtLeast(*(setOf("ASSERT") + AssertMacroMetadata.EQ_NAMES).toTypedArray(), type = CompletionType.SMART)
+    }
+
+    fun testDepth1AssertComparable() {
+        // int
+        // int
+        prepareFile("<caret>", "int".type(), "int".type())
+        assertCompletionsAtLeast(*(AssertMacroMetadata.CMPEQ_NAMES).toTypedArray(), type = CompletionType.SMART)
+    }
+
+    fun testDepth1AssertOption() {
+        // (option int int)
+        prepareFile("<caret>", option("int".type(), "int".type()))
+        assertCompletionsAtLeast("ASSERT_SOME", "ASSERT_NONE", type = CompletionType.SMART)
+    }
+
+    fun testDepth1AssertOr() {
+        // (option int int)
+        prepareFile("<caret>", option("int".type(), "int".type()))
+        assertCompletionsAtLeast("ASSERT_SOME", "ASSERT_NONE", type = CompletionType.SMART)
+    }
+
     private fun prepareFile(content: String, vararg stackTypes: MichelsonStackType) {
         val file = configureByCode(content).first
         MockTezosClient.addTypes(myFixture.file, stackOf(file, *stackTypes))
@@ -82,6 +121,15 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
 
     fun String.type(): MichelsonStackType = MichelsonStackType(this)
 
-    fun pair(a: String, b: String): MichelsonStackType = MichelsonStackType("pair", listOf(a.type(), b.type()))
-    fun pair(a: MichelsonStackType, b: MichelsonStackType): MichelsonStackType = MichelsonStackType("pair", listOf(a, b))
+    fun nested(name: String, a: String, b: String): MichelsonStackType = MichelsonStackType(name, listOf(a.type(), b.type()))
+    fun nested(name: String, a: MichelsonStackType, b: MichelsonStackType): MichelsonStackType = MichelsonStackType(name, listOf(a, b))
+
+    fun pair(a: String, b: String) = nested("pair", a, b)
+    fun pair(a: MichelsonStackType, b: MichelsonStackType) = nested("pair", a,b)
+
+    fun option(a: String, b: String) = nested("option", a, b)
+    fun option(a: MichelsonStackType, b: MichelsonStackType) = nested("option", a,b)
+
+    fun or(a: String, b: String) = nested("or", a, b)
+    fun or(a: MichelsonStackType, b: MichelsonStackType) = nested("or", a,b)
 }

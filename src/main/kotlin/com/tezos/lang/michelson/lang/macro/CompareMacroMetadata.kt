@@ -7,7 +7,6 @@ import com.tezos.lang.michelson.psi.PsiAnnotationType
 class CompareMacroMetadata : MacroMetadata {
     companion object {
         val NAMES = setOf("CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE")
-        val BOOL = MichelsonStackType("bool")
     }
 
     override fun staticNames(): Collection<String> = NAMES
@@ -25,7 +24,7 @@ class CompareMacroMetadata : MacroMetadata {
         val (top, second) = stack.frames
         return when {
             top.type.isComparable && top.type.name == second.type.name -> NAMES.map {
-                DynamicMacroName(it, BOOL)
+                DynamicMacroName(it, Comparables.BOOL)
             }
 
             else -> emptyList()
