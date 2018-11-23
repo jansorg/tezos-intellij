@@ -12,28 +12,28 @@ import com.tezos.lang.michelson.psi.MichelsonPsiFile
 abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() {
     override fun getTestDataPath(): String = MichelsonTestUtils.dataPath().toString()
 
-    fun configureByCode(code: String): Pair<MichelsonPsiFile, PsiElement?> {
+    fun configureByCode(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
         val file = myFixture.configureByText("file.tz", """
             parameter unit;
             storage unit;
             code { $code }
         """.trimIndent())
 
-        return Pair(file as MichelsonPsiFile, getPsiAtCaret())
+        return Pair(file as MichelsonPsiFile, getPsiAtCaret(allowWhitespace))
     }
 
     fun configureByCode(code: () -> String): Pair<MichelsonPsiFile, PsiElement?> {
         return configureByCode(code())
     }
 
-    fun getPsiAtCaret(): PsiElement? {
+    fun getPsiAtCaret(allowWhitespace: Boolean = false): PsiElement? {
         val offset = myFixture.caretOffset
 
         var psi = myFixture.file.findElementAt(offset)
-        if (psi is PsiWhiteSpace) {
+        if (!allowWhitespace && psi is PsiWhiteSpace) {
             psi = myFixture.file.findElementAt(offset - 1)
         }
-        if (psi is PsiWhiteSpace) {
+        if (!allowWhitespace && psi is PsiWhiteSpace) {
             psi = myFixture.file.findElementAt(offset + 1)
         }
 

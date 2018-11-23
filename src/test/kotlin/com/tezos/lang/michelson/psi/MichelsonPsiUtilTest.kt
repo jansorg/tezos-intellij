@@ -10,17 +10,28 @@ class MichelsonPsiUtilTest : MichelsonFixtureTest() {
     fun testIsFirstCodeChild() {
         // caret is refering to the element right to it
 
-        var e = configureByCode("<caret>").second?.prevSibling
-        Assert.assertTrue(MichelsonPsiUtil.isFirstCodeChild(e))
+        // {
+        var e = configureByCode("<caret>", true).second
+        Assert.assertTrue(MichelsonPsiUtil.isFirstCodeChild(e, myFixture.caretOffset))
 
-        e = configureByCode("   <caret>").second?.prevSibling
-        Assert.assertTrue(MichelsonPsiUtil.isFirstCodeChild(e))
+        // {   <caret>}
+        e = configureByCode("   <caret>", true).second
+        Assert.assertTrue(MichelsonPsiUtil.isFirstCodeChild(e, myFixture.caretOffset))
 
-        // closing }
-        e = configureByCode("<caret>").second
-        Assert.assertFalse(MichelsonPsiUtil.isFirstCodeChild(e))
+        // {<caret>}
+        e = configureByCode("<caret>", true).second
+        Assert.assertTrue(MichelsonPsiUtil.isFirstCodeChild(e, myFixture.caretOffset))
 
-        e = configureByCode("DROP; <caret>").second?.prevSibling
-        Assert.assertFalse(MichelsonPsiUtil.isFirstCodeChild(e))
+        // {   <caret>}
+        e = configureByCode("   <caret>", true).second
+        Assert.assertTrue(MichelsonPsiUtil.isFirstCodeChild(e, myFixture.caretOffset))
+
+        // {DROP; <caret>}
+        e = configureByCode("DROP; <caret>", true).second
+        Assert.assertFalse(MichelsonPsiUtil.isFirstCodeChild(e, myFixture.caretOffset))
+
+        // {DIP { <caret> }}
+        e = configureByCode("DIP{ <caret> }", true).second
+        Assert.assertFalse(MichelsonPsiUtil.isFirstCodeChild(e, myFixture.caretOffset))
     }
 }

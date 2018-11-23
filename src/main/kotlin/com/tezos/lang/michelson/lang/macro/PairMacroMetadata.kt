@@ -15,7 +15,7 @@ import java.util.regex.Pattern
  */
 class PairMacroMetadata : MacroMetadata {
     internal companion object {
-        val regexp = Pattern.compile("P[AIP]+R")
+        val regexp = Pattern.compile("P[AIP]+R")!!
 
         internal fun validateMacro(macro: String, startIndex: Int): Pair<String, Int>? {
             var reqLeft = 0

@@ -46,7 +46,7 @@ internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() 
         // find the previous instruction, i.e. the previous sibling at the current offset
         // the stack produced by that instruction is the input for our macro completion
         val offset = when {
-            MichelsonPsiUtil.isFirstCodeChild(parameters.originalPosition) -> parameters.originalPosition?.textOffset
+            MichelsonPsiUtil.isFirstCodeChild(parameters.originalPosition, parameters.offset) -> parameters.originalPosition?.textOffset
             else -> MichelsonPsiUtil.findPrevInstruction(parameters.position)?.textOffset
         }
 

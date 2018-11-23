@@ -8,12 +8,11 @@ import org.junit.Assert
 /**
  * @author jansorg
  */
-abstract class MichelsonCompletionTest() : MichelsonFixtureTest() {
+abstract class MichelsonCompletionTest : MichelsonFixtureTest() {
     fun assertCompletions(vararg items: String, type: CompletionType = CompletionType.BASIC) {
-        val sortedItems = items.sorted()
         val completions = completionStrings(type)?.sorted()
 
-        Assert.assertEquals(sortedItems, completions)
+        Assert.assertEquals(items.sorted(), completions)
     }
 
     fun assertCompletionsAtLeast(items: List<String>, type: CompletionType = CompletionType.BASIC) = assertCompletionsAtLeast(*items.toTypedArray(), type = type)

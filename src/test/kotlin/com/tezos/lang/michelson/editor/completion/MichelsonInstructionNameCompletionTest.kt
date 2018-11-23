@@ -8,17 +8,17 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val instructions = MichelsonLanguage.INSTRUCTIONS.toTypedArray()
+        val instructions = (MichelsonLanguage.INSTRUCTIONS + MichelsonLanguage.MACRO_NAMES).toTypedArray()
 
         // basic
         configureByCode("<caret>")
         assertCompletions(*instructions)
 
         configureByCode("IF<caret>")
-        assertCompletions(* instructions.filter { it.contains("IF") }.toTypedArray())
+        assertCompletions(*instructions.filter { it.contains("IF") }.toTypedArray())
 
         configureByCode("PAIR; <caret>")
-        assertCompletions(* instructions)
+        assertCompletions(*instructions)
 
         myFixture.configureByText(MichelsonFileType, "code {<caret>}")
         assertCompletions(* instructions)

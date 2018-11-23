@@ -114,19 +114,20 @@ object MichelsonPsiUtil {
      * Returns if element is the first child of a code section in the main contract
      */
     @JvmStatic
-    fun isFirstCodeChild(element: PsiElement?): Boolean {
+    fun isFirstCodeChild(element: PsiElement?, caretOffset: Int): Boolean {
         if (element == null) {
             return false
         }
 
         // find first non-whitespace previous sibling, it's either null if inside of a block or a section name, e.g. 'code'
-        var e = element.prevSibling
+        // prefer previous element if the element after caretOffset was passed
+        var e = if (caretOffset == element.textOffset) element.prevSibling else element
         while (e != null && (e.isWhitespace() || e.node.elementType == MichelsonTypes.LEFT_CURLY)) {
             e = e.prevSibling
         }
 
         if (e == null) {
-            return isFirstCodeChild(element.parent)
+            return isFirstCodeChild(element.parent, caretOffset)
         }
 
         val section = when {
