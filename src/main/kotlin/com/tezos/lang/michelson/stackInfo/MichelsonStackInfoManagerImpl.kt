@@ -9,10 +9,13 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.ShutDownTracker
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.Alarm
 import com.intellij.util.PathUtil
+import com.intellij.util.containers.ContainerUtil
 import com.tezos.client.StandaloneTezosClient
 import com.tezos.client.TezosClient
 import com.tezos.client.TezosClientError
@@ -20,16 +23,29 @@ import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.intellij.settings.TezosSettingsListener
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
 
-class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener {
+class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener {
     private companion object {
-        val LOG = Logger.getInstance("#tezos.stackInfo")
+        val LOG = Logger.getInstance("#tezos.stackInfo")!!
     }
 
+    private class DocumentListenerDisposable(val document: Document, val listener: DocumentListener) : Disposable {
+        override fun dispose() {
+            document.removeDocumentListener(listener)
+        }
+    }
+
+    private class StackUpdateListenerDisposable(val listeners: MutableList<StackInfoUpdateListener>, val listener: StackInfoUpdateListener) : Disposable {
+        override fun dispose() {
+            listeners.remove(listener)
+        }
+    }
+
+    private val listeners = ContainerUtil.createLockFreeCopyOnWriteList<StackInfoUpdateListener>()
+    private val alarm = Alarm(Alarm.ThreadToUse.POOLED_THREAD, this)
+    private val stacks: MutableMap<Path, StackInfo> = Maps.newConcurrentMap()
     @Volatile
     private var client: TezosClient? = null
-    private val stacks: MutableMap<Path, StackInfo> = Maps.newConcurrentMap()
 
     override fun getComponentName(): String = "michelson.stackInfoManager"
 
@@ -43,7 +59,6 @@ class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonSta
     }
 
     override fun projectClosed() {
-
     }
 
     override fun disposeComponent() {
@@ -54,24 +69,25 @@ class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonSta
         this.stacks.clear()
     }
 
-    override fun registerFile(document: Document) {
-        //fixme drop listener when file is deleted?
-        document.addDocumentListener(this, this)
-
-        updateStackInfo(document)
+    override fun addListener(listener: StackInfoUpdateListener, parentDisposable: Disposable) {
+        this.listeners.add(listener)
+        Disposer.register(parentDisposable, StackUpdateListenerDisposable(listeners, listener))
     }
 
-    override fun unregisterFile(document: Document) {
-        document.removeDocumentListener(this)
+    override fun registerDocument(document: Document, parentDisposable: Disposable) {
+        document.addDocumentListener(this)
+        Disposer.register(parentDisposable, DocumentListenerDisposable(document, this))
+
+        triggerStackUpdate(document)
     }
 
-    override fun stackInfo(document: Document, timeout: Long, timeoutUnit: TimeUnit): StackInfo? {
+    override fun stackInfo(document: Document): StackInfo? {
         client ?: throw DefaultClientUnavailableException()
 
         val file = FileDocumentManager.getInstance().getFile(document) ?: return null
         val path = file.toJavaPath()
 
-        return stacks.get(path)
+        return stacks[path]
     }
 
     override fun defaultTezosClientChanged() {
@@ -81,26 +97,61 @@ class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonSta
     override fun beforeDocumentChange(event: DocumentEvent) {}
 
     override fun documentChanged(e: DocumentEvent) {
-        updateStackInfo(e.document)
+        triggerStackUpdate(e.document)
+    }
+
+    /**
+     * Debounce calls to the tezos client.
+     */
+    private fun triggerStackUpdate(document: Document) {
+        this.client ?: return
+
+        alarm.cancelAllRequests()
+        alarm.addRequest({
+            updateStackInfo(document)
+        }, 150)
     }
 
     private fun updateStackInfo(document: Document) {
         val client = this.client ?: return
         val file = FileDocumentManager.getInstance().getFile(document) ?: return
-
         val path = file.toJavaPath()
-        val doc = document
 
-        ApplicationManager.getApplication().executeOnPooledThread {
-            try {
-                val stack = client.typecheck(doc.text)
-                when (stack) {
-                    null -> stacks.remove(path)
-                    else -> stacks.put(path, StackInfo.createFromContent(doc.text, stack))
+        try {
+            val stack = client.typecheck(document.text)
+            when (stack) {
+                null -> stacks.remove(path)
+                else -> {
+                    stacks[path] = StackInfo(stack)
+
+                    callListenersInEdt(document)
                 }
-            } catch (e: TezosClientError) {
-                LOG.debug("Error while executing tezos client. File: ${file.path}", e)
-                stacks.remove(path)
+            }
+        } catch (e: TezosClientError) {
+            LOG.debug("Error while executing tezos client. File: ${file.path}", e)
+            stacks[path] = StackInfo(e)
+        }
+    }
+
+    private fun callListenersInEdt(document: Document) {
+        if (listeners.isEmpty()) {
+            return
+        }
+
+        if (ShutDownTracker.isShutdownHookRunning()) {
+            return
+        }
+
+        val listenersCopy = listeners.toTypedArray()
+        ApplicationManager.getApplication().invokeLater {
+            if (!ShutDownTracker.isShutdownHookRunning()) {
+                for (l in listenersCopy) {
+                    try {
+                        l.stackInfoUpdated(document)
+                    } catch (e: ProcessCanceledException) {
+                        LOG.debug("process cancelled in listener", e)
+                    }
+                }
             }
         }
     }

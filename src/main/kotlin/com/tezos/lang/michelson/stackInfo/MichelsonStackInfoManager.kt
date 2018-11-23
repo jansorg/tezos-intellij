@@ -1,10 +1,12 @@
 package com.tezos.lang.michelson.stackInfo
 
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.ComponentManager
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
-import java.util.concurrent.TimeUnit
+
+interface StackInfoUpdateListener {
+    fun stackInfoUpdated(doc: Document)
+}
 
 /**
  * Keeps track of stack info data for a set of registered files.
@@ -24,12 +26,14 @@ interface MichelsonStackInfoManager {
     /**
      * Registers a file. Stack info will be requested from the default tezos client when the file changes.
      */
-    fun registerFile(document: Document)
+    fun registerDocument(document: Document, parentDisposable: Disposable)
 
     /**
-     * Deregisters a previously registered file from this manager.
+     * Adds a listener to be notified when new stack info data is available.
+     * The listener will be automatically removed when the parent disposable is disposed.
+     * The listener will be called on the Swing UI dispatcher thread.
      */
-    fun unregisterFile(document: Document)
+    fun addListener(listener: StackInfoUpdateListener, parentDisposable: Disposable)
 
     /**
      * Returns the currently cached stack information for a given file.
@@ -39,5 +43,5 @@ interface MichelsonStackInfoManager {
      * @throws DefaultClientUnavailableException
      * @return The stack info, if available.
      */
-    fun stackInfo(document: Document, timeout: Long, timeoutUnit: TimeUnit): StackInfo?
+    fun stackInfo(document: Document): StackInfo?
 }

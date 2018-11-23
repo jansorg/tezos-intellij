@@ -1,24 +1,31 @@
 package com.tezos.lang.michelson.stackInfo
 
 import com.tezos.client.stack.MichelsonStackTransformations
-import org.apache.commons.codec.digest.DigestUtils
 
 /**
  * Cache entry for a given file content.
  * @author jansorg
  */
-data class StackInfo(private val contentMD5: String, val stack: MichelsonStackTransformations) {
-    fun matches(content: String): Boolean {
-        return contentMD5.equals(md5(content))
-    }
+data class StackInfo(val stack: MichelsonStackTransformations?, val error: Exception?) {
+    constructor(stack: MichelsonStackTransformations) : this(stack, null)
+    constructor(error: Exception) : this(null, error)
 
-    internal companion object {
-        fun md5(content: String): String {
-            return DigestUtils.md5Hex(content)
-        }
-
-        fun createFromContent(content: String, stack: MichelsonStackTransformations): StackInfo {
-            return StackInfo(md5(content), stack)
+    init {
+        if (stack == null && this.error == null) {
+            throw IllegalArgumentException("both argument can't be null")
         }
     }
+
+    val isStack: Boolean
+        get() = this.stack != null
+
+    fun getStackOrThrow(): MichelsonStackTransformations {
+        if (error != null) {
+            throw error
+        }
+        return stack!!
+    }
+
+    val isError: Boolean
+        get() = this.error != null
 }

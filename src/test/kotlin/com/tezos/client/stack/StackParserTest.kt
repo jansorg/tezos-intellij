@@ -31,7 +31,6 @@ class StackParserTest(val file: String) {
 
             return files.map { dataRootPath.relativize(it).toString() }.toList()
         }
-
     }
 
     @Test

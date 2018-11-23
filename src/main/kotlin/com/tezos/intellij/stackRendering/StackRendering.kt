@@ -65,8 +65,8 @@ class StackRendering {
 
     fun render(stack: MichelsonStackTransformation, opts: RenderOptions): String {
         val maxSize = Math.max(stack.before.size, stack.after.size)
-        val rowOffsetLeft = if (opts.alignStacks) maxSize - stack.before.size else 0
-        val rowOffsetRight = if (opts.alignStacks) maxSize - stack.after.size else 0
+        val rowOffsetLeft = maxSize - stack.before.size
+        val rowOffsetRight = maxSize - stack.after.size
 
         return StringBuilder().appendHTML().html {
             head { style(type = "text/css") { unsafe { +styles(opts) } } }

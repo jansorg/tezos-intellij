@@ -10,7 +10,6 @@ package com.tezos.intellij.stackRendering
  */
 data class RenderOptions(
         val markUnchanged: Boolean = false,
-        val alignStacks: Boolean = false,
         val showAnnotations: Boolean = false,
         val codeFont: String = "monospace",
         val codeFontSizePt: Double = 11.0,

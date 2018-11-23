@@ -26,7 +26,6 @@ import javax.swing.JComponent
  */
 class MichelsonStackVisualizationEditor(project: Project, private val _file: VirtualFile) : UserDataHolderBase(), FileEditor {
     private companion object {
-        private val LOG = Logger.getInstance("#tezos.stack")
         private val stackRenderer = StackRendering()
     }
 
@@ -58,28 +57,40 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
     }
 
     fun updateStackInfo(stack: StackInfo, offset: Int, renderOpts: RenderOptions) {
-        ApplicationManager.getApplication().assertIsDispatchThread()
+        val app = ApplicationManager.getApplication()
+        app.assertIsDispatchThread()
 
-        if (stack.stack.hasErrors) {
+        val (data, error) = stack
+        if (error != null) {
+            showError(error)
+            return
+        }
+
+        if (data!!.hasErrors) {
             contentPane.renderError("Errors detected.", "The Tezos client returned errors for the file.")
             return
         }
 
-        val matching = stack.stack.elementAt(offset)
+        val matching = data.elementAt(offset)
         if (matching == null) {
-            contentPane.renderInfo("No matching stack information found.")
+            contentPane.renderInfo("No stack found.", "No matching stack information was found.")
             return
         }
 
-        val html = stackRenderer.render(matching, renderOpts)
-        contentPane.renderHTML(html)
+        // create the HTML in a background thread, render in the EDT
+        app.executeOnPooledThread {
+            val html = stackRenderer.render(matching, renderOpts)
+            app.invokeLater {
+                contentPane.renderHTML(html)
+            }
+        }
     }
 
     fun showError(error: String) {
         contentPane.renderError(error)
     }
 
-    fun showError(e: Exception) {
+    private fun showError(e: Exception) {
         ApplicationManager.getApplication().assertIsDispatchThread()
 
         when (e) {
