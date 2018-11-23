@@ -1,5 +1,7 @@
 package com.tezos.client.stack
 
+import com.tezos.lang.michelson.lang.MichelsonLanguage
+
 /**
  * Represents all stack transformations and errors for a single file.
  */
@@ -49,6 +51,9 @@ data class MichelsonStackFrame(val type: MichelsonStackType) {
  * @param annotations Optional list of annotations which contains the annotations attached to this type.
  */
 data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType> = emptyList(), val annotations: List<MichelsonStackAnnotation> = emptyList()) {
+    val isComparable: Boolean
+        get() = MichelsonLanguage.TYPES_COMPARABLE.contains(name)
+
     fun asString(showNested: Boolean): String {
         if (arguments.isEmpty() || !showNested) {
             return name

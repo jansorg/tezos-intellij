@@ -17,10 +17,7 @@ class CadrMacroMetadata : MacroMetadata {
     override fun staticNames(): Collection<String> = listOf("CAR", "CDR")
 
     override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
-        if (stack.isEmpty) {
-            return emptyList()
-        }
-        if (stack.top!!.type.name != "pair") {
+        if (stack.isEmpty || stack.top!!.type.name != "pair") {
             return emptyList()
         }
 
