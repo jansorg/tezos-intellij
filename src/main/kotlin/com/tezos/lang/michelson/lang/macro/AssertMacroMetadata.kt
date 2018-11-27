@@ -34,7 +34,7 @@ class AssertMacroMetadata : MacroMetadata {
         }
 
         // ASSERT_CMP{EQ|NEQ|LT|LE|GT|GE} are available for two comparable types of the same name
-        if (stack.size >= 2 && Comparables.isSame(top, second)) {
+        if (stack.size >= 2 && top.type.isComparable && Comparables.isSame(top, second)) {
             for (n in CMPEQ_NAMES) {
                 result += DynamicMacroName(n, top.type)
             }

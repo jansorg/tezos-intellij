@@ -1,15 +1,40 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 class ConditionalMacroMetadata : MacroMetadata {
     companion object {
-        val NAMES = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE",
-                "IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE",
-                "IF_SOME")
+        val NAMES_INT = setOf("IFEQ", "IFNEQ", "IFLT", "IFGT", "IFLE", "IFGE")
+        val NAMES_CMP = setOf("IFCMPEQ", "IFCMPNEQ", "IFCMPLT", "IFCMPGT", "IFCMPLE", "IFCMPGE")
+        val NAMES = setOf("IF_SOME") + NAMES_INT + NAMES_CMP
     }
 
     override fun staticNames(): Collection<String> = NAMES
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        val top = stack.top
+        val second = stack.frames.getOrNull(1)
+
+        val result = mutableListOf<DynamicMacroName>()
+        if (Comparables.isSame(Comparables.INT, top)) {
+            for (n in NAMES_INT) {
+                result += DynamicMacroName(n)
+            }
+        }
+
+        if (top != null && top.type.isComparable && Comparables.isSame(top, second)) {
+            for (n in NAMES_CMP) {
+                result += DynamicMacroName(n)
+            }
+        }
+
+        if (Comparables.isSame(top, Comparables.OPTION)) {
+            result += DynamicMacroName("IF_SOME")
+        }
+
+        return result
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (macro in NAMES) {
@@ -26,7 +51,7 @@ class ConditionalMacroMetadata : MacroMetadata {
     override fun helpContentFile(name: String): String? {
         return when {
             name == "IF_SOME" -> "if_some.txt"
-            name.startsWith("IFCMP")->"if_cmp.txt"
+            name.startsWith("IFCMP") -> "if_cmp.txt"
             else -> "if_cond.txt"
         }
     }

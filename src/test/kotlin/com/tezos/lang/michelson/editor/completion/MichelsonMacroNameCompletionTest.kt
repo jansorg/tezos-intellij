@@ -7,6 +7,7 @@ import com.tezos.client.stack.*
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.macro.AssertMacroMetadata
 import com.tezos.lang.michelson.lang.macro.CompareMacroMetadata
+import com.tezos.lang.michelson.lang.macro.ConditionalMacroMetadata
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
@@ -91,6 +92,29 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
         // (option int int)
         prepareFile("<caret>", option("int".type(), "int".type()))
         assertCompletionsAtLeast("ASSERT_SOME", "ASSERT_NONE", type = CompletionType.SMART)
+    }
+
+
+    fun testDepth1Conditional1() {
+        prepareFile("<caret>", option("int", "int"))
+        assertCompletionsAtLeast("IF_SOME", type = CompletionType.SMART)
+    }
+
+    fun testDepth1Conditional2() {
+        prepareFile("<caret>", "int".type())
+        assertCompletionsAtLeast(*ConditionalMacroMetadata.NAMES_INT.toTypedArray(), type = CompletionType.SMART)
+    }
+
+    fun testDepth1Conditional3() {
+        prepareFile("<caret>", "bool".type())
+        assertCompletionsNoneOf(*ConditionalMacroMetadata.NAMES_INT.toTypedArray(), type = CompletionType.SMART)
+    }
+
+    fun testDepth1Conditional4() {
+        prepareFile("<caret>", "int".type(), "int".type())
+        assertCompletionsAtLeast(*ConditionalMacroMetadata.NAMES_CMP.toTypedArray(), type = CompletionType.SMART)
+        assertCompletionsAtLeast(*ConditionalMacroMetadata.NAMES_INT.toTypedArray(), type = CompletionType.SMART)
+        assertCompletionsNoneOf("IF_SOME", type = CompletionType.SMART)
     }
 
     private fun prepareFile(content: String, vararg stackTypes: MichelsonStackType) {
