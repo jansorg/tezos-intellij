@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.client.stack.MichelsonStackFrame
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.macro.DynamicMacroName
@@ -38,6 +39,9 @@ internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() 
         val doc = parameters.editor.document
         val stackInfo = MichelsonStackInfoManager.getInstance(parameters.editor.project).stackInfo(doc)
         if (stackInfo == null || !stackInfo.isStack) {
+            for (macro in MichelsonLanguage.MACROS) {
+                addTypedNames(result, macro.dynamicNames(MichelsonStack.EMPTY), null)
+            }
             return
         }
 

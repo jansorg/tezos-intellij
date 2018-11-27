@@ -1,13 +1,20 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 class FailMacroMetadata : MacroMetadata {
     private companion object {
+        // FAIL is always available
         val NAMES = listOf("FAIL")
+        val DYNAMIC_NAMES = listOf(DynamicMacroName("FAIL"))
     }
 
     override fun staticNames() = NAMES
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        return DYNAMIC_NAMES
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         return when (macro == "FAIL") {

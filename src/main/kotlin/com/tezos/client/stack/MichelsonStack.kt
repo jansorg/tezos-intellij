@@ -25,6 +25,10 @@ data class MichelsonStackTransformation(val tokenStartOffset: Int, val tokenEndO
  * Represents a state of the stack. Each frame represents one item on the stack. The first item is the top of the stack.
  */
 data class MichelsonStack(val frames: List<MichelsonStackFrame>) {
+    companion object {
+        val EMPTY = MichelsonStack(emptyList())
+    }
+
     val isEmpty: Boolean
         get() = frames.isEmpty()
 

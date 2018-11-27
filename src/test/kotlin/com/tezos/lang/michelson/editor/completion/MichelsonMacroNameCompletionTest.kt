@@ -25,36 +25,36 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
     fun testEmptySmart() {
         // no dynamic macro names when missing stack info
         configureByCode("<caret>")
-        assertCompletions(type = CompletionType.SMART)
+        assertCompletions("FAIL", type = CompletionType.SMART)
     }
 
     fun testDepth1() {
         prepareFile("<caret>", "nat".type())
-        assertCompletions("DUP", type = CompletionType.SMART)
+        assertCompletionsAtLeast("DUP", type = CompletionType.SMART)
     }
 
     fun testDepth2() {
         prepareFile("<caret>", "nat".type(), pair("nat", "nat"))
-        assertCompletions("DUP", "DUUP", "DIP", type = CompletionType.SMART)
+        assertCompletionsAtLeast("DUP", "DUUP", "DIP", type = CompletionType.SMART)
     }
 
     fun testDepth1Pair1() {
         // pair(nat (pair nat nat))
         prepareFile("<caret>", pair("nat".type(), pair("nat", "nat")))
-        assertCompletions("DUP", "CAR", "CDR", "CDAR", "CDDR", type = CompletionType.SMART)
+        assertCompletionsAtLeast("DUP", "CAR", "CDR", "CDAR", "CDDR", type = CompletionType.SMART)
     }
 
     fun testDepth1Pair2() {
         // pair(nat (pair (pair nat nat) nat))
         prepareFile("<caret>", pair("nat".type(), pair(pair("nat", "nat"), "nat".type())))
-        assertCompletions("DUP", "CAR", "CDR", "CDAR", "CDDR", "CDAAR", "CDADR", type = CompletionType.SMART)
+        assertCompletionsAtLeast("DUP", "CAR", "CDR", "CDAR", "CDDR", "CDAAR", "CDADR", type = CompletionType.SMART)
     }
 
     fun testDepth2Pair1() {
         // pair(nat nat)
         // pair(nat (pair nat nat))
         prepareFile("<caret>", pair("nat", "nat"), pair("nat".type(), pair("nat", "nat")))
-        assertCompletions("CAR", "CDR", "DUP", "DUUP", "DIP", type = CompletionType.SMART)
+        assertCompletionsAtLeast("CAR", "CDR", "DUP", "DUUP", "DIP", type = CompletionType.SMART)
     }
 
     fun testDepth1CompareMacro() {
@@ -66,7 +66,7 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
     fun testDepth1CompareMacroNonComparable() {
         // int int
         prepareFile("<caret>", pair("int", "int"), pair("int", "int"))
-        assertCompletions("CAR", "CDR", "DIP", "DUP", "DUUP", type = CompletionType.SMART)
+        assertCompletionsAtLeast("CAR", "CDR", "DIP", "DUP", "DUUP", type = CompletionType.SMART)
     }
 
     fun testDepth1AssertBool() {
@@ -149,11 +149,11 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
     fun nested(name: String, a: MichelsonStackType, b: MichelsonStackType): MichelsonStackType = MichelsonStackType(name, listOf(a, b))
 
     fun pair(a: String, b: String) = nested("pair", a, b)
-    fun pair(a: MichelsonStackType, b: MichelsonStackType) = nested("pair", a,b)
+    fun pair(a: MichelsonStackType, b: MichelsonStackType) = nested("pair", a, b)
 
     fun option(a: String, b: String) = nested("option", a, b)
-    fun option(a: MichelsonStackType, b: MichelsonStackType) = nested("option", a,b)
+    fun option(a: MichelsonStackType, b: MichelsonStackType) = nested("option", a, b)
 
     fun or(a: String, b: String) = nested("or", a, b)
-    fun or(a: MichelsonStackType, b: MichelsonStackType) = nested("or", a,b)
+    fun or(a: MichelsonStackType, b: MichelsonStackType) = nested("or", a, b)
 }
