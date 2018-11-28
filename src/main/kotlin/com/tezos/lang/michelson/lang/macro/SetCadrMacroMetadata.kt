@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -16,6 +17,32 @@ class SetCadrMacroMetadata : MacroMetadata {
     }
 
     override fun staticNames(): Collection<String> = listOf("SET_CDR", "SET_CAR")
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.size < 2 || !stack.top!!.isType(Comparables.PAIR)) {
+            return emptyList()
+        }
+
+        val top = stack.top!!
+        val second = stack.frames[1]
+
+        val result = mutableListOf<DynamicMacroName>()
+        Pairs.addNestedPairAccessors(top.type, "", result) {
+            Pairs.transform(it, top.type) { selector, parents, pair ->
+                val (left, right) = when (selector) {
+                    'A' -> listOf(second.type, pair.arguments[1])
+                    else -> listOf(pair.arguments[0], second.type)
+                }
+
+                var n = pair.copy(arguments = listOf(left, right))
+                for (p in parents.reversed()) {
+                    n = p.wrapChild(n)
+                }
+                n
+            }
+        }
+        return result.map { it.copy(name = "SET_C${it.name}R") }
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
@@ -53,8 +80,7 @@ class SetCadrMacroMetadata : MacroMetadata {
             macro == "SET_CAR" -> "CDR; SWAP; PAIR"
             macro == "SET_CDR" -> "CAR; PAIR"
             macro.startsWith("SET_C") -> {
-                val name = macro.substring(6, macro.length - 1)
-                val inner = doExpand("SET_C${name}R")
+                val inner = doExpand("SET_C${macro.substring(6, macro.length - 1)}R")
 
                 if (macro.startsWith("SET_CA")) {
                     "{ DUP; DIP{ CAR; $inner }; CDR; SWAP; PAIR }"

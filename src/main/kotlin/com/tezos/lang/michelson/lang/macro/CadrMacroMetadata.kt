@@ -1,7 +1,6 @@
 package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
-import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -21,25 +20,15 @@ class CadrMacroMetadata : MacroMetadata {
             return emptyList()
         }
 
+        val topType = stack.top!!.type
+
         val result = mutableListOf<DynamicMacroName>()
-        addPairs(stack.top!!.type, "", result)
+        Pairs.addNestedPairAccessors(topType, "", result) {
+            Pairs.transform(it, topType) { selector, parents, pair ->
+                pair
+            }
+        }
         return result.map { it.copy(name = "C${it.name}R") }
-    }
-
-    private fun addPairs(element: MichelsonStackType, prefix: String, result: MutableList<DynamicMacroName>) {
-        assert(element.name == "pair")
-        assert(element.arguments.size == 2)
-        val (left, right) = element.arguments
-
-        result += DynamicMacroName(prefix + "A", left)
-        if (left.name == "pair") {
-            addPairs(left, prefix + "A", result)
-        }
-
-        result += DynamicMacroName(prefix + "D", right)
-        if (right.name == "pair") {
-            addPairs(right, prefix + "D", result)
-        }
     }
 
     override fun validate(macro: String): Pair<String, Int>? {
@@ -78,8 +67,7 @@ class CadrMacroMetadata : MacroMetadata {
 
     private fun doExpand(macro: String): String {
         return when {
-            macro == "CAR" -> "CAR"
-            macro == "CDR" -> "CDR"
+            macro == "CAR" || macro == "CDR" -> macro
             macro.startsWith("CA") -> "CAR; ${doExpand("C${macro.substring(2)}")}"
             macro.startsWith("CD") -> "CDR; ${doExpand("C${macro.substring(2)}")}"
             else -> throw IllegalStateException("unsupported macro $macro")

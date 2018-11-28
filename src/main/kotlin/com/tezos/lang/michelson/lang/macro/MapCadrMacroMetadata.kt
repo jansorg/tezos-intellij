@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -20,6 +21,16 @@ class MapCadrMacroMetadata : MacroMetadata {
     }
 
     override fun staticNames(): Collection<String> = listOf("MAP_CAR", "MAP_CDR")
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.isEmpty || !stack.top!!.isType(Comparables.PAIR)) {
+            return emptyList()
+        }
+
+        val result = mutableListOf<DynamicMacroName>()
+        Pairs.addNestedPairAccessors(stack.top!!.type, "", result) { null }
+        return result.map { it.copy(name = "MAP_C${it.name}R") }
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
