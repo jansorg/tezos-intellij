@@ -1,5 +1,8 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackFrame
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -56,7 +59,7 @@ class PairMacroMetadata : MacroMetadata {
                         reqRight--
                     }
                     'R' -> {
-                        index++;
+                        index++
                         break@LOOP
                     }
                 }
@@ -80,6 +83,63 @@ class PairMacroMetadata : MacroMetadata {
 
     override fun staticNames(): Collection<String> = listOf("PAIR")
 
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.size < 2) {
+            return emptyList()
+        }
+
+        val result = mutableSetOf<String>()
+        addNames("", "R", stack.frames, result)
+        return result.map {
+            DynamicMacroName(it, stackType(it.toMutableList(), stack.frames.toMutableList()))
+        }
+    }
+
+    /**
+     * Adds possible macro names to result which are compatible with the given stack.
+     * @return The remaining stack depth
+     */
+    private fun addNames(prefix: String, suffix: String, stack: List<MichelsonStackFrame>, result: MutableSet<String>) {
+        if (stack.size < 2) {
+            return
+        }
+
+        result += prefix + "PAI" + suffix
+        addNames(prefix + "PA", suffix, stack.subList(1, stack.size), result)
+        addNames(prefix + "P", "I$suffix", stack.subList(0, stack.size - 1), result)
+    }
+
+    /**
+     * @return The result type of the given pair macro. macro and stack are mutable and are modified by this call
+     * to simplify the recursive implementation.
+     */
+    private fun stackType(macro: MutableList<Char>, stack: MutableList<MichelsonStackFrame>): MichelsonStackType {
+        assert(macro[0] == 'P')
+        macro.removeAt(0)
+
+        val left: MichelsonStackType = when {
+            macro[0] == 'A' -> {
+                macro.removeAt(0)
+                stack.removeAt(0).type
+            }
+            else -> {
+                stackType(macro, stack)
+            }
+        }
+
+        val right = when {
+            macro[0] == 'I' -> {
+                macro.removeAt(0)
+                stack.removeAt(0).type
+            }
+            else -> {
+                stackType(macro, stack)
+            }
+        }
+
+        return MichelsonStackType("pair", listOf(left, right))
+    }
+
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
             return "Invalid PAIR macro. It must match 'P[AIP]+R'. " to 0
@@ -91,12 +151,11 @@ class PairMacroMetadata : MacroMetadata {
     override fun requiredBlocks(): Int = 0
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
-        val chars = macro.toCharArray()
         return when (type) {
             // one variable annotation allowed for the top-level pair put on the stack
             PsiAnnotationType.VARIABLE -> 1
             // Field annotations for PAIR give names to leaves of the constructed nested pair
-            PsiAnnotationType.FIELD -> chars.count { it == 'A' || it == 'I' }
+            PsiAnnotationType.FIELD -> macro.count { it == 'A' || it == 'I' }
             // one type annotations (unclear in the spec), probably for the top-most value on the stack
             PsiAnnotationType.TYPE -> 1 //fixme not clearly defined in the spec
         }

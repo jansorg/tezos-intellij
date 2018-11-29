@@ -117,6 +117,21 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
         assertCompletionsNoneOf("IF_SOME", type = CompletionType.SMART)
     }
 
+    fun testDepth2Pair() {
+        prepareFile("<caret>", "int".type(), "int".type())
+        assertCompletionsAtLeast("PAIR", type = CompletionType.SMART)
+    }
+
+    fun testDepth3Pair() {
+        prepareFile("<caret>", "int".type(), "int".type(), "int".type())
+        assertCompletionsAtLeast("PAIR", "PAPAIR", "PPAIIR", type = CompletionType.SMART)
+    }
+
+    fun testDepth4Pair() {
+        prepareFile("<caret>", "int".type(), "int".type(), "int".type(), "int".type())
+        assertCompletionsAtLeast("PAIR", "PAPAIR", "PPAIIR", "PAPAPAIR", "PAPPAIIR", "PPAPAIIR", "PPPAIIIR", type = CompletionType.SMART)
+    }
+
     private fun prepareFile(content: String, vararg stackTypes: MichelsonStackType) {
         val file = configureByCode(content).first
         MockTezosClient.addTypes(myFixture.file, stackOf(file, *stackTypes))
