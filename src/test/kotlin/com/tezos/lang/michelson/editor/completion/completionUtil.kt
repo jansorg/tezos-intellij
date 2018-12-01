@@ -2,18 +2,24 @@ package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.completion.CompletionType
+import com.tezos.client.MockTezosClient
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import org.junit.Assert
 
 /**
  * @author jansorg
  */
-abstract class MichelsonCompletionTest() : MichelsonFixtureTest() {
+abstract class MichelsonCompletionTest : MichelsonFixtureTest() {
+    override fun setUp() {
+        super.setUp()
+
+        MockTezosClient.reset()
+    }
+
     fun assertCompletions(vararg items: String, type: CompletionType = CompletionType.BASIC) {
-        val sortedItems = items.sorted()
         val completions = completionStrings(type)?.sorted()
 
-        Assert.assertEquals(sortedItems, completions)
+        Assert.assertEquals(items.sorted(), completions)
     }
 
     fun assertCompletionsAtLeast(items: List<String>, type: CompletionType = CompletionType.BASIC) = assertCompletionsAtLeast(*items.toTypedArray(), type = type)

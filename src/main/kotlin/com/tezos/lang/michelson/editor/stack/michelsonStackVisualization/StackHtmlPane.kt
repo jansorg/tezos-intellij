@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.editor.stack.michelson
+package com.tezos.lang.michelson.editor.stack.michelsonStackVisualization
 
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
@@ -61,9 +61,12 @@ internal class StackHtmlPane(private val project: Project) : JBPanel<StackHtmlPa
         }
     }
 
-    fun renderInfo(msg: String) {
+    fun renderInfo(msg: String, secondaryText:String? = null) {
         showChildren(false)
         emptyText.setText(msg, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        if (secondaryText != null) {
+            emptyText.appendSecondaryText(secondaryText, SimpleTextAttributes.REGULAR_ATTRIBUTES, null)
+        }
     }
 
     fun renderClientUnavailable() {

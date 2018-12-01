@@ -7,6 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiBlockInstruction extends PsiInstruction {
 
-  boolean isWhitespceOnly();
+  boolean isWhitespaceOnly();
 
 }

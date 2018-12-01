@@ -32,4 +32,8 @@ public class PsiContractImpl extends MichelsonCompositeImpl implements PsiContra
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiSection.class);
   }
 
+  public boolean isMainContract() {
+    return MichelsonPsiUtil.isMainContract(this);
+  }
+
 }

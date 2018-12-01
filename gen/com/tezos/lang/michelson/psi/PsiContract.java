@@ -10,4 +10,6 @@ public interface PsiContract extends MichelsonComposite {
   @NotNull
   List<PsiSection> getSections();
 
+  boolean isMainContract();
+
 }

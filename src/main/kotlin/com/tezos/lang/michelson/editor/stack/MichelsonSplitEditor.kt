@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
@@ -18,13 +18,15 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
-import com.tezos.client.stack.RenderOptions
-import com.tezos.client.stack.RenderStyle
 import com.tezos.intellij.editor.split.SplitFileEditor
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.intellij.settings.TezosSettingsListener
+import com.tezos.intellij.stackRendering.RenderOptions
+import com.tezos.intellij.stackRendering.RenderStyle
 import com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighter
-import com.tezos.lang.michelson.editor.stack.michelson.MichelsonStackVisualizationEditor
+import com.tezos.lang.michelson.editor.stack.michelsonStackVisualization.MichelsonStackVisualizationEditor
+import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
+import com.tezos.lang.michelson.stackInfo.StackInfoUpdateListener
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
@@ -34,37 +36,39 @@ import javax.swing.JPanel
  * @author jansorg
  */
 class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stackEditor: MichelsonStackVisualizationEditor)
-    : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, CaretListener, TezosSettingsListener {
+    : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, TezosSettingsListener, StackInfoUpdateListener, CaretListener {
 
     private companion object {
         const val ACTION_GROUP_ID = "tezos.editorToolbar"
-        const val UPDATE_DELAY = 200
-        val LOG = Logger.getInstance("#tezos.client")
+        const val CARET_DEBOUNCE_DELAY = 175
+        val LOG = Logger.getInstance("#tezos.client")!!
     }
 
     private val alarm = Alarm(Alarm.ThreadToUse.SWING_THREAD, this)
 
-    var stackAlignStacks = true
     var stackHighlightUnchanged = true
     var stackShowAnnotations = false
     var stackColored = true
     var nestedBlocks = true
 
     init {
-        mainEditor.editor.caretModel.addCaretListener(this)
-
         // we can't use UISettings.getInstance() because it switched from Java to Kotlin (in 182.x at the latest)
         // we're using what 182.x is doing in its implementation
         // 182.x also deprecated addUISettingsListener()
         val bus = ApplicationManager.getApplication().messageBus
         bus.connect(this).subscribe(UISettingsListener.TOPIC, this)
         bus.connect(this).subscribe(TezosSettingService.TOPIC, this)
+
+        val stackInfoManager = MichelsonStackInfoManager.getInstance(mainEditor.editor.project)
+        stackInfoManager.registerDocument(mainEditor.editor.document, this)
+        stackInfoManager.addListener(this, this)
+
+        mainEditor.editor.caretModel.addCaretListener(this)
     }
 
     override fun dispose() {
         alarm.cancelAllRequests()
         mainEditor.editor.caretModel.removeCaretListener(this)
-
         super.dispose()
     }
 
@@ -79,18 +83,32 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     }
 
     override fun uiSettingsChanged(source: UISettings) {
-        triggerStackUpdate(mainEditor.editor, 0)
+        triggerStackUpdate()
+    }
+
+    /**
+     * Debounce updates after caret changes.
+     */
+    override fun caretPositionChanged(e: CaretEvent) {
+        alarm.cancelAllRequests()
+        alarm.addRequest(this::triggerStackUpdate, CARET_DEBOUNCE_DELAY)
     }
 
     override fun defaultTezosClientChanged() {
         LOG.info("defaultTezosClientChanged()")
         stackEditor.reset()
-        triggerStackUpdate(mainEditor.editor, 0)
+        triggerStackUpdate()
     }
 
     override fun tezosStackPositionChanged() {
         LOG.debug("tezosStackPositionChanged()")
         triggerSplitOrientationChange(TezosSettingService.getSettings().stackPanelPosition.isVerticalSplit())
+    }
+
+    override fun stackInfoUpdated(doc: Document) {
+        if (doc == mainEditor.editor.document) {
+            triggerStackUpdate()
+        }
     }
 
     override fun createToolbar(): JPanel {
@@ -120,30 +138,16 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         return bar
     }
 
-    override fun caretPositionChanged(e: CaretEvent) {
-        triggerStackUpdate(e.editor, UPDATE_DELAY)
-    }
-
     fun triggerStackUpdate() {
-        triggerStackUpdate(mainEditor.editor, UPDATE_DELAY)
-    }
+        val editor = mainEditor.editor
+        val offset = editor.caretModel.offset
+        LOG.warn("Updating stack info for offset $offset")
 
-    private fun triggerStackUpdate(editor: Editor, delay: Int) {
-        alarm.cancelAllRequests()
-        alarm.addRequest({
-            val offset = editor.caretModel.offset
-            LOG.warn("Updating stack info for offset $offset")
-            try {
-                val content = editor.document.text
-                val renderOptions = renderOptions(editor.colorsScheme)
-
-                ApplicationManager.getApplication().executeOnPooledThread {
-                    stackEditor.updateStackInPooledThread(content, offset, renderOptions)
-                }
-            } catch (e: Throwable) {
-                LOG.warn("error updating the stack visualization", e)
-            }
-        }, delay)
+        val stack = MichelsonStackInfoManager.getInstance(editor.project).stackInfo(editor.document)
+        when (stack) {
+            null -> stackEditor.showError("error while retrieving stack info") //fixme
+            else -> stackEditor.updateStackInfo(stack, offset, renderOptions(editor.colorsScheme))
+        }
     }
 
     private fun renderOptions(settings: EditorColorsScheme): RenderOptions {
@@ -153,7 +157,7 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
         var varAnnotationStyle: RenderStyle? = null
         var parenStyle: RenderStyle? = null
 
-        if (this.stackColored) {
+        if (stackColored) {
             typeNameStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_NAME))
             fieldAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.FIELD_ANNOTATION))
             typeAnnotationStyle = RenderStyle(settings.getAttributes(MichelsonSyntaxHighlighter.TYPE_ANNOTATION))
@@ -163,7 +167,6 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
 
         return RenderOptions(
                 markUnchanged = stackHighlightUnchanged,
-                alignStacks = stackAlignStacks,
                 showAnnotations = stackShowAnnotations,
                 codeFont = settings.editorFontName,
                 codeFontSizePt = settings.editorFontSize * 1.1,
@@ -173,11 +176,10 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
                 fieldAnnotationStyle = fieldAnnotationStyle,
                 typeAnnotationStyle = typeAnnotationStyle,
                 varAnnotationStyle = varAnnotationStyle,
-                parenStyle = parenStyle
-        )
+                parenStyle = parenStyle)
     }
 
     override fun caretAdded(e: CaretEvent?) {}
 
-    override fun caretRemoved(e: CaretEvent?) {}
+    override fun caretRemoved(e: CaretEvent) {}
 }

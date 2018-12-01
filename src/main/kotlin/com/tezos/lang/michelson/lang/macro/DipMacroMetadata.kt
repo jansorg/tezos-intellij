@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -12,7 +13,24 @@ class DipMacroMetadata : MacroMetadata {
         val regexp: Pattern = Pattern.compile("DII+P")
     }
 
-    override fun staticMacroName(): Collection<String> = emptyList()
+    override fun staticNames(): Collection<String> = emptyList()
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.size <= 1) {
+            return emptyList()
+        }
+
+        val top = stack.top!!.type
+
+        val result = mutableListOf<DynamicMacroName>()
+        // stack depth 2 results in DIP
+        // stack depth n results in D I{n-1} P
+        // we skip the top frame because DIP needs depth 2, i.e. DI{n}P needs stack.size == n+1
+        for ((index, frame) in stack.frames.subList(1, stack.frames.size).withIndex()) {
+            result += DynamicMacroName("D" + "I".repeat(index + 1) + "P", top, frame.type)
+        }
+        return result
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (regexp.matcher(macro).matches()) {

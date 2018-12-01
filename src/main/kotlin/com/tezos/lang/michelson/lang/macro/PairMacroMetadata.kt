@@ -1,5 +1,8 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackFrame
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
@@ -15,7 +18,7 @@ import java.util.regex.Pattern
  */
 class PairMacroMetadata : MacroMetadata {
     internal companion object {
-        val regexp = Pattern.compile("P[AIP]+R")
+        val regexp = Pattern.compile("P[AIP]+R")!!
 
         internal fun validateMacro(macro: String, startIndex: Int): Pair<String, Int>? {
             var reqLeft = 0
@@ -56,7 +59,7 @@ class PairMacroMetadata : MacroMetadata {
                         reqRight--
                     }
                     'R' -> {
-                        index++;
+                        index++
                         break@LOOP
                     }
                 }
@@ -78,7 +81,66 @@ class PairMacroMetadata : MacroMetadata {
         }
     }
 
-    override fun staticMacroName(): Collection<String> = listOf("PAIR")
+    override fun staticNames(): Collection<String> = listOf("PAIR")
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.size < 2) {
+            return emptyList()
+        }
+
+        val result = mutableSetOf<String>()
+        addNames("", "R", stack.frames, result)
+        return result.map {
+            DynamicMacroName(it, stackType(it.toMutableList(), stack.frames.toMutableList()))
+        }
+    }
+
+    /**
+     * Adds possible macro names to result which are compatible with the given stack.
+     * @return The remaining stack depth
+     */
+    private fun addNames(prefix: String, suffix: String, stack: List<MichelsonStackFrame>, result: MutableSet<String>) {
+        if (stack.size < 2) {
+            return
+        }
+
+        result += prefix + "PAI" + suffix
+        addNames(prefix + "PA", suffix, stack.subList(1, stack.size), result)
+        addNames(prefix + "P", "I$suffix", stack.subList(0, stack.size - 1), result)
+
+        // fixme add nested macros for the left and right sides, e.g. PPAIPAIR
+    }
+
+    /**
+     * @return The result type of the given pair macro. macro and stack are mutable and are modified by this call
+     * to simplify the recursive implementation.
+     */
+    private fun stackType(macro: MutableList<Char>, stack: MutableList<MichelsonStackFrame>): MichelsonStackType {
+        assert(macro[0] == 'P')
+        macro.removeAt(0)
+
+        val left: MichelsonStackType = when {
+            macro[0] == 'A' -> {
+                macro.removeAt(0)
+                stack.removeAt(0).type
+            }
+            else -> {
+                stackType(macro, stack)
+            }
+        }
+
+        val right = when {
+            macro[0] == 'I' -> {
+                macro.removeAt(0)
+                stack.removeAt(0).type
+            }
+            else -> {
+                stackType(macro, stack)
+            }
+        }
+
+        return MichelsonStackType("pair", listOf(left, right))
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
@@ -91,12 +153,11 @@ class PairMacroMetadata : MacroMetadata {
     override fun requiredBlocks(): Int = 0
 
     override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
-        val chars = macro.toCharArray()
         return when (type) {
             // one variable annotation allowed for the top-level pair put on the stack
             PsiAnnotationType.VARIABLE -> 1
             // Field annotations for PAIR give names to leaves of the constructed nested pair
-            PsiAnnotationType.FIELD -> chars.count { it == 'A' || it == 'I' }
+            PsiAnnotationType.FIELD -> macro.count { it == 'A' || it == 'I' }
             // one type annotations (unclear in the spec), probably for the top-most value on the stack
             PsiAnnotationType.TYPE -> 1 //fixme not clearly defined in the spec
         }
@@ -126,43 +187,77 @@ class PairMacroMetadata : MacroMetadata {
             return "PAIR"
         }
 
-        if (macro.startsWith("PA")) {
-            val inner = doExpand(macro.substring(2))
-            return "DIP{$inner}; PAIR"
-        }
+        val rest = macro.substring(0, macro.length - 1)
 
-        if (macro.endsWith("IR")) {
-            val inner = doExpand(macro.substring(1, macro.length - 2) + "R")
-            return "PAIR; $inner"
-        }
-
-        // split into left and right part and expand each part
-        val rest = macro.substring(1, macro.length - 1)
-        val chars = rest.toCharArray()
-
-        // expected numbers of i and a chars
-        var a = 1
-        var i = 1
-
-        var n = 0
-        while (i >= 1 || a >= 1) {
-            val c = chars[n]
-            if (c == 'P') {
-                i++
-                a++
-            } else if (c == 'A') {
-                a--
-            } else if (c == 'I') {
-                i--
-            } else {
-                throw IllegalStateException("unexpected character $c at index ${n + 1} in $macro")
+        // PA(\right)R / S => DIP ((\right)R) ; PAIR / S
+        if (rest.startsWith("PA")) {
+            val rightPart = rest.substring(2)
+            val right = readRight(rightPart)
+            if (right == rightPart.length) {
+                val inner = doExpand(rightPart + "R")
+                return "DIP{ $inner }; PAIR"
             }
-
-            n++
         }
 
-        val left = doExpand(rest.substring(0, n) + "R")
-        val right = doExpand(rest.substring(n) + "R")
-        return "$right; $left; PAIR"
+        // P(\left)IR / S => PAIR ; (\left)R / S
+        if (rest.endsWith("I")) {
+            val leftPart = rest.substring(1, rest.length - 1)
+            val left = readLeft(leftPart)
+            if (left == leftPart.length) {
+                return "PAIR; ${doExpand(leftPart + "R")}"
+            }
+        }
+
+        // fix rule
+        // P(\left)(\right)R => (\right)R ; (\left)R ; PAIR / S
+
+        val left = readLeft(rest.substring(1))
+        if (left == -1) {
+            return ""
+        }
+
+        val right = readRight(rest.substring(1 + left))
+        if (right == -1 || left + right + 1 != rest.length) {
+            return ""
+        }
+
+        val leftEx = doExpand(rest.substring(1, 1 + left) + "R")
+        val rightEx = doExpand(rest.substring(1 + left) + "R")
+        return "$leftEx; DIP{ $rightEx }; PAIR"
+    }
+
+    private fun readLeft(macro: String): Int {
+        val c = macro.first()
+        if (c == 'A') {
+            return 1
+        }
+        if (c == 'P') {
+            return readPair(macro)
+        }
+        return -1
+    }
+
+    private fun readRight(macro: String): Int {
+        val c = macro.first()
+        if (c == 'I') {
+            return 1
+        }
+        if (c == 'P') {
+            return readPair(macro)
+        }
+        return -1
+    }
+
+    private fun readPair(macro: String): Int {
+        val c = macro.first()
+        if (c != 'P') {
+            return -1
+        }
+
+        val left = readLeft(macro.substring(1))
+        if (left == -1) {
+            return -1
+        }
+        return 1 + left + readRight(macro.substring(1 + left))
     }
 }

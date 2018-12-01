@@ -1,5 +1,6 @@
 package com.tezos.client.stack
 
+import com.tezos.client.StandaloneTezosClient.Companion.fixTezosClientStdout
 import com.tezos.lang.michelson.MichelsonTestUtils
 import org.antlr.v4.runtime.*
 import org.junit.Assert.assertEquals
@@ -30,13 +31,12 @@ class StackParserTest(val file: String) {
 
             return files.map { dataRootPath.relativize(it).toString() }.toList()
         }
-
     }
 
     @Test
     fun testParsing() {
         val filePath = dataRootPath.resolve(file)
-        val fixedContent = TezosClientUtils.fixTezosClientStdout(Files.readAllBytes(filePath).toString(StandardCharsets.UTF_8))
+        val fixedContent = fixTezosClientStdout(Files.readAllBytes(filePath).toString(StandardCharsets.UTF_8))
         val input = CharStreams.fromString(fixedContent)
 
         val lexer = MichelsonStackLexer(input)

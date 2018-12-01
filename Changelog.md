@@ -1,7 +1,9 @@
 # Version 0.8.0
-- Support `View > Quick documentation` for instructions, types and tags.
+- Feature: Support `View > Quick documentation` for instructions, types and tags.
+- Feature: Improvements to stack visualization: colored output, rendering nested types on multiple lines with indentation
+- Feature: Suggest dynamic macro names which are available for the current stack, needs a running tezos-client
+- Feature: Show the type of the new top of the stack next to code completion items, only available for macros for now
 - Improve handling of `tezos-client` and `alphanet.sh`
-- Improvements to stack visualization: colored output, rendering nested types on multiple lines with indentation
 - Remove obsolete section `RETURN` from the grammar
 - Remove obsolete instruction `REDUCE` from the grammar
 

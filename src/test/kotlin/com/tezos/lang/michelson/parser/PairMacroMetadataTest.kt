@@ -33,7 +33,7 @@ class PairMacroMetadataTest {
         assertNull(m.expand("PAIR"))
 
         // stack a,b,c -> (a (b,c))
-        assertEquals("DIP{PAIR}; PAIR", m.expand("PAPAIR"))
+        assertEquals("DIP{ PAIR }; PAIR", m.expand("PAPAIR"))
 
         // stack a,b,c -> ((a,b) c)
         assertEquals("PAIR; PAIR", m.expand("PPAIIR"))
@@ -41,6 +41,8 @@ class PairMacroMetadataTest {
         // PAPPAIIR -> DIP { PPAIIR }; PAIR
         // PPAIIR -> PAIR; PAIR
         // stack a,b,c,d -> (a ((b,c) d))
-        assertEquals("DIP{PAIR; PAIR}; PAIR", m.expand("PAPPAIIR"))
+        assertEquals("DIP{ PAIR; PAIR }; PAIR", m.expand("PAPPAIIR"))
+
+        assertEquals("PAIR; DIP{ PAIR }; PAIR", m.expand("PPAIPAIR"))
     }
 }

@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 
 class CompareMacroMetadata : MacroMetadata {
@@ -7,7 +8,27 @@ class CompareMacroMetadata : MacroMetadata {
         val NAMES = setOf("CMPEQ", "CMPNEQ", "CMPLT", "CMPGT", "CMPLE", "CMPGE")
     }
 
-    override fun staticMacroName(): Collection<String> = NAMES
+    override fun staticNames(): Collection<String> = NAMES
+
+    /**
+     * CMP{X} expands to COMPARE; X
+     * COMPARE is available when the top two elements are comparable and of the same type, e.g. "int int"
+     */
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.size < 2) {
+            return emptyList()
+        }
+
+        // fixme compare annotations?
+        val (top, second) = stack.frames
+        return when {
+            top.type.isComparable && top.type.name == second.type.name -> NAMES.map {
+                DynamicMacroName(it, Comparables.BOOL)
+            }
+
+            else -> emptyList()
+        }
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         return if (macro in NAMES) {

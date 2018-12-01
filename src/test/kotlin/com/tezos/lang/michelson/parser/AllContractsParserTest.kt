@@ -23,11 +23,10 @@ class AllContractsParserTest(val michelsonFile: String) : AbstractParserTest() {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun data(): Iterable<String> {
-            val files = locateMichelsonFiles(Paths.get("contracts")).foldRight(mutableListOf()) { path: Path, r: MutableList<String> ->
+            return locateMichelsonFiles(Paths.get("contracts")).foldRight(mutableListOf()) { path: Path, r: MutableList<String> ->
                 r += dataRootPath.relativize(path).toString()
                 r
             }
-            return files
         }
     }
 

@@ -13,6 +13,8 @@ interface TezosClient {
     /**
      * Parses the given content as emacs-style output of the Tezos client. Any additional prefix or suffix must have
      * been removed from content. It is expected to start with "(" and end with ")".
+     * @throws IllegalStateException
+     * @throws com.tezos.client.stack.TezosClientError When the client returned an error or exited with a non-zero exit cod
      */
     fun typecheck(content: String): MichelsonStackTransformations?
 }

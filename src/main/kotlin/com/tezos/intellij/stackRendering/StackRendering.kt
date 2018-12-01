@@ -1,41 +1,15 @@
 @file:Suppress("CssInvalidPropertyValue")
 
-package com.tezos.client.stack
+package com.tezos.intellij.stackRendering
 
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
+import com.tezos.client.stack.MichelsonStackFrame
+import com.tezos.client.stack.MichelsonStackTransformation
+import com.tezos.client.stack.MichelsonStackType
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.awt.Color
-import java.awt.Font
-
-data class RenderStyle(val textColor: Color?, val bold: Boolean, val italic: Boolean) {
-    constructor(attr: TextAttributes) : this(attr.foregroundColor, attr.fontType and Font.BOLD == Font.BOLD, attr.fontType and Font.ITALIC == Font.ITALIC)
-}
-
-/**
- * Options to configure the HTML rendering of a stack.
- * @param markUnchanged If true then unmodified stack frames will be grayed-out in the rendering
- * @param alignStacks If true then the two stacks will be aligned to the bottom of the stack
- * @param showAnnotations If true then annotations will be rendered for the types
- * @param codeFont The HTML font family to use for the rendering of source code
- * @param codeFontSizePt The font size to use for the rendering
- */
-data class RenderOptions(
-        val markUnchanged: Boolean = false,
-        val alignStacks: Boolean = false,
-        val showAnnotations: Boolean = false,
-        val codeFont: String = "monospace",
-        val codeFontSizePt: Double = 11.0,
-        val nestedBlocks: Boolean = false,
-        val showColors: Boolean = false,
-        val typeNameStyle: RenderStyle? = null,
-        val typeAnnotationStyle: RenderStyle? = null,
-        val fieldAnnotationStyle: RenderStyle? = null,
-        val varAnnotationStyle: RenderStyle? = null,
-        val parenStyle: RenderStyle? = null
-)
 
 /**
  * @author jansorg
@@ -91,8 +65,8 @@ class StackRendering {
 
     fun render(stack: MichelsonStackTransformation, opts: RenderOptions): String {
         val maxSize = Math.max(stack.before.size, stack.after.size)
-        val rowOffsetLeft = if (opts.alignStacks) maxSize - stack.before.size else 0
-        val rowOffsetRight = if (opts.alignStacks) maxSize - stack.after.size else 0
+        val rowOffsetLeft = maxSize - stack.before.size
+        val rowOffsetRight = maxSize - stack.after.size
 
         return StringBuilder().appendHTML().html {
             head { style(type = "text/css") { unsafe { +styles(opts) } } }
@@ -142,7 +116,7 @@ class StackRendering {
 }
 
 private fun HtmlBlockTag.stackInfo(type: MichelsonStackType, opts: RenderOptions, colored: Boolean = opts.showColors, level: Int = 0) {
-    val addParens = type.name.isNotEmpty() && level > 0 || (type.arguments.isNotEmpty() || (type.annotations.isNotEmpty() && opts.showAnnotations))
+    val addParens = type.name.isNotEmpty() && (level > 0 || (type.arguments.isNotEmpty() || (type.annotations.isNotEmpty() && opts.showAnnotations)))
 
     if (level > 0 && opts.nestedBlocks) {
         for (i in 0 until level * 3) {
