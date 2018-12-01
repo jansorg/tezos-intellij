@@ -24,7 +24,7 @@ class CadrMacroMetadata : MacroMetadata {
 
         val result = mutableListOf<DynamicMacroName>()
         Pairs.addNestedPairAccessors(topType, "", result) {
-            Pairs.transform(it, topType) { selector, parents, pair ->
+            Pairs.transform(it, topType) { _, _, pair ->
                 pair
             }
         }

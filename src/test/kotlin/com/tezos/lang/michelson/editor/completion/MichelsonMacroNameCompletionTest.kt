@@ -25,7 +25,7 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
     fun testEmptySmart() {
         // no dynamic macro names when missing stack info
         configureByCode("<caret>")
-        assertCompletions("FAIL", type = CompletionType.SMART)
+        assertCompletionsAtLeast("FAIL", type = CompletionType.SMART)
     }
 
     fun testDepth1() {
@@ -147,6 +147,8 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
     // the fixture's editor isn't a split editor
     // the split editor registers the document in the stack manager, therefore we have to do it here instead
     override fun configureByCode(code: String, allowWhitespace: Boolean): Pair<MichelsonPsiFile, PsiElement?> {
+        MockTezosClient.reset()
+
         val result = super.configureByCode(code, allowWhitespace)
         MichelsonStackInfoManager.getInstance(project).registerDocument(myFixture.editor.document, testRootDisposable)
         return result

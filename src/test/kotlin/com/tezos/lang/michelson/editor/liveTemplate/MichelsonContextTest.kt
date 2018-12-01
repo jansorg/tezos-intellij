@@ -10,7 +10,7 @@ import org.junit.Assert
 class MichelsonContextTest : MichelsonFixtureTest() {
     fun testContext() {
         val ctx = MichelsonContext()
-        val (file, psi) = configureByCode("<caret>")
+        val (file, _) = configureByCode("<caret>")
         Assert.assertTrue(ctx.isInContext(file, myFixture.caretOffset))
     }
 

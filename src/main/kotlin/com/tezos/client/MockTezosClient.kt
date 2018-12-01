@@ -8,11 +8,11 @@ object MockTezosClient : TezosClient {
     val stacks: MutableMap<String, MichelsonStackTransformations> = Maps.newConcurrentMap()
 
     fun addTypes(file: PsiFile, stack: MichelsonStackTransformations) {
-        stacks.put(file.text, stack)
+        stacks[file.text] = stack
     }
 
     fun addTypes(content: String, stack: MichelsonStackTransformations) {
-        stacks.put(content, stack)
+        stacks[content] = stack
     }
 
     fun reset() {
@@ -20,6 +20,6 @@ object MockTezosClient : TezosClient {
     }
 
     override fun typecheck(content: String): MichelsonStackTransformations? {
-        return stacks.get(content)
+        return stacks[content]
     }
 }

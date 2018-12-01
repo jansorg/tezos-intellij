@@ -22,7 +22,7 @@ class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : Tezo
 /**
  * A Tezos client error to signal that the client returned a "Node is not running" error
  */
-class TezosClientUnsupportedOutputError(output: String?, cause: Throwable?) : TezosClientError("Invalid output of tezos-client detected.", cause)
+class TezosClientUnsupportedOutputError(output: String?, cause: Throwable?) : TezosClientError("Invalid output of tezos-client detected: $output", cause)
 
 
 private fun MichelsonStackParser.StackFrameContext.transform(): MichelsonStackFrame {
