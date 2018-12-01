@@ -130,6 +130,8 @@ class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
     fun testDepth4Pair() {
         prepareFile("<caret>", "int".type(), "int".type(), "int".type(), "int".type())
         assertCompletionsAtLeast("PAIR", "PAPAIR", "PPAIIR", "PAPAPAIR", "PAPPAIIR", "PPAPAIIR", "PPPAIIIR", type = CompletionType.SMART)
+        // fixme fix in macro implementation
+//        assertCompletionsAtLeast("PAIR", "PAPAIR", "PPAIIR", "PAPAPAIR", "PAPPAIIR", "PPAPAIIR", "PPPAIIIR", "PPAIPAIR", type = CompletionType.SMART)
     }
 
     private fun prepareFile(content: String, vararg stackTypes: MichelsonStackType) {

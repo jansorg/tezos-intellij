@@ -1,10 +1,12 @@
 package com.tezos.lang.michelson.lang.macro
 
+import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.psi.PsiAnnotationType
 import java.util.regex.Pattern
 
 /**
- * Supports the dynamic UNPAIR macro, as defined at http://tezos.gitlab.io/betanet/whitedoc/michelson.html#syntactic-conveniences.
+ * Supports the dynamic UNPAIR macro, as defined at http://tezos.gitlab.io/mainnet/whitedoc/michelson.html#syntactic-conveniences.
  * UNPAIR is "A syntactic sugar for destructing nested pairs. These macros follow the same convention as the previous one (PAIR)".
  *
  * A good way to quickly figure which macro to use is to mentally parse the macro as
@@ -19,6 +21,42 @@ class UnpairMacroMetadata : MacroMetadata {
     }
 
     override fun staticNames(): Collection<String> = listOf("UNPAIR")
+
+    override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
+        if (stack.isEmpty) {
+            return emptyList()
+        }
+
+        val result = mutableSetOf<String>()
+        unpairNames("UN", stack.frames.first().type, "R", result)
+        return result.map {
+            DynamicMacroName(it)
+        }
+    }
+
+    private fun unpairNames(prefix: String, stack: MichelsonStackType, suffix: String, result: MutableSet<String>) {
+        if (!stack.isType(Comparables.PAIR)) {
+            return
+        }
+
+        val (left, right) = stack.arguments
+        result += "${prefix}PAI$suffix"
+
+        val leftIsPair = left.isType(Comparables.PAIR)
+        val rightIsPair = right.isType(Comparables.PAIR)
+
+        if (leftIsPair) {
+            unpairNames(prefix + "P", left, "I$suffix", result)
+        }
+
+        if (rightIsPair) {
+            unpairNames(prefix + "PA", right, suffix, result)
+        }
+
+        if (leftIsPair && rightIsPair) {
+            result += "${prefix}PPAIPAI$suffix"
+        }
+    }
 
     override fun validate(macro: String): Pair<String, Int>? {
         if (!regexp.matcher(macro).matches()) {
@@ -60,13 +98,13 @@ class UnpairMacroMetadata : MacroMetadata {
             return "DUP; CAR; DIP{CDR}"
         }
 
-        if (macro.startsWith("UNPA") && readRight(macro.substring(4, macro.length-1)).isEmpty()) {
+        if (macro.startsWith("UNPA") && readRight(macro.substring(4, macro.length - 1)).isEmpty()) {
             val left = doExpand("UNPAIR")
             val right = doExpand("UN" + macro.substring(4))
             return "$left; DIP{$right}"
         }
 
-        if (macro.startsWith("UNP") && macro.endsWith("IR") && readLeft(macro.substring(3, macro.length-2)).isEmpty()) {
+        if (macro.startsWith("UNP") && macro.endsWith("IR") && readLeft(macro.substring(3, macro.length - 2)).isEmpty()) {
             val rest = macro.substring(3, macro.length - 2)
 
             val left = doExpand("UNPAIR")
@@ -74,7 +112,7 @@ class UnpairMacroMetadata : MacroMetadata {
             return "$left; $right"
         }
 
-        val rightPart = readLeft(macro.substring(3, macro.length-1))
+        val rightPart = readLeft(macro.substring(3, macro.length - 1))
         val leftPart = macro.substring(3, macro.length - 1 - rightPart.length)
 
         val first = doExpand("UNPAIR")
@@ -86,7 +124,7 @@ class UnpairMacroMetadata : MacroMetadata {
     /**
      * returns the remaining part of the macro which follows a left element
      */
-    private fun readLeft(macro:String):String {
+    private fun readLeft(macro: String): String {
         if (macro.startsWith("A")) {
             return macro.substring(1)
         }
@@ -96,7 +134,7 @@ class UnpairMacroMetadata : MacroMetadata {
     /**
      * returns the remaining part of the macro which follows a left element
      */
-    private fun readRight(macro:String):String {
+    private fun readRight(macro: String): String {
         if (macro.startsWith("I")) {
             return macro.substring(1)
         }
