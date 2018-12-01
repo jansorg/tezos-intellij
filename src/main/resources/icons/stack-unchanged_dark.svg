@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,33 +58,17 @@
      id="layer1"
      transform="translate(0,-292.76665)">
     <rect
-       style="fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:3.78346801;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect820"
-       width="7.2675037"
+       width="16.054293"
        height="7.7608323"
        x="0"
        y="300.9899"
        ry="1.8083491" />
     <rect
-       ry="1.8083491"
-       y="292.76962"
-       x="8.7213564"
-       height="7.7608323"
-       width="7.2675037"
-       id="rect814"
-       style="fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect
-       ry="1.8083491"
-       y="300.97076"
-       x="8.7596426"
-       height="7.7608323"
-       width="7.2675037"
-       id="rect816"
-       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect
-       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:2.54558206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.77895379;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect818"
-       width="7.2675037"
+       width="16.016006"
        height="7.7608323"
        x="0"
        y="292.76962"

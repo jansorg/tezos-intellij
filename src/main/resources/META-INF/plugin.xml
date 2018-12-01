@@ -18,6 +18,17 @@
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.8.0</b>
+        <ul>
+            <li>Feature: Support View > Quick documentation for instructions, types and tags.</li>
+            <li>Feature: Improvements to stack visualization: colored output, rendering nested types on multiple lines with indentation</li>
+            <li>Feature: Suggest dynamic macro names which are available for the current stack, needs a running tezos-client</li>
+            <li>Feature: Show the type of the new top of the stack next to code completion items, only available for macros for now</li>
+            <li>Improve handling of tezos-client and alphanet.sh scripts</li>
+            <li>Remove obsolete section RETURN from the grammar</li>
+            <li>Remove obsolete instruction REDUCE from the grammar</li>
+        </ul><br><br>
+
         <b>Version 0.7.0</b>
         <ul>
             <li>Client settings: add button to autodetect the client on $PATH (tezos-client, mainnet.sh and alphanet.sh)</li>
