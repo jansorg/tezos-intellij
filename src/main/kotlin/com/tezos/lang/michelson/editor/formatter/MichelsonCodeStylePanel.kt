@@ -12,9 +12,9 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonCodeStylePanel(settings: CodeStyleSettings) : OptionTreeWithPreviewPanel(settings) {
     companion object {
-        private val COMPLEX_TYPE_GROUP = "Compex types"
-        private val STATEMENT_GROUP = "Statements"
-        private val COMMENT_GROUP = "Comments"
+        private const val COMPLEX_TYPE_GROUP = "Complex types"
+        private const val STATEMENT_GROUP = "Statements"
+        private const val COMMENT_GROUP = "Comments"
     }
 
     init {

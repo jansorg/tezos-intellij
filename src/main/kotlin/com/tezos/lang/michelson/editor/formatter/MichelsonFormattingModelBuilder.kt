@@ -54,7 +54,7 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         // generic: no space in '(...)'
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
-        // first element of a complex type is only wrapped when both wrap_first and align_compex_types are enabled
+        // first element of a complex type is only wrapped when both wrap_first and align_complex_types are enabled
         val nestedTypes = TokenSet.create(GENERIC_TYPE, LEFT_PAREN)
         builder.betweenInside(TokenSet.create(TYPE_NAME), nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST && michelsonSettings.COMPLEX_TYPE_ALIGN, true, true)
         builder.betweenInside(nestedTypes, nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true)

@@ -1,5 +1,7 @@
 package com.tezos.lang.michelson.editor.formatter
 
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.tezos.lang.michelson.MichelsonFixtureTest
 
 /**
@@ -48,5 +50,50 @@ class MichelsonIndentationTest : MichelsonFixtureTest() {
                                           DIP{}
                                         }
                                   } }""".trimIndent())
+    }
+
+    // tests, that no extra indent is added after a newline after a command token
+    fun testIndentAfterComment() {
+        configureByCode("<caret>")
+
+        // this automatically inserts the closing braces
+        myFixture.type("\b\n") // backspace to remove the space inserted by our setup
+        myFixture.type("DROP")
+        myFixture.checkResult("""
+            parameter unit;
+            storage unit;
+            code {
+                   DROP
+                 }""".trimIndent())
+    }
+
+    // tests, that no extra indent is added after a newline after a command token
+    fun testIndentAfterCommentAlignBlocks() {
+        try {
+            WriteCommandAction.runWriteCommandAction(project) {
+                val settings = CodeStyleSettingsManager.getSettings(project).clone()
+                val customMichelson = settings.getCustomSettings(MichelsonCodeStyleSettings::class.java)
+                customMichelson.ALIGN_BLOCKS = true
+
+                CodeStyleSettingsManager.getInstance(project).temporarySettings = settings
+            }
+
+            configureByCode("# comment<caret>")
+
+            // this automatically inserts the closing braces
+            myFixture.type("\n")
+            myFixture.type("DROP")
+            myFixture.type("\n")
+            myFixture.checkResult("""
+                parameter unit;
+                storage unit;
+                code { # comment
+                       DROP
+                     }""".trimIndent())
+        } finally {
+            WriteCommandAction.runWriteCommandAction(project) {
+                CodeStyleSettingsManager.getInstance().dropTemporarySettings()
+            }
+        }
     }
 }

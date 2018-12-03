@@ -21,11 +21,12 @@ abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() 
     fun codeOffset(code: String): Int = Math.max(0, codeTemplate(code).indexOf("<caret>"))
 
     private fun codeTemplate(code: String): String {
+        // add code afterwards because newlines in it break trimIndent()
         return """
                 parameter unit;
                 storage unit;
-                code { $code }
-            """.trimIndent()
+                code { _CODE_ }
+            """.trimIndent().replace("_CODE_", code)
     }
 
     fun configureByCode(code: () -> String): Pair<MichelsonPsiFile, PsiElement?> {
