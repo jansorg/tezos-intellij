@@ -1,0 +1,3 @@
+parameter unit;
+storage unit;
+code { PUSH @abc int 123; PUSH @xyz int 123; PAIR @pair1<caret>; DROP; CDR; NIL operation; PAIR }

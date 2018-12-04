@@ -12,8 +12,14 @@ class MockMichelsonStackInfoManager : MichelsonStackInfoManagerImpl() {
         fun getInstance(project: Project?): MockMichelsonStackInfoManager = MichelsonStackInfoManager.getInstance(project) as MockMichelsonStackInfoManager
     }
 
+    // returns the global mock tezos client
     override fun defaultTezosClient(): TezosClient? {
         return MockTezosClient
+    }
+
+    override fun triggerStackUpdate(document: Document) {
+        //don't use alarm, execute immediately
+        updateStackInfo(document)
     }
 
     fun forceUpdate(doc: Document) {
