@@ -24,6 +24,11 @@ class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : Tezo
  */
 class TezosClientUnsupportedOutputError(output: String?, cause: Throwable?) : TezosClientError("Invalid output of tezos-client detected: $output", cause)
 
+/**
+ * A Tezos client error to signal that the client returned a "Node is not running" error
+ */
+class TezosClientExitError(exitCode: Int, cause: Throwable? = null) : TezosClientError("Tezos client exited with non-zero exit code: $exitCode", cause)
+
 
 private fun MichelsonStackParser.StackFrameContext.transform(): MichelsonStackFrame {
     return MichelsonStackFrame(this.type().transform())
@@ -123,7 +128,7 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
                     }
                     out
                 }
-                else -> throw IllegalStateException("Tezos client exited with code ${p.exitValue()}")
+                else -> throw TezosClientExitError(p.exitValue())
             }
         } finally {
             Files.deleteIfExists(outFile)
