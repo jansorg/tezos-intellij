@@ -31,9 +31,6 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
 
     private val contentPane: StackHtmlPane = StackHtmlPane(project)
 
-    @Volatile
-    private var stackCache: StackInfo? = null
-
     override fun getName(): String = "Michelson Stack Visualization"
 
     override fun isValid(): Boolean = _file.isValid
@@ -49,11 +46,6 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
     override fun getPreferredFocusedComponent(): JComponent? = null
 
     override fun dispose() {
-        reset()
-    }
-
-    fun reset() {
-        this.stackCache = null
     }
 
     fun updateStackInfo(stack: StackInfo, offset: Int, renderOpts: RenderOptions) {

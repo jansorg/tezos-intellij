@@ -96,7 +96,6 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
 
     override fun defaultTezosClientChanged() {
         LOG.info("defaultTezosClientChanged()")
-        stackEditor.reset()
         triggerStackUpdate()
     }
 
