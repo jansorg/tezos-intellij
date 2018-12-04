@@ -48,6 +48,9 @@ class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
 
         configureByCode("DROP <caret>;")
         assertCompletionsNoneOf(*instructions)
+
+        configureByCode("# comment <caret>\n")
+        assertCompletions()
     }
 
     fun testEmptyFile() {

@@ -46,10 +46,6 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
         )!!
 
         val COMPLEX_TAG = PlatformPatterns.or(LEFT_PAREN_PATTERN, PlatformPatterns.psiElement(TAG_TOKEN).afterLeafSkipping(WHITESPACE_PATTERN, LEFT_PAREN_PATTERN))!!
-
-        val IN_CODE_SECTION = PlatformPatterns.psiElement().inside(
-                PlatformPatterns.psiElement(PsiSection::class.java).withFirstChild(
-                        PlatformPatterns.psiElement().withText("code")))!!
     }
 
     init {
@@ -62,7 +58,7 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
                 commandEndPattern,
                 PlatformPatterns.psiElement().afterLeaf(commandEndPattern),
                 PlatformPatterns.psiElement(INSTRUCTION_TOKEN).andNot(AFTER_ERROR_LEAF_SKIPPING_WS))
-        val instructionInCode = StandardPatterns.and(DEBUG_TRUE, IN_CODE_SECTION, instructionPlace)
+        val instructionInCode = StandardPatterns.and(IN_CODE_SECTION, NOT_IN_COMMENT, instructionPlace)
 
         extendOriginal(null, instructionInCode, InstructionNameCompletion())
         extendOriginal(null, instructionInCode, MacroNameCompletion())
