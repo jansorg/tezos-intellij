@@ -1,3 +1,6 @@
+# Version 0.9.0
+- Fix wrong indentation after pressing enter in the code section
+
 # Version 0.8.0
 - Feature: Support `View > Quick documentation` for instructions, types and tags.
 - Feature: Improvements to stack visualization: colored output, rendering nested types on multiple lines with indentation
