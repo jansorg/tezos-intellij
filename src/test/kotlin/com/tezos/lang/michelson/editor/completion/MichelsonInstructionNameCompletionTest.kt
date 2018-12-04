@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.editor.completion
 
+import com.intellij.codeInsight.completion.CompletionType
 import com.tezos.lang.michelson.lang.MichelsonFileType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 
@@ -7,9 +8,9 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  * @author jansorg
  */
 class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
-    fun testCompletion() {
-        val instructions = (MichelsonLanguage.INSTRUCTIONS + MichelsonLanguage.MACRO_NAMES).toTypedArray()
+    val instructions = (MichelsonLanguage.INSTRUCTIONS + MichelsonLanguage.MACRO_NAMES).toTypedArray()
 
+    fun testCompletion() {
         // basic
         configureByCode("<caret>")
         assertCompletions(*instructions)
@@ -47,5 +48,14 @@ class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
 
         configureByCode("DROP <caret>;")
         assertCompletionsNoneOf(*instructions)
+    }
+
+    fun testEmptyFile() {
+        myFixture.configureByText(MichelsonFileType,
+                """parameter unit;
+                   <caret>storage unit;
+                   code {}""".trimIndent())
+        assertCompletionsNoneOf(*instructions, type = CompletionType.BASIC)
+        assertCompletionsNoneOf(*instructions, type = CompletionType.SMART)
     }
 }
