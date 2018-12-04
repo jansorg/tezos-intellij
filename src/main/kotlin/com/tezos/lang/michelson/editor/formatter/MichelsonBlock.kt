@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.editor.formatter
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
@@ -12,12 +13,13 @@ import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.parser.MichelsonElementSets
 import com.tezos.lang.michelson.psi.PsiAnnotation
 import com.tezos.lang.michelson.psi.PsiComplexType
+import com.tezos.lang.michelson.psi.PsiContract
 
 
 /**
  * @author jansorg
  */
-class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private val spacing: SpacingBuilder, private val _indent: Indent? = null, val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
+class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private val spacing: SpacingBuilder, private val _indent: Indent? = null, private val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
     private val blockChildAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
     private val lineCommentAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
     private val annotationAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
@@ -152,6 +154,17 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
     }
 
     override fun getIndent(): Indent? {
+        // this is a nasty to convince IntelliJ do use our configured indent size
+        // by default IntelliJ detects the indent sizes of the current file and uses the max size for newly inserted lines, e.g. in EnterHandler
+        // the formatted code {} has the closing curly brace on line offet 5 because Michelson requires closing braces to be at least
+        // on the same offset as the opening brace in code {
+        // IntelliJ detects this as a regular indent and then uses indent size 5 for all inserted newlines
+        // using an indent type != NONE and != NORMAL will make this indent not be counted in the indente sixe detection
+        // see com.intellij.psi.codeStyle.autodetect.IndentOptionsDetectorImpl
+        if (node.elementType == RIGHT_CURLY && parent?.node?.elementType == BLOCK_INSTRUCTION) {
+            return Indent.getSpaceIndent(0, true)
+        }
+
         return _indent
     }
 
@@ -161,6 +174,18 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
 
     override fun isLeaf(): Boolean {
         return node.firstChildNode == null
+    }
+
+    override fun getChildIndent(): Indent? {
+        if (node is PsiFile || node is PsiContract) {
+            return Indent.getNoneIndent()
+        }
+
+        if (node.elementType.isMichelsonBlock()) {
+            return Indent.getIndent(Indent.Type.NORMAL, true, false)
+        }
+
+        return super.getChildIndent()
     }
 
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
