@@ -3,7 +3,6 @@ package com.tezos.lang.michelson.editor.stack.michelsonStackVisualization
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter
 import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -64,7 +63,7 @@ class MichelsonStackVisualizationEditor(project: Project, private val _file: Vir
         }
 
         val matching = data.elementAt(offset)
-        if (matching == null) {
+        if (matching == null || data.isOnWhitespace(offset)) {
             contentPane.renderInfo("No stack found.", "No matching stack information was found.")
             return
         }

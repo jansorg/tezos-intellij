@@ -140,11 +140,11 @@ class MichelsonSplitEditor(private val mainEditor: TextEditor, private val stack
     fun triggerStackUpdate() {
         val editor = mainEditor.editor
         val offset = editor.caretModel.offset
-        LOG.warn("Updating stack info for offset $offset")
+        LOG.debug("Updating stack info for offset $offset")
 
         val stack = MichelsonStackInfoManager.getInstance(editor.project).stackInfo(editor.document)
         when (stack) {
-            null -> stackEditor.showError("error while retrieving stack info") //fixme
+            null -> stackEditor.showError("Error while retrieving stack info") //fixme
             else -> stackEditor.updateStackInfo(stack, offset, renderOptions(editor.colorsScheme))
         }
     }

@@ -103,7 +103,7 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
     /**
      * Debounce calls to the tezos client.
      */
-    protected fun triggerStackUpdate(document: Document) {
+    private fun triggerStackUpdate(document: Document) {
         this.client ?: return
 
         alarm.cancelAllRequests()
