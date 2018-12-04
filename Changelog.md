@@ -1,5 +1,8 @@
 # Version 0.9.0
 - Fix wrong indentation after pressing enter in the code section
+- Don't suggest instructions at top level of a file
+- Don't suggest instructions inside of comments
+- Show all simple types when completing after instructions, not just the comparable types
 
 # Version 0.8.0
 - Feature: Support `View > Quick documentation` for instructions, types and tags.

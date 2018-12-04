@@ -15,6 +15,11 @@ class SimpleTypeCompletion : CompletionProvider<CompletionParameters>() {
                 val item = LookupElementBuilder.create(name).withTypeText("comparable type", true)
                 result.addElement(item)
             }
+
+            for (name in MichelsonLanguage.TYPES_SIMPLE) {
+                val item = LookupElementBuilder.create(name).withTypeText("type", true)
+                result.addElement(item)
+            }
         }
     }
 }

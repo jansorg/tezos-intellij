@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.tezos.lang.michelson.lang
 
 import com.intellij.lang.Language
@@ -13,11 +15,12 @@ object MichelsonLanguage : Language("Michelson") {
     // PAIR, Pair and pair are different tokens
     override fun isCaseSensitive(): Boolean = true
 
+    // contract is handled by the parser in a special way
     val TYPES_COMPARABLE = setOf("int", "nat", "string", "bytes", "mutez", "bool", "key_hash", "timestamp")
-    // contract is handled specially by the parser
-    val TYPES_COMPLEX = setOf("option", "list", "set", "operation", "address", "pair", "or", "lambda", "map", "big_map")
-    val TYPES_OTHER = setOf("key", "unit", "signature")
-    val TYPES_ALL = TYPES_OTHER + TYPES_COMPARABLE + TYPES_COMPLEX
+    val TYPES_SIMPLE = setOf("address", "operation", "key", "unit", "signature")
+    val TYPES_NESTED = setOf("option", "list", "set", "pair", "or", "lambda", "map", "big_map")
+    val TYPES_ALL = TYPES_COMPARABLE + TYPES_SIMPLE + TYPES_NESTED
+    val TYPES_ALL_SIMPLE = TYPES_SIMPLE + TYPES_COMPARABLE
 
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 

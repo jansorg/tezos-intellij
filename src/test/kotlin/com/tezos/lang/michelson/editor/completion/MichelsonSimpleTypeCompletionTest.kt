@@ -7,17 +7,18 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val reference = MichelsonLanguage.TYPES_COMPARABLE.toTypedArray()
+        val comparableTypes = MichelsonLanguage.TYPES_COMPARABLE.toTypedArray()
+        val simpleTypes = MichelsonLanguage.TYPES_ALL_SIMPLE.toTypedArray()
 
         // basic
         configureByCode("PUSH <caret>")
-        assertCompletionsAtLeast(*reference)
+        assertCompletionsAtLeast(*comparableTypes)
 
         configureByCode("PUSH i<caret>")
-        assertCompletionsAtLeast(reference.filter { it.contains("i") })
+        assertCompletionsAtLeast(comparableTypes.filter { it.contains("i") })
 
         configureByCode("PUSH n<caret>")
-        assertCompletionsAtLeast(reference.filter { it.contains("n") })
+        assertCompletionsAtLeast(comparableTypes.filter { it.contains("n") })
 
         // no completions
         configureByCode("PUSH abcde<caret>;")
@@ -33,7 +34,11 @@ class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
         assertCompletions()
 
         configureByCode("PUSH (Pair <caret>)")
-        assertCompletionsNoneOf(*reference)
+        assertCompletionsNoneOf(*comparableTypes)
+
+        configureByCode("NIL <caret>")
+        assertCompletionsAtLeast(*simpleTypes)
+        // fixme assert that tags are are not shown for instructions which don't support them
 
         // configureByCode("PUSH (Pair int <caret>)")
         // assertCompletionsNoneOf(*reference)
