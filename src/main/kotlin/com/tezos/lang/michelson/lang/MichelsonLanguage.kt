@@ -122,6 +122,7 @@ object MichelsonLanguage : Language("Michelson") {
             "LOOP".with(ParameterType.INSTRUCTION_BLOCK),
             "LOOP_LEFT".with(ParameterType.INSTRUCTION_BLOCK),
             "MAP".with(ParameterType.INSTRUCTION_BLOCK),
+            "CREATE_CONTRACT".with(ParameterType.INSTRUCTION_BLOCK),
             // two blocks
             "IF".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
             "IF_CONS".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
@@ -136,6 +137,11 @@ object MichelsonLanguage : Language("Michelson") {
             "NONE".with(ParameterType.TYPE),
             "RIGHT".with(ParameterType.TYPE),
             "UNPACK".with(ParameterType.TYPE),
+            // one data
+            "FAILWITH".with(ParameterType.DATA),
+            // other
+            "PUSH".with(ParameterType.TYPE, ParameterType.DATA),
+            "LAMBDA".with(ParameterType.TYPE, ParameterType.TYPE, ParameterType.INSTRUCTION_BLOCK),
             // questionable
             "ISNAT".with(),
             "IS_NAT".with()
@@ -172,6 +178,8 @@ object MichelsonLanguage : Language("Michelson") {
     val INSTRUCTION_NAMES: Set<String> = INSTRUCTIONS_NO_ARGS + QUESTIONABLE_INSTRUCTIONS + INSTRUCTIONS_ONE_BLOCK + INSTRUCTIONS_TWO_BLOCKS + INSTRUCTIONS_ONE_TYPE + INSTRUCTIONS_NO_ANNOTATION +
             INSTRUCTIONS_ONE_VAR_ANNOTATION + INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE + INSTRUCTIONS_TWO_VAR_ANNOTATIONS + INSTRUCTIONS_ONE_TYPE_ANNOTATION +
             INSTRUCTIONS_ONE_FIELD_ANNOTATION + INSTRUCTIONS_TWO_FIELD_ANNOTATIONS
+
+    val INSTRUCTIONS_SKIP_ANNOTATIONS: Set<String> = setOf("CREATE_CONTRACT")
 
     private fun String.with(vararg params: ParameterType): InstructionMetadata = SimpleInstruction(this, params.toList())
 }

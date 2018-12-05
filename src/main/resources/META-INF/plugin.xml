@@ -101,7 +101,7 @@
         <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonCompletionContributor" />
 
         <!-- signature info -->
-        <codeInsight.parameterInfo language="Michelson" implementationClass="com.tezos.lang.michelson.editor.parameterInfo.MichelsonParameterInfo"/>
+        <codeInsight.parameterInfo language="Michelson" implementationClass="com.tezos.lang.michelson.editor.parameterInfo.MichelsonParameterInfoHandler"/>
 
         <!-- stack visualization -->
         <fileEditorProvider implementation="com.tezos.lang.michelson.editor.stack.MichelsonSplitEditorProvider" />

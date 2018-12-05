@@ -14,28 +14,28 @@ import com.tezos.lang.michelson.psi.*
 /**
  * @author jansorg
  */
-class MichelsonParameterInfo : ParameterInfoHandler<PsiInstruction, PsiElement>, DumbAware {
+class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiElement>, DumbAware {
     companion object {
         val LOG = Logger.getInstance("#tezos.paramInfo")
 
-        fun findInstruction(file: PsiFile, offset: Int, nextSiblingFallback: Boolean): PsiInstruction? {
+        fun findInstruction(file: PsiFile, offset: Int, inUpdate: Boolean): PsiInstruction? {
             LOG.debug("findInstruction @ $offset")
 
             var start = file.findElementAt(offset)
-            /*if (offset >= 1 && start != null) {
-                start = when {
-                    start.node.elementType == MichelsonTypes.SEMI -> file.findElementAt(offset - 1)
-                    start.node.elementType.isWhitespace() -> when {
-                        start.textRange.startOffset == offset && nextSiblingFallback -> file.findElementAt(offset + 1)
-                        start.textRange.endOffset == offset -> file.findElementAt(offset + 1)
-                        else -> start
-                    }
-                    else -> start
+            if (start != null && (start.isWhitespace() || start.node.elementType == MichelsonTypes.SEMI)) {
+                val prevSibling = start.prevSibling
+                if (prevSibling != null && prevSibling.textRange.endOffset == offset) {
+                    start = prevSibling
                 }
-            }*/
+            }
 
             val parent = PsiTreeUtil.findFirstParent(start, false) {
                 it is PsiInstruction
+            }
+
+            // IntelliJ calls with offset-1 when the caret is at the start of an instruction after a whitespace, we have to workaround that
+            if (inUpdate && (parent == null || parent is PsiBlockInstruction)) {
+                return findInstruction(file, offset + 1, false)
             }
 
             return when (parent) {

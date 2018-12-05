@@ -201,6 +201,10 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateInstruction(psi: PsiGenericInstruction, holder: AnnotationHolder) {
         val name = psi.instructionName ?: return
+        if (MichelsonLanguage.INSTRUCTIONS_SKIP_ANNOTATIONS.contains(name)) {
+            return
+        }
+
         val instruction = psi.instructionToken
 
         val blocks = psi.instructionBlocks
