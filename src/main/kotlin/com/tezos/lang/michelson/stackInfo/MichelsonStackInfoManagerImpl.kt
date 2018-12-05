@@ -27,11 +27,27 @@ import java.nio.file.Paths
 open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stackInfo")!!
+        const val UPDATE_DELAY = 150
     }
 
     private class DocumentListenerDisposable(val document: Document, val listener: DocumentListener) : Disposable {
         override fun dispose() {
             document.removeDocumentListener(listener)
+        }
+    }
+
+    private class UpdateRunabble(val manager: MichelsonStackInfoManagerImpl, val document: Document) : Runnable {
+        override fun run() {
+            manager.requests.remove(manager.documentPath(document))
+            manager.updateStackInfo(document)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return other is UpdateRunabble && other.document == document
+        }
+
+        override fun hashCode(): Int {
+            return document.hashCode()
         }
     }
 
@@ -42,7 +58,10 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
     }
 
     private val listeners = ContainerUtil.createLockFreeCopyOnWriteList<StackInfoUpdateListener>()
+
     private val alarm = Alarm(Alarm.ThreadToUse.POOLED_THREAD, this)
+    private val requests: MutableMap<Path, UpdateRunabble> = Maps.newConcurrentMap()
+
     private val stacks: MutableMap<Path, StackInfo> = Maps.newConcurrentMap()
     @Volatile
     private var client: TezosClient? = null
@@ -59,6 +78,7 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
     }
 
     override fun projectClosed() {
+        alarm.cancelAllRequests()
     }
 
     override fun disposeComponent() {
@@ -66,7 +86,8 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
     }
 
     override fun dispose() {
-        this.stacks.clear()
+        alarm.cancelAllRequests()
+        stacks.clear()
     }
 
     override fun addListener(listener: StackInfoUpdateListener, parentDisposable: Disposable) {
@@ -104,18 +125,24 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
      * Debounce calls to the tezos client.
      */
     open fun triggerStackUpdate(document: Document) {
-        this.client ?: return
+        client ?: return
 
-        alarm.cancelAllRequests()
-        alarm.addRequest({
-            updateStackInfo(document)
-        }, 150)
+        val path = documentPath(document) ?: return
+
+        requests.get(path)?.let {
+            requests.remove(path)
+            alarm.cancelRequest(it)
+        }
+
+        val runnable = UpdateRunabble(this, document)
+        requests[path] = runnable
+
+        alarm.addRequest(runnable, UPDATE_DELAY)
     }
 
     protected fun updateStackInfo(document: Document) {
         val client = this.client ?: return
-        val file = FileDocumentManager.getInstance().getFile(document) ?: return
-        val path = file.toJavaPath()
+        val path = documentPath(document) ?: return
 
         try {
             val stack = client.typecheck(document.text)
@@ -128,9 +155,14 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
                 }
             }
         } catch (e: TezosClientError) {
-            LOG.debug("Error while executing tezos client. File: ${file.path}", e)
+            LOG.debug("Error while executing tezos client. File: $path", e)
             stacks[path] = StackInfo(e)
         }
+    }
+
+    private fun documentPath(document: Document): Path? {
+        val file = FileDocumentManager.getInstance().getFile(document)
+        return file?.toJavaPath()
     }
 
     private fun callListenersInEdt(document: Document) {
