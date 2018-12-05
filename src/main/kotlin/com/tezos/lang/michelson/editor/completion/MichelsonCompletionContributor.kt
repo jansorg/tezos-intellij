@@ -7,6 +7,7 @@ import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.MichelsonTypes.*
 import com.tezos.lang.michelson.editor.completion.provider.*
+import com.tezos.lang.michelson.psi.PsiSection
 
 /**
  * @author jansorg
@@ -56,10 +57,11 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
         val instructionPlace = StandardPatterns.or(
                 commandEndPattern,
                 PlatformPatterns.psiElement().afterLeaf(commandEndPattern),
-                PlatformPatterns.psiElement(INSTRUCTION_TOKEN).andNot(AFTER_ERROR_LEAF_SKIPPING_WS)
-        )
-        extendOriginal(null, instructionPlace, InstructionNameCompletion())
-        extendOriginal(null, instructionPlace, MacroNameCompletion())
+                PlatformPatterns.psiElement(INSTRUCTION_TOKEN).andNot(AFTER_ERROR_LEAF_SKIPPING_WS))
+        val instructionInCode = StandardPatterns.and(IN_CODE_SECTION, NOT_IN_COMMENT, instructionPlace)
+
+        extendOriginal(null, instructionInCode, InstructionNameCompletion())
+        extendOriginal(null, instructionInCode, MacroNameCompletion())
 
         // types
         extendOriginal(null, SIMPLE_TYPE_PATTERN, SimpleTypeCompletion())

@@ -2,6 +2,7 @@ package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
@@ -10,9 +11,11 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.tezos.lang.michelson.MichelsonTypes
+import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.psi.PsiBlockInstruction
 import com.tezos.lang.michelson.psi.PsiInstruction
+import com.tezos.lang.michelson.psi.PsiSection
 
 fun IElementType.toPsiPattern() = PlatformPatterns.psiElement().withElementType(this)
 fun TokenSet.toPsiPattern() = PlatformPatterns.psiElement().withElementType(this)
@@ -23,11 +26,11 @@ val DEBUG_FALSE = PlatformPatterns.psiElement().with(object : PatternCondition<P
     }
 })
 
-//val DEBUG_TRUE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug") {
-//    override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
-//        return true
-//    }
-//})
+val DEBUG_TRUE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug") {
+    override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
+        return true
+    }
+})
 
 // we can't use PlatformPatterns.psiElement().afterLeakSkipping() because it always skips empty-elements, i.e. error elements
 val AFTER_ERROR_LEAF_SKIPPING_WS = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("after-error-skipping-ws") {
@@ -71,4 +74,11 @@ val TOPLEVEL_PATTERN = PlatformPatterns
         .withSuperParent(2, MichelsonPsiFile::class.java)!!
 
 val WHITESPACE_PATTERN = PlatformPatterns.psiElement(TokenType.WHITE_SPACE)!!
+
+val IN_CODE_SECTION = PlatformPatterns.psiElement().inside(
+        PlatformPatterns.psiElement(PsiSection::class.java).withFirstChild(
+                PlatformPatterns.psiElement().withText("code")))!!
+
+val IN_COMMENT = PlatformPatterns.psiElement().inside(PlatformPatterns.psiElement().withElementType(MichelsonTokenSets.COMMENT_TOKENS))!!
+val NOT_IN_COMMENT = StandardPatterns.not(IN_COMMENT)
 

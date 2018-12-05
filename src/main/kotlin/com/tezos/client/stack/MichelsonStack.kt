@@ -4,13 +4,29 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 /**
  * Represents all stack transformations and errors for a single file.
+ * This data structure requires a sorted list of transformations. It must be sorted by start offset. Elements may be nested but must not overlap.
+ * This means that earlier elements may cover the range of elements later in the list.
  */
 data class MichelsonStackTransformations(val transformations: List<MichelsonStackTransformation>, val errors: List<MichelsonStackError>) {
     val hasErrors: Boolean
         get() = errors.isNotEmpty()
 
+    /**
+     * Returns true if the offset is only matched by the first element and not by an actual element in the list
+     */
+    fun isOnWhitespace(offset: Int): Boolean {
+        val matchingIndex = elementIndexAt(offset)
+        return matchingIndex == -1 || matchingIndex != transformations.indexOfLast { it.tokenStartOffset <= offset }
+    }
+
     fun elementAt(offset: Int): MichelsonStackTransformation? {
         return transformations.lastOrNull {
+            offset >= it.tokenStartOffset && offset <= it.tokenEndOffset
+        }
+    }
+
+    private fun elementIndexAt(offset: Int): Int {
+        return transformations.indexOfLast {
             offset >= it.tokenStartOffset && offset <= it.tokenEndOffset
         }
     }

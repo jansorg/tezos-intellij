@@ -24,6 +24,11 @@ class TezosClientNodeUnavailableError(message: String, cause: Throwable?) : Tezo
  */
 class TezosClientUnsupportedOutputError(output: String?, cause: Throwable?) : TezosClientError("Invalid output of tezos-client detected: $output", cause)
 
+/**
+ * A Tezos client error to signal that the client returned a "Node is not running" error
+ */
+class TezosClientExitError(exitCode: Int, cause: Throwable? = null) : TezosClientError("Tezos client exited with non-zero exit code: $exitCode", cause)
+
 
 private fun MichelsonStackParser.StackFrameContext.transform(): MichelsonStackFrame {
     return MichelsonStackFrame(this.type().transform())
@@ -65,28 +70,31 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
                 else -> throw TezosClientUnsupportedOutputError(content, null)
             }
         }
+
+        fun parseStdout(stdout: String): MichelsonStackTransformations {
+            val parser = MichelsonStackParser(CommonTokenStream(MichelsonStackLexer(CharStreams.fromString(stdout))))
+
+            val all = parser.all()
+            //fixme handle parser errors
+            val list = all.types().stackTransformation().map { c ->
+                MichelsonStackTransformation(c.instructionStart.text.toInt(), c.instructionEnd.text.toInt(),
+                        MichelsonStack(c.stack(0)!!.stackFrame().map { it.transform() }),
+                        MichelsonStack(c.stack(1)!!.stackFrame().map { it.transform() }))
+            }
+
+            val errors = all.errors().error().map {
+                MichelsonStackError(it.startOffset.text.toInt(), it.endOffset.text.toInt(), it.message.text)
+            }
+
+            return MichelsonStackTransformations(list, errors)
+        }
     }
 
     override fun typecheck(content: String): MichelsonStackTransformations {
         // we still need to fix the stdout because older versions of alphanet.sh don't pass TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER to the dockerized clients
         val stdout = execClient(content)
-        val fixedContent = fixTezosClientStdout(stdout)
-
-        val parser = MichelsonStackParser(CommonTokenStream(MichelsonStackLexer(CharStreams.fromString(fixedContent))))
-
-        val all = parser.all()
-        //fixme handle parser errors
-        val list = all.types().stackTransformation().map { c ->
-            MichelsonStackTransformation(c.instructionStart.text.toInt(), c.instructionEnd.text.toInt(),
-                    MichelsonStack(c.stack(0)!!.stackFrame().map { it.transform() }),
-                    MichelsonStack(c.stack(1)!!.stackFrame().map { it.transform() }))
-        }
-
-        val errors = all.errors().error().map {
-            MichelsonStackError(it.startOffset.text.toInt(), it.endOffset.text.toInt(), it.message.text)
-        }
-
-        return MichelsonStackTransformations(list, errors)
+        val fixedStdout = fixTezosClientStdout(stdout)
+        return parseStdout(fixedStdout)
     }
 
     /**
@@ -123,7 +131,7 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
                     }
                     out
                 }
-                else -> throw IllegalStateException("Tezos client exited with code ${p.exitValue()}")
+                else -> throw TezosClientExitError(p.exitValue())
             }
         } finally {
             Files.deleteIfExists(outFile)

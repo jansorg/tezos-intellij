@@ -11,7 +11,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 class NestedTypeCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (parameters.completionType == CompletionType.BASIC) {
-            for (name in MichelsonLanguage.TYPES_COMPLEX) {
+            for (name in MichelsonLanguage.TYPES_NESTED) {
                 val item = LookupElementBuilder.create(name).withTypeText("type", true);
                 result.addElement(item)
             }
