@@ -15,6 +15,7 @@ import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
@@ -30,6 +31,7 @@ import com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighter
 import com.tezos.lang.michelson.editor.stack.michelsonStackVisualization.MichelsonStackVisualizationEditor
 import com.tezos.lang.michelson.psi.PsiBlockInstruction
 import com.tezos.lang.michelson.psi.PsiInstruction
+import com.tezos.lang.michelson.psi.PsiSection
 import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 import com.tezos.lang.michelson.stackInfo.StackInfoUpdateListener
 import java.awt.BorderLayout
@@ -158,20 +160,33 @@ class MichelsonSplitEditor(internal val mainEditor: TextEditor, internal val sta
         }
     }
 
+    /**
+     * The tezos client has a few limitations. For example, the anootations of 'PAIR @a' are not included in the emacs-style map.
+     * Also, we want to render the stack when the caret is on the code keyword, this isn't included in the mapping as well
+     */
     private fun fixOffset(offset: Int): Int {
         // lookup with a replacement offset when available
         val psiFile = PsiDocumentManager.getInstance(mainEditor.editor.project!!).getCachedPsiFile(mainEditor.editor.document)
                 ?: return offset
 
         var psiElement = psiFile.findElementAt(offset)
-        if (psiElement != null && psiElement.node.elementType == MichelsonTypes.SEMI) {
-            psiElement = psiElement.prevSibling
+        if (psiElement is PsiWhiteSpace) {
+            psiElement = psiFile.findElementAt(offset-1)
         }
 
-        val instr = PsiTreeUtil.findFirstParent(psiElement, false) { it is PsiInstruction }
-        if (instr != null && instr !is PsiBlockInstruction) {
-            return instr.textOffset
+        if (psiElement != null && psiElement.node.elementType == MichelsonTypes.SEMI) {
+            psiElement = psiElement.prevSibling
+            val instr = PsiTreeUtil.findFirstParent(psiElement, false) { it is PsiInstruction }
+            if (instr != null && instr !is PsiBlockInstruction) {
+                return instr.textOffset
+            }
+        } else if (psiElement != null && psiElement.node.elementType == MichelsonTypes.SECTION_NAME && psiElement.textMatches("code")) {
+            psiElement = PsiTreeUtil.nextVisibleLeaf(psiElement)
+            if (psiElement != null) {
+                return psiElement.textOffset
+            }
         }
+
         return offset
     }
 
