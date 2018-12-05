@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.psi;
 
+import com.tezos.lang.michelson.lang.PsiAnnotationType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

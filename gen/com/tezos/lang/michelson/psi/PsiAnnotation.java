@@ -4,6 +4,7 @@ package com.tezos.lang.michelson.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.tezos.lang.michelson.lang.PsiAnnotationType;
 
 public interface PsiAnnotation extends MichelsonComposite {
 

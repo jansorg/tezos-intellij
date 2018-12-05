@@ -1,4 +1,4 @@
-package com.tezos.lang.michelson.psi
+package com.tezos.lang.michelson.lang
 
 /**
  * The possible types of an annotation.

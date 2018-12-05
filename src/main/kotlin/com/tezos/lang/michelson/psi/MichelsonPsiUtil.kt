@@ -7,6 +7,9 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
+import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 
 /**
@@ -149,6 +152,27 @@ object MichelsonPsiUtil {
             is PsiBlockInstruction -> null
             is PsiGenericInstruction -> psi.instructionToken
             else -> psi.firstChild
+        }
+    }
+
+    /**
+     * Returns the metadata for this instruction, if available
+     */
+    @JvmStatic
+    fun getInstructionMetadata(psi: PsiGenericInstruction): InstructionMetadata? {
+        val name = psi.instructionName
+        return name.let {
+            MichelsonLanguage.INSTRUCTIONS.find { it.name == name }
+        }
+    }
+
+    /**
+     * Returns the metadata for this instruction, if available
+     */
+    @JvmStatic
+    fun getMacroMetadata(psi: PsiMacroInstruction): MacroMetadata? {
+        return psi.instructionName.let { name ->
+            MichelsonLanguage.MACROS.find { it.validate(name!!) == null }
         }
     }
 

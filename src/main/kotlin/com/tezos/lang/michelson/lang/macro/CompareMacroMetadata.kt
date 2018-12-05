@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
-import com.tezos.lang.michelson.psi.PsiAnnotationType
+import com.tezos.lang.michelson.lang.PsiAnnotationType
 
 class CompareMacroMetadata : MacroMetadata {
     companion object {

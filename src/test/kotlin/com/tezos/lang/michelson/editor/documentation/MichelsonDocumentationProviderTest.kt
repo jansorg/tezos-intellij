@@ -11,7 +11,7 @@ import org.junit.Assert
  */
 class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
     fun testInstructions() {
-        for (i in MichelsonLanguage.INSTRUCTIONS) {
+        for (i in MichelsonLanguage.INSTRUCTION_NAMES) {
             configureByCode("$i<caret>")
             val doc = findDocumentation()
             if (i !in setOf("INT", "MOD") + MichelsonLanguage.QUESTIONABLE_INSTRUCTIONS) { //INT and MOD are undocumented so far but shouldn't be in the questionable set

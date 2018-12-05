@@ -9,6 +9,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.lang.PsiAnnotationType
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.psi.*
 

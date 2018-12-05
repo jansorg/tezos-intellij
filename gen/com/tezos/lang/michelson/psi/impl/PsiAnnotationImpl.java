@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.PsiAnnotationType;
 import com.intellij.psi.tree.IElementType;
 
 public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implements PsiAnnotation {

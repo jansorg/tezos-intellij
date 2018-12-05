@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.lang.macro
 import com.tezos.client.stack.MichelsonStack
 import com.tezos.client.stack.MichelsonStackFrame
 import com.tezos.client.stack.MichelsonStackType
-import com.tezos.lang.michelson.psi.PsiAnnotationType
+import com.tezos.lang.michelson.lang.PsiAnnotationType
 import java.util.regex.Pattern
 
 /**
