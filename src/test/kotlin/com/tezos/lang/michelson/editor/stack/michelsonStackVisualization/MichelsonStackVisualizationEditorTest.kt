@@ -71,6 +71,16 @@ class MichelsonStackVisualizationEditorTest(val file: String) : MichelsonFixture
             splitEditor.mainEditor.editor.caretModel.moveToOffset(myFixture.editor.caretModel.offset)
 
             splitEditor.triggerStackUpdate()
+
+            val stackEditor = splitEditor.stackEditor
+            if (michelsonFile.parent.fileName.toString() == "errors") {
+                Assert.assertTrue(stackEditor.isShowingError || stackEditor.isShowingInfo)
+                Assert.assertFalse(stackEditor.isShowingHTML)
+            } else {
+                Assert.assertFalse(stackEditor.isShowingError)
+                Assert.assertFalse(stackEditor.isShowingInfo)
+                Assert.assertTrue(stackEditor.isShowingHTML)
+            }
         }
     }
 
@@ -78,7 +88,7 @@ class MichelsonStackVisualizationEditorTest(val file: String) : MichelsonFixture
 
 }
 
-fun Disposable.use(block: Disposable.() -> Any) {
+fun Disposable.use(block: Disposable.() -> Unit) {
     try {
         this.block()
     } finally {

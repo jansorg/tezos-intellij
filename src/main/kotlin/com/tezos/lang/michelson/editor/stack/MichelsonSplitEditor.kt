@@ -14,6 +14,8 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.Alarm
 import com.intellij.util.ui.JBUI
@@ -23,8 +25,11 @@ import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.intellij.settings.TezosSettingsListener
 import com.tezos.intellij.stackRendering.RenderOptions
 import com.tezos.intellij.stackRendering.RenderStyle
+import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighter
 import com.tezos.lang.michelson.editor.stack.michelsonStackVisualization.MichelsonStackVisualizationEditor
+import com.tezos.lang.michelson.psi.PsiBlockInstruction
+import com.tezos.lang.michelson.psi.PsiInstruction
 import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 import com.tezos.lang.michelson.stackInfo.StackInfoUpdateListener
 import java.awt.BorderLayout
@@ -139,14 +144,35 @@ class MichelsonSplitEditor(internal val mainEditor: TextEditor, internal val sta
 
     fun triggerStackUpdate() {
         val editor = mainEditor.editor
-        val offset = editor.caretModel.offset
+        var offset = editor.caretModel.offset
         LOG.debug("Updating stack info for offset $offset")
 
         val stack = MichelsonStackInfoManager.getInstance(editor.project).stackInfo(editor.document)
+        if (stack != null && stack.isStack && stack.getStackOrThrow().isOnWhitespace(offset)) {
+            offset = fixOffset(offset)
+        }
+
         when (stack) {
             null -> stackEditor.showError("Error while retrieving stack info") //fixme
             else -> stackEditor.updateStackInfo(stack, offset, renderOptions(editor.colorsScheme))
         }
+    }
+
+    private fun fixOffset(offset: Int): Int {
+        // lookup with a replacement offset when available
+        val psiFile = PsiDocumentManager.getInstance(mainEditor.editor.project!!).getCachedPsiFile(mainEditor.editor.document)
+                ?: return offset
+
+        var psiElement = psiFile.findElementAt(offset)
+        if (psiElement != null && psiElement.node.elementType == MichelsonTypes.SEMI) {
+            psiElement = psiElement.prevSibling
+        }
+
+        val instr = PsiTreeUtil.findFirstParent(psiElement, false) { it is PsiInstruction }
+        if (instr != null && instr !is PsiBlockInstruction) {
+            return instr.textOffset
+        }
+        return offset
     }
 
     private fun renderOptions(settings: EditorColorsScheme): RenderOptions {

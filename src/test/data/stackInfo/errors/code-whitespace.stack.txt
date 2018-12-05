@@ -1,0 +1,11 @@
+((types . ((35 167 (((pair (unit @parameter) (unit @storage)))) (((pair (list operation) (unit @storage)))))
+           (44 61 (((pair (unit @parameter) (unit @storage)))) ((@abc int) ((pair (unit @parameter) (unit @storage)))))
+           (70 87 ((@abc int) ((pair (unit @parameter) (unit @storage)))) ((@xyz int) (@abc int) ((pair (unit @parameter) (unit @storage)))))
+           (96 100 ((@xyz int) (@abc int) ((pair (unit @parameter) (unit @storage)))) (((pair (int @xyz) (int @abc))) ((pair (unit @parameter) (unit @storage)))))
+           (109 113 (((pair (int @xyz) (int @abc))) ((pair (unit @parameter) (unit @storage)))) (((pair (unit @parameter) (unit @storage)))))
+           (122 125 (((pair (unit @parameter) (unit @storage)))) ((@storage unit)))
+           (134 147 ((@storage unit)) (((list operation)) (@storage unit)))
+           (156 160 (((list operation)) (@storage unit)) (((pair (list operation) (unit @storage)))))
+           ))
+ (errors . (
+            )))
