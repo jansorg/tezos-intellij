@@ -22,7 +22,7 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
             LOG.debug("findTarget @ $offset")
 
             var start = file.findElementAt(offset)
-            if (start != null && (start.isWhitespace() || start.node.elementType == MichelsonTypes.SEMI)) {
+            if (start != null && (start.isWhitespace() || start.node.elementType == MichelsonTypes.SEMI || start.node.elementType == MichelsonTypes.RIGHT_PAREN)) {
                 val prevSibling = start.prevSibling
                 if (prevSibling != null && prevSibling.textRange.endOffset == offset) {
                     start = prevSibling
@@ -33,6 +33,9 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
                 if (it is PsiTag) {
                     val meta = it.tagMetadata
                     meta != null && meta.isComplex()
+                } else if (it is PsiType) {
+                    val meta = it.typeMetadata
+                    meta != null && meta.subtypes.isNotEmpty()
                 } else {
                     it is PsiInstruction
                 }
@@ -44,6 +47,7 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
             }
 
             return when (parent) {
+                is PsiType -> parent
                 is PsiTag -> parent
                 is PsiBlockInstruction -> null
                 is PsiInstruction -> parent
@@ -96,6 +100,16 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
                     buffer.append(" <data>")
                 }
             }
+        } else if (psi is PsiType) {
+            buffer.append(psi.typeNameString)
+            endOffset = buffer.length
+
+            val expected = psi.typeMetadata?.subtypes
+            if (expected != null) {
+                for (subType in expected) {
+                    buffer.append(" ").append(subType.asPlaceholder())
+                }
+            }
         }
 
         context.setupUIComponentPresentation(buffer.toString(), 0, endOffset, false, false, false, context.defaultParameterColor)
@@ -112,10 +126,10 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
     override fun couldShowInLookup(): Boolean = false
 
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
-        val instruction = findTarget(context.file, context.offset, true)
-        if (context.parameterOwner == null || context.parameterOwner == instruction) {
-            context.parameterOwner = instruction
-            return instruction
+        val target = findTarget(context.file, context.offset, true)
+        if (context.parameterOwner == null || context.parameterOwner == target) {
+            context.parameterOwner = target
+            return target
         }
 
         context.removeHint()
@@ -123,11 +137,11 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
     }
 
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
-        val instruction = findTarget(context.file, context.offset, false)
-        if (instruction != null) {
-            context.itemsToShow = arrayOf(instruction)
-            context.highlightedElement = instruction
-            return instruction
+        val target = findTarget(context.file, context.offset, false)
+        if (target != null) {
+            context.itemsToShow = arrayOf(target)
+            context.highlightedElement = target
+            return target
         }
 
         return null

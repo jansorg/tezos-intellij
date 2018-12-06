@@ -283,7 +283,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateGenericType(element: PsiGenericType, holder: AnnotationHolder) {
         val typeName = element.typeNameString
-        if (!MichelsonLanguage.TYPES_ALL.contains(typeName)) {
+        if (typeName !in MichelsonLanguage.TYPE_NAMES) {
             holder.createErrorAnnotation(element.typeToken, "Unknown type")
             return
         }

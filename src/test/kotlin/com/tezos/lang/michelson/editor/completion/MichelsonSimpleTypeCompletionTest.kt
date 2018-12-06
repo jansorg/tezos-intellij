@@ -7,8 +7,8 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  */
 class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val comparableTypes = MichelsonLanguage.TYPES_COMPARABLE.toTypedArray()
-        val simpleTypes = MichelsonLanguage.TYPES_ALL_SIMPLE.toTypedArray()
+        val comparableTypes = MichelsonLanguage.TYPES.filter { it.isComparable }.map { it.name }.toTypedArray()
+        val simpleTypes = MichelsonLanguage.TYPES.filter { it.subtypes.isEmpty() }.map { it.name }.toTypedArray()
 
         // basic
         configureByCode("PUSH <caret>")

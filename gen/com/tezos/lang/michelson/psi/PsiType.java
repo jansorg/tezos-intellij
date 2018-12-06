@@ -4,6 +4,7 @@ package com.tezos.lang.michelson.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.tezos.lang.michelson.lang.type.TypeMetadata;
 
 public interface PsiType extends PsiAnnotated {
 
@@ -22,5 +23,8 @@ public interface PsiType extends PsiAnnotated {
   List<PsiType> findChildrenTypes();
 
   boolean hasComposedParentType();
+
+  @Nullable
+  TypeMetadata getTypeMetadata();
 
 }

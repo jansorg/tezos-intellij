@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.type.TypeMetadata;
 import com.intellij.psi.tree.IElementType;
 
 public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
@@ -53,6 +54,11 @@ public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
 
   public boolean hasComposedParentType() {
     return MichelsonPsiUtil.hasComposedParentType(this);
+  }
+
+  @Nullable
+  public TypeMetadata getTypeMetadata() {
+    return MichelsonPsiUtil.getTypeMetadata(this);
   }
 
 }

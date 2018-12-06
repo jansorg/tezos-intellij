@@ -8,7 +8,10 @@ import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.lang.instruction.NamedAnnotation
 import com.tezos.lang.michelson.lang.instruction.SimpleInstruction
 import com.tezos.lang.michelson.lang.macro.*
-import com.tezos.lang.michelson.lang.tag.*
+import com.tezos.lang.michelson.lang.tag.SimpleTagMetadata
+import com.tezos.lang.michelson.lang.tag.TagMetadata
+import com.tezos.lang.michelson.lang.type.SimpleTypeMetadata
+import com.tezos.lang.michelson.lang.type.TypeMetadata
 
 /**
  * @author jansorg
@@ -19,12 +22,36 @@ object MichelsonLanguage : Language("Michelson") {
     // PAIR, Pair and pair are different tokens
     override fun isCaseSensitive(): Boolean = true
 
-    // contract is handled by the parser in a special way
-    val TYPES_COMPARABLE = setOf("int", "nat", "string", "bytes", "mutez", "bool", "key_hash", "timestamp")
-    val TYPES_SIMPLE = setOf("address", "operation", "key", "unit", "signature")
-    val TYPES_NESTED = setOf("option", "list", "set", "pair", "or", "lambda", "map", "big_map")
-    val TYPES_ALL = TYPES_COMPARABLE + TYPES_SIMPLE + TYPES_NESTED
-    val TYPES_ALL_SIMPLE = TYPES_SIMPLE + TYPES_COMPARABLE
+    // fixme contract is handled by the parser in a special way
+    val TYPES: List<TypeMetadata> = listOf(
+            "int".type(ParameterType.COMPARABLE_TYPE),
+            "nat".type(ParameterType.COMPARABLE_TYPE),
+            "string".type(ParameterType.COMPARABLE_TYPE),
+            "bytes".type(ParameterType.COMPARABLE_TYPE),
+            "mutez".type(ParameterType.COMPARABLE_TYPE),
+            "bool".type(ParameterType.COMPARABLE_TYPE),
+            "key_hash".type(ParameterType.COMPARABLE_TYPE),
+            "timestamp".type(ParameterType.COMPARABLE_TYPE),
+            "address".type(ParameterType.TYPE),
+            "operation".type(ParameterType.TYPE),
+            "key".type(ParameterType.TYPE),
+            "unit".type(ParameterType.TYPE),
+            "signature".type(ParameterType.TYPE),
+            "option".type(ParameterType.TYPE, listOf(ParameterType.TYPE)),
+            "list".type(ParameterType.TYPE, listOf(ParameterType.TYPE)),
+            "set".type(ParameterType.TYPE, listOf(ParameterType.COMPARABLE_TYPE)),
+            "pair".type(ParameterType.TYPE, listOf(ParameterType.TYPE, ParameterType.TYPE)),
+            "or".type(ParameterType.TYPE, listOf(ParameterType.TYPE, ParameterType.TYPE)),
+            "lambda".type(ParameterType.TYPE, listOf(ParameterType.TYPE, ParameterType.TYPE)),
+            "map".type(ParameterType.TYPE, listOf(ParameterType.COMPARABLE_TYPE, ParameterType.TYPE)),
+            "big_map".type(ParameterType.TYPE, listOf(ParameterType.COMPARABLE_TYPE, ParameterType.TYPE))
+    )
+
+    val TYPE_NAMES = TYPES.map { it.name }.toSet()
+
+    fun String.type(type: ParameterType, subtypes: List<ParameterType> = emptyList()): TypeMetadata {
+        return SimpleTypeMetadata(this, type, subtypes)
+    }
 
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 

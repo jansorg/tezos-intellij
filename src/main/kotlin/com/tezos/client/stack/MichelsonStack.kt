@@ -72,7 +72,9 @@ data class MichelsonStackFrame(val type: MichelsonStackType) {
  */
 data class MichelsonStackType(val name: String, val arguments: List<MichelsonStackType> = emptyList(), val annotations: List<MichelsonStackAnnotation> = emptyList()) {
     val isComparable: Boolean
-        get() = MichelsonLanguage.TYPES_COMPARABLE.contains(name)
+        get() {
+            return MichelsonLanguage.TYPES.firstOrNull { it.name == name }?.isComparable ?: false
+        }
 
     fun asString(showNested: Boolean): String {
         if (arguments.isEmpty() || !showNested) {

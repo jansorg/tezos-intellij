@@ -11,6 +11,7 @@ import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.lang.tag.TagMetadata
+import com.tezos.lang.michelson.lang.type.TypeMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 
 /**
@@ -46,7 +47,10 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
-    fun isComparable(type: PsiType) = MichelsonLanguage.TYPES_COMPARABLE.contains(type.typeNameString)
+    fun isComparable(type: PsiType): Boolean {
+        val meta = type.typeMetadata
+        return meta != null && meta.isComparable
+    }
 
     @JvmStatic
     fun findComposedParentType(type: PsiType): PsiType? {
@@ -131,6 +135,16 @@ object MichelsonPsiUtil {
     fun getTagMetadata(psi: PsiTag): TagMetadata? {
         val name = psi.tagName
         return MichelsonLanguage.TAGS_METAS.firstOrNull { name in it.names() }
+    }
+
+    /**
+     * Returns the metadata for the given type.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTypeMetadata(psi: PsiType): TypeMetadata? {
+        val name = psi.typeNameString
+        return MichelsonLanguage.TYPES.firstOrNull { name == it.name }
     }
 
     /**
