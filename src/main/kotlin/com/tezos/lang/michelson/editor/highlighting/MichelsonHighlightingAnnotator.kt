@@ -8,10 +8,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
+import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.ParameterType
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
-import com.tezos.lang.michelson.psi.*
+import com.tezos.lang.michelson.psi.PsiGenericInstruction
+import com.tezos.lang.michelson.psi.PsiGenericType
+import com.tezos.lang.michelson.psi.PsiMacroInstruction
+import com.tezos.lang.michelson.psi.PsiType
 
 /**
  * Highlighting annotator for Michelson.
@@ -54,39 +58,26 @@ class MichelsonHighlightingAnnotator : Annotator {
      * The spec also states: to improve readability and robustness, instructions CAR and CDR.
      */
     private fun annotateInstructionAnnotations(psi: PsiGenericInstruction, holder: AnnotationHolder) {
-        val instructionName = psi.instructionName
+        val meta = psi.instructionMetadata ?: return
         val annotations = psi.annotations
         val annotationCount = annotations.size
 
         when {
             // mark annotations on instructions which do not support them
-            instructionName in MichelsonLanguage.INSTRUCTIONS_NO_ANNOTATION && annotationCount > 0 -> {
+            !meta.supportsAnnotations() && annotationCount > 0 -> {
                 for (annotation in annotations) {
                     holder.createErrorAnnotation(annotation, "Unexpected annotation")
                 }
             }
 
             annotationCount != 0 -> {
+                val maxVarAnnotations = meta.supportedAnnotations(AnnotationType.VARIABLE)
+                val maxFieldAnnotations = meta.supportedAnnotations(AnnotationType.FIELD)
+                val maxTypeAnnotations = meta.supportedAnnotations(AnnotationType.TYPE)
+
                 var varAnnotations = 0
-                val maxVarAnnotations = when (instructionName) {
-                    in MichelsonLanguage.INSTRUCTIONS_ONE_VAR_ANNOTATION -> 1
-                    in MichelsonLanguage.INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE -> 1 //fixme
-                    in MichelsonLanguage.INSTRUCTIONS_TWO_VAR_ANNOTATIONS -> 2
-                    else -> 0
-                }
-
                 var fieldAnnotations = 0
-                val maxFieldAnnotations = when {
-                    instructionName in MichelsonLanguage.INSTRUCTIONS_ONE_FIELD_ANNOTATION -> 1
-                    instructionName in MichelsonLanguage.INSTRUCTIONS_TWO_FIELD_ANNOTATIONS -> 2
-                    else -> 0
-                }
-
                 var typeAnnotations = 0
-                val maxTypeAnnotations = when {
-                    instructionName in MichelsonLanguage.INSTRUCTIONS_ONE_TYPE_ANNOTATION -> 1
-                    else -> 0
-                }
 
                 for (a in annotations) {
                     when {
@@ -201,40 +192,60 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateInstruction(psi: PsiGenericInstruction, holder: AnnotationHolder) {
         val name = psi.instructionName ?: return
-        if (MichelsonLanguage.INSTRUCTIONS_SKIP_ANNOTATIONS.contains(name)) {
-            return
-        }
 
         val instruction = psi.instructionToken
+        val meta = psi.instructionMetadata
+        if (meta == null) {
+            holder.createErrorAnnotation(instruction, "Unknown instruction")
+            return
+        }
 
         val blocks = psi.instructionBlocks
         val types = psi.typeList
         val datas = psi.dataList
 
-        val oneBlockCommand = name in MichelsonLanguage.INSTRUCTIONS_ONE_BLOCK
-        val twoBlocksCommand = name in MichelsonLanguage.INSTRUCTIONS_TWO_BLOCKS
-        val noArgsCommand = name in MichelsonLanguage.INSTRUCTIONS_NO_ARGS
-        val oneTypeCommand = MichelsonLanguage.INSTRUCTIONS_ONE_TYPE.contains(name)
-        val unknownCommand = !oneBlockCommand && !twoBlocksCommand && !noArgsCommand && !oneTypeCommand && name !in MichelsonLanguage.QUESTIONABLE_INSTRUCTIONS
+        val noArgsCommand = meta.parameters.isEmpty()
+
+        val expectedBlocks = meta.count(ParameterType.INSTRUCTION_BLOCK)
+        val expectedOptionalBlocks = meta.count(ParameterType.OPTIONAL_INSTRUCTION_BLOCK)
+
+        val expectedTypeCount = meta.count(ParameterType.TYPE) + meta.count(ParameterType.COMPARABLE_TYPE)
+        val expectedDataCount = meta.count(ParameterType.DATA)
 
         val blockCount = blocks.size
         val typeCount = types.size
         val dataCount = datas.size
+        val argsCount = blockCount + typeCount + dataCount
 
         when {
-            // commands which expect a single instruction block
-            oneBlockCommand && blockCount != 1 -> holder.createErrorAnnotation(instruction, "One block expected")
-
-            // commands which expect two instruction blocks
-            twoBlocksCommand && blockCount != 2 -> holder.createErrorAnnotation(instruction, "Two blocks expected")
+            expectedOptionalBlocks > 0 && blockCount > expectedOptionalBlocks -> when (expectedOptionalBlocks) {
+                1 -> holder.createErrorAnnotation(instruction, "At most one optional block expected")
+                else -> holder.createErrorAnnotation(instruction, "At most $expectedOptionalBlocks optional blocks expected")
+            }
 
             // commands which expect no arguments
-            noArgsCommand && (blockCount != 0 || typeCount != 0 || dataCount != 0) -> {
+            noArgsCommand && argsCount != 0 -> {
                 holder.createErrorAnnotation(instruction, "$name doesn't support arguments")
             }
 
-            // commands which support a single type argument
-            oneTypeCommand && typeCount != 1 -> holder.createErrorAnnotation(instruction, "Type argument expected")
+            // commands which expect a single instruction block
+            expectedBlocks > 0 && expectedBlocks != blockCount -> when {
+                expectedBlocks == 1 -> holder.createErrorAnnotation(instruction, "One block expected")
+                expectedBlocks == 2 -> holder.createErrorAnnotation(instruction, "Two blocks expected")
+                else -> holder.createErrorAnnotation(instruction, "$expectedBlocks blocks expected")
+            }
+
+            expectedTypeCount != typeCount -> when(expectedTypeCount){
+                0 -> holder.createErrorAnnotation(instruction, "Unexpected <type> arguments")
+                1 -> holder.createErrorAnnotation(instruction, "One <type> argument expected")
+                else -> holder.createErrorAnnotation(instruction, "$expectedDataCount <type> arguments expected")
+            }
+
+            expectedDataCount != dataCount -> when(expectedDataCount){
+                0 -> holder.createErrorAnnotation(instruction, "Unexpected <data> arguments")
+                1 -> holder.createErrorAnnotation(instruction, "One <data> argument expected")
+                else -> holder.createErrorAnnotation(instruction, "$expectedDataCount <data> arguments expected")
+            }
 
             // PUSH <type> <data>
             name == "PUSH" -> annotatePushInstruction(typeCount, dataCount, holder, instruction)
@@ -244,9 +255,6 @@ class MichelsonHighlightingAnnotator : Annotator {
 
             // LAMBDA <type> <type> { <instruction> ... }
             name == "LAMBDA" -> annotateLambdaInstruction(typeCount, holder, instruction, blockCount)
-
-            // unknown commands
-            unknownCommand -> holder.createErrorAnnotation(instruction, "Unknown instruction")
         }
     }
 
@@ -333,9 +341,9 @@ class MichelsonHighlightingAnnotator : Annotator {
             }
         }
 
-        var varAnnotations = macroMetadata.supportedAnnotations(PsiAnnotationType.VARIABLE, macro)
-        var typeAnnotations = macroMetadata.supportedAnnotations(PsiAnnotationType.TYPE, macro)
-        var fieldAnnotations = macroMetadata.supportedAnnotations(PsiAnnotationType.FIELD, macro)
+        var varAnnotations = macroMetadata.supportedAnnotations(AnnotationType.VARIABLE, macro)
+        var typeAnnotations = macroMetadata.supportedAnnotations(AnnotationType.TYPE, macro)
+        var fieldAnnotations = macroMetadata.supportedAnnotations(AnnotationType.FIELD, macro)
         for (a in psi.annotations) {
             when {
                 a.isTypeAnnotation -> {

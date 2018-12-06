@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.parser
 
 import com.tezos.lang.michelson.lang.macro.CadrMacroMetadata
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -20,14 +20,14 @@ class CadrMacroMetadataTest{
         assertNotNull(m.validate("CR"))
         assertNotNull(m.validate("CADRR"))
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "CADR"))
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "CAADDR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "CADR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "CAADDR"))
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.FIELD, "CADR"))
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.FIELD, "CAADDR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.FIELD, "CADR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.FIELD, "CAADDR"))
 
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "CADR"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "CAADDR"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "CADR"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "CAADDR"))
     }
 
     @Test

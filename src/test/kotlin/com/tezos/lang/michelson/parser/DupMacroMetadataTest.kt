@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.parser
 
 import com.tezos.lang.michelson.lang.macro.DupMacroMetadata
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -21,9 +21,9 @@ class DupMacroMetadataTest {
 
         assertEquals(0, m.requiredBlocks())
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "DUUP"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "DUUP"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.FIELD, "DUUP"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "DUUP"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "DUUP"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.FIELD, "DUUP"))
     }
 
     @Test

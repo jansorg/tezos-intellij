@@ -131,9 +131,9 @@ open class MichelsonStackVisualizationEditor(val project: Project, private val _
         when (e) {
             is DefaultClientUnavailableException -> contentPane.renderClientUnavailable()
             is TezosClientNodeUnavailableError -> contentPane.renderError("Tezos node unavailable.", "The node of the default client is not running.")
-            is TezosClientError -> when (e.cause!!.message) {
+            is TezosClientError -> when (e.cause) {
                 null -> contentPane.renderError("Error while executing the Tezos client command.")
-                else -> contentPane.renderError("Client error.", e.message)
+                else -> contentPane.renderError("Client error.", e.cause!!.message)
             }
             else -> contentPane.renderError("Error while executing the default Tezos client command.")
         }

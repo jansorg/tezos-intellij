@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.parser
 
 import com.tezos.lang.michelson.lang.macro.MapCadrMacroMetadata
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -21,13 +21,13 @@ class MapCadrMacroMetadataTest {
 
         assertEquals(1, m.requiredBlocks())
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "MAP_CAR"))
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.FIELD, "MAP_CAR"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "MAP_CAR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "MAP_CAR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.FIELD, "MAP_CAR"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "MAP_CAR"))
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "MAP_CAAADDR"))
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.FIELD, "MAP_CAAADDR"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "MAP_CAAADDR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "MAP_CAAADDR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.FIELD, "MAP_CAAADDR"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "MAP_CAAADDR"))
     }
 
     @Test

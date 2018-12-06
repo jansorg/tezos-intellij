@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.parser
 
 import com.tezos.lang.michelson.lang.macro.DipMacroMetadata
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -19,9 +19,9 @@ class DipMacroMetadataTest {
         assertNotNull("expected validation error", m.validate("DIiiiP"))
         assertNotNull("expected validation error", m.validate("DUUP"))
 
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "DIIP"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "DIIP"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.FIELD, "DIIP"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.VARIABLE, "DIIP"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "DIIP"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.FIELD, "DIIP"))
     }
 
     @Test

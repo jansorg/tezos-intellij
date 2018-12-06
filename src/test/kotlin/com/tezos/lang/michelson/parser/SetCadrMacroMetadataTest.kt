@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.parser
 
 import com.tezos.lang.michelson.lang.macro.SetCadrMacroMetadata
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -21,13 +21,13 @@ class SetCadrMacroMetadataTest {
 
         assertEquals(0, m.requiredBlocks())
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "SET_CAR"))
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.FIELD, "SET_CAR"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "SET_CAR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "SET_CAR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.FIELD, "SET_CAR"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "SET_CAR"))
 
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "SET_CAAADDR"))
-        assertEquals(1, m.supportedAnnotations(PsiAnnotationType.FIELD, "SET_CAAADDR"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "SET_CAAADDR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.VARIABLE, "SET_CAAADDR"))
+        assertEquals(1, m.supportedAnnotations(AnnotationType.FIELD, "SET_CAAADDR"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "SET_CAAADDR"))
     }
 
     @Test

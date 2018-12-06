@@ -65,7 +65,7 @@ code
     NIL <error descr="Unsupported annotation">%a</error> int ;
     CONS <error descr="Unsupported annotation">%a</error> ;
     SIZE <error descr="Unsupported annotation">%a</error> ;
-    MAP <error descr="Unsupported annotation">%a</error> int int {} ;
+    MAP <error descr="Unsupported annotation">%a</error> {} ;
     MEM <error descr="Unsupported annotation">%a</error> ;
     EMPTY_SET <error descr="Unsupported annotation">%a</error> int ;
     EMPTY_MAP <error descr="Unsupported annotation">%a</error> int int ;
@@ -189,7 +189,7 @@ code
     NIL @a int ;
     CONS @a ;
     SIZE @a ;
-    MAP @a int int {} ;
+    MAP @a {} ;
     MEM @a ;
     EMPTY_SET @a int ;
     EMPTY_MAP @a int int ;
@@ -250,7 +250,7 @@ code
     NIL int ;
     CONS ;
     SIZE ;
-    MAP int int {} ;
+    MAP {} ;
     MEM ;
     EMPTY_SET int ;
     EMPTY_MAP int int ;

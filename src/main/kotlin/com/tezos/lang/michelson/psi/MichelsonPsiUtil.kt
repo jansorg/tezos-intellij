@@ -7,7 +7,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
@@ -177,11 +177,11 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
-    fun getAnnotationType(psi: PsiAnnotation): PsiAnnotationType {
+    fun getAnnotationType(psi: PsiAnnotation): AnnotationType {
         return when (psi) {
-            is PsiTypeAnnotation -> PsiAnnotationType.TYPE
-            is PsiVariableAnnotation -> PsiAnnotationType.VARIABLE
-            is PsiFieldAnnotation -> PsiAnnotationType.FIELD
+            is PsiTypeAnnotation -> AnnotationType.TYPE
+            is PsiVariableAnnotation -> AnnotationType.VARIABLE
+            is PsiFieldAnnotation -> AnnotationType.FIELD
             else -> throw IllegalStateException("unsupported annotation type ${psi.javaClass.name}")
         }
     }

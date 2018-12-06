@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import java.util.regex.Pattern
 
 /**
@@ -46,10 +46,10 @@ class DupMacroMetadata : MacroMetadata {
 
     override fun helpContentFile(name: String): String? = "dup.txt"
 
-    override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
+    override fun supportedAnnotations(type: AnnotationType, macro: String): Int {
         return when (type) {
             // macros that produce n values on the stack accept n variable annotations, DUUP produces one
-            PsiAnnotationType.VARIABLE -> 1
+            AnnotationType.VARIABLE -> 1
             else -> 0
         }
     }

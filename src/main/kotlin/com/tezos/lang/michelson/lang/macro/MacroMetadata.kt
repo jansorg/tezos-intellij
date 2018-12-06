@@ -2,7 +2,7 @@ package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
 import com.tezos.client.stack.MichelsonStackType
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 
 data class DynamicMacroName(val name: String, val stackType: MichelsonStackType? = null, val accessedType: MichelsonStackType? = null)
 
@@ -36,7 +36,7 @@ interface MacroMetadata {
     /**
      * @return The number of supported annotations for the given type, in the range [0,]
      */
-    fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int
+    fun supportedAnnotations(type: AnnotationType, macro: String): Int
 
     /**
      * @return The expanded (i.e. de-sugared) form of the macro. If the macro or the expansion is unsupported then null is returned.

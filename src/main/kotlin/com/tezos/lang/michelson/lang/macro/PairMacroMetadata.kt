@@ -3,7 +3,7 @@ package com.tezos.lang.michelson.lang.macro
 import com.tezos.client.stack.MichelsonStack
 import com.tezos.client.stack.MichelsonStackFrame
 import com.tezos.client.stack.MichelsonStackType
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import java.util.regex.Pattern
 
 /**
@@ -81,7 +81,7 @@ class PairMacroMetadata : MacroMetadata {
         }
     }
 
-    override fun staticNames(): Collection<String> = listOf("PAIR")
+    override fun staticNames(): Collection<String> = emptyList()
 
     override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
         if (stack.size < 2) {
@@ -152,14 +152,14 @@ class PairMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
-    override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
+    override fun supportedAnnotations(type: AnnotationType, macro: String): Int {
         return when (type) {
             // one variable annotation allowed for the top-level pair put on the stack
-            PsiAnnotationType.VARIABLE -> 1
+            AnnotationType.VARIABLE -> 1
             // Field annotations for PAIR give names to leaves of the constructed nested pair
-            PsiAnnotationType.FIELD -> macro.count { it == 'A' || it == 'I' }
+            AnnotationType.FIELD -> macro.count { it == 'A' || it == 'I' }
             // one type annotations (unclear in the spec), probably for the top-most value on the stack
-            PsiAnnotationType.TYPE -> 1 //fixme not clearly defined in the spec
+            AnnotationType.TYPE -> 1 //fixme not clearly defined in the spec
         }
     }
 

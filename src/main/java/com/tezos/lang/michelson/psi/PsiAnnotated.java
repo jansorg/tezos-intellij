@@ -1,6 +1,6 @@
 package com.tezos.lang.michelson.psi;
 
-import com.tezos.lang.michelson.lang.PsiAnnotationType;
+import com.tezos.lang.michelson.lang.AnnotationType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ interface PsiAnnotated extends MichelsonComposite {
         return Collections.emptyList();
     }
 
-    default List<PsiAnnotation> findAnnotations(PsiAnnotationType type) {
+    default List<PsiAnnotation> findAnnotations(AnnotationType type) {
         List<PsiAnnotation> result = new LinkedList<>();
 
         acceptChildren(new PsiVisitor<Void>() {
@@ -37,14 +37,14 @@ interface PsiAnnotated extends MichelsonComposite {
     }
 
     default List<PsiAnnotation> getTypeAnnotations() {
-        return findAnnotations(PsiAnnotationType.TYPE);
+        return findAnnotations(AnnotationType.TYPE);
     }
 
     default List<PsiAnnotation> getVariableAnnotations() {
-        return findAnnotations(PsiAnnotationType.VARIABLE);
+        return findAnnotations(AnnotationType.VARIABLE);
     }
 
     default List<PsiAnnotation> getFieldAnnotations() {
-        return findAnnotations(PsiAnnotationType.FIELD);
+        return findAnnotations(AnnotationType.FIELD);
     }
 }

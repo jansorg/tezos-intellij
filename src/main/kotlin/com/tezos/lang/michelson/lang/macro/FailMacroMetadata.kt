@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
-import com.tezos.lang.michelson.lang.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 
 class FailMacroMetadata : MacroMetadata {
     private companion object {
@@ -25,7 +25,7 @@ class FailMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
-    override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int = 0
+    override fun supportedAnnotations(type: AnnotationType, macro: String): Int = 0
 
     override fun expand(macro: String, deepExpansion: Boolean): String? = "UNIT; FAILWITH"
 

@@ -3,7 +3,9 @@
 package com.tezos.lang.michelson.lang
 
 import com.intellij.lang.Language
+import com.tezos.lang.michelson.lang.AnnotationType.*
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
+import com.tezos.lang.michelson.lang.instruction.NamedAnnotation
 import com.tezos.lang.michelson.lang.instruction.SimpleInstruction
 import com.tezos.lang.michelson.lang.macro.*
 import com.tezos.lang.michelson.lang.tag.*
@@ -50,136 +52,122 @@ object MichelsonLanguage : Language("Michelson") {
     val CADR_MACRO: MacroMetadata = CadrMacroMetadata()
     val SET_CADR_MACRO: MacroMetadata = SetCadrMacroMetadata()
     val MAP_CADR_MACRO: MacroMetadata = MapCadrMacroMetadata()
-    val MACROS = listOf(FAIL_MACRO, ASSERT_MACROS, COMPARE_MACROS, IF_MACROS, DUUP_MACRO, DIIP_MACRO, PAIR_MACRO, UNPAIR_MACRO, CADR_MACRO, SET_CADR_MACRO, MAP_CADR_MACRO)
+    val MACROS = listOf(
+            FAIL_MACRO,
+            ASSERT_MACROS,
+            COMPARE_MACROS,
+            IF_MACROS,
+            DUUP_MACRO,
+            DIIP_MACRO,
+            PAIR_MACRO,
+            UNPAIR_MACRO,
+            CADR_MACRO,
+            SET_CADR_MACRO,
+            MAP_CADR_MACRO
+    )
     // all available static macro names, dynamic macros like DIIIP or PAPAIR are not part of this list
     val MACRO_NAMES = MACROS.flatMap { it.staticNames() }
 
     // instructions
     val INSTRUCTIONS: List<InstructionMetadata> = listOf(
-            "ABS".with(),
-            "ADD".with(),
-            "ADDRESS".with(),
-            "AMOUNT".with(),
-            "AND".with(),
-            "BALANCE".with(),
-            "BLAKE2B".with(),
-            "CAR".with(),
-            "CAST".with(),
-            "CDR".with(),
-            "CHECK_SIGNATURE".with(),
-            "COMPARE".with(),
-            "CONCAT".with(),
-            "CONS".with(),
-            "CREATE_ACCOUNT".with(),
-            "CREATE_CONTRACT".with(),
+            "ABS".with(VARIABLE to 1),
+            "ADD".with(VARIABLE to 1),
+            "ADDRESS".with(VARIABLE to 1),
+            "AMOUNT".with(VARIABLE to 1),
+            "AND".with(VARIABLE to 1),
+            "BALANCE".with(VARIABLE to 1),
+            "BLAKE2B".with(VARIABLE to 1),
+            "CAR".with(VARIABLE to 1),
+            "CAST".with(VARIABLE to 1),
+            "CDR".with(VARIABLE to 1),
+            "CHECK_SIGNATURE".with(VARIABLE to 1),
+            "COMPARE".with(VARIABLE to 1),
+            "CONCAT".with(VARIABLE to 1),
+            "CONS".with(VARIABLE to 1),
+            "CREATE_ACCOUNT".with(VARIABLE to 2),
             "DIV".with(),
             "DROP".with(),
-            "DUP".with(),
-            "EDIV".with(),
-            "EQ".with(),
-            "EXEC".with(),
+            "DUP".with(VARIABLE to 1),
+            "EDIV".with(VARIABLE to 1),
+            "EQ".with(VARIABLE to 1),
+            "EXEC".with(VARIABLE to 1),
             "FAILWITH".with(),
-            "GE".with(),
-            "GET".with(),
-            "GT".with(),
-            "HASH_KEY".with(),
-            "IMPLICIT_ACCOUNT".with(),
-            "LE".with(),
-            "LSL".with(),
-            "LSR".with(),
-            "LT".with(),
-            "MEM".with(),
-            "MUL".with(),
-            "NEG".with(),
-            "NEQ".with(),
-            "NOT".with(),
-            "NOW".with(),
-            "OR".with(),
+            "GE".with(VARIABLE to 1),
+            "GET".with(VARIABLE to 1),
+            "GT".with(VARIABLE to 1),
+            "HASH_KEY".with(VARIABLE to 1),
+            "IMPLICIT_ACCOUNT".with(VARIABLE to 1),
+            "INT".with(VARIABLE to 1),
+            "LE".with(VARIABLE to 1),
+            "LSL".with(VARIABLE to 1),
+            "LSR".with(VARIABLE to 1),
+            "LT".with(VARIABLE to 1),
+            "MEM".with(VARIABLE to 1),
+            "MOD".with(),
+            "MUL".with(VARIABLE to 1),
+            "NEG".with(VARIABLE to 1),
+            "NEQ".with(VARIABLE to 1),
+            "NOT".with(VARIABLE to 1),
+            "NOW".with(VARIABLE to 1),
+            "OR".with(VARIABLE to 1),
             "PACK".with(),
-            "PAIR".with(),
-            "RENAME".with(),
-            "SELF".with(),
-            "SENDER".with(),
-            "SET_DELEGATE".with(),
+            "PAIR".with(VARIABLE to 1, TYPE to 1, FIELD to 2),
+            "RENAME".with(VARIABLE to 1),
+            "SELF".with(VARIABLE to 1),
+            "SENDER".with(VARIABLE to 1),
+            "SET_DELEGATE".with(VARIABLE to 1),
             "SHA256".with(),
             "SHA512".with(),
-            "SIZE".with(),
-            "SLICE".with(),
-            "SOME".with(),
-            "SOURCE".with(),
-            "STEPS_TO_QUOTA".with(),
-            "SUB".with(),
+            "SIZE".with(VARIABLE to 1),
+            "SLICE".with(VARIABLE to 1), // fixme questionable
+            "SOME".with(VARIABLE to 1, TYPE to 1, FIELD to 1),
+            "SOURCE".with(VARIABLE to 1),
+            "STEPS_TO_QUOTA".with(VARIABLE to 1),
+            "SUB".with(VARIABLE to 1),
             "SWAP".with(),
-            "TRANSFER_TOKENS".with(),
-            "UNIT".with(),
-            "UPDATE".with(),
-            "XOR".with(),
-            "INT".with(),
-            "MOD".with(),
+            "TRANSFER_TOKENS".with(VARIABLE to 1), // fixme questionable
+            "UNIT".with(VARIABLE to 1, TYPE to 1), // fixme questionable var
+            "UPDATE".with(VARIABLE to 1),
+            "XOR".with(VARIABLE to 1),
             // one block
+            "CREATE_CONTRACT".with(ParameterType.OPTIONAL_INSTRUCTION_BLOCK).and(VARIABLE to 2),
             "DIP".with(ParameterType.INSTRUCTION_BLOCK),
             "ITER".with(ParameterType.INSTRUCTION_BLOCK),
             "LOOP".with(ParameterType.INSTRUCTION_BLOCK),
             "LOOP_LEFT".with(ParameterType.INSTRUCTION_BLOCK),
-            "MAP".with(ParameterType.INSTRUCTION_BLOCK),
-            "CREATE_CONTRACT".with(ParameterType.INSTRUCTION_BLOCK),
+            "MAP".with(ParameterType.INSTRUCTION_BLOCK).and(VARIABLE to 1),
             // two blocks
             "IF".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
             "IF_CONS".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
             "IF_LEFT".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
-            "IF_RIGHT".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
             "IF_NONE".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
+            "IF_RIGHT".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
             // one type
-            "CONTRACT".with(ParameterType.TYPE),
-            "EMPTY_SET".with(ParameterType.TYPE),
-            "LEFT".with(ParameterType.TYPE),
-            "NIL".with(ParameterType.TYPE),
-            "NONE".with(ParameterType.TYPE),
-            "RIGHT".with(ParameterType.TYPE),
+            "CONTRACT".with(ParameterType.TYPE).and(VARIABLE to 1),// fixme questionable annotation
+            "EMPTY_SET".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1),
+            "LEFT".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1, FIELD to 2),
+            "NIL".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1),
+            "NONE".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1, FIELD to 1),
+            "RIGHT".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1, FIELD to 2),
             "UNPACK".with(ParameterType.TYPE),
-            // one data
-            "FAILWITH".with(ParameterType.DATA),
             // other
-            "PUSH".with(ParameterType.TYPE, ParameterType.DATA),
-            "LAMBDA".with(ParameterType.TYPE, ParameterType.TYPE, ParameterType.INSTRUCTION_BLOCK),
+            "EMPTY_MAP".with(ParameterType.COMPARABLE_TYPE, ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1),
+            "LAMBDA".with(ParameterType.TYPE, ParameterType.TYPE, ParameterType.INSTRUCTION_BLOCK).and(VARIABLE to 1),
+            "PUSH".with(ParameterType.TYPE, ParameterType.DATA).and(VARIABLE to 1),
             // questionable
-            "ISNAT".with(),
-            "IS_NAT".with()
+            "IS_NAT".with(VARIABLE to 1), // fixme qustionable
+            "ISNAT".with(VARIABLE to 1) // fixme questionable
     )
 
-    val INSTRUCTIONS_NO_ARGS = INSTRUCTIONS.filter { it.parameters.isEmpty() }.map { it.name }.toSet()
+    // creates instruction metadata from an instruction name
+    private fun String.with(vararg params: ParameterType, annotations: Map<AnnotationType, Short> = emptyMap(), predefinedAnnotations: List<NamedAnnotation> = emptyList()) = SimpleInstruction(this, params.toList(), annotations, predefinedAnnotations)
 
-    // instructions which are not fully explained in the whitepaper
-    val QUESTIONABLE_INSTRUCTIONS = INSTRUCTIONS.filter { it.name == "ISNAT" || it.name == "IS_NAT" }.map { it.name }.toSet()
+    private fun String.with(vararg annotations: Pair<AnnotationType, Int>): SimpleInstruction {
+        val intMap = annotations.map { (k, v) -> k to v.toShort() }.toMap()
+        return SimpleInstruction(this, emptyList(), intMap, emptyList())
+    }
 
-    // instructions which expect one instruction block
-    val INSTRUCTIONS_ONE_BLOCK = INSTRUCTIONS.filter { it.parameters.size == 1 && it.parameters[0] == ParameterType.INSTRUCTION_BLOCK }.map { it.name }.toSet()
-    // instructions which expect two instruction blocks
-    val INSTRUCTIONS_TWO_BLOCKS = INSTRUCTIONS.filter { it.parameters.size == 2 && it.parameters[0] == ParameterType.INSTRUCTION_BLOCK && it.parameters[1] == ParameterType.INSTRUCTION_BLOCK }.map { it.name }.toSet()
-
-    // instructions which expect one type as argument
-    val INSTRUCTIONS_ONE_TYPE = INSTRUCTIONS.filter { it.parameters.size == 1 && it.parameters[0] == ParameterType.TYPE }.map { it.name }.toSet()
-
-    val INSTRUCTIONS_NO_ANNOTATION = setOf("DROP", "SWAP", "IF_NONE", "IF_LEFT", "IF_CONS", "ITER", "IF", "LOOP", "LOOP_LEFT", "DIP", "FAILWITH")
-
-    val INSTRUCTIONS_ONE_VAR_ANNOTATION = setOf("DUP", "PUSH", "UNIT", "SOME", "NONE", "PAIR", "CAR", "CDR", "LEFT", "RIGHT", "NIL", "CONS", "SIZE",
-            "MAP", "MEM", "EMPTY_SET", "EMPTY_MAP", "UPDATE", "GET", "LAMBDA", "EXEC", "ADD", "SUB", "CONCAT", "MUL", "OR", "AND", "XOR", "NOT",
-            "ABS", "IS_NAT", "INT", "NEG", "EDIV", "LSL", "LSR", "COMPARE", "EQ", "NEQ", "LT", "GT", "LE", "GE",
-            "ADDRESS", "CONTRACT", "SET_DELEGATE", "IMPLICIT_ACCOUNT", "NOW", "AMOUNT", "BALANCE", "HASH_KEY",
-            "CHECK_SIGNATURE", "BLAKE2B", "STEPS_TO_QUOTA", "SOURCE", "SENDER", "SELF", "CAST", "RENAME")
-    val INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE = setOf("TRANSFER_TOKENS", "SLICE", "UNIT")
-    val INSTRUCTIONS_TWO_VAR_ANNOTATIONS = setOf("CREATE_ACCOUNT", "CREATE_CONTRACT")
-
-    val INSTRUCTIONS_ONE_TYPE_ANNOTATION = setOf("UNIT", "PAIR", "SOME", "NONE", "LEFT", "RIGHT", "NIL", "EMPTY_SET", "EMPTY_MAP")
-
-    val INSTRUCTIONS_ONE_FIELD_ANNOTATION = setOf("NONE", "SOME")
-    val INSTRUCTIONS_TWO_FIELD_ANNOTATIONS = setOf("PAIR", "LEFT", "RIGHT")
-
-    val INSTRUCTION_NAMES: Set<String> = INSTRUCTIONS_NO_ARGS + QUESTIONABLE_INSTRUCTIONS + INSTRUCTIONS_ONE_BLOCK + INSTRUCTIONS_TWO_BLOCKS + INSTRUCTIONS_ONE_TYPE + INSTRUCTIONS_NO_ANNOTATION +
-            INSTRUCTIONS_ONE_VAR_ANNOTATION + INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE + INSTRUCTIONS_TWO_VAR_ANNOTATIONS + INSTRUCTIONS_ONE_TYPE_ANNOTATION +
-            INSTRUCTIONS_ONE_FIELD_ANNOTATION + INSTRUCTIONS_TWO_FIELD_ANNOTATIONS
-
-    val INSTRUCTIONS_SKIP_ANNOTATIONS: Set<String> = setOf("CREATE_CONTRACT")
-
-    private fun String.with(vararg params: ParameterType): InstructionMetadata = SimpleInstruction(this, params.toList())
+    private fun SimpleInstruction.and(vararg values: Pair<AnnotationType, Int>): SimpleInstruction {
+        return this.copy(annotations = values.map { (k, v) -> k to v.toShort() }.toMap())
+    }
 }
