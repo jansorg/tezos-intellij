@@ -29,14 +29,21 @@ object MichelsonLanguage : Language("Michelson") {
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 
     // tag names
-    val TAG_UNIT: TagMetadata = UnitTagMetadata()
-    val TAG_NONE: TagMetadata = NoneTagMetadata()
-    val TAG_BOOL: TagMetadata = BooleanTagMetadata()
-    val TAG_PAIR: TagMetadata = PairTagMetadata()
-    val TAG_SOME: TagMetadata = SomeMetadata()
-    val TAG_OR: TagMetadata = OrTagMetadata()
-    val TAG_ELT: TagMetadata = EltTagMetadata()
-    val TAGS_METAS = listOf(TAG_UNIT, TAG_NONE, TAG_BOOL, TAG_PAIR, TAG_SOME, TAG_OR, TAG_ELT)
+    val TAG_UNIT: TagMetadata = SimpleTagMetadata(0, "Unit")
+    val TAG_NONE: TagMetadata = SimpleTagMetadata(0, "None")
+    val TAG_BOOL: TagMetadata = SimpleTagMetadata(0, "True", "False")
+    val TAG_PAIR: TagMetadata = SimpleTagMetadata(setOf("Pair"), 2, true)
+    val TAG_SOME: TagMetadata = SimpleTagMetadata(setOf("Some"), 1, true)
+    val TAG_OR: TagMetadata = SimpleTagMetadata(setOf("Left", "Right"), 1, true)
+    val TAG_ELT: TagMetadata = SimpleTagMetadata(2, "Elt")
+    val TAGS_METAS = listOf(
+            TAG_UNIT,
+            TAG_NONE,
+            TAG_BOOL,
+            TAG_PAIR,
+            TAG_SOME,
+            TAG_OR,
+            TAG_ELT)
     val TAG_NAMES = TAGS_METAS.flatMap { it.names() }.toSet()
     val TAG_OPTION_NAMES = setOf("None", "Some")
 
@@ -63,8 +70,7 @@ object MichelsonLanguage : Language("Michelson") {
             UNPAIR_MACRO,
             CADR_MACRO,
             SET_CADR_MACRO,
-            MAP_CADR_MACRO
-    )
+            MAP_CADR_MACRO)
     // all available static macro names, dynamic macros like DIIIP or PAPAIR are not part of this list
     val MACRO_NAMES = MACROS.flatMap { it.staticNames() }
 
