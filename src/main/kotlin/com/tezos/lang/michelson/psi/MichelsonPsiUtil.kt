@@ -10,6 +10,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
+import com.tezos.lang.michelson.lang.tag.TagMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 
 /**
@@ -111,6 +112,25 @@ object MichelsonPsiUtil {
         }
 
         return prev as? PsiInstruction
+    }
+
+    /**
+     * Returns the name of the instruction.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTagName(psi: PsiTag): String {
+        return psi.firstChild.text
+    }
+
+    /**
+     * Returns the name of the instruction.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTagMetadata(psi: PsiTag): TagMetadata? {
+        val name = psi.tagName
+        return MichelsonLanguage.TAGS_METAS.firstOrNull { name in it.names() }
     }
 
     /**

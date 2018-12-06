@@ -4,6 +4,7 @@ package com.tezos.lang.michelson.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.tezos.lang.michelson.lang.tag.TagMetadata;
 
 public interface PsiTag extends PsiData {
 
@@ -15,5 +16,11 @@ public interface PsiTag extends PsiData {
 
   @Nullable
   PsiElement getTagToken();
+
+  @NotNull
+  String getTagName();
+
+  @Nullable
+  TagMetadata getTagMetadata();
 
 }

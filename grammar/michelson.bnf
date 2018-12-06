@@ -105,7 +105,7 @@ data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is 
 data_map ::= '{' ';'? map_entry (';' (map_entry | &'}'))* '}'  // empty list {} is not allowed here
 map_entry ::= 'Elt' toplevel_data toplevel_data {extends=tag}
 
-tag ::= 'Unit' | 'True' | 'False' | 'None' | TAG_TOKEN toplevel_data* {pin=1 recoverWhile=tag_recovery extends=data}
+tag ::= 'Unit' | 'True' | 'False' | 'None' | TAG_TOKEN toplevel_data* {pin=1 recoverWhile=tag_recovery extends=data methods=[getTagName getTagMetadata]}
 private tag_recovery ::= <<tag_data_recover_while>>
 
 //-- instructions

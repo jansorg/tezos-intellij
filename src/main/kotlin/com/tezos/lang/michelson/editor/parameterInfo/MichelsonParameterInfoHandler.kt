@@ -14,12 +14,12 @@ import com.tezos.lang.michelson.psi.*
 /**
  * @author jansorg
  */
-class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiElement>, DumbAware {
+class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, DumbAware {
     companion object {
         val LOG = Logger.getInstance("#tezos.paramInfo")
 
-        fun findInstruction(file: PsiFile, offset: Int, inUpdate: Boolean): PsiInstruction? {
-            LOG.debug("findInstruction @ $offset")
+        fun findTarget(file: PsiFile, offset: Int, inUpdate: Boolean): PsiElement? {
+            LOG.debug("findTarget @ $offset")
 
             var start = file.findElementAt(offset)
             if (start != null && (start.isWhitespace() || start.node.elementType == MichelsonTypes.SEMI)) {
@@ -30,15 +30,21 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiEl
             }
 
             val parent = PsiTreeUtil.findFirstParent(start, false) {
-                it is PsiInstruction
+                if (it is PsiTag) {
+                    val meta = it.tagMetadata
+                    meta != null && meta.isComplex()
+                } else {
+                    it is PsiInstruction
+                }
             }
 
             // IntelliJ calls with offset-1 when the caret is at the start of an instruction after a whitespace, we have to workaround that
             if (inUpdate && (parent == null || parent is PsiBlockInstruction)) {
-                return findInstruction(file, offset + 1, false)
+                return findTarget(file, offset + 1, false)
             }
 
             return when (parent) {
+                is PsiTag -> parent
                 is PsiBlockInstruction -> null
                 is PsiInstruction -> parent
                 else -> null
@@ -50,11 +56,11 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiEl
         return false
     }
 
-    override fun showParameterInfo(element: PsiInstruction, context: CreateParameterInfoContext) {
+    override fun showParameterInfo(element: PsiElement, context: CreateParameterInfoContext) {
         context.showHint(element, element.textRange.startOffset + 1, this)
     }
 
-    override fun updateParameterInfo(parameterOwner: PsiInstruction, context: UpdateParameterInfoContext) {
+    override fun updateParameterInfo(parameterOwner: PsiElement, context: UpdateParameterInfoContext) {
         LOG.info("updateParameterInfo")
     }
 
@@ -80,6 +86,16 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiEl
                 for (i in 0 until blocks) {
                     buffer.append(" ").append(ParameterType.INSTRUCTION_BLOCK.asPlaceholder())
                 }
+        } else if (psi is PsiTag) {
+            buffer.append(psi.tagName)
+            endOffset = buffer.length
+
+            val expected = psi.tagMetadata?.supportedValues()
+            if (expected != null) {
+                for (i in 0 until expected) {
+                    buffer.append(" <data>")
+                }
+            }
         }
 
         context.setupUIComponentPresentation(buffer.toString(), 0, endOffset, false, false, false, context.defaultParameterColor)
@@ -95,8 +111,8 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiEl
 
     override fun couldShowInLookup(): Boolean = false
 
-    override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiInstruction? {
-        val instruction = findInstruction(context.file, context.offset, true)
+    override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
+        val instruction = findTarget(context.file, context.offset, true)
         if (context.parameterOwner == null || context.parameterOwner == instruction) {
             context.parameterOwner = instruction
             return instruction
@@ -106,8 +122,8 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiInstruction, PsiEl
         return null
     }
 
-    override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiInstruction? {
-        val instruction = findInstruction(context.file, context.offset, false)
+    override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
+        val instruction = findTarget(context.file, context.offset, false)
         if (instruction != null) {
             context.itemsToShow = arrayOf(instruction)
             context.highlightedElement = instruction

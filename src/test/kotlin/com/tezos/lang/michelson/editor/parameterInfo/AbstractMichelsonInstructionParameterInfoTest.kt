@@ -10,41 +10,25 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.utils.parameterInfo.MockParameterInfoUIContext
 import com.tezos.lang.michelson.MichelsonFixtureTest
-import com.tezos.lang.michelson.psi.PsiInstruction
 import org.jetbrains.annotations.NotNull
-import org.junit.Assert
 
 /**
  * @author jansorg
  */
-class MichelsonParameterInfoTest : MichelsonFixtureTest() {
-    fun testParams() {
-        assertFunctionParams("DR<caret>OP", "DROP")
-        assertFunctionParams("DROP<caret>", "DROP")
-        assertFunctionParams("<caret>DROP", "DROP")
-
-        assertFunctionParams("<caret>PUSH int 123", "PUSH <type> <data>")
-    }
-
-    private fun assertFunctionParams(code: String, expectedRendering: String) {
-        configureByCode(code)
-        val info = requestParamInfo(myFixture.caretOffset)
-        Assert.assertEquals(expectedRendering, info.text)
-    }
-
+abstract class AbstractMichelsonInstructionParameterInfoTest : MichelsonFixtureTest() {
     /**
      * Imitates pressing of Ctrl+P; fails if results are not as expected.
      * @param offset offset of 'cursor' where Ctrl+P is pressed.
      * @return a [Collector] with collected hint info.
      */
     @NotNull
-    private fun requestParamInfo(offset: Int): Collector {
-        val handler = MichelsonParameterInfoHandler()
+    protected fun requestParamInfo(offset: Int): Collector {
+        val handler = createParamInfo()
         val collector = Collector(myFixture.file, offset, myFixture.editor)
         collector.parameterOwner = handler.findElementForParameterInfo(collector)
 
         if (collector.parameterOwner != null) {
-            handler.updateParameterInfo(collector.parameterOwner as PsiInstruction, collector)
+            handler.updateParameterInfo(collector.parameterOwner as PsiElement, collector)
 
             assert(collector.itemsToShow!!.size == 1)
             handler.updateUI(collector.itemsToShow!![0] as? PsiElement, collector)
@@ -52,6 +36,8 @@ class MichelsonParameterInfoTest : MichelsonFixtureTest() {
 
         return collector
     }
+
+    protected open fun createParamInfo(): ParameterInfoHandler<PsiElement, PsiElement> = MichelsonParameterInfoHandler() as ParameterInfoHandler<PsiElement, PsiElement>
 
     class Collector(private val file: PsiFile, private val offset: Int, private val editor: Editor) : MockParameterInfoUIContext<PsiElement?>(null), CreateParameterInfoContext, UpdateParameterInfoContext {
         private var highlightedParam: Any? = null

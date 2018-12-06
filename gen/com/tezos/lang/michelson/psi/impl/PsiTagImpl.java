@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.tag.TagMetadata;
 import com.intellij.psi.tree.IElementType;
 
 public class PsiTagImpl extends PsiDataImpl implements PsiTag {
@@ -42,6 +43,16 @@ public class PsiTagImpl extends PsiDataImpl implements PsiTag {
   @Nullable
   public PsiElement getTagToken() {
     return findPsiChildByType(TAG_TOKEN);
+  }
+
+  @NotNull
+  public String getTagName() {
+    return MichelsonPsiUtil.getTagName(this);
+  }
+
+  @Nullable
+  public TagMetadata getTagMetadata() {
+    return MichelsonPsiUtil.getTagMetadata(this);
   }
 
 }
