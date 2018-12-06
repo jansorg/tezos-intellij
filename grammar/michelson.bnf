@@ -130,11 +130,11 @@ contract_wrapper ::= '{' contract '}'
 
 //-- types
 
-type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString isComparable findComposedParentType findChildrenTypes hasComposedParentType getTypeMetadata]}
-complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeToken hasSimpleTypes hasComplexTypes]} //handle annotations at the end?
-private toplevel_type ::= nested_type | generic_type // extension to define the tokens which can be used as arguments to instructions or tags
-private nested_type ::= '(' type ')'
-generic_type ::= TYPE_NAME annotation* {name="type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
+type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findComposedParentType findChildrenTypes hasComposedParentType getTypeMetadata]}
+complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeNameString getTypeToken hasSimpleTypes hasComplexTypes] implements="com.tezos.lang.michelson.psi.PsiNamedType"} //handle annotations at the end?
+private toplevel_type ::= wrapped_type | generic_type // extension to define the tokens which can be used as arguments to instructions or tags
+wrapped_type ::= '(' type ')'
+generic_type ::= TYPE_NAME annotation* {name="type" methods=[annotations="annotation" typeToken="TYPE_NAME" getTypeNameString] implements="com.tezos.lang.michelson.psi.PsiNamedType"}
 
 //-- annotations
 

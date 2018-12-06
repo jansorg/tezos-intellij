@@ -12,10 +12,7 @@ import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.ParameterType
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
-import com.tezos.lang.michelson.psi.PsiGenericInstruction
-import com.tezos.lang.michelson.psi.PsiGenericType
-import com.tezos.lang.michelson.psi.PsiMacroInstruction
-import com.tezos.lang.michelson.psi.PsiType
+import com.tezos.lang.michelson.psi.*
 
 /**
  * Highlighting annotator for Michelson.
@@ -141,7 +138,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                         // spec: components of 'pair' types, 'option' types and 'or' types
                         // can be annotated with a field or constructor annotation
                         a.isFieldAnnotation -> {
-                            val componentType = a.findParentType()?.findComposedParentType()
+                            val componentType = a.findParentType()?.findComposedParentType() as? PsiNamedType
                             val componentTypeName = componentType?.typeNameString
 
                             val supported = componentTypeName in MichelsonLanguage.TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS

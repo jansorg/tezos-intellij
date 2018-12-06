@@ -16,6 +16,7 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitComplexType(@NotNull PsiComplexType o) {
     return visitType(o);
+    // visitNamedType(o);
   }
 
   public R visitContract(@NotNull PsiContract o) {
@@ -56,6 +57,7 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitGenericType(@NotNull PsiGenericType o) {
     return visitType(o);
+    // visitNamedType(o);
   }
 
   public R visitInstruction(@NotNull PsiInstruction o) {
@@ -96,6 +98,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitVariableAnnotation(@NotNull PsiVariableAnnotation o) {
     return visitAnnotation(o);
+  }
+
+  public R visitWrappedType(@NotNull PsiWrappedType o) {
+    return visitType(o);
   }
 
   public R visitMichelsonComposite(@NotNull MichelsonComposite o) {

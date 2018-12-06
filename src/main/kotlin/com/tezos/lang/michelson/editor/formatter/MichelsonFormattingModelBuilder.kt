@@ -20,10 +20,12 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     private companion object {
         val literals = TokenSet.create(LITERAL_DATA, STRING_LITERAL)
         val types = TokenSet.create(TYPE)
+        val typeName = TokenSet.create(TYPE_NAME)
+        val wrappedType = TokenSet.create(WRAPPED_TYPE)
 
         val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
         val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
-        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG_TOKEN, COMPLEX_TYPE), MichelsonTokenSets.TYPE_NAMES)
+        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG_TOKEN, COMPLEX_TYPE, WRAPPED_TYPE), MichelsonTokenSets.TYPE_NAMES)
         val allArguments = TokenSet.orSet(types, literals, MichelsonTokenSets.TYPE_NAMES, MichelsonTokenSets.LITERAL_TOKENS, annotations)
         val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION, EMPTY_BLOCK)
     }
@@ -55,10 +57,12 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
         // first element of a complex type is only wrapped when both wrap_first and align_complex_types are enabled
-        val nestedTypes = TokenSet.create(GENERIC_TYPE, LEFT_PAREN)
+        val nestedTypes = TokenSet.create(GENERIC_TYPE, WRAPPED_TYPE)
         builder.betweenInside(TokenSet.create(TYPE_NAME), nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST && michelsonSettings.COMPLEX_TYPE_ALIGN, true, true)
         builder.betweenInside(nestedTypes, nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true)
         builder.beforeInside(nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
+
+        //builder.betweenInside(WRAPPED_TYPE, WRAPPED_TYPE, COMPLEX_TYPE).lineBreakOrForceSpace(true, true)
 
         // comments
         // split token prefix + content inside of a line comment still have the COMMENT_LINE token type

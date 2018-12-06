@@ -33,6 +33,7 @@ public interface MichelsonTypes {
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
   IElementType VARIABLE_ANNOTATION = new MichelsonCompositeElementType("VARIABLE_ANNOTATION");
+  IElementType WRAPPED_TYPE = new MichelsonCompositeElementType("WRAPPED_TYPE");
 
   IElementType BYTE = new MichelsonElementType("BYTE");
   IElementType COMMENT_LINE = new MichelsonElementType("COMMENT_LINE");
@@ -112,14 +113,14 @@ public interface MichelsonTypes {
       else if (type == TAG) {
         return new PsiTagImpl(type);
       }
-      else if (type == TYPE) {
-        return new PsiTypeImpl(type);
-      }
       else if (type == TYPE_ANNOTATION) {
         return new PsiTypeAnnotationImpl(type);
       }
       else if (type == VARIABLE_ANNOTATION) {
         return new PsiVariableAnnotationImpl(type);
+      }
+      else if (type == WRAPPED_TYPE) {
+        return new PsiWrappedTypeImpl(type);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

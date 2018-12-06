@@ -8,19 +8,13 @@ import com.tezos.lang.michelson.lang.type.TypeMetadata;
 
 public interface PsiType extends PsiAnnotated {
 
-  @Nullable
-  PsiType getType();
-
-  @NotNull
-  String getTypeNameString();
-
   boolean isComparable();
 
   @Nullable
-  PsiType findComposedParentType();
+  PsiNamedType findComposedParentType();
 
   @NotNull
-  List<PsiType> findChildrenTypes();
+  List<PsiNamedType> findChildrenTypes();
 
   boolean hasComposedParentType();
 

@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiGenericType extends PsiType, PsiNamedType {
+public interface PsiWrappedType extends PsiType {
 
   @NotNull
-  List<PsiAnnotation> getAnnotations();
-
-  @NotNull
-  PsiElement getTypeToken();
-
-  @NotNull
-  String getTypeNameString();
+  PsiType getType();
 
 }

@@ -39,6 +39,11 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
   }
 
   @NotNull
+  public String getTypeNameString() {
+    return MichelsonPsiUtil.getTypeNameString(this);
+  }
+
+  @NotNull
   public PsiElement getTypeToken() {
     return MichelsonPsiUtil.getTypeToken(this);
   }

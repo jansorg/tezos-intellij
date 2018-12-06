@@ -94,7 +94,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 }
 
                 // align types in complex types which contain at least one complex type
-                (childType == GENERIC_TYPE || childType == LEFT_PAREN) && nodePsi is PsiComplexType && !nodePsi.hasSimpleTypes() -> {
+                (childType == GENERIC_TYPE || childType == WRAPPED_TYPE) && nodePsi is PsiComplexType && !nodePsi.hasSimpleTypes() -> {
                     MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), blockChildAlign, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 

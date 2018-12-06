@@ -34,6 +34,11 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
                     val meta = it.tagMetadata
                     meta != null && meta.isComplex()
                 } else if (it is PsiType) {
+                    if (inUpdate) {
+                        LOG.debug("d")
+                    } else {
+                        LOG.debug("s")
+                    }
                     val meta = it.typeMetadata
                     meta != null && meta.subtypes.isNotEmpty()
                 } else {
@@ -100,7 +105,7 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
                     buffer.append(" <data>")
                 }
             }
-        } else if (psi is PsiType) {
+        } else if (psi is PsiNamedType) {
             buffer.append(psi.typeNameString)
             endOffset = buffer.length
 

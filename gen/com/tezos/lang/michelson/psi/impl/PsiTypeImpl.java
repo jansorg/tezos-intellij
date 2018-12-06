@@ -12,7 +12,7 @@ import com.tezos.lang.michelson.psi.*;
 import com.tezos.lang.michelson.lang.type.TypeMetadata;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
+public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
 
   public PsiTypeImpl(@NotNull IElementType type) {
     super(type);
@@ -27,28 +27,17 @@ public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiType getType() {
-    return PsiTreeUtil.getChildOfType(this, PsiType.class);
-  }
-
-  @NotNull
-  public String getTypeNameString() {
-    return MichelsonPsiUtil.getTypeNameString(this);
-  }
-
   public boolean isComparable() {
     return MichelsonPsiUtil.isComparable(this);
   }
 
   @Nullable
-  public PsiType findComposedParentType() {
+  public PsiNamedType findComposedParentType() {
     return MichelsonPsiUtil.findComposedParentType(this);
   }
 
   @NotNull
-  public List<PsiType> findChildrenTypes() {
+  public List<PsiNamedType> findChildrenTypes() {
     return MichelsonPsiUtil.findChildrenTypes(this);
   }
 

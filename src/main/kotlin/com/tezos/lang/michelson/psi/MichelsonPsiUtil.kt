@@ -6,8 +6,8 @@ import com.intellij.psi.impl.source.tree.TreeUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.tezos.lang.michelson.MichelsonTypes
-import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.AnnotationType
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.lang.tag.TagMetadata
@@ -53,8 +53,12 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
-    fun findComposedParentType(type: PsiType): PsiType? {
-        return type.parent as? PsiType
+    fun findComposedParentType(type: PsiType): PsiNamedType? {
+        val parent = type.parent
+        return when (parent) {
+            is PsiWrappedType -> parent.parent as? PsiNamedType
+            else -> type.parent as? PsiNamedType
+        }
     }
 
     @JvmStatic
@@ -66,7 +70,12 @@ object MichelsonPsiUtil {
      * Returns the children types of a composed type. Returns an empty list when no types were found.
      */
     @JvmStatic
-    fun findChildrenTypes(type: PsiType): List<PsiType> = type.children.mapNotNull { it as? PsiType }
+    fun findChildrenTypes(type: PsiType): List<PsiNamedType> = type.children.mapNotNull {
+        when (it) {
+            is PsiWrappedType -> it.type as? PsiNamedType
+            else -> it as? PsiNamedType
+        }
+    }
 
     /**
      * Returns the PSIElement which contains the type's name token, which is a leaf in the PSI tree.
@@ -143,8 +152,10 @@ object MichelsonPsiUtil {
      */
     @JvmStatic
     fun getTypeMetadata(psi: PsiType): TypeMetadata? {
-        val name = psi.typeNameString
-        return MichelsonLanguage.TYPES.firstOrNull { name == it.name }
+        return (psi as? PsiNamedType)?.let {
+            val name = psi.typeNameString
+            return MichelsonLanguage.TYPES.firstOrNull { name == it.name }
+        }
     }
 
     /**

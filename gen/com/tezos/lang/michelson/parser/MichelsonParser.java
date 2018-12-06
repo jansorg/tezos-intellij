@@ -89,6 +89,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == VARIABLE_ANNOTATION) {
       result = variable_annotation(builder, 0);
     }
+    else if (type == WRAPPED_TYPE) {
+      result = wrapped_type(builder, 0);
+    }
     else {
       result = parse_root_(type, builder, 0);
     }
@@ -100,7 +103,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(COMPLEX_TYPE, GENERIC_TYPE, TYPE),
+    create_token_set_(COMPLEX_TYPE, GENERIC_TYPE, TYPE, WRAPPED_TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
     create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, MAP_ENTRY,
       STRING_LITERAL, TAG),
@@ -594,20 +597,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '(' type ')'
-  static boolean nested_type(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "nested_type")) return false;
-    if (!nextTokenIs(builder, LEFT_PAREN)) return false;
-    boolean result;
-    Marker marker = enter_section_(builder);
-    result = consumeToken(builder, LEFT_PAREN);
-    result = result && type(builder, level + 1);
-    result = result && consumeToken(builder, RIGHT_PAREN);
-    exit_section_(builder, marker, null, result);
-    return result;
-  }
-
-  /* ********************************************************** */
   // 'parameter' toplevel_type ';'
   static boolean parameter_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "parameter_section")) return false;
@@ -781,12 +770,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // nested_type | generic_type
+  // wrapped_type | generic_type
   static boolean toplevel_type(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "toplevel_type")) return false;
     if (!nextTokenIs(builder, "", LEFT_PAREN, TYPE_NAME)) return false;
     boolean result;
-    result = nested_type(builder, level + 1);
+    result = wrapped_type(builder, level + 1);
     if (!result) result = generic_type(builder, level + 1);
     return result;
   }
@@ -824,6 +813,20 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, VAR_ANNOTATION_TOKEN);
     exit_section_(builder, marker, VARIABLE_ANNOTATION, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // '(' type ')'
+  public static boolean wrapped_type(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "wrapped_type")) return false;
+    if (!nextTokenIs(builder, LEFT_PAREN)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, LEFT_PAREN);
+    result = result && type(builder, level + 1);
+    result = result && consumeToken(builder, RIGHT_PAREN);
+    exit_section_(builder, marker, WRAPPED_TYPE, result);
     return result;
   }
 
