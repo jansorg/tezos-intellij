@@ -148,15 +148,6 @@ object MichelsonPsiUtil {
     }
 
     /**
-     * Returns the metadata for the given type.
-     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
-     */
-    @JvmStatic
-    fun getAnnotations(psi: PsiSimpleType): List<PsiAnnotation> {
-        return emptyList()
-    }
-
-    /**
      * Returns if element is the first child of a code section in the main contract
      */
     @JvmStatic
@@ -239,7 +230,13 @@ object MichelsonPsiUtil {
     fun isFieldAnnotation(psi: PsiAnnotation): Boolean = psi is PsiFieldAnnotation
 
     @JvmStatic
-    fun findParentType(psi: PsiAnnotation): PsiType? = psi.parent as? PsiType
+    fun findParentType(psi: PsiAnnotation): PsiType? {
+        val parent = psi.parent
+        return when (parent) {
+            is PsiAnnotationList-> parent.parent as? PsiType
+            else -> parent as? PsiType
+        }
+    }
 
     @JvmStatic
     fun findParentInstruction(psi: PsiAnnotationList): PsiInstruction? = psi.parent as? PsiInstruction

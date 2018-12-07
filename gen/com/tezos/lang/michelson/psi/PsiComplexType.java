@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiComplexType extends PsiType {
 
-  @NotNull
+  @Nullable
   PsiAnnotationList getAnnotationList();
 
   @Nullable

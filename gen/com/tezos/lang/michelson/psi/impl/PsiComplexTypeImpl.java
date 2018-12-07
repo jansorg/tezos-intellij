@@ -27,7 +27,7 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiAnnotationList getAnnotationList() {
     return PsiTreeUtil.getChildOfType(this, PsiAnnotationList.class);
   }

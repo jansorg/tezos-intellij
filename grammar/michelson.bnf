@@ -120,10 +120,10 @@ private simple_instruction ::=
   | macro_instruction
 
 // types and arguments must be validated by annotator, method "annotations" implements interface PsiAnnotated
-generic_instruction ::= INSTRUCTION_TOKEN annotation_list (toplevel_data | type | block_instruction)* {methods=[instructionBlocks="block_instruction" getInstructionMetadata] pin=1 recoverWhile=instruction_recover}
-create_contract_instruction ::= 'CREATE_CONTRACT' annotation_list contract_wrapper? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[] extends=generic_instruction}
+generic_instruction ::= INSTRUCTION_TOKEN annotation_list? (toplevel_data | type | block_instruction)* {methods=[instructionBlocks="block_instruction" getInstructionMetadata] pin=1 recoverWhile=instruction_recover}
+create_contract_instruction ::= 'CREATE_CONTRACT' annotation_list? contract_wrapper? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[] extends=generic_instruction}
 // generic parsing of macros, needs further validation in annotator
-macro_instruction ::= MACRO_TOKEN annotation_list block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[instructionBlocks="block_instruction" getMacroMetadata] pin=1 recoverWhile=instruction_recover}
+macro_instruction ::= MACRO_TOKEN annotation_list? block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[instructionBlocks="block_instruction" getMacroMetadata] pin=1 recoverWhile=instruction_recover}
 // uses an external rule because the GrammarKit doesn't seem to handle recover look-aheads without consuming tokens
 private instruction_recover ::= <<instruction_recover_while>>
 
@@ -132,10 +132,10 @@ contract_wrapper ::= '{' contract '}'
 //-- types
 type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString]}
 simple_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type" methods=[getTypeToken]}
-complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list type* ')' {name="type" methods=[typeArguments="type" getTypeToken hasSimpleTypes hasComplexTypes]}
+complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* ')' {name="type" methods=[typeArguments="type" getTypeToken hasSimpleTypes hasComplexTypes]}
 
 //-- annotations
-annotation_list ::= annotation* {methods=[annotations="annotation" findParentInstruction]}
+annotation_list ::= annotation+ {methods=[annotations="annotation" findParentInstruction]}
 annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentAnnotationList findParentType]}
 type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"]}
 variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"]}

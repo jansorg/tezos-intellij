@@ -1,5 +1,7 @@
 package com.tezos.lang.michelson.psi;
 
+import com.google.common.collect.Lists;
+import com.intellij.psi.PsiElement;
 import com.tezos.lang.michelson.lang.AnnotationType;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,10 +16,23 @@ import java.util.List;
  */
 interface PsiAnnotated extends MichelsonComposite {
     /**
-     * @return The annotations of the current element, default to an empty list.
+     * @return The annotations of the current element
      */
     default List<PsiAnnotation> getAnnotations() {
-        return Collections.emptyList();
+        List<PsiAnnotation> annotations = Lists.newLinkedList();
+
+        PsiElement child = getFirstChild();
+        while (child != null) {
+            if (child instanceof PsiAnnotation) {
+                annotations.add((PsiAnnotation) child);
+            } else if (child instanceof PsiAnnotationList) {
+                annotations.addAll(((PsiAnnotationList) child).getAnnotations());
+            }
+
+            child = child.getNextSibling();
+        }
+
+        return annotations;
     }
 
     default List<PsiAnnotation> findAnnotations(AnnotationType type) {

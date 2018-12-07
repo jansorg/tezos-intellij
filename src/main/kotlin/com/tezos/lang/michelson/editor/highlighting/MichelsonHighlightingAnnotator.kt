@@ -128,6 +128,7 @@ class MichelsonHighlightingAnnotator : Annotator {
             annotationCount > 0 -> {
                 var typeAnnotations = 0
                 var fieldAnnotations = 0
+
                 for (a in annotations) {
                     when {
                         a.isTypeAnnotation -> when {
@@ -138,8 +139,9 @@ class MichelsonHighlightingAnnotator : Annotator {
                         // spec: components of 'pair' types, 'option' types and 'or' types
                         // can be annotated with a field or constructor annotation
                         a.isFieldAnnotation -> {
-                            val componentType = a.findParentType()?.findParentType()
-                            val componentTypeName = componentType?.typeNameString
+                            // the complex type wrapping the simple type which contains the annotation
+                            val complexParentType = a.findParentType()?.findParentType()
+                            val componentTypeName = complexParentType?.typeNameString
 
                             val supported = componentTypeName in MichelsonLanguage.TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS
                             when {
@@ -232,13 +234,13 @@ class MichelsonHighlightingAnnotator : Annotator {
                 else -> holder.createErrorAnnotation(instruction, "$expectedBlocks blocks expected")
             }
 
-            expectedTypeCount != typeCount -> when(expectedTypeCount){
+            expectedTypeCount != typeCount -> when (expectedTypeCount) {
                 0 -> holder.createErrorAnnotation(instruction, "Unexpected <type> arguments")
                 1 -> holder.createErrorAnnotation(instruction, "One <type> argument expected")
                 else -> holder.createErrorAnnotation(instruction, "$expectedDataCount <type> arguments expected")
             }
 
-            expectedDataCount != dataCount -> when(expectedDataCount){
+            expectedDataCount != dataCount -> when (expectedDataCount) {
                 0 -> holder.createErrorAnnotation(instruction, "Unexpected <data> arguments")
                 1 -> holder.createErrorAnnotation(instruction, "One <data> argument expected")
                 else -> holder.createErrorAnnotation(instruction, "$expectedDataCount <data> arguments expected")
