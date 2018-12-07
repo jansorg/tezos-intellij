@@ -71,6 +71,7 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
 
     override fun updateParameterInfo(parameterOwner: PsiElement, context: UpdateParameterInfoContext) {
         LOG.info("updateParameterInfo")
+        // fixme compute the current paremter index for improved highlighting of the active parameter in updateUI
     }
 
     override fun updateUI(psi: PsiElement?, context: ParameterInfoUIContext) {
