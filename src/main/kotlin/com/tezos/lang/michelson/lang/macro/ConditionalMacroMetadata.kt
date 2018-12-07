@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
-import com.tezos.lang.michelson.psi.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 
 class ConditionalMacroMetadata : MacroMetadata {
     companion object {
@@ -46,7 +46,7 @@ class ConditionalMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 2
 
-    override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int = 0
+    override fun supportedAnnotations(type: AnnotationType, macro: String): Int = 0
 
     override fun helpContentFile(name: String): String? {
         return when {

@@ -1,4 +1,5 @@
 # Version 0.9.0
+- Feature: Support parameter info `View > Parameter Info` for instructions, types and tags
 - Fix wrong indentation after pressing enter in the code section
 - Don't suggest instructions at top level of a file
 - Don't suggest instructions inside of comments
@@ -6,6 +7,7 @@
 - Show stack visualization when the caret is on the code keyword
 - Always show stack visualization when the caret in on an annotation, this is a limitation of the Tezos client
 - Don't suppress updates to stack visualization if more than one document update was triggered at a time, e.g. at startup
+- Fixes to the formatter
 
 # Version 0.8.0
 - Feature: Support `View > Quick documentation` for instructions, types and tags.

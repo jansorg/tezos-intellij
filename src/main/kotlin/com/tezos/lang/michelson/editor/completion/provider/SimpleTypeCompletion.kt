@@ -11,14 +11,12 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 class SimpleTypeCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         if (parameters.completionType == CompletionType.BASIC) {
-            for (name in MichelsonLanguage.TYPES_COMPARABLE) {
-                val item = LookupElementBuilder.create(name).withTypeText("comparable type", true)
-                result.addElement(item)
-            }
-
-            for (name in MichelsonLanguage.TYPES_SIMPLE) {
-                val item = LookupElementBuilder.create(name).withTypeText("type", true)
-                result.addElement(item)
+            for (type in MichelsonLanguage.TYPES) {
+                if (type.isSimple) {
+                    val typeName = if (type.isComparable) "comparable type" else "type"
+                    val item = LookupElementBuilder.create(type.name).withTypeText(typeName, true)
+                    result.addElement(item)
+                }
             }
         }
     }

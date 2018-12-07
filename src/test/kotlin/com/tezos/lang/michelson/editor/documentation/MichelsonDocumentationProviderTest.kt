@@ -11,11 +11,11 @@ import org.junit.Assert
  */
 class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
     fun testInstructions() {
-        for (i in MichelsonLanguage.INSTRUCTIONS) {
-            configureByCode("$i<caret>")
+        for (meta in MichelsonLanguage.INSTRUCTIONS) {
+            configureByCode("${meta.name}<caret>")
             val doc = findDocumentation()
-            if (i !in setOf("INT", "MOD") + MichelsonLanguage.QUESTIONABLE_INSTRUCTIONS) { //INT and MOD are undocumented so far but shouldn't be in the questionable set
-                Assert.assertTrue("documentation for instruction '$i' must not be null or empty.", !doc.isNullOrEmpty())
+            if (meta.name !in setOf("INT", "MOD", "ISNAT", "IS_NAT")) { //INT and MOD are undocumented so far but shouldn't be in the questionable set
+                Assert.assertTrue("documentation for instruction '${meta.name}' must not be null or empty.", !doc.isNullOrEmpty())
             }
         }
     }
@@ -36,7 +36,7 @@ class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
         }
     }
 
-    fun testTypes(){
+    fun testTypes() {
         assertDocs("NIL in<caret>t")
         assertDocs("NIL string<caret>")
         assertDocs("NIL nat<caret>")
@@ -61,7 +61,7 @@ class MichelsonDocumentationProviderTest : MichelsonFixtureTest() {
         assertDocs("NIL unit<caret>")
     }
 
-    fun testTags(){
+    fun testTags() {
         assertDocs("PUSH (map int int) { Elt<caret> 123 123 }")
         assertDocs("PUSH bool False<caret>")
         assertDocs("PUSH bool True<caret>")

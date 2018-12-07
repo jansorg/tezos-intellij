@@ -6,7 +6,7 @@ MICHELSON_FILE
         PsiElement({)('{')
         PsiElement(GENERIC_INSTRUCTION)
           PsiElement(INSTRUCTION_TOKEN)('PUSH')
-          PsiElement(GENERIC_TYPE)
+          PsiElement(SIMPLE_TYPE)
             PsiElement(TYPE_NAME)('bool')
           PsiElement(TAG)
             PsiElement(TAG_TOKEN)('Tr')

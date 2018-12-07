@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.macro.MacroMetadata;
 import com.intellij.psi.tree.IElementType;
 
 public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMacroInstruction {
@@ -27,6 +28,12 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
   }
 
   @Override
+  @Nullable
+  public PsiAnnotationList getAnnotationList() {
+    return PsiTreeUtil.getChildOfType(this, PsiAnnotationList.class);
+  }
+
+  @Override
   @NotNull
   public PsiElement getMacroToken() {
     return findPsiChildByType(MACRO_TOKEN);
@@ -34,14 +41,13 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
 
   @Override
   @NotNull
-  public List<PsiAnnotation> getAnnotations() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
-  }
-
-  @Override
-  @NotNull
   public List<PsiBlockInstruction> getInstructionBlocks() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
+  }
+
+  @Nullable
+  public MacroMetadata getMacroMetadata() {
+    return MichelsonPsiUtil.getMacroMetadata(this);
   }
 
 }

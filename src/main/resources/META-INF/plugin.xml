@@ -18,6 +18,19 @@
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.9.0</b>
+        <ul>
+            <li>Feature: Support parameter info 'View > Parameter Info' for instructions, types and tags</li>
+            <li>Fix wrong indentation after pressing enter in the code section</li>
+            <li>Don't suggest instructions at top level of a file</li>
+            <li>Don't suggest instructions inside of comments</li>
+            <li>Show all simple types when completing after instructions, not just the comparable types</li>
+            <li>Show stack visualization when the caret is on the code keyword</li>
+            <li>Always show stack visualization when the caret in on an annotation, this is a limitation of the Tezos client</li>
+            <li>Don't suppress updates to stack visualization if more than one document update was triggered at a time, e.g. at startup</li>
+            <li>Fixes to the formatter</li>
+        </ul><br><br>
+
         <b>Version 0.8.0</b>
         <ul>
             <li>Feature: Support View > Quick documentation for instructions, types and tags.</li>
@@ -99,6 +112,9 @@
 
         <!-- code completion -->
         <completion.contributor language="Michelson" implementationClass="com.tezos.lang.michelson.editor.completion.MichelsonCompletionContributor" />
+
+        <!-- signature info -->
+        <codeInsight.parameterInfo language="Michelson" implementationClass="com.tezos.lang.michelson.editor.parameterInfo.MichelsonParameterInfoHandler"/>
 
         <!-- stack visualization -->
         <fileEditorProvider implementation="com.tezos.lang.michelson.editor.stack.MichelsonSplitEditorProvider" />

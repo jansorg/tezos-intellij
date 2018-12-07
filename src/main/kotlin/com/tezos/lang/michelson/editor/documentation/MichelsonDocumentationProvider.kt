@@ -10,10 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ResourceUtil
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
-import com.tezos.lang.michelson.psi.PsiInstruction
-import com.tezos.lang.michelson.psi.PsiMacroInstruction
-import com.tezos.lang.michelson.psi.PsiTag
-import com.tezos.lang.michelson.psi.PsiType
+import com.tezos.lang.michelson.psi.*
 
 /**
  * Provides documentation for Michelson instructions.

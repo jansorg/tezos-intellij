@@ -5,10 +5,10 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
 /**
  * @author jansorg
  */
-class MichelsonComplexTypeCompletionContributorTest:MichelsonCompletionTest(){
+class MichelsonComplexTypeCompletionContributorTest : MichelsonCompletionTest() {
     fun testCompletion() {
-        val referenceComplex = MichelsonLanguage.TYPES_NESTED.toTypedArray()
-        val referenceComparable = MichelsonLanguage.TYPES_COMPARABLE.toTypedArray()
+        val referenceComplex = MichelsonLanguage.TYPES.filter { it.subtypes.isNotEmpty() }.map { it.name }.toTypedArray()
+        val referenceComparable = MichelsonLanguage.TYPES.filter { it.isComparable }.map { it.name }.toTypedArray()
         val all = referenceComplex + referenceComparable
 
         // basic

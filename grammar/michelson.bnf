@@ -34,6 +34,7 @@
     extends("data_.+")=data
     extends(".+_type")=type
     extends(".+_instruction")=instruction
+    extends(".+_annotation")=annotation
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
@@ -85,9 +86,9 @@ private script_file ::= contract?
 contract ::= section+ { methods=[sections="section" isMainContract] }
 
 section ::= parameter_section | return_section | storage_section | code_section {methods=[instructions="instruction" getSectionType]}
-private parameter_section ::= 'parameter' toplevel_type ';' {pin=1}
-private return_section ::= 'return' toplevel_type ';' {pin=1}
-private storage_section ::= 'storage' toplevel_type ';' {pin=1}
+private parameter_section ::= 'parameter' type ';' {pin=1}
+private return_section ::= 'return' type ';' {pin=1}
+private storage_section ::= 'storage' type ';' {pin=1}
 private code_section ::= 'code' instruction ';'? {pin=1}
 
 empty_block ::= '{' ';'? '}' {extends=block_instruction}
@@ -105,7 +106,7 @@ data_list ::= '{' ';'? toplevel_data (';' (toplevel_data | &'}'))* '}' // {} is 
 data_map ::= '{' ';'? map_entry (';' (map_entry | &'}'))* '}'  // empty list {} is not allowed here
 map_entry ::= 'Elt' toplevel_data toplevel_data {extends=tag}
 
-tag ::= 'Unit' | 'True' | 'False' | 'None' | TAG_TOKEN toplevel_data* {pin=1 recoverWhile=tag_recovery extends=data}
+tag ::= 'Unit' | 'True' | 'False' | 'None' | TAG_TOKEN toplevel_data* {pin=1 recoverWhile=tag_recovery extends=data methods=[getTagName getTagMetadata]}
 private tag_recovery ::= <<tag_data_recover_while>>
 
 //-- instructions
@@ -119,26 +120,23 @@ private simple_instruction ::=
   | macro_instruction
 
 // types and arguments must be validated by annotator, method "annotations" implements interface PsiAnnotated
-generic_instruction ::= INSTRUCTION_TOKEN annotation* (toplevel_data | toplevel_type | block_instruction)* {methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
-create_contract_instruction ::= 'CREATE_CONTRACT' annotation* contract_wrapper? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation"] extends=generic_instruction}
+generic_instruction ::= INSTRUCTION_TOKEN annotation_list? (toplevel_data | type | block_instruction)* {methods=[instructionBlocks="block_instruction" getInstructionMetadata] pin=1 recoverWhile=instruction_recover}
+create_contract_instruction ::= 'CREATE_CONTRACT' annotation_list? contract_wrapper? {pin=1 implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[] extends=generic_instruction}
 // generic parsing of macros, needs further validation in annotator
-macro_instruction ::= MACRO_TOKEN annotation* block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[annotations="annotation" instructionBlocks="block_instruction"] pin=1 recoverWhile=instruction_recover}
+macro_instruction ::= MACRO_TOKEN annotation_list? block_instruction* {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[instructionBlocks="block_instruction" getMacroMetadata] pin=1 recoverWhile=instruction_recover}
 // uses an external rule because the GrammarKit doesn't seem to handle recover look-aheads without consuming tokens
 private instruction_recover ::= <<instruction_recover_while>>
 
 contract_wrapper ::= '{' contract '}'
 
 //-- types
-
-type ::= complex_type | toplevel_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[getTypeNameString isComparable findComposedParentType findChildrenTypes hasComposedParentType]}
-complex_type ::= ('option' | 'list' | 'set' | 'contract' | 'pair' | 'or' | 'lambda' | 'map' | 'big_map') annotation* toplevel_type+ {methods=[annotations="annotation" getTypeToken hasSimpleTypes hasComplexTypes]} //handle annotations at the end?
-private toplevel_type ::= nested_type | generic_type // extension to define the tokens which can be used as arguments to instructions or tags
-private nested_type ::= '(' type ')'
-generic_type ::= TYPE_NAME annotation* {name="type" methods=[annotations="annotation" typeToken="TYPE_NAME"]}
+type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString]}
+simple_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type" methods=[getTypeToken]}
+complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* ')' {name="type" methods=[typeArguments="type" getTypeToken hasSimpleTypes hasComplexTypes]}
 
 //-- annotations
-
-annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentType findParentData]}
-type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"] extends=annotation}
-variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"] extends=annotation}
-field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"] extends=annotation}
+annotation_list ::= annotation+ {methods=[annotations="annotation" findParentInstruction]}
+annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentAnnotationList findParentType]}
+type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"]}
+variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"]}
+field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"]}

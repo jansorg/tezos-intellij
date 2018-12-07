@@ -2,7 +2,7 @@ package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
 import com.tezos.client.stack.MichelsonStackType
-import com.tezos.lang.michelson.psi.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import java.util.regex.Pattern
 
 /**
@@ -69,16 +69,16 @@ class UnpairMacroMetadata : MacroMetadata {
 
     override fun requiredBlocks(): Int = 0
 
-    override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
+    override fun supportedAnnotations(type: AnnotationType, macro: String): Int {
         val chars = macro.toCharArray()
         return when (type) {
             // variable annotations for each variable put on the stack by deconstruction the pairs
-            PsiAnnotationType.VARIABLE -> chars.count { it == 'A' || it == 'I' }
+            AnnotationType.VARIABLE -> chars.count { it == 'A' || it == 'I' }
             // fixme It's unclear wh FIELD annotations are supported for UNPAIR,
             // fixme the spec doesn't mention this, but test/data/contracts/tezos-repo/unpair_macro.tz contains this and is successfully validated by the tezos client
-            PsiAnnotationType.FIELD -> chars.count { it == 'A' || it == 'I' }
+            AnnotationType.FIELD -> chars.count { it == 'A' || it == 'I' }
             // no type annotations are supported by UNPAIR
-            PsiAnnotationType.TYPE -> 0
+            AnnotationType.TYPE -> 0
         }
     }
 

@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.lang.macro
 
 import com.tezos.client.stack.MichelsonStack
-import com.tezos.lang.michelson.psi.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import java.util.regex.Pattern
 
 /**
@@ -13,7 +13,7 @@ class CadrMacroMetadata : MacroMetadata {
         val regexp = Pattern.compile("C[AD]+R")
     }
 
-    override fun staticNames(): Collection<String> = listOf("CAR", "CDR")
+    override fun staticNames(): Collection<String> = emptyList()
 
     override fun dynamicNames(stack: MichelsonStack): Collection<DynamicMacroName> {
         if (stack.isEmpty || stack.top!!.type.name != "pair") {
@@ -50,11 +50,11 @@ class CadrMacroMetadata : MacroMetadata {
         }
     }
 
-    override fun supportedAnnotations(type: PsiAnnotationType, macro: String): Int {
+    override fun supportedAnnotations(type: AnnotationType, macro: String): Int {
         return when (type) {
-            PsiAnnotationType.VARIABLE -> 1
-            PsiAnnotationType.FIELD -> 1
-            PsiAnnotationType.TYPE -> 0
+            AnnotationType.VARIABLE -> 1
+            AnnotationType.FIELD -> 1
+            AnnotationType.TYPE -> 0
         }
     }
 

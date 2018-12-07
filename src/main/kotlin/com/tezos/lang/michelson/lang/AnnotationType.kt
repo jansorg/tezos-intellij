@@ -1,10 +1,10 @@
-package com.tezos.lang.michelson.psi
+package com.tezos.lang.michelson.lang
 
 /**
  * The possible types of an annotation.
  * @author jansorg
  */
-enum class PsiAnnotationType {
+enum class AnnotationType {
     /**
      * Each type can be annotated with at most one type annotation.
      * They are used to give names to types. For types to be equal,

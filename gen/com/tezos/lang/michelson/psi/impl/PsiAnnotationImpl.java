@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.AnnotationType;
 import com.intellij.psi.tree.IElementType;
 
 public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implements PsiAnnotation {
@@ -39,7 +40,7 @@ public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implement
   }
 
   @NotNull
-  public PsiAnnotationType getAnnotationType() {
+  public AnnotationType getAnnotationType() {
     return MichelsonPsiUtil.getAnnotationType(this);
   }
 
@@ -49,13 +50,13 @@ public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implement
   }
 
   @Nullable
-  public PsiType findParentType() {
-    return MichelsonPsiUtil.findParentType(this);
+  public PsiAnnotationList findParentAnnotationList() {
+    return MichelsonPsiUtil.findParentAnnotationList(this);
   }
 
   @Nullable
-  public PsiData findParentData() {
-    return MichelsonPsiUtil.findParentData(this);
+  public PsiType findParentType() {
+    return MichelsonPsiUtil.findParentType(this);
   }
 
 }

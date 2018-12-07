@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
-import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.parser.MichelsonElementSets
 
@@ -19,11 +19,11 @@ import com.tezos.lang.michelson.parser.MichelsonElementSets
 class MichelsonFormattingModelBuilder : FormattingModelBuilder {
     private companion object {
         val literals = TokenSet.create(LITERAL_DATA, STRING_LITERAL)
-        val types = TokenSet.create(TYPE)
+        val types = TokenSet.create(COMPLEX_TYPE, SIMPLE_TYPE)
 
         val instructions = TokenSet.create(GENERIC_INSTRUCTION, MACRO_INSTRUCTION)
-        val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION)
-        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG_TOKEN, COMPLEX_TYPE), MichelsonTokenSets.TYPE_NAMES)
+        val annotations = TokenSet.create(VARIABLE_ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, ANNOTATION_LIST)
+        val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG_TOKEN), MichelsonTokenSets.TYPE_NAMES, types)
         val allArguments = TokenSet.orSet(types, literals, MichelsonTokenSets.TYPE_NAMES, MichelsonTokenSets.LITERAL_TOKENS, annotations)
         val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION, EMPTY_BLOCK)
     }
@@ -55,10 +55,12 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)
 
         // first element of a complex type is only wrapped when both wrap_first and align_complex_types are enabled
-        val nestedTypes = TokenSet.create(GENERIC_TYPE, LEFT_PAREN)
-        builder.betweenInside(TokenSet.create(TYPE_NAME), nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST && michelsonSettings.COMPLEX_TYPE_ALIGN, true, true)
-        builder.betweenInside(nestedTypes, nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true)
-        builder.beforeInside(nestedTypes, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
+        val childLeafs = TokenSet.orSet(TokenSet.create(COMPLEX_TYPE), TokenSet.create(LEFT_PAREN))
+        builder.betweenInside(MichelsonTokenSets.TYPE_NAMES, childLeafs, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_WRAP_FIRST && michelsonSettings.COMPLEX_TYPE_ALIGN, true, true)
+        builder.betweenInside(childLeafs, childLeafs, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
+        builder.beforeInside(childLeafs, COMPLEX_TYPE).lineBreakOrForceSpace(michelsonSettings.COMPLEX_TYPE_ALIGN, true, commonSettings.KEEP_LINE_BREAKS)
+
+        //builder.betweenInside(WRAPPED_TYPE, WRAPPED_TYPE, COMPLEX_TYPE).lineBreakOrForceSpace(true, true)
 
         // comments
         // split token prefix + content inside of a line comment still have the COMMENT_LINE token type

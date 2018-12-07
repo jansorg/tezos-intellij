@@ -8,7 +8,7 @@ import com.tezos.lang.michelson.lang.MichelsonLanguage
  * @author jansorg
  */
 class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
-    val instructions = (MichelsonLanguage.INSTRUCTIONS + MichelsonLanguage.MACRO_NAMES).toTypedArray()
+    private val instructions = (MichelsonLanguage.INSTRUCTIONS.map { it.name } + MichelsonLanguage.MACRO_NAMES).toTypedArray()
 
     fun testCompletion() {
         // basic

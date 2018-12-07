@@ -4,6 +4,7 @@ package com.tezos.lang.michelson.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.tezos.lang.michelson.lang.AnnotationType;
 
 public interface PsiAnnotation extends MichelsonComposite {
 
@@ -14,15 +15,15 @@ public interface PsiAnnotation extends MichelsonComposite {
   boolean isFieldAnnotation();
 
   @NotNull
-  PsiAnnotationType getAnnotationType();
+  AnnotationType getAnnotationType();
 
   @Nullable
   PsiInstruction findParentInstruction();
 
   @Nullable
-  PsiType findParentType();
+  PsiAnnotationList findParentAnnotationList();
 
   @Nullable
-  PsiData findParentData();
+  PsiType findParentType();
 
 }

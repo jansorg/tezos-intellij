@@ -3,8 +3,15 @@
 package com.tezos.lang.michelson.lang
 
 import com.intellij.lang.Language
+import com.tezos.lang.michelson.lang.AnnotationType.*
+import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
+import com.tezos.lang.michelson.lang.instruction.NamedAnnotation
+import com.tezos.lang.michelson.lang.instruction.SimpleInstruction
 import com.tezos.lang.michelson.lang.macro.*
-import com.tezos.lang.michelson.lang.tag.*
+import com.tezos.lang.michelson.lang.tag.SimpleTagMetadata
+import com.tezos.lang.michelson.lang.tag.TagMetadata
+import com.tezos.lang.michelson.lang.type.SimpleTypeMetadata
+import com.tezos.lang.michelson.lang.type.TypeMetadata
 
 /**
  * @author jansorg
@@ -15,24 +22,55 @@ object MichelsonLanguage : Language("Michelson") {
     // PAIR, Pair and pair are different tokens
     override fun isCaseSensitive(): Boolean = true
 
-    // contract is handled by the parser in a special way
-    val TYPES_COMPARABLE = setOf("int", "nat", "string", "bytes", "mutez", "bool", "key_hash", "timestamp")
-    val TYPES_SIMPLE = setOf("address", "operation", "key", "unit", "signature")
-    val TYPES_NESTED = setOf("option", "list", "set", "pair", "or", "lambda", "map", "big_map")
-    val TYPES_ALL = TYPES_COMPARABLE + TYPES_SIMPLE + TYPES_NESTED
-    val TYPES_ALL_SIMPLE = TYPES_SIMPLE + TYPES_COMPARABLE
+    // fixme contract is handled by the parser in a special way
+    val TYPES: List<TypeMetadata> = listOf(
+            "int".type(ParameterType.COMPARABLE_TYPE),
+            "nat".type(ParameterType.COMPARABLE_TYPE),
+            "string".type(ParameterType.COMPARABLE_TYPE),
+            "bytes".type(ParameterType.COMPARABLE_TYPE),
+            "mutez".type(ParameterType.COMPARABLE_TYPE),
+            "bool".type(ParameterType.COMPARABLE_TYPE),
+            "key_hash".type(ParameterType.COMPARABLE_TYPE),
+            "timestamp".type(ParameterType.COMPARABLE_TYPE),
+            "address".type(ParameterType.TYPE),
+            "operation".type(ParameterType.TYPE),
+            "key".type(ParameterType.TYPE),
+            "unit".type(ParameterType.TYPE),
+            "signature".type(ParameterType.TYPE),
+            "option".type(ParameterType.TYPE, listOf(ParameterType.TYPE)),
+            "list".type(ParameterType.TYPE, listOf(ParameterType.TYPE)),
+            "set".type(ParameterType.TYPE, listOf(ParameterType.COMPARABLE_TYPE)),
+            "pair".type(ParameterType.TYPE, listOf(ParameterType.TYPE, ParameterType.TYPE)),
+            "or".type(ParameterType.TYPE, listOf(ParameterType.TYPE, ParameterType.TYPE)),
+            "lambda".type(ParameterType.TYPE, listOf(ParameterType.TYPE, ParameterType.TYPE)),
+            "map".type(ParameterType.TYPE, listOf(ParameterType.COMPARABLE_TYPE, ParameterType.TYPE)),
+            "big_map".type(ParameterType.TYPE, listOf(ParameterType.COMPARABLE_TYPE, ParameterType.TYPE))
+    )
+
+    val TYPE_NAMES = TYPES.map { it.name }.toSet()
+
+    fun String.type(type: ParameterType, subtypes: List<ParameterType> = emptyList()): TypeMetadata {
+        return SimpleTypeMetadata(this, type, subtypes)
+    }
 
     val TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS = setOf("pair", "option", "or")
 
     // tag names
-    val TAG_UNIT: TagMetadata = UnitTagMetadata()
-    val TAG_NONE: TagMetadata = NoneTagMetadata()
-    val TAG_BOOL: TagMetadata = BooleanTagMetadata()
-    val TAG_PAIR: TagMetadata = PairTagMetadata()
-    val TAG_SOME: TagMetadata = SomeMetadata()
-    val TAG_OR: TagMetadata = OrTagMetadata()
-    val TAG_ELT: TagMetadata = EltTagMetadata()
-    val TAGS_METAS = listOf(TAG_UNIT, TAG_NONE, TAG_BOOL, TAG_PAIR, TAG_SOME, TAG_OR, TAG_ELT)
+    val TAG_UNIT: TagMetadata = SimpleTagMetadata(0, "Unit")
+    val TAG_NONE: TagMetadata = SimpleTagMetadata(0, "None")
+    val TAG_BOOL: TagMetadata = SimpleTagMetadata(0, "True", "False")
+    val TAG_PAIR: TagMetadata = SimpleTagMetadata(setOf("Pair"), 2, true)
+    val TAG_SOME: TagMetadata = SimpleTagMetadata(setOf("Some"), 1, true)
+    val TAG_OR: TagMetadata = SimpleTagMetadata(setOf("Left", "Right"), 1, true)
+    val TAG_ELT: TagMetadata = SimpleTagMetadata(2, "Elt")
+    val TAGS_METAS = listOf(
+            TAG_UNIT,
+            TAG_NONE,
+            TAG_BOOL,
+            TAG_PAIR,
+            TAG_SOME,
+            TAG_OR,
+            TAG_ELT)
     val TAG_NAMES = TAGS_METAS.flatMap { it.names() }.toSet()
     val TAG_OPTION_NAMES = setOf("None", "Some")
 
@@ -48,48 +86,121 @@ object MichelsonLanguage : Language("Michelson") {
     val CADR_MACRO: MacroMetadata = CadrMacroMetadata()
     val SET_CADR_MACRO: MacroMetadata = SetCadrMacroMetadata()
     val MAP_CADR_MACRO: MacroMetadata = MapCadrMacroMetadata()
-    val MACROS = listOf(FAIL_MACRO, ASSERT_MACROS, COMPARE_MACROS, IF_MACROS, DUUP_MACRO, DIIP_MACRO, PAIR_MACRO, UNPAIR_MACRO, CADR_MACRO, SET_CADR_MACRO, MAP_CADR_MACRO)
+    val MACROS = listOf(
+            FAIL_MACRO,
+            ASSERT_MACROS,
+            COMPARE_MACROS,
+            IF_MACROS,
+            DUUP_MACRO,
+            DIIP_MACRO,
+            PAIR_MACRO,
+            UNPAIR_MACRO,
+            CADR_MACRO,
+            SET_CADR_MACRO,
+            MAP_CADR_MACRO)
     // all available static macro names, dynamic macros like DIIIP or PAPAIR are not part of this list
     val MACRO_NAMES = MACROS.flatMap { it.staticNames() }
 
-    // instructions which do not support arguments
-    val INSTRUCTIONS_NO_ARGS = setOf("ABS", "ADD", "ADDRESS", "AMOUNT", "AND", "BALANCE", "BLAKE2B",
-            "CAR", "CAST", "CDR", "CHECK_SIGNATURE", "COMPARE", "CONCAT", "CONS",
-            "CREATE_ACCOUNT", "CREATE_CONTRACT", "DIV", "DROP", "DUP",
-            "EDIV", "EQ", "EXEC", "FAILWITH", "GE", "GET", "GT",
-            "HASH_KEY", "IMPLICIT_ACCOUNT", "LE", "LSL", "LSR", "LT", "MEM", "MUL", "NEG", "NEQ", "NOT", "NOW",
-            "OR", "PACK", "PAIR", "RENAME",
-            "SELF", "SENDER", "SET_DELEGATE", "SHA256", "SHA512", "SIZE", "SLICE", "SOME", "SOURCE", "STEPS_TO_QUOTA", "SUB", "SWAP",
-            "TRANSFER_TOKENS", "UNIT", "UPDATE", "XOR",
-            "INT", "MOD" //fixme int and mod are not in the whitepaper, but we're pretty sure that they don't accept arguments
+    // instructions
+    val INSTRUCTIONS: List<InstructionMetadata> = listOf(
+            "ABS".with(VARIABLE to 1),
+            "ADD".with(VARIABLE to 1),
+            "ADDRESS".with(VARIABLE to 1),
+            "AMOUNT".with(VARIABLE to 1),
+            "AND".with(VARIABLE to 1),
+            "BALANCE".with(VARIABLE to 1),
+            "BLAKE2B".with(VARIABLE to 1),
+            "CAR".with(VARIABLE to 1),
+            "CAST".with(VARIABLE to 1),
+            "CDR".with(VARIABLE to 1),
+            "CHECK_SIGNATURE".with(VARIABLE to 1),
+            "COMPARE".with(VARIABLE to 1),
+            "CONCAT".with(VARIABLE to 1),
+            "CONS".with(VARIABLE to 1),
+            "CREATE_ACCOUNT".with(VARIABLE to 2),
+            "DIV".with(),
+            "DROP".with(),
+            "DUP".with(VARIABLE to 1),
+            "EDIV".with(VARIABLE to 1),
+            "EQ".with(VARIABLE to 1),
+            "EXEC".with(VARIABLE to 1),
+            "FAILWITH".with(),
+            "GE".with(VARIABLE to 1),
+            "GET".with(VARIABLE to 1),
+            "GT".with(VARIABLE to 1),
+            "HASH_KEY".with(VARIABLE to 1),
+            "IMPLICIT_ACCOUNT".with(VARIABLE to 1),
+            "INT".with(VARIABLE to 1),
+            "LE".with(VARIABLE to 1),
+            "LSL".with(VARIABLE to 1),
+            "LSR".with(VARIABLE to 1),
+            "LT".with(VARIABLE to 1),
+            "MEM".with(VARIABLE to 1),
+            "MOD".with(),
+            "MUL".with(VARIABLE to 1),
+            "NEG".with(VARIABLE to 1),
+            "NEQ".with(VARIABLE to 1),
+            "NOT".with(VARIABLE to 1),
+            "NOW".with(VARIABLE to 1),
+            "OR".with(VARIABLE to 1),
+            "PACK".with(),
+            "PAIR".with(VARIABLE to 1, TYPE to 1, FIELD to 2),
+            "RENAME".with(VARIABLE to 1),
+            "SELF".with(VARIABLE to 1),
+            "SENDER".with(VARIABLE to 1),
+            "SET_DELEGATE".with(VARIABLE to 1),
+            "SHA256".with(),
+            "SHA512".with(),
+            "SIZE".with(VARIABLE to 1),
+            "SLICE".with(VARIABLE to 1), // fixme questionable
+            "SOME".with(VARIABLE to 1, TYPE to 1, FIELD to 1),
+            "SOURCE".with(VARIABLE to 1),
+            "STEPS_TO_QUOTA".with(VARIABLE to 1),
+            "SUB".with(VARIABLE to 1),
+            "SWAP".with(),
+            "TRANSFER_TOKENS".with(VARIABLE to 1), // fixme questionable
+            "UNIT".with(VARIABLE to 1, TYPE to 1), // fixme questionable var
+            "UPDATE".with(VARIABLE to 1),
+            "XOR".with(VARIABLE to 1),
+            // one block
+            "CREATE_CONTRACT".with(ParameterType.OPTIONAL_INSTRUCTION_BLOCK).and(VARIABLE to 2),
+            "DIP".with(ParameterType.INSTRUCTION_BLOCK),
+            "ITER".with(ParameterType.INSTRUCTION_BLOCK),
+            "LOOP".with(ParameterType.INSTRUCTION_BLOCK),
+            "LOOP_LEFT".with(ParameterType.INSTRUCTION_BLOCK),
+            "MAP".with(ParameterType.INSTRUCTION_BLOCK).and(VARIABLE to 1),
+            // two blocks
+            "IF".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
+            "IF_CONS".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
+            "IF_LEFT".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
+            "IF_NONE".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
+            "IF_RIGHT".with(ParameterType.INSTRUCTION_BLOCK, ParameterType.INSTRUCTION_BLOCK),
+            // one type
+            "CONTRACT".with(ParameterType.TYPE).and(VARIABLE to 1),// fixme questionable annotation
+            "EMPTY_SET".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1),
+            "LEFT".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1, FIELD to 2),
+            "NIL".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1),
+            "NONE".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1, FIELD to 1),
+            "RIGHT".with(ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1, FIELD to 2),
+            "UNPACK".with(ParameterType.TYPE),
+            // other
+            "EMPTY_MAP".with(ParameterType.COMPARABLE_TYPE, ParameterType.TYPE).and(VARIABLE to 1, TYPE to 1),
+            "LAMBDA".with(ParameterType.TYPE, ParameterType.TYPE, ParameterType.INSTRUCTION_BLOCK).and(VARIABLE to 1),
+            "PUSH".with(ParameterType.TYPE, ParameterType.DATA).and(VARIABLE to 1),
+            // questionable
+            "IS_NAT".with(VARIABLE to 1), // fixme qustionable
+            "ISNAT".with(VARIABLE to 1) // fixme questionable
     )
 
-    // instructions which are not fully explained in the whitepaper
-    val QUESTIONABLE_INSTRUCTIONS = setOf("ISNAT", "IS_NAT")
+    // creates instruction metadata from an instruction name
+    private fun String.with(vararg params: ParameterType, annotations: Map<AnnotationType, Short> = emptyMap(), predefinedAnnotations: List<NamedAnnotation> = emptyList()) = SimpleInstruction(this, params.toList(), annotations, predefinedAnnotations)
 
-    // instructions which expect one instruction block
-    val INSTRUCTIONS_ONE_BLOCK = setOf("DIP", "ITER", "LOOP", "LOOP_LEFT", "MAP")
-    // instructions which expect two instruction blocks
-    val INSTRUCTIONS_TWO_BLOCKS = setOf("IF", "IF_CONS", "IF_LEFT", "IF_RIGHT", "IF_NONE")
-    // instructions which expect one type as argument
-    val INSTRUCTIONS_ONE_TYPE = setOf("CONTRACT", "EMPTY_SET", "LEFT", "NIL", "NONE", "RIGHT", "UNPACK")
+    private fun String.with(vararg annotations: Pair<AnnotationType, Int>): SimpleInstruction {
+        val intMap = annotations.map { (k, v) -> k to v.toShort() }.toMap()
+        return SimpleInstruction(this, emptyList(), intMap, emptyList())
+    }
 
-    val INSTRUCTIONS_NO_ANNOTATION = setOf("DROP", "SWAP", "IF_NONE", "IF_LEFT", "IF_CONS", "ITER", "IF", "LOOP", "LOOP_LEFT", "DIP", "FAILWITH")
-
-    val INSTRUCTIONS_ONE_VAR_ANNOTATION = setOf("DUP", "PUSH", "UNIT", "SOME", "NONE", "PAIR", "CAR", "CDR", "LEFT", "RIGHT", "NIL", "CONS", "SIZE",
-            "MAP", "MEM", "EMPTY_SET", "EMPTY_MAP", "UPDATE", "GET", "LAMBDA", "EXEC", "ADD", "SUB", "CONCAT", "MUL", "OR", "AND", "XOR", "NOT",
-            "ABS", "IS_NAT", "INT", "NEG", "EDIV", "LSL", "LSR", "COMPARE", "EQ", "NEQ", "LT", "GT", "LE", "GE",
-            "ADDRESS", "CONTRACT", "SET_DELEGATE", "IMPLICIT_ACCOUNT", "NOW", "AMOUNT", "BALANCE", "HASH_KEY",
-            "CHECK_SIGNATURE", "BLAKE2B", "STEPS_TO_QUOTA", "SOURCE", "SENDER", "SELF", "CAST", "RENAME")
-    val INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE = setOf("TRANSFER_TOKENS", "SLICE", "UNIT")
-    val INSTRUCTIONS_TWO_VAR_ANNOTATIONS = setOf("CREATE_ACCOUNT", "CREATE_CONTRACT")
-
-    val INSTRUCTIONS_ONE_TYPE_ANNOTATION = setOf("UNIT", "PAIR", "SOME", "NONE", "LEFT", "RIGHT", "NIL", "EMPTY_SET", "EMPTY_MAP")
-
-    val INSTRUCTIONS_ONE_FIELD_ANNOTATION = setOf("NONE", "SOME")
-    val INSTRUCTIONS_TWO_FIELD_ANNOTATIONS = setOf("PAIR", "LEFT", "RIGHT")
-
-    val INSTRUCTIONS: Set<String> = INSTRUCTIONS_NO_ARGS + QUESTIONABLE_INSTRUCTIONS + INSTRUCTIONS_ONE_BLOCK + INSTRUCTIONS_TWO_BLOCKS + INSTRUCTIONS_ONE_TYPE + INSTRUCTIONS_NO_ANNOTATION +
-            INSTRUCTIONS_ONE_VAR_ANNOTATION + INSTRUCTIONS_ONE_VAR_ANNOTATION_QUESTIONABLE + INSTRUCTIONS_TWO_VAR_ANNOTATIONS + INSTRUCTIONS_ONE_TYPE_ANNOTATION +
-            INSTRUCTIONS_ONE_FIELD_ANNOTATION + INSTRUCTIONS_TWO_FIELD_ANNOTATIONS
+    private fun SimpleInstruction.and(vararg values: Pair<AnnotationType, Int>): SimpleInstruction {
+        return this.copy(annotations = values.map { (k, v) -> k to v.toShort() }.toMap())
+    }
 }

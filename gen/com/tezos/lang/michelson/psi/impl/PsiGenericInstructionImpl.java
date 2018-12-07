@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.instruction.InstructionMetadata;
 import com.intellij.psi.tree.IElementType;
 
 public class PsiGenericInstructionImpl extends PsiInstructionImpl implements PsiGenericInstruction {
@@ -24,6 +25,12 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public PsiAnnotationList getAnnotationList() {
+    return PsiTreeUtil.getChildOfType(this, PsiAnnotationList.class);
   }
 
   @Override
@@ -52,14 +59,13 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
 
   @Override
   @NotNull
-  public List<PsiAnnotation> getAnnotations() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
-  }
-
-  @Override
-  @NotNull
   public List<PsiBlockInstruction> getInstructionBlocks() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
+  }
+
+  @Nullable
+  public InstructionMetadata getInstructionMetadata() {
+    return MichelsonPsiUtil.getInstructionMetadata(this);
   }
 
 }

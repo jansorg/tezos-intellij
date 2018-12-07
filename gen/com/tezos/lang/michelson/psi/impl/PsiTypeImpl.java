@@ -9,9 +9,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.lang.michelson.lang.type.TypeMetadata;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
+public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
 
   public PsiTypeImpl(@NotNull IElementType type) {
     super(type);
@@ -26,33 +27,27 @@ public class PsiTypeImpl extends MichelsonCompositeImpl implements PsiType {
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiType getType() {
-    return PsiTreeUtil.getChildOfType(this, PsiType.class);
-  }
-
-  @NotNull
-  public String getTypeNameString() {
-    return MichelsonPsiUtil.getTypeNameString(this);
-  }
-
   public boolean isComparable() {
     return MichelsonPsiUtil.isComparable(this);
   }
 
   @Nullable
-  public PsiType findComposedParentType() {
-    return MichelsonPsiUtil.findComposedParentType(this);
+  public PsiType findParentType() {
+    return MichelsonPsiUtil.findParentType(this);
+  }
+
+  public boolean hasParentType() {
+    return MichelsonPsiUtil.hasParentType(this);
+  }
+
+  @Nullable
+  public TypeMetadata getTypeMetadata() {
+    return MichelsonPsiUtil.getTypeMetadata(this);
   }
 
   @NotNull
-  public List<PsiType> findChildrenTypes() {
-    return MichelsonPsiUtil.findChildrenTypes(this);
-  }
-
-  public boolean hasComposedParentType() {
-    return MichelsonPsiUtil.hasComposedParentType(this);
+  public String getTypeNameString() {
+    return MichelsonPsiUtil.getTypeNameString(this);
   }
 
 }

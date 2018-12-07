@@ -7,13 +7,19 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiComplexType extends PsiType {
 
-  @NotNull
-  List<PsiType> getTypeList();
+  @Nullable
+  PsiAnnotationList getAnnotationList();
+
+  @Nullable
+  PsiElement getTypeName();
+
+  @Nullable
+  PsiElement getTypeNameComparable();
 
   @NotNull
-  List<PsiAnnotation> getAnnotations();
+  List<PsiType> getTypeArguments();
 
-  @NotNull
+  @Nullable
   PsiElement getTypeToken();
 
   boolean hasSimpleTypes();

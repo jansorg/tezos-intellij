@@ -1,7 +1,7 @@
 package com.tezos.lang.michelson.parser
 
 import com.tezos.lang.michelson.lang.macro.AssertMacroMetadata
-import com.tezos.lang.michelson.psi.PsiAnnotationType
+import com.tezos.lang.michelson.lang.AnnotationType
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -22,9 +22,9 @@ class AssertMacroMetadataTest {
 
         assertEquals(0, m.requiredBlocks())
 
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.FIELD, "IFEQ"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.VARIABLE, "IFEQ"))
-        assertEquals(0, m.supportedAnnotations(PsiAnnotationType.TYPE, "IFEQ"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.FIELD, "IFEQ"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.VARIABLE, "IFEQ"))
+        assertEquals(0, m.supportedAnnotations(AnnotationType.TYPE, "IFEQ"))
     }
 
     @Test

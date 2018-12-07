@@ -42,7 +42,7 @@ import javax.swing.JPanel
  *
  * @author jansorg
  */
-class MichelsonSplitEditor(internal val mainEditor: TextEditor, internal val stackEditor: MichelsonStackVisualizationEditor)
+class MichelsonSplitEditor(val mainEditor: TextEditor, val stackEditor: MichelsonStackVisualizationEditor)
     : SplitFileEditor<TextEditor, MichelsonStackVisualizationEditor>("tezos-split-editor", mainEditor, stackEditor), UISettingsListener, TezosSettingsListener, StackInfoUpdateListener, CaretListener {
 
     private companion object {

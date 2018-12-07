@@ -6,7 +6,12 @@ import com.intellij.psi.impl.source.tree.TreeUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.tezos.lang.michelson.MichelsonTypes
+import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
+import com.tezos.lang.michelson.lang.macro.MacroMetadata
+import com.tezos.lang.michelson.lang.tag.TagMetadata
+import com.tezos.lang.michelson.lang.type.TypeMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 
 /**
@@ -35,47 +40,41 @@ object MichelsonPsiUtil {
     @JvmStatic
     fun getTypeNameString(type: PsiType): String {
         return when (type) {
-            is PsiGenericType -> type.typeToken.text
-            is PsiComplexType -> type.typeToken.text
+            is PsiSimpleType -> type.typeToken.text
+            is PsiComplexType -> type.typeToken!!.text
             else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
         }
     }
 
     @JvmStatic
-    fun isComparable(type: PsiType) = MichelsonLanguage.TYPES_COMPARABLE.contains(type.typeNameString)
+    fun isComparable(type: PsiType): Boolean {
+        val meta = type.typeMetadata
+        return meta != null && meta.isComparable
+    }
 
     @JvmStatic
-    fun findComposedParentType(type: PsiType): PsiType? {
+    fun findParentType(type: PsiType): PsiType? {
         return type.parent as? PsiType
     }
 
     @JvmStatic
-    fun hasComposedParentType(type: PsiType): Boolean {
-        return findComposedParentType(type) != null
-    }
-
-    /**
-     * Returns the children types of a composed type. Returns an empty list when no types were found.
-     */
-    @JvmStatic
-    fun findChildrenTypes(type: PsiType): List<PsiType> = type.children.mapNotNull { it as? PsiType }
-
-    /**
-     * Returns the PSIElement which contains the type's name token, which is a leaf in the PSI tree.
-     */
-    @JvmStatic
-    fun getTypeToken(type: PsiComplexType): PsiElement {
-        return type.firstChild
+    fun hasParentType(type: PsiType): Boolean {
+        return findParentType(type) != null
     }
 
     @JvmStatic
     fun hasSimpleTypes(type: PsiComplexType): Boolean {
-        return type.typeList.filter { it is PsiGenericType }.isNotEmpty()
+        return type.typeArguments.any { it is PsiSimpleType }
+    }
+
+    @JvmStatic
+    fun getTypeToken(type: PsiComplexType): PsiElement? {
+        return type.node.findChildByType(MichelsonTokenSets.TYPE_NAMES)?.psi
     }
 
     @JvmStatic
     fun hasComplexTypes(type: PsiComplexType): Boolean {
-        return type.typeList.filter { it is PsiComplexType }.isNotEmpty()
+        return type.typeArguments.any { it is PsiComplexType }
     }
 
     /**
@@ -108,6 +107,44 @@ object MichelsonPsiUtil {
         }
 
         return prev as? PsiInstruction
+    }
+
+    /**
+     * Returns the name of the instruction.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTagName(psi: PsiTag): String {
+        return psi.firstChild.text
+    }
+
+    /**
+     * Returns the name of the instruction.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTagMetadata(psi: PsiTag): TagMetadata? {
+        val name = psi.tagName
+        return MichelsonLanguage.TAGS_METAS.firstOrNull { name in it.names() }
+    }
+
+    /**
+     * Returns the metadata for the given type.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTypeMetadata(psi: PsiType): TypeMetadata? {
+        val name = psi.typeNameString
+        return MichelsonLanguage.TYPES.firstOrNull { name == it.name }
+    }
+
+    /**
+     * Returns the metadata for the given type.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTypeToken(psi: PsiSimpleType): PsiElement {
+        return psi.firstChild
     }
 
     /**
@@ -152,12 +189,33 @@ object MichelsonPsiUtil {
         }
     }
 
+    /**
+     * Returns the metadata for this instruction, if available
+     */
     @JvmStatic
-    fun getAnnotationType(psi: PsiAnnotation): PsiAnnotationType {
+    fun getInstructionMetadata(psi: PsiGenericInstruction): InstructionMetadata? {
+        val name = psi.instructionName
+        return name.let {
+            MichelsonLanguage.INSTRUCTIONS.find { it.name == name }
+        }
+    }
+
+    /**
+     * Returns the metadata for this instruction, if available
+     */
+    @JvmStatic
+    fun getMacroMetadata(psi: PsiMacroInstruction): MacroMetadata? {
+        return psi.instructionName.let { name ->
+            MichelsonLanguage.MACROS.find { it.validate(name!!) == null }
+        }
+    }
+
+    @JvmStatic
+    fun getAnnotationType(psi: PsiAnnotation): AnnotationType {
         return when (psi) {
-            is PsiTypeAnnotation -> PsiAnnotationType.TYPE
-            is PsiVariableAnnotation -> PsiAnnotationType.VARIABLE
-            is PsiFieldAnnotation -> PsiAnnotationType.FIELD
+            is PsiTypeAnnotation -> AnnotationType.TYPE
+            is PsiVariableAnnotation -> AnnotationType.VARIABLE
+            is PsiFieldAnnotation -> AnnotationType.FIELD
             else -> throw IllegalStateException("unsupported annotation type ${psi.javaClass.name}")
         }
     }
@@ -172,24 +230,28 @@ object MichelsonPsiUtil {
     fun isFieldAnnotation(psi: PsiAnnotation): Boolean = psi is PsiFieldAnnotation
 
     @JvmStatic
-    fun findParentType(psi: PsiAnnotation): PsiType? = psi.parent as? PsiType
+    fun findParentType(psi: PsiAnnotation): PsiType? {
+        val parent = psi.parent
+        return when (parent) {
+            is PsiAnnotationList-> parent.parent as? PsiType
+            else -> parent as? PsiType
+        }
+    }
+
+    @JvmStatic
+    fun findParentInstruction(psi: PsiAnnotationList): PsiInstruction? = psi.parent as? PsiInstruction
 
     @JvmStatic
     fun findParentInstruction(psi: PsiAnnotation): PsiInstruction? = psi.parent as? PsiInstruction
 
     @JvmStatic
-    fun findParentData(psi: PsiAnnotation): PsiData? = psi.parent as? PsiData
+    fun findParentAnnotationList(psi: PsiAnnotation): PsiAnnotationList? = psi.parent as? PsiAnnotationList
 
     @JvmStatic
     fun isWhitespaceOnly(psi: PsiBlockInstruction): Boolean {
         val next = TreeUtil.skipElements(psi.firstChild.node.treeNext, MichelsonTokenSets.WHITESPACE_TOKENS)
         return next == psi.lastChild.node
     }
-
-    @JvmStatic
-    fun findParentContract(psi: PsiElement): PsiContract? = PsiTreeUtil.findFirstParent(psi) {
-        it is PsiContract
-    } as? PsiContract
 }
 
 fun PsiElement?.isWhitespace(): Boolean {

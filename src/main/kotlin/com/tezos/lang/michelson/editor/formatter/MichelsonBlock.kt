@@ -9,9 +9,7 @@ import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes.*
-import com.tezos.lang.michelson.lexer.MichelsonTokenSets
 import com.tezos.lang.michelson.parser.MichelsonElementSets
-import com.tezos.lang.michelson.psi.PsiAnnotation
 import com.tezos.lang.michelson.psi.PsiComplexType
 import com.tezos.lang.michelson.psi.PsiContract
 
@@ -20,12 +18,13 @@ import com.tezos.lang.michelson.psi.PsiContract
  * @author jansorg
  */
 class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private val spacing: SpacingBuilder, private val _indent: Indent? = null, private val codeStyle: CodeStyleSettings, val parent: MichelsonBlock? = null) : AbstractBlock(node, wrap, alignment) {
-    private val blockChildAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
-    private val lineCommentAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
-    private val annotationAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
+    private val blockChildAlignment = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
+    private val lineCommentAlignment = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
+    private val annotationAlignment = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
 
     companion object {
-        val WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
+        val COMPLEX_TYPE_SET = TokenSet.create(COMPLEX_TYPE)
+        val ALWAYS_WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
 
         /**
          * @return true if this comment covers the full line and doesn't have instructions, ... in front
@@ -69,11 +68,11 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                     val alignment = when {
                         !commentCoversLine && michelsonSettings.LINE_COMMENT_ALIGN -> {
                             // align end-of-line comments with other eol-style comments of the same block
-                            findNextHierarchyParent(MichelsonElementSets.BLOCKS)?.lineCommentAlign
+                            findNextHierarchyParent(MichelsonElementSets.BLOCKS)?.lineCommentAlignment
                         }
                         commentCoversLine && nextIsBlock -> {
                             // align comments with the blocks if a comment directly precedes the block, i.e. is a note on that particular block
-                            blockChildAlign
+                            blockChildAlignment
                         }
                         else -> null
                     }
@@ -81,7 +80,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                     MichelsonLineCommentBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, indent, codeStyle, parent = this)
                 }
 
-                WRAPPED_BLOCKS.contains(childType) -> {
+                ALWAYS_WRAPPED_BLOCKS.contains(childType) -> {
                     val indent = if (node.elementType.isMichelsonBlock()) Indent.getNormalIndent() else Indent.getNoneIndent()
                     MichelsonBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), null, spacing, indent, codeStyle, parent = this)
                 }
@@ -90,12 +89,13 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 childType.isMichelsonBlock() -> {
                     val wrap = Wrap.createWrap(WrapType.ALWAYS, false)
                     val indent = Indent.getIndent(Indent.Type.NORMAL, true, true)
-                    MichelsonBlock(child, wrap, blockChildAlign, spacing, indent, codeStyle, parent = this)
+                    MichelsonBlock(child, wrap, blockChildAlignment, spacing, indent, codeStyle, parent = this)
                 }
 
                 // align types in complex types which contain at least one complex type
-                (childType == GENERIC_TYPE || childType == LEFT_PAREN) && nodePsi is PsiComplexType && !nodePsi.hasSimpleTypes() -> {
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), blockChildAlign, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
+                (childType == SIMPLE_TYPE || childType == COMPLEX_TYPE) && nodePsi is PsiComplexType && nodePsi.hasComplexTypes() -> {
+                    val alignment = if (michelsonSettings.COMPLEX_TYPE_ALIGN) blockChildAlignment else null
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), alignment, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
                 MichelsonElementSets.INSTRUCTIONS.contains(childType) -> {
@@ -109,13 +109,10 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                     MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), null, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
-                MichelsonTokenSets.ANNOTATIONS.contains(childType) && michelsonSettings.COMPLEX_TYPE_ALIGN_ANNOTATIONS -> {
-                    val isInComplexType = (nodePsi as PsiAnnotation).findParentType() != null
-                    val alignmentReference = if (isInComplexType) parent else this
-
+                childType == ANNOTATION_LIST && child.textLength > 0 && michelsonSettings.COMPLEX_TYPE_ALIGN_ANNOTATIONS -> {
                     // align all annotations of top-level elements of a complex type with each other
                     // an annotation on a complex type itself must be aligned with the next parent of this type
-                    val alignment = alignmentReference?.findNextHierarchyParent(TokenSet.create(COMPLEX_TYPE), false)?.annotationAlign
+                    val alignment = findNextHierarchyParent(COMPLEX_TYPE_SET, false)?.annotationAlignment
                     alignment?.let {
                         MichelsonBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, Indent.getNoneIndent(), codeStyle, parent = this)
                     }

@@ -1,17 +1,17 @@
 parameter string;
 return string;
 storage unit;
-code { <error descr="Type argument expected">EMPTY_SET</error>; # all commands expect a single type argument, which is missing here
-    <error descr="Type argument expected">LEFT</error>;
-    <error descr="Type argument expected">NIL</error>;
-    <error descr="Type argument expected">NONE</error>;
-    <error descr="Type argument expected">RIGHT</error>;
+code { <error descr="One <type> argument expected">EMPTY_SET</error>; # all commands expect a single type argument, which is missing here
+    <error descr="One <type> argument expected">LEFT</error>;
+    <error descr="One <type> argument expected">NIL</error>;
+    <error descr="One <type> argument expected">NONE</error>;
+    <error descr="One <type> argument expected">RIGHT</error>;
 
-    <error descr="Type argument expected">EMPTY_SET</error><error descr="expected ';'"> </error>DROP; # all commands expect a single type argument, but a an instruction is provided
-    <error descr="Type argument expected">LEFT</error><error descr="expected ';'"> </error>DROP;
-    <error descr="Type argument expected">NIL</error><error descr="expected ';'"> </error>DROP;
-    <error descr="Type argument expected">NONE</error><error descr="expected ';'"> </error>DROP;
-    <error descr="Type argument expected">RIGHT</error><error descr="expected ';'"> </error>DROP;
+    <error descr="One <type> argument expected">EMPTY_SET</error><error descr="expected ';'"> </error>DROP; # all commands expect a single type argument, but a an instruction is provided
+    <error descr="One <type> argument expected">LEFT</error><error descr="expected ';'"> </error>DROP;
+    <error descr="One <type> argument expected">NIL</error><error descr="expected ';'"> </error>DROP;
+    <error descr="One <type> argument expected">NONE</error><error descr="expected ';'"> </error>DROP;
+    <error descr="One <type> argument expected">RIGHT</error><error descr="expected ';'"> </error>DROP;
 
     # all these commands expect a single type argument, but data is passed as argument
     EMPTY_SET (Pair<error descr="Expected )"> </error>int int);
@@ -20,15 +20,15 @@ code { <error descr="Type argument expected">EMPTY_SET</error>; # all commands e
     NONE (Pair<error descr="Expected )"> </error>int int);
     RIGHT (Pair<error descr="Expected )"> </error>int int);
 
-    <error descr="Type argument expected">EMPTY_SET</error> 123;
-    <error descr="Type argument expected">LEFT</error> 123;
-    <error descr="Type argument expected">NIL</error> 123;
-    <error descr="Type argument expected">NONE</error> 123;
-    <error descr="Type argument expected">RIGHT</error> 123;
+    <error descr="One <type> argument expected">EMPTY_SET</error> 123;
+    <error descr="One <type> argument expected">LEFT</error> 123;
+    <error descr="One <type> argument expected">NIL</error> 123;
+    <error descr="One <type> argument expected">NONE</error> 123;
+    <error descr="One <type> argument expected">RIGHT</error> 123;
 
-    <error descr="Type argument expected">EMPTY_SET</error> { DROP; }; # all commands expect a single type argument, but an instruction block is passed as argument
-    <error descr="Type argument expected">LEFT</error> { DROP; };
-    <error descr="Type argument expected">NIL</error> { DROP; };
-    <error descr="Type argument expected">NONE</error> { DROP; };
-    <error descr="Type argument expected">RIGHT</error> { DROP; };
+    <error descr="One <type> argument expected">EMPTY_SET</error> { DROP; }; # all commands expect a single type argument, but an instruction block is passed as argument
+    <error descr="One <type> argument expected">LEFT</error> { DROP; };
+    <error descr="One <type> argument expected">NIL</error> { DROP; };
+    <error descr="One <type> argument expected">NONE</error> { DROP; };
+    <error descr="One <type> argument expected">RIGHT</error> { DROP; };
 };

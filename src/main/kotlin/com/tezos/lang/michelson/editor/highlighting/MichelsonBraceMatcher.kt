@@ -4,7 +4,11 @@ import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.PsiTreeUtil
+import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.MichelsonTypes.*
+import com.tezos.lang.michelson.lexer.MichelsonTokenSets
+import com.tezos.lang.michelson.psi.PsiComplexType
 import com.tezos.lang.michelson.psi.PsiGenericInstruction
 import com.tezos.lang.michelson.psi.PsiInstruction
 import com.tezos.lang.michelson.psi.PsiMacroInstruction
@@ -26,15 +30,15 @@ class MichelsonBraceMatcher : PairedBraceMatcher {
 
         }
 
-        // instruction > block > {
-        var instruction = psi.parent?.parent as? PsiInstruction
-        if (instruction is PsiGenericInstruction || instruction is PsiMacroInstruction) {
-            return instruction.textOffset
+        // ignore the instruction block which contains a curly brace
+        val startElement = when(MichelsonTokenSets.BRACES.contains(psi.node.elementType)){
+            true -> psi.parent?.parent
+            false -> psi.parent
         }
 
-        instruction = psi.parent as? PsiInstruction
-        if (instruction is PsiGenericInstruction || instruction is PsiMacroInstruction) {
-            return instruction.textOffset
+        val parentInstruction = PsiTreeUtil.findFirstParent(startElement, false) { it is PsiInstruction }
+        if (parentInstruction is PsiGenericInstruction || parentInstruction is PsiMacroInstruction) {
+            return parentInstruction.textOffset
         }
 
         return openingBraceOffset

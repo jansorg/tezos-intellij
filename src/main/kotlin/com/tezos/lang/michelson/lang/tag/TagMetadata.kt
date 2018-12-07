@@ -16,5 +16,15 @@ interface TagMetadata {
      */
     fun supportedValues(): Short
 
-    fun isComplex(): Boolean = false
+    fun isComplex(): Boolean
+}
+
+data class SimpleTagMetadata(private val names: Set<String>, private val supportedDataValues: Short, private val isComplex: Boolean) : TagMetadata {
+    constructor(supportedDataValues: Short, vararg names: String) : this(names.toSet(), supportedDataValues, false)
+
+    override fun names(): Set<String> = names
+
+    override fun supportedValues(): Short = supportedDataValues
+
+    override fun isComplex(): Boolean = isComplex
 }
