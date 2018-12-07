@@ -1,7 +1,7 @@
 parameter (int :t);
-storage (pair :a int %a string %b);
+storage (pair :a int string);
 code {
-       PUSH @a      int             123;
+       PUSH @a int 123;
        PUSH (pair :a (string %b) (int %c)) (Pair "abc" 123); DROP;
        PUSH (option :a (string %b)) (Some "abc"); DROP;
        PUSH (option :a (string %b)) (None); DROP;

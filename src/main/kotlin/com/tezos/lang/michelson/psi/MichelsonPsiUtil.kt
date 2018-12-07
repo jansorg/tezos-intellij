@@ -41,7 +41,7 @@ object MichelsonPsiUtil {
     fun getTypeNameString(type: PsiType): String {
         return when (type) {
             is PsiGenericType -> type.typeToken.text
-            is PsiComplexType -> type.typeToken.text
+            is PsiComplexType -> type.typeToken!!.text
             else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
         }
     }
@@ -53,46 +53,28 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
-    fun findComposedParentType(type: PsiType): PsiNamedType? {
-        val parent = type.parent
-        return when (parent) {
-            is PsiWrappedType -> parent.parent as? PsiNamedType
-            else -> type.parent as? PsiNamedType
-        }
+    fun findParentType(type: PsiType): PsiType? {
+        return type.parent as? PsiType
     }
 
     @JvmStatic
-    fun hasComposedParentType(type: PsiType): Boolean {
-        return findComposedParentType(type) != null
-    }
-
-    /**
-     * Returns the children types of a composed type. Returns an empty list when no types were found.
-     */
-    @JvmStatic
-    fun findChildrenTypes(type: PsiType): List<PsiNamedType> = type.children.mapNotNull {
-        when (it) {
-            is PsiWrappedType -> it.type as? PsiNamedType
-            else -> it as? PsiNamedType
-        }
-    }
-
-    /**
-     * Returns the PSIElement which contains the type's name token, which is a leaf in the PSI tree.
-     */
-    @JvmStatic
-    fun getTypeToken(type: PsiComplexType): PsiElement {
-        return type.firstChild
+    fun hasParentType(type: PsiType): Boolean {
+        return findParentType(type) != null
     }
 
     @JvmStatic
     fun hasSimpleTypes(type: PsiComplexType): Boolean {
-        return type.typeList.filter { it is PsiGenericType }.isNotEmpty()
+        return type.typeArguments.any { it is PsiGenericType }
+    }
+
+    @JvmStatic
+    fun getTypeToken(type: PsiComplexType): PsiElement? {
+        return type.node.findChildByType(MichelsonTokenSets.TYPE_NAMES)?.psi
     }
 
     @JvmStatic
     fun hasComplexTypes(type: PsiComplexType): Boolean {
-        return type.typeList.filter { it is PsiComplexType }.isNotEmpty()
+        return type.typeArguments.any { it is PsiComplexType }
     }
 
     /**
@@ -152,10 +134,26 @@ object MichelsonPsiUtil {
      */
     @JvmStatic
     fun getTypeMetadata(psi: PsiType): TypeMetadata? {
-        return (psi as? PsiNamedType)?.let {
-            val name = psi.typeNameString
-            return MichelsonLanguage.TYPES.firstOrNull { name == it.name }
-        }
+        val name = psi.typeNameString
+        return MichelsonLanguage.TYPES.firstOrNull { name == it.name }
+    }
+
+    /**
+     * Returns the metadata for the given type.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getTypeToken(psi: PsiGenericType): PsiElement {
+        return psi.firstChild
+    }
+
+    /**
+     * Returns the metadata for the given type.
+     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
+     */
+    @JvmStatic
+    fun getAnnotations(psi: PsiGenericType): List<PsiAnnotation> {
+        return emptyList()
     }
 
     /**

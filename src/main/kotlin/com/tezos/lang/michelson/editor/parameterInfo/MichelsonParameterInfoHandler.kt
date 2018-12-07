@@ -105,7 +105,7 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
                     buffer.append(" <data>")
                 }
             }
-        } else if (psi is PsiNamedType) {
+        } else if (psi is PsiType) {
             buffer.append(psi.typeNameString)
             endOffset = buffer.length
 

@@ -138,7 +138,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                         // spec: components of 'pair' types, 'option' types and 'or' types
                         // can be annotated with a field or constructor annotation
                         a.isFieldAnnotation -> {
-                            val componentType = a.findParentType()?.findComposedParentType() as? PsiNamedType
+                            val componentType = a.findParentType()?.findParentType()
                             val componentTypeName = componentType?.typeNameString
 
                             val supported = componentTypeName in MichelsonLanguage.TYPE_COMPONENTS_WITH_FIELD_ANNOTATIONS

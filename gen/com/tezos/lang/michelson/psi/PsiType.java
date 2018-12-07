@@ -11,14 +11,14 @@ public interface PsiType extends PsiAnnotated {
   boolean isComparable();
 
   @Nullable
-  PsiNamedType findComposedParentType();
+  PsiType findParentType();
 
-  @NotNull
-  List<PsiNamedType> findChildrenTypes();
-
-  boolean hasComposedParentType();
+  boolean hasParentType();
 
   @Nullable
   TypeMetadata getTypeMetadata();
+
+  @NotNull
+  String getTypeNameString();
 
 }

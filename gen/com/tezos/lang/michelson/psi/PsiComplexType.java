@@ -5,18 +5,21 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiComplexType extends PsiType, PsiNamedType {
+public interface PsiComplexType extends PsiType {
 
-  @NotNull
-  List<PsiType> getTypeList();
+  @Nullable
+  PsiElement getTypeName();
+
+  @Nullable
+  PsiElement getTypeNameComparable();
 
   @NotNull
   List<PsiAnnotation> getAnnotations();
 
   @NotNull
-  String getTypeNameString();
+  List<PsiType> getTypeArguments();
 
-  @NotNull
+  @Nullable
   PsiElement getTypeToken();
 
   boolean hasSimpleTypes();

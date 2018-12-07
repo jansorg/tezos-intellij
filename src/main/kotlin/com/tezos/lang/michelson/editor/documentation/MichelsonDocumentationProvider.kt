@@ -59,10 +59,7 @@ class MichelsonDocumentationProvider : DocumentationProviderEx() {
     }
 
     private fun buildTypeDocs(element: PsiType): String? {
-        return when (element) {
-            is PsiNamedType -> buildTypeReport(element.typeNameString)
-            else -> null
-        }
+        return buildTypeReport(element.typeNameString)
     }
 
     private fun buildTypeReport(name: String): String? {

@@ -32,22 +32,22 @@ public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiT
   }
 
   @Nullable
-  public PsiNamedType findComposedParentType() {
-    return MichelsonPsiUtil.findComposedParentType(this);
+  public PsiType findParentType() {
+    return MichelsonPsiUtil.findParentType(this);
   }
 
-  @NotNull
-  public List<PsiNamedType> findChildrenTypes() {
-    return MichelsonPsiUtil.findChildrenTypes(this);
-  }
-
-  public boolean hasComposedParentType() {
-    return MichelsonPsiUtil.hasComposedParentType(this);
+  public boolean hasParentType() {
+    return MichelsonPsiUtil.hasParentType(this);
   }
 
   @Nullable
   public TypeMetadata getTypeMetadata() {
     return MichelsonPsiUtil.getTypeMetadata(this);
+  }
+
+  @NotNull
+  public String getTypeNameString() {
+    return MichelsonPsiUtil.getTypeNameString(this);
   }
 
 }

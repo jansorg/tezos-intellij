@@ -27,20 +27,25 @@ public class PsiGenericTypeImpl extends PsiTypeImpl implements PsiGenericType {
   }
 
   @Override
-  @NotNull
-  public List<PsiAnnotation> getAnnotations() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getTypeToken() {
+  @Nullable
+  public PsiElement getTypeName() {
     return findPsiChildByType(TYPE_NAME);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getTypeNameComparable() {
+    return findPsiChildByType(TYPE_NAME_COMPARABLE);
+  }
+
   @NotNull
-  public String getTypeNameString() {
-    return MichelsonPsiUtil.getTypeNameString(this);
+  public PsiElement getTypeToken() {
+    return MichelsonPsiUtil.getTypeToken(this);
+  }
+
+  @NotNull
+  public List<PsiAnnotation> getAnnotations() {
+    return MichelsonPsiUtil.getAnnotations(this);
   }
 
 }

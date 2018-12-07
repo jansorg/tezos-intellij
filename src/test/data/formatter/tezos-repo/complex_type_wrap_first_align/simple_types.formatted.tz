@@ -1,0 +1,3 @@
+parameter (pair
+            (pair int int)
+            (pair nat nat));

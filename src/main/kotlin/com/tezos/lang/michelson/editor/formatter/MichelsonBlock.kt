@@ -25,7 +25,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
     private val annotationAlign = Alignment.createAlignment(true, Alignment.Anchor.LEFT)
 
     companion object {
-        val WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
+        val ALWAYS_WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
 
         /**
          * @return true if this comment covers the full line and doesn't have instructions, ... in front
@@ -81,7 +81,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                     MichelsonLineCommentBlock(child, Wrap.createWrap(WrapType.NONE, false), alignment, spacing, indent, codeStyle, parent = this)
                 }
 
-                WRAPPED_BLOCKS.contains(childType) -> {
+                ALWAYS_WRAPPED_BLOCKS.contains(childType) -> {
                     val indent = if (node.elementType.isMichelsonBlock()) Indent.getNormalIndent() else Indent.getNoneIndent()
                     MichelsonBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), null, spacing, indent, codeStyle, parent = this)
                 }
@@ -94,8 +94,9 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 }
 
                 // align types in complex types which contain at least one complex type
-                (childType == GENERIC_TYPE || childType == WRAPPED_TYPE) && nodePsi is PsiComplexType && !nodePsi.hasSimpleTypes() -> {
-                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), blockChildAlign, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
+                (childType == GENERIC_TYPE || childType == COMPLEX_TYPE) && nodePsi is PsiComplexType && nodePsi.hasComplexTypes() -> {
+                    val alignment = if (michelsonSettings.COMPLEX_TYPE_ALIGN) blockChildAlign else null
+                    MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), alignment, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }
 
                 MichelsonElementSets.INSTRUCTIONS.contains(childType) -> {
