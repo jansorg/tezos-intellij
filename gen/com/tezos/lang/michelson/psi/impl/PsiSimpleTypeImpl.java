@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiGenericTypeImpl extends PsiTypeImpl implements PsiGenericType {
+public class PsiSimpleTypeImpl extends PsiTypeImpl implements PsiSimpleType {
 
-  public PsiGenericTypeImpl(@NotNull IElementType type) {
+  public PsiSimpleTypeImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitGenericType(this);
+    return visitor.visitSimpleType(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

@@ -23,12 +23,12 @@ public interface MichelsonTypes {
   IElementType EMPTY_BLOCK = new MichelsonCompositeElementType("EMPTY_BLOCK");
   IElementType FIELD_ANNOTATION = new MichelsonCompositeElementType("FIELD_ANNOTATION");
   IElementType GENERIC_INSTRUCTION = new MichelsonCompositeElementType("GENERIC_INSTRUCTION");
-  IElementType GENERIC_TYPE = new MichelsonCompositeElementType("GENERIC_TYPE");
   IElementType INSTRUCTION = new MichelsonCompositeElementType("INSTRUCTION");
   IElementType LITERAL_DATA = new MichelsonCompositeElementType("LITERAL_DATA");
   IElementType MACRO_INSTRUCTION = new MichelsonCompositeElementType("MACRO_INSTRUCTION");
   IElementType MAP_ENTRY = new MichelsonCompositeElementType("MAP_ENTRY");
   IElementType SECTION = new MichelsonCompositeElementType("SECTION");
+  IElementType SIMPLE_TYPE = new MichelsonCompositeElementType("SIMPLE_TYPE");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
   IElementType TAG = new MichelsonCompositeElementType("TAG");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
@@ -95,9 +95,6 @@ public interface MichelsonTypes {
       else if (type == GENERIC_INSTRUCTION) {
         return new PsiGenericInstructionImpl(type);
       }
-      else if (type == GENERIC_TYPE) {
-        return new PsiGenericTypeImpl(type);
-      }
       else if (type == LITERAL_DATA) {
         return new PsiLiteralDataImpl(type);
       }
@@ -109,6 +106,9 @@ public interface MichelsonTypes {
       }
       else if (type == SECTION) {
         return new PsiSectionImpl(type);
+      }
+      else if (type == SIMPLE_TYPE) {
+        return new PsiSimpleTypeImpl(type);
       }
       else if (type == STRING_LITERAL) {
         return new PsiStringLiteralImpl(type);

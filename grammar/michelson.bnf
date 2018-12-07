@@ -34,6 +34,7 @@
     extends("data_.+")=data
     extends(".+_type")=type
     extends(".+_instruction")=instruction
+    extends(".+_annotation")=annotation
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
@@ -129,13 +130,13 @@ private instruction_recover ::= <<instruction_recover_while>>
 contract_wrapper ::= '{' contract '}'
 
 //-- types
-type ::= generic_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString]}
-generic_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type" methods=[getTypeToken]}
+type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString]}
+simple_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type" methods=[getTypeToken]}
 complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list type* ')' {name="type" methods=[typeArguments="type" getTypeToken hasSimpleTypes hasComplexTypes]}
 
 //-- annotations
 annotation_list ::= annotation* {methods=[annotations="annotation" findParentInstruction]}
 annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentAnnotationList findParentType]}
-type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"] extends=annotation}
-variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"] extends=annotation}
-field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"] extends=annotation}
+type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"]}
+variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"]}
+field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"]}

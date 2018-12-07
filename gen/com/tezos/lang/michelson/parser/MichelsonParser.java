@@ -59,9 +59,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == GENERIC_INSTRUCTION) {
       result = generic_instruction(builder, 0);
     }
-    else if (type == GENERIC_TYPE) {
-      result = generic_type(builder, 0);
-    }
     else if (type == INSTRUCTION) {
       result = instruction(builder, 0);
     }
@@ -76,6 +73,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     }
     else if (type == SECTION) {
       result = section(builder, 0);
+    }
+    else if (type == SIMPLE_TYPE) {
+      result = simple_type(builder, 0);
     }
     else if (type == STRING_LITERAL) {
       result = string_literal(builder, 0);
@@ -103,7 +103,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(COMPLEX_TYPE, GENERIC_TYPE, TYPE),
+    create_token_set_(COMPLEX_TYPE, SIMPLE_TYPE, TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
     create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, MAP_ENTRY,
       STRING_LITERAL, TAG),
@@ -458,19 +458,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TYPE_NAME | TYPE_NAME_COMPARABLE
-  public static boolean generic_type(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "generic_type")) return false;
-    if (!nextTokenIs(builder, "<type>", TYPE_NAME, TYPE_NAME_COMPARABLE)) return false;
-    boolean result;
-    Marker marker = enter_section_(builder, level, _NONE_, GENERIC_TYPE, "<type>");
-    result = consumeToken(builder, TYPE_NAME);
-    if (!result) result = consumeToken(builder, TYPE_NAME_COMPARABLE);
-    exit_section_(builder, level, marker, result, false, null);
-    return result;
-  }
-
-  /* ********************************************************** */
   // block_instruction | simple_instruction
   public static boolean instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "instruction")) return false;
@@ -611,6 +598,19 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // TYPE_NAME | TYPE_NAME_COMPARABLE
+  public static boolean simple_type(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "simple_type")) return false;
+    if (!nextTokenIs(builder, "<type>", TYPE_NAME, TYPE_NAME_COMPARABLE)) return false;
+    boolean result;
+    Marker marker = enter_section_(builder, level, _NONE_, SIMPLE_TYPE, "<type>");
+    result = consumeToken(builder, TYPE_NAME);
+    if (!result) result = consumeToken(builder, TYPE_NAME_COMPARABLE);
+    exit_section_(builder, level, marker, result, false, null);
+    return result;
+  }
+
+  /* ********************************************************** */
   // 'storage' type ';'
   static boolean storage_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "storage_section")) return false;
@@ -719,12 +719,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // generic_type | complex_type
+  // simple_type | complex_type
   public static boolean type(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "type")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _COLLAPSE_, TYPE, "<type>");
-    result = generic_type(builder, level + 1);
+    result = simple_type(builder, level + 1);
     if (!result) result = complex_type(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;

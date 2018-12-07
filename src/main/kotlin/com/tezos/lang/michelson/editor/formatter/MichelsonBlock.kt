@@ -93,7 +93,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
                 }
 
                 // align types in complex types which contain at least one complex type
-                (childType == GENERIC_TYPE || childType == COMPLEX_TYPE) && nodePsi is PsiComplexType && nodePsi.hasComplexTypes() -> {
+                (childType == SIMPLE_TYPE || childType == COMPLEX_TYPE) && nodePsi is PsiComplexType && nodePsi.hasComplexTypes() -> {
                     val alignment = if (michelsonSettings.COMPLEX_TYPE_ALIGN) blockChildAlignment else null
                     MichelsonBlock(child, Wrap.createWrap(WrapType.NORMAL, false), alignment, spacing, Indent.getNormalIndent(), codeStyle, parent = this)
                 }

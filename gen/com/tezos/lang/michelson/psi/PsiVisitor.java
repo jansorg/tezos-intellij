@@ -58,10 +58,6 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitInstruction(o);
   }
 
-  public R visitGenericType(@NotNull PsiGenericType o) {
-    return visitType(o);
-  }
-
   public R visitInstruction(@NotNull PsiInstruction o) {
     return visitMichelsonComposite(o);
   }
@@ -80,6 +76,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitSection(@NotNull PsiSection o) {
     return visitMichelsonComposite(o);
+  }
+
+  public R visitSimpleType(@NotNull PsiSimpleType o) {
+    return visitType(o);
   }
 
   public R visitStringLiteral(@NotNull PsiStringLiteral o) {

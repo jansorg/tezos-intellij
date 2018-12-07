@@ -36,7 +36,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         // generic type and instruction highlighting
         when (psi) {
-            is PsiGenericType -> annotateGenericType(psi, holder)
+            is PsiSimpleType -> annotateGenericType(psi, holder)
             is PsiGenericInstruction -> annotateInstruction(psi, holder)
             is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
         }
@@ -278,7 +278,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         }
     }
 
-    private fun annotateGenericType(element: PsiGenericType, holder: AnnotationHolder) {
+    private fun annotateGenericType(element: PsiSimpleType, holder: AnnotationHolder) {
         val typeName = element.typeNameString
         if (typeName !in MichelsonLanguage.TYPE_NAMES) {
             holder.createErrorAnnotation(element.typeToken, "Unknown type")

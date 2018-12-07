@@ -13,7 +13,6 @@ import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.lang.tag.TagMetadata
 import com.tezos.lang.michelson.lang.type.TypeMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
-import com.tezos.lang.michelson.psi.impl.PsiAnnotationListImpl
 
 /**
  * @author jansorg
@@ -41,7 +40,7 @@ object MichelsonPsiUtil {
     @JvmStatic
     fun getTypeNameString(type: PsiType): String {
         return when (type) {
-            is PsiGenericType -> type.typeToken.text
+            is PsiSimpleType -> type.typeToken.text
             is PsiComplexType -> type.typeToken!!.text
             else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
         }
@@ -65,7 +64,7 @@ object MichelsonPsiUtil {
 
     @JvmStatic
     fun hasSimpleTypes(type: PsiComplexType): Boolean {
-        return type.typeArguments.any { it is PsiGenericType }
+        return type.typeArguments.any { it is PsiSimpleType }
     }
 
     @JvmStatic
@@ -144,7 +143,7 @@ object MichelsonPsiUtil {
      * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
      */
     @JvmStatic
-    fun getTypeToken(psi: PsiGenericType): PsiElement {
+    fun getTypeToken(psi: PsiSimpleType): PsiElement {
         return psi.firstChild
     }
 
@@ -153,7 +152,7 @@ object MichelsonPsiUtil {
      * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
      */
     @JvmStatic
-    fun getAnnotations(psi: PsiGenericType): List<PsiAnnotation> {
+    fun getAnnotations(psi: PsiSimpleType): List<PsiAnnotation> {
         return emptyList()
     }
 
