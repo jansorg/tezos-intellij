@@ -13,6 +13,7 @@ import com.tezos.lang.michelson.lang.macro.MacroMetadata
 import com.tezos.lang.michelson.lang.tag.TagMetadata
 import com.tezos.lang.michelson.lang.type.TypeMetadata
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
+import com.tezos.lang.michelson.psi.impl.PsiAnnotationListImpl
 
 /**
  * @author jansorg
@@ -242,21 +243,19 @@ object MichelsonPsiUtil {
     fun findParentType(psi: PsiAnnotation): PsiType? = psi.parent as? PsiType
 
     @JvmStatic
+    fun findParentInstruction(psi: PsiAnnotationList): PsiInstruction? = psi.parent as? PsiInstruction
+
+    @JvmStatic
     fun findParentInstruction(psi: PsiAnnotation): PsiInstruction? = psi.parent as? PsiInstruction
 
     @JvmStatic
-    fun findParentData(psi: PsiAnnotation): PsiData? = psi.parent as? PsiData
+    fun findParentAnnotationList(psi: PsiAnnotation): PsiAnnotationList? = psi.parent as? PsiAnnotationList
 
     @JvmStatic
     fun isWhitespaceOnly(psi: PsiBlockInstruction): Boolean {
         val next = TreeUtil.skipElements(psi.firstChild.node.treeNext, MichelsonTokenSets.WHITESPACE_TOKENS)
         return next == psi.lastChild.node
     }
-
-    @JvmStatic
-    fun findParentContract(psi: PsiElement): PsiContract? = PsiTreeUtil.findFirstParent(psi) {
-        it is PsiContract
-    } as? PsiContract
 }
 
 fun PsiElement?.isWhitespace(): Boolean {

@@ -8,11 +8,11 @@ import com.tezos.lang.michelson.lang.macro.MacroMetadata;
 
 public interface PsiMacroInstruction extends PsiInstruction {
 
-  @NotNull
-  PsiElement getMacroToken();
+  @Nullable
+  PsiAnnotationList getAnnotationList();
 
   @NotNull
-  List<PsiAnnotation> getAnnotations();
+  PsiElement getMacroToken();
 
   @NotNull
   List<PsiBlockInstruction> getInstructionBlocks();

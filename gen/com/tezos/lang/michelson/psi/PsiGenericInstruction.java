@@ -8,6 +8,9 @@ import com.tezos.lang.michelson.lang.instruction.InstructionMetadata;
 
 public interface PsiGenericInstruction extends PsiInstruction {
 
+  @Nullable
+  PsiAnnotationList getAnnotationList();
+
   @NotNull
   List<PsiData> getDataList();
 
@@ -19,9 +22,6 @@ public interface PsiGenericInstruction extends PsiInstruction {
 
   @NotNull
   PsiElement getInstructionToken();
-
-  @NotNull
-  List<PsiAnnotation> getAnnotations();
 
   @NotNull
   List<PsiBlockInstruction> getInstructionBlocks();

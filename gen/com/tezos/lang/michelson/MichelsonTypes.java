@@ -12,6 +12,7 @@ import com.intellij.psi.impl.source.tree.CompositePsiElement;
 public interface MichelsonTypes {
 
   IElementType ANNOTATION = new MichelsonCompositeElementType("ANNOTATION");
+  IElementType ANNOTATION_LIST = new MichelsonCompositeElementType("ANNOTATION_LIST");
   IElementType BLOCK_INSTRUCTION = new MichelsonCompositeElementType("BLOCK_INSTRUCTION");
   IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
@@ -61,7 +62,10 @@ public interface MichelsonTypes {
   class Factory {
 
     public static CompositePsiElement createElement(IElementType type) {
-       if (type == BLOCK_INSTRUCTION) {
+       if (type == ANNOTATION_LIST) {
+        return new PsiAnnotationListImpl(type);
+      }
+      else if (type == BLOCK_INSTRUCTION) {
         return new PsiBlockInstructionImpl(type);
       }
       else if (type == COMPLEX_TYPE) {

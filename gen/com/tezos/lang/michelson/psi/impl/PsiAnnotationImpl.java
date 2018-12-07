@@ -50,13 +50,13 @@ public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implement
   }
 
   @Nullable
-  public PsiType findParentType() {
-    return MichelsonPsiUtil.findParentType(this);
+  public PsiAnnotationList findParentAnnotationList() {
+    return MichelsonPsiUtil.findParentAnnotationList(this);
   }
 
   @Nullable
-  public PsiData findParentData() {
-    return MichelsonPsiUtil.findParentData(this);
+  public PsiType findParentType() {
+    return MichelsonPsiUtil.findParentType(this);
   }
 
 }

@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiGenericTypeImpl extends PsiTypeImpl implements PsiGenericType {
+public class PsiAnnotationListImpl extends MichelsonCompositeImpl implements PsiAnnotationList {
 
-  public PsiGenericTypeImpl(@NotNull IElementType type) {
+  public PsiAnnotationListImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitGenericType(this);
+    return visitor.visitAnnotationList(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,20 +27,14 @@ public class PsiGenericTypeImpl extends PsiTypeImpl implements PsiGenericType {
   }
 
   @Override
-  @Nullable
-  public PsiElement getTypeName() {
-    return findPsiChildByType(TYPE_NAME);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getTypeNameComparable() {
-    return findPsiChildByType(TYPE_NAME_COMPARABLE);
-  }
-
   @NotNull
-  public PsiElement getTypeToken() {
-    return MichelsonPsiUtil.getTypeToken(this);
+  public List<PsiAnnotation> getAnnotations() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
+  }
+
+  @Nullable
+  public PsiInstruction findParentInstruction() {
+    return MichelsonPsiUtil.findParentInstruction(this);
   }
 
 }

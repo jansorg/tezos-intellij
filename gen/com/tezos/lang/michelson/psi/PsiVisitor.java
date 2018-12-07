@@ -10,6 +10,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitMichelsonComposite(o);
   }
 
+  public R visitAnnotationList(@NotNull PsiAnnotationList o) {
+    return visitMichelsonComposite(o);
+  }
+
   public R visitBlockInstruction(@NotNull PsiBlockInstruction o) {
     return visitInstruction(o);
   }

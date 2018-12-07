@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiGenericType extends PsiType {
-
-  @Nullable
-  PsiElement getTypeName();
-
-  @Nullable
-  PsiElement getTypeNameComparable();
+public interface PsiAnnotationList extends MichelsonComposite {
 
   @NotNull
-  PsiElement getTypeToken();
+  List<PsiAnnotation> getAnnotations();
+
+  @Nullable
+  PsiInstruction findParentInstruction();
 
 }

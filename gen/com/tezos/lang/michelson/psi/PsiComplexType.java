@@ -7,14 +7,14 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiComplexType extends PsiType {
 
+  @NotNull
+  PsiAnnotationList getAnnotationList();
+
   @Nullable
   PsiElement getTypeName();
 
   @Nullable
   PsiElement getTypeNameComparable();
-
-  @NotNull
-  List<PsiAnnotation> getAnnotations();
 
   @NotNull
   List<PsiType> getTypeArguments();
