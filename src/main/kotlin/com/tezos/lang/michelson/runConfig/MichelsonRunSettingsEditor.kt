@@ -14,6 +14,8 @@ class MichelsonRunSettingsEditor : SettingsEditor<MichelsonRunConfiguration>() {
     override fun resetEditorFrom(config: MichelsonRunConfiguration) {
         val clients = TezosSettingService.getSettings().clients
 
+        editor.michelsonFile = config.filePath ?: ""
+
         editor.setTezosClients(clients)
 
         if (config.useDefaultTezosClient) {
@@ -24,8 +26,9 @@ class MichelsonRunSettingsEditor : SettingsEditor<MichelsonRunConfiguration>() {
     }
 
     override fun applyEditorTo(config: MichelsonRunConfiguration) {
-        val client = editor.selectedTezosClient
+        config.filePath = editor.michelsonFile
 
+        val client = editor.selectedTezosClient
         if (client == null) {
             config.useDefaultTezosClient = true
             config.tezosClientPath = null

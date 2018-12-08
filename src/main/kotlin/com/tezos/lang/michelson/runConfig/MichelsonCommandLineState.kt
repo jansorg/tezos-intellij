@@ -40,6 +40,7 @@ class MichelsonCommandLineState(private val config: MichelsonRunConfiguration, e
             false -> listOf("run", "script", file, "on", "storage", "...", "and", "input", "...")
         }
 
+        // fixme setup env with don't pull, etc.
         val cmd = GeneralCommandLine(executable.executablePath)
         cmd.addParameters(params)
         return cmd

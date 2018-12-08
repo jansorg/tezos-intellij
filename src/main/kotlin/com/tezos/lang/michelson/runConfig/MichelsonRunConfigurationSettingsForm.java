@@ -6,6 +6,7 @@ import com.intellij.ui.ListCellRendererWrapper;
 import com.intellij.ui.SortedComboBoxModel;
 import com.tezos.intellij.settings.TezosClientConfig;
 import com.tezos.intellij.ui.Icons;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -19,8 +20,18 @@ public class MichelsonRunConfigurationSettingsForm {
     JPanel mainPanel;
     private SortedComboBoxModel<TezosClientConfig> clientModel;
     private JComboBox clientList;
+    private JTextField michelsonFile;
 
     public MichelsonRunConfigurationSettingsForm() {
+    }
+
+    @NotNull
+    public String getMichelsonFile() {
+        return michelsonFile.getText();
+    }
+
+    public void setMichelsonFile(@NotNull String file) {
+        this.michelsonFile.setText(file);
     }
 
     public void setTezosClients(List<TezosClientConfig> clients) {
