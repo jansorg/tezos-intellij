@@ -103,12 +103,16 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
     }
 
     override fun stackInfo(document: Document): StackInfo? {
-        client ?: throw DefaultClientUnavailableException()
+        try {
+            client ?: throw DefaultClientUnavailableException()
 
-        val file = FileDocumentManager.getInstance().getFile(document) ?: return null
-        val path = file.toJavaPath()
+            val file = FileDocumentManager.getInstance().getFile(document) ?: return null
+            val path = file.toJavaPath()
 
-        return stacks[path]
+            return stacks[path]
+        } catch (e: Exception) {
+            return StackInfo(e)
+        }
     }
 
     override fun defaultTezosClientChanged() {
