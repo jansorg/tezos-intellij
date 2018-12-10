@@ -2,20 +2,25 @@ package com.tezos.lang.michelson.runConfig
 
 import com.intellij.execution.ExecutionTarget
 import com.intellij.execution.Executor
+import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ex.MessagesEx
 import com.intellij.util.xmlb.XmlSerializer
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.tezos.intellij.settings.TezosSettingService
+import com.tezos.intellij.ui.Icons
 import org.jdom.Element
 import java.nio.file.Files
 import java.nio.file.Paths
 
 class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory, name: String) : RunConfigurationBase(project, factory, name), LocatableConfiguration {
     private var configBean = MichelsonRunConfigBean()
+
+    val env = mutableMapOf<String, String>()
 
     var useDefaultTezosClient: Boolean
         get() = configBean.USE_DEFAULT_CLIENT
@@ -35,6 +40,24 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
             configBean.FILE_PATH = value
         }
 
+    var promptForInput: Boolean
+        get() = configBean.PROMPT_FOR_INPUT
+        set(value) {
+            configBean.PROMPT_FOR_INPUT = value
+        }
+
+    var inputParameter: String?
+        get() = configBean.INPUT_PARAM
+        set(value) {
+            configBean.INPUT_PARAM = value
+        }
+
+    var storageInput: String?
+        get() = configBean.INPUT_STORAGE
+        set(value) {
+            configBean.INPUT_STORAGE = value
+        }
+
     override fun canRunOn(target: ExecutionTarget): Boolean {
         return true
     }
@@ -49,6 +72,21 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
         return MichelsonRunSettingsEditor()
+    }
+
+    override fun isCompileBeforeLaunchAddedByDefault(): Boolean {
+        return false
+    }
+
+    override fun excludeCompileBeforeLaunchOption(): Boolean {
+        return true
+    }
+
+    override fun checkSettingsBeforeRun() {
+        if (promptForInput) {
+            val param = MessagesEx.showInputDialog(project, "Parameter:", "Parameter value passed to the client", Icons.Tezos, inputParameter, null)
+            DataKeys.PARAMETER_INPUT.set(this, param)
+        }
     }
 
     override fun checkConfiguration() {
@@ -79,13 +117,13 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
         PathMacroManager.getInstance(project).expandPaths(element)
         super.readExternal(element)
         XmlSerializer.deserializeInto(configBean, element)
-        // EnvironmentVariablesComponent.readExternal(element, getEnvs())
+        EnvironmentVariablesComponent.readExternal(element, env)
     }
 
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
         XmlSerializer.serializeInto(configBean, element, null)
-        // EnvironmentVariablesComponent.writeExternal(element, getEnvs())
+        EnvironmentVariablesComponent.writeExternal(element, env)
     }
 
     override fun clone(): RunConfiguration {
@@ -101,5 +139,11 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
         var USE_DEFAULT_CLIENT: Boolean = true
         @JvmField
         var CLIENT_PATH: String? = null
+        @JvmField
+        var INPUT_PARAM: String? = null
+        @JvmField
+        var INPUT_STORAGE: String? = null
+        @JvmField
+        var PROMPT_FOR_INPUT: Boolean = true
     }
 }

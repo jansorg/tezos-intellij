@@ -7,6 +7,8 @@ import com.tezos.client.stack.MichelsonStackTransformations
  * - mainnet.sh/alphanet.sh which call the client inside of a running docker container
  * - tezos-client which working with a node running on the local machine
  *
+ * Also, it's used to allow mocking fot a test environment.
+ *
  * @author jansorg
  */
 interface TezosClient {

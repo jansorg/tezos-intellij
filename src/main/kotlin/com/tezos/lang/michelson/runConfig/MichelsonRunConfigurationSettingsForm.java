@@ -21,8 +21,35 @@ public class MichelsonRunConfigurationSettingsForm {
     private SortedComboBoxModel<TezosClientConfig> clientModel;
     private JComboBox clientList;
     private JTextField michelsonFile;
+    private JTextField inputParam;
+    private JTextField inputStorage;
+    private JCheckBox promptForInput;
 
     public MichelsonRunConfigurationSettingsForm() {
+    }
+
+    public String getInputParam() {
+        return inputParam.getText();
+    }
+
+    public void setInputParam(String value) {
+        inputParam.setText(value);
+    }
+
+    public String getInputStorage() {
+        return inputStorage.getText();
+    }
+
+    public void setInputStorage(String value) {
+        inputStorage.setText(value);
+    }
+
+    public boolean getPromptForInput() {
+        return promptForInput.isSelected();
+    }
+
+    public void setPromptForInput(boolean enabled) {
+        promptForInput.setSelected(enabled);
     }
 
     @NotNull

@@ -7,8 +7,9 @@ import com.intellij.execution.process.ColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.tezos.intellij.settings.TezosClientConfig
+import com.tezos.client.TezosCommandline
 import com.tezos.intellij.settings.TezosSettingService
+import java.nio.file.Paths
 
 class MichelsonCommandLineState(private val config: MichelsonRunConfiguration, environment: ExecutionEnvironment) : CommandLineState(environment) {
     override fun startProcess(): ProcessHandler {
@@ -24,25 +25,27 @@ class MichelsonCommandLineState(private val config: MichelsonRunConfiguration, e
      *  tezos-client run script file.tz on storage ... and input ...
      * Script client:
      *  alphanet.sh client run script file.tz on storage ... and input ...
+     *
+     *  It expects values for storage and parameter either in the run configuration or as DataKey in the execution environment.
+     *  @throws CantRunException
      */
     private fun createCommandLine(): GeneralCommandLine {
-        val executable = when (config.useDefaultTezosClient) {
-            true -> TezosSettingService.getInstance().state.getDefaultClient()
-            false -> config.tezosClientPath?.let {
-                TezosClientConfig("", it, false)
-            }
-        } ?: throw CantRunException("No tezos client configured")
+        val filePath = config.filePath ?: throw CantRunException("Missing Michelson file")
 
-        val file = config.filePath ?: throw CantRunException("Script file not configured")
+        val paramInput = config.inputParameter ?: DataKeys.PARAMETER_INPUT.get(environment)
+        ?: throw CantRunException("missing input parameter value")
 
-        val params = when (executable.isScriptClient) {
-            true -> listOf("client", "run", "script", file, "on", "storage", "...", "and", "input", "...")
-            false -> listOf("run", "script", file, "on", "storage", "...", "and", "input", "...")
+        val storageInput = config.storageInput ?: DataKeys.STORAGE_INPUT.get(environment)
+        ?: throw CantRunException("missing input storage value")
+
+        val client = when (config.useDefaultTezosClient) {
+            true -> TezosSettingService.getSettings().getDefaultClient()?.asJavaPath
+            else -> config.tezosClientPath?.let { Paths.get(it) }
         }
+        client ?: throw CantRunException("Missing Tezos client path")
 
-        // fixme setup env with don't pull, etc.
-        val cmd = GeneralCommandLine(executable.executablePath)
-        cmd.addParameters(params)
-        return cmd
+        val cmdLine = GeneralCommandLine(TezosCommandline.executeContract(Paths.get(filePath), storageInput, paramInput, client))
+        cmdLine.environment.putAll(TezosCommandline.DefaultEnv)
+        return cmdLine
     }
 }

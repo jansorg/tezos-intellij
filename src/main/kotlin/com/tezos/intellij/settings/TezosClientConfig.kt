@@ -2,6 +2,8 @@ package com.tezos.intellij.settings
 
 import com.intellij.util.xmlb.annotations.Tag
 import org.jetbrains.annotations.NotNull
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * @author jansorg
@@ -12,9 +14,10 @@ class TezosClientConfig(@JvmField @NotNull var name: String = "",
                         @JvmField @NotNull var isDefault: Boolean = false) {
 
     val isScriptClient: Boolean
-        get() {
-            return executablePath.endsWith(".sh")
-        }
+        get() = executablePath.endsWith(".sh")
+
+    val asJavaPath: Path
+        get() = Paths.get(executablePath)
 
     fun applyFrom(c: TezosClientConfig): TezosClientConfig {
         this.name = c.name
