@@ -27,6 +27,11 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
+    fun findSectionByType(contract: PsiContract, type: PsiSectionType): PsiSection? {
+        return contract.sections.firstOrNull { it.sectionType == type }
+    }
+
+    @JvmStatic
     fun getSectionType(type: PsiSection): PsiSectionType {
         val token = type.firstChild?.text
         return when (token) {

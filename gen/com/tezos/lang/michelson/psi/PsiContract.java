@@ -12,4 +12,7 @@ public interface PsiContract extends MichelsonComposite {
 
   boolean isMainContract();
 
+  @Nullable
+  PsiSection findSectionByType(@NotNull PsiSectionType type);
+
 }

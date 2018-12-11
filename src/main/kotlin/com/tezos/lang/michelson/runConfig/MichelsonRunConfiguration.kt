@@ -5,9 +5,12 @@ import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.components.PathMacroManager
+import com.intellij.openapi.externalSystem.model.ProjectKeys
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
 import com.intellij.util.xmlb.XmlSerializer
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.tezos.intellij.settings.TezosSettingService
@@ -85,6 +88,8 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
      */
     override fun checkSettingsBeforeRun() {
         if (promptForInput) {
+//            val psiFile = this.getUserData<PsiFile>(CommonDataKeys.PSI_FILE)
+
             val dialog = MichelsonInputDialog(project, inputParameter ?: "", inputStorage ?: "")
             dialog.showAndGet()
 

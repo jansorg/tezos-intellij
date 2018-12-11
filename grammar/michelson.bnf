@@ -83,7 +83,7 @@
 // we probably need an external rule to make sure that the required sections are present
 // (we can't define arbitrary order without adding a lot of ruled)
 private script_file ::= contract?
-contract ::= section+ { methods=[sections="section" isMainContract] }
+contract ::= section+ { methods=[sections="section" isMainContract findSectionByType] }
 
 section ::= parameter_section | return_section | storage_section | code_section {methods=[instructions="instruction" getSectionType]}
 private parameter_section ::= 'parameter' type ';' {pin=1}

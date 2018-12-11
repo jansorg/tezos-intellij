@@ -36,4 +36,9 @@ public class PsiContractImpl extends MichelsonCompositeImpl implements PsiContra
     return MichelsonPsiUtil.isMainContract(this);
   }
 
+  @Nullable
+  public PsiSection findSectionByType(@NotNull PsiSectionType type) {
+    return MichelsonPsiUtil.findSectionByType(this, type);
+  }
+
 }
