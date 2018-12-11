@@ -8,11 +8,9 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ex.MessagesEx
 import com.intellij.util.xmlb.XmlSerializer
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.tezos.intellij.settings.TezosSettingService
-import com.tezos.intellij.ui.Icons
 import org.jdom.Element
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -52,7 +50,7 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
             configBean.INPUT_PARAM = value
         }
 
-    var storageInput: String?
+    var inputStorage: String?
         get() = configBean.INPUT_STORAGE
         set(value) {
             configBean.INPUT_STORAGE = value
@@ -82,10 +80,23 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
         return true
     }
 
+    /**
+     * Requests input values for parameter and storage if the run configuration has the corresponding flag set.
+     */
     override fun checkSettingsBeforeRun() {
         if (promptForInput) {
-            val param = MessagesEx.showInputDialog(project, "Parameter:", "Parameter value passed to the client", Icons.Tezos, inputParameter, null)
-            DataKeys.PARAMETER_INPUT.set(this, param)
+            val dialog = MichelsonInputDialog(project, inputParameter ?: "", inputStorage ?: "")
+            dialog.showAndGet()
+
+//            if (dialog.exitCode == DialogWrapper.CANCEL_EXIT_CODE) {
+//                throw RuntimeConfigurationError("Execution was cancelled")
+//            }
+
+            val paramInput = dialog.paramInputValue
+            val storageInput = dialog.storageInputValue
+
+            DataKeys.PARAMETER_INPUT.set(this, paramInput)
+            DataKeys.STORAGE_INPUT.set(this, storageInput)
         }
     }
 

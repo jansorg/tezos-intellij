@@ -32,10 +32,10 @@ class MichelsonCommandLineState(private val config: MichelsonRunConfiguration, e
     private fun createCommandLine(): GeneralCommandLine {
         val filePath = config.filePath ?: throw CantRunException("Missing Michelson file")
 
-        val paramInput = config.inputParameter ?: DataKeys.PARAMETER_INPUT.get(environment)
+        val paramInput = DataKeys.PARAMETER_INPUT.get(config) ?: config.inputParameter
         ?: throw CantRunException("missing input parameter value")
 
-        val storageInput = config.storageInput ?: DataKeys.STORAGE_INPUT.get(environment)
+        val storageInput = DataKeys.STORAGE_INPUT.get(config) ?: config.inputStorage
         ?: throw CantRunException("missing input storage value")
 
         val client = when (config.useDefaultTezosClient) {
