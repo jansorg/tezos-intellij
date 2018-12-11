@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PsiSection extends MichelsonComposite {
+public interface PsiTypeSection extends PsiSection {
 
-  @NotNull
-  PsiSectionType getSectionType();
+  @Nullable
+  PsiType getType();
 
 }

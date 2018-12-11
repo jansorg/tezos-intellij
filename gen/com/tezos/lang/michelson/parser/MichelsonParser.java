@@ -32,6 +32,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == BLOCK_INSTRUCTION) {
       result = block_instruction(builder, 0);
     }
+    else if (type == CODE_SECTION) {
+      result = code_section(builder, 0);
+    }
     else if (type == COMPLEX_TYPE) {
       result = complex_type(builder, 0);
     }
@@ -89,6 +92,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == TYPE_ANNOTATION) {
       result = type_annotation(builder, 0);
     }
+    else if (type == TYPE_SECTION) {
+      result = type_section(builder, 0);
+    }
     else if (type == VARIABLE_ANNOTATION) {
       result = variable_annotation(builder, 0);
     }
@@ -103,6 +109,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
+    create_token_set_(CODE_SECTION, SECTION, TYPE_SECTION),
     create_token_set_(COMPLEX_TYPE, SIMPLE_TYPE, TYPE),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
     create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, MAP_ENTRY,
@@ -153,10 +160,10 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // 'code' instruction ';'?
-  static boolean code_section(PsiBuilder builder, int level) {
+  public static boolean code_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "code_section")) return false;
     boolean result, pinned;
-    Marker marker = enter_section_(builder, level, _NONE_);
+    Marker marker = enter_section_(builder, level, _NONE_, CODE_SECTION, "<code section>");
     result = consumeToken(builder, "code");
     pinned = result; // pin = 1
     result = result && report_error_(builder, instruction(builder, level + 1));
@@ -577,20 +584,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'return' type ';'
-  static boolean return_section(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "return_section")) return false;
-    boolean result, pinned;
-    Marker marker = enter_section_(builder, level, _NONE_);
-    result = consumeToken(builder, "return");
-    pinned = result; // pin = 1
-    result = result && report_error_(builder, type(builder, level + 1));
-    result = pinned && consumeToken(builder, SEMI) && result;
-    exit_section_(builder, level, marker, result, pinned, null);
-    return result || pinned;
-  }
-
-  /* ********************************************************** */
   // contract?
   static boolean script_file(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "script_file")) return false;
@@ -599,14 +592,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // parameter_section | return_section | storage_section | code_section
+  // type_section | code_section
   public static boolean section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "section")) return false;
     boolean result;
-    Marker marker = enter_section_(builder, level, _NONE_, SECTION, "<section>");
-    result = parameter_section(builder, level + 1);
-    if (!result) result = return_section(builder, level + 1);
-    if (!result) result = storage_section(builder, level + 1);
+    Marker marker = enter_section_(builder, level, _COLLAPSE_, SECTION, "<section>");
+    result = type_section(builder, level + 1);
     if (!result) result = code_section(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
@@ -769,6 +760,18 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     Marker marker = enter_section_(builder);
     result = consumeToken(builder, TYPE_ANNOTATION_TOKEN);
     exit_section_(builder, marker, TYPE_ANNOTATION, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // parameter_section | storage_section
+  public static boolean type_section(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "type_section")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder, level, _NONE_, TYPE_SECTION, "<type section>");
+    result = parameter_section(builder, level + 1);
+    if (!result) result = storage_section(builder, level + 1);
+    exit_section_(builder, level, marker, result, false, null);
     return result;
   }
 

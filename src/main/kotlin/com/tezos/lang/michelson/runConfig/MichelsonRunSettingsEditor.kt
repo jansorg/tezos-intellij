@@ -18,6 +18,14 @@ class MichelsonRunSettingsEditor : SettingsEditor<MichelsonRunConfiguration>() {
         editor.inputStorage = config.inputStorage
         editor.promptForInput = config.promptForInput
 
+        config.parameterInputSample()?.let {
+            editor.setParamEmptyText(it)
+        }
+
+        config.storageInputSample()?.let {
+            editor.setStorageEmptyText(it)
+        }
+
         editor.setTezosClients(clients)
 
         if (config.useDefaultTezosClient) {

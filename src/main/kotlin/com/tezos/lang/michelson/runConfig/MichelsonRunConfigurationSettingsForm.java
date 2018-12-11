@@ -21,8 +21,8 @@ public class MichelsonRunConfigurationSettingsForm {
     private SortedComboBoxModel<TezosClientConfig> clientModel;
     private JComboBox clientList;
     private JTextField michelsonFile;
-    private JTextField inputParam;
-    private JTextField inputStorage;
+    private com.intellij.ui.components.JBTextField inputParam;
+    private com.intellij.ui.components.JBTextField inputStorage;
     private JCheckBox promptForInput;
 
     public MichelsonRunConfigurationSettingsForm() {
@@ -36,8 +36,16 @@ public class MichelsonRunConfigurationSettingsForm {
         inputParam.setText(value);
     }
 
+    public void setParamEmptyText(String value) {
+        inputParam.getEmptyText().setText(value);
+    }
+
     public String getInputStorage() {
         return inputStorage.getText();
+    }
+
+    public void setStorageEmptyText(String value) {
+        inputStorage.getEmptyText().setText(value);
     }
 
     public void setInputStorage(String value) {

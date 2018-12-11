@@ -76,6 +76,10 @@ data class MichelsonStackType(val name: String, val arguments: List<MichelsonSta
             return MichelsonLanguage.TYPES.firstOrNull { it.name == name }?.isComparable ?: false
         }
 
+    /**
+     * Renders the type as a string.
+     * This does not include annotations.
+     */
     fun asString(showNested: Boolean): String {
         if (arguments.isEmpty() || !showNested) {
             return name

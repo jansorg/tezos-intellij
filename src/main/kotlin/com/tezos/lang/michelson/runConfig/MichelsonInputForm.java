@@ -19,8 +19,16 @@ public class MichelsonInputForm {
         return mainPanel;
     }
 
+    public JBLabel getExpectedParameterType() {
+        return expectedParameterType;
+    }
+
     public JBTextField getParamterInput() {
         return paramterInput;
+    }
+
+    public JBLabel getExpectedStorageType() {
+        return expectedStorageType;
     }
 
     public JBTextField getStorageInput() {

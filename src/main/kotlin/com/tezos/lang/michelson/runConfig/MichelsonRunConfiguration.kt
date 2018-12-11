@@ -5,15 +5,17 @@ import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.components.PathMacroManager
-import com.intellij.openapi.externalSystem.model.ProjectKeys
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.psi.PsiManager
 import com.intellij.util.xmlb.XmlSerializer
 import com.intellij.util.xmlb.XmlSerializerUtil
+import com.tezos.client.stack.MichelsonStackUtils
 import com.tezos.intellij.settings.TezosSettingService
+import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import org.jdom.Element
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -88,9 +90,15 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
      */
     override fun checkSettingsBeforeRun() {
         if (promptForInput) {
-//            val psiFile = this.getUserData<PsiFile>(CommonDataKeys.PSI_FILE)
+            val psiFile = findPsiFile()
 
-            val dialog = MichelsonInputDialog(project, inputParameter ?: "", inputStorage ?: "")
+            val contract = psiFile?.getContract()
+            val paramSection = contract?.findParameterSection()
+            val storageSection = contract?.findStorageSection()
+
+            val dialog = MichelsonInputDialog(project,
+                    paramSection?.type?.asStackType(), inputParameter ?: "",
+                    storageSection?.type?.asStackType(), inputStorage ?: "")
             dialog.showAndGet()
 
 //            if (dialog.exitCode == DialogWrapper.CANCEL_EXIT_CODE) {
@@ -103,6 +111,27 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
             DataKeys.PARAMETER_INPUT.set(this, paramInput)
             DataKeys.STORAGE_INPUT.set(this, storageInput)
         }
+    }
+
+    fun parameterInputSample(): String? {
+        val type = findPsiFile()?.getContract()?.findParameterSection()?.type?.asStackType()
+        return type?.let {
+            MichelsonStackUtils.generateSampleString(it)
+        }
+    }
+
+    fun storageInputSample(): String? {
+        val type = findPsiFile()?.getContract()?.findStorageSection()?.type?.asStackType()
+        return type?.let {
+            MichelsonStackUtils.generateSampleString(it)
+        }
+    }
+
+    fun findPsiFile(): MichelsonPsiFile? {
+        val file = VirtualFileManager.getInstance().findFileByUrl(VfsUtilCore.pathToUrl(filePath!!))
+        return file?.let {
+            PsiManager.getInstance(project).findFile(file)
+        } as? MichelsonPsiFile
     }
 
     override fun checkConfiguration() {

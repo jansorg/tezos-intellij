@@ -35,6 +35,7 @@
     extends(".+_type")=type
     extends(".+_instruction")=instruction
     extends(".+_annotation")=annotation
+    extends(".+_section")=section
 
     // lexer tokens, see grammar/_MichelsonLexer.flex for the generated jflex lexer
     tokens=[
@@ -83,13 +84,13 @@
 // we probably need an external rule to make sure that the required sections are present
 // (we can't define arbitrary order without adding a lot of ruled)
 private script_file ::= contract?
-contract ::= section+ { methods=[sections="section" isMainContract findSectionByType] }
+contract ::= section+ { methods=[sections="section" isMainContract findSectionByType findParameterSection findStorageSection findCodeSection] }
 
-section ::= parameter_section | return_section | storage_section | code_section {methods=[instructions="instruction" getSectionType]}
+section ::= type_section | code_section {methods=[getSectionType]}
+type_section ::= parameter_section | storage_section
 private parameter_section ::= 'parameter' type ';' {pin=1}
-private return_section ::= 'return' type ';' {pin=1}
 private storage_section ::= 'storage' type ';' {pin=1}
-private code_section ::= 'code' instruction ';'? {pin=1}
+code_section ::= 'code' instruction ';'? {pin=1 methods=[instructions="instruction"]}
 
 empty_block ::= '{' ';'? '}' {extends=block_instruction}
 
@@ -130,13 +131,13 @@ private instruction_recover ::= <<instruction_recover_while>>
 contract_wrapper ::= '{' contract '}'
 
 //-- types
-type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString]}
+type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString asStackType]}
 simple_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type" methods=[getTypeToken]}
 complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* ')' {name="type" methods=[typeArguments="type" getTypeToken hasSimpleTypes hasComplexTypes]}
 
 //-- annotations
 annotation_list ::= annotation+ {methods=[annotations="annotation" findParentInstruction]}
-annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentAnnotationList findParentType]}
+annotation ::= type_annotation | variable_annotation | field_annotation {methods=[isTypeAnnotation isVariableAnnotation isFieldAnnotation getAnnotationType findParentInstruction findParentAnnotationList findParentType asStackAnnotation]}
 type_annotation ::= TYPE_ANNOTATION_TOKEN {methods=[token="TYPE_ANNOTATION_TOKEN"]}
 variable_annotation ::= VAR_ANNOTATION_TOKEN {methods=[token="VAR_ANNOTATION_TOKEN"]}
 field_annotation ::= FIELD_ANNOTATION_TOKEN {methods=[token="FIELD_ANNOTATION_TOKEN"]}

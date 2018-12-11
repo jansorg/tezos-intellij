@@ -11,14 +11,14 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public abstract class PsiSectionImpl extends MichelsonCompositeImpl implements PsiSection {
+public class PsiCodeSectionImpl extends PsiSectionImpl implements PsiCodeSection {
 
-  public PsiSectionImpl(@NotNull IElementType type) {
+  public PsiCodeSectionImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitSection(this);
+    return visitor.visitCodeSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -26,9 +26,10 @@ public abstract class PsiSectionImpl extends MichelsonCompositeImpl implements P
     else super.accept(visitor);
   }
 
-  @NotNull
-  public PsiSectionType getSectionType() {
-    return MichelsonPsiUtil.getSectionType(this);
+  @Override
+  @Nullable
+  public PsiInstruction getInstructions() {
+    return PsiTreeUtil.getChildOfType(this, PsiInstruction.class);
   }
 
 }

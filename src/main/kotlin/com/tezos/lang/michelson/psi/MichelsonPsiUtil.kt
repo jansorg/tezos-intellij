@@ -5,6 +5,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.TreeUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
+import com.tezos.client.stack.MichelsonStackAnnotation
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
@@ -32,6 +34,21 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
+    fun findParameterSection(contract: PsiContract): PsiTypeSection? {
+        return contract.sections.firstOrNull { it.sectionType == PsiSectionType.PARAMETER } as? PsiTypeSection
+    }
+
+    @JvmStatic
+    fun findStorageSection(contract: PsiContract): PsiTypeSection? {
+        return contract.sections.firstOrNull { it.sectionType == PsiSectionType.STORAGE } as? PsiTypeSection
+    }
+
+    @JvmStatic
+    fun findCodeSection(contract: PsiContract): PsiCodeSection? {
+        return contract.sections.firstOrNull { it.sectionType == PsiSectionType.CODE } as? PsiCodeSection
+    }
+
+    @JvmStatic
     fun getSectionType(type: PsiSection): PsiSectionType {
         val token = type.firstChild?.text
         return when (token) {
@@ -49,6 +66,23 @@ object MichelsonPsiUtil {
             is PsiComplexType -> type.typeToken!!.text
             else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
         }
+    }
+
+    @JvmStatic
+    fun asStackType(type: PsiType): MichelsonStackType {
+        val children = type.children
+        val types = children.mapNotNull { it as? PsiType }
+        val annotations = when (type is PsiComplexType) {
+            true -> (type as PsiComplexType).annotationList?.annotations
+            false -> null
+        } ?: emptyList<PsiAnnotation>()
+
+        return MichelsonStackType(type.typeNameString, types.map { it.asStackType() }, annotations.map { it.asStackAnnotation() })
+    }
+
+    @JvmStatic
+    fun asStackAnnotation(annotation: PsiAnnotation): MichelsonStackAnnotation {
+        return MichelsonStackAnnotation(annotation.text)
     }
 
     @JvmStatic
@@ -238,7 +272,7 @@ object MichelsonPsiUtil {
     fun findParentType(psi: PsiAnnotation): PsiType? {
         val parent = psi.parent
         return when (parent) {
-            is PsiAnnotationList-> parent.parent as? PsiType
+            is PsiAnnotationList -> parent.parent as? PsiType
             else -> parent as? PsiType
         }
     }

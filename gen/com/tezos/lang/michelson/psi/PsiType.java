@@ -4,6 +4,7 @@ package com.tezos.lang.michelson.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.tezos.client.stack.MichelsonStackType;
 import com.tezos.lang.michelson.lang.type.TypeMetadata;
 
 public interface PsiType extends PsiAnnotated {
@@ -20,5 +21,8 @@ public interface PsiType extends PsiAnnotated {
 
   @NotNull
   String getTypeNameString();
+
+  @NotNull
+  MichelsonStackType asStackType();
 
 }

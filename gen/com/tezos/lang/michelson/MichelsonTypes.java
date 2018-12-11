@@ -14,6 +14,7 @@ public interface MichelsonTypes {
   IElementType ANNOTATION = new MichelsonCompositeElementType("ANNOTATION");
   IElementType ANNOTATION_LIST = new MichelsonCompositeElementType("ANNOTATION_LIST");
   IElementType BLOCK_INSTRUCTION = new MichelsonCompositeElementType("BLOCK_INSTRUCTION");
+  IElementType CODE_SECTION = new MichelsonCompositeElementType("CODE_SECTION");
   IElementType COMPLEX_TYPE = new MichelsonCompositeElementType("COMPLEX_TYPE");
   IElementType CONTRACT = new MichelsonCompositeElementType("CONTRACT");
   IElementType CONTRACT_WRAPPER = new MichelsonCompositeElementType("CONTRACT_WRAPPER");
@@ -33,6 +34,7 @@ public interface MichelsonTypes {
   IElementType TAG = new MichelsonCompositeElementType("TAG");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
+  IElementType TYPE_SECTION = new MichelsonCompositeElementType("TYPE_SECTION");
   IElementType VARIABLE_ANNOTATION = new MichelsonCompositeElementType("VARIABLE_ANNOTATION");
 
   IElementType BYTE = new MichelsonElementType("BYTE");
@@ -67,6 +69,9 @@ public interface MichelsonTypes {
       }
       else if (type == BLOCK_INSTRUCTION) {
         return new PsiBlockInstructionImpl(type);
+      }
+      else if (type == CODE_SECTION) {
+        return new PsiCodeSectionImpl(type);
       }
       else if (type == COMPLEX_TYPE) {
         return new PsiComplexTypeImpl(type);
@@ -104,9 +109,6 @@ public interface MichelsonTypes {
       else if (type == MAP_ENTRY) {
         return new PsiMapEntryImpl(type);
       }
-      else if (type == SECTION) {
-        return new PsiSectionImpl(type);
-      }
       else if (type == SIMPLE_TYPE) {
         return new PsiSimpleTypeImpl(type);
       }
@@ -118,6 +120,9 @@ public interface MichelsonTypes {
       }
       else if (type == TYPE_ANNOTATION) {
         return new PsiTypeAnnotationImpl(type);
+      }
+      else if (type == TYPE_SECTION) {
+        return new PsiTypeSectionImpl(type);
       }
       else if (type == VARIABLE_ANNOTATION) {
         return new PsiVariableAnnotationImpl(type);

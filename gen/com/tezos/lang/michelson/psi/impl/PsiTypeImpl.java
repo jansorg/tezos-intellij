@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.client.stack.MichelsonStackType;
 import com.tezos.lang.michelson.lang.type.TypeMetadata;
 import com.intellij.psi.tree.IElementType;
 
@@ -48,6 +49,11 @@ public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiT
   @NotNull
   public String getTypeNameString() {
     return MichelsonPsiUtil.getTypeNameString(this);
+  }
+
+  @NotNull
+  public MichelsonStackType asStackType() {
+    return MichelsonPsiUtil.asStackType(this);
   }
 
 }

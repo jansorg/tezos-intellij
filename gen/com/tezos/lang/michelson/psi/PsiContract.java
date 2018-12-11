@@ -15,4 +15,13 @@ public interface PsiContract extends MichelsonComposite {
   @Nullable
   PsiSection findSectionByType(@NotNull PsiSectionType type);
 
+  @Nullable
+  PsiTypeSection findParameterSection();
+
+  @Nullable
+  PsiTypeSection findStorageSection();
+
+  @Nullable
+  PsiCodeSection findCodeSection();
+
 }
