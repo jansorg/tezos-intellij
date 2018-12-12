@@ -1,5 +1,4 @@
 parameter string;
-return string;
 storage string;
 code {
     # all invalid in this block

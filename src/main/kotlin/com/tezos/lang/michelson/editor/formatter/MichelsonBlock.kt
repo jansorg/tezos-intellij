@@ -24,7 +24,7 @@ class MichelsonBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?, private v
 
     companion object {
         val COMPLEX_TYPE_SET = TokenSet.create(COMPLEX_TYPE)
-        val ALWAYS_WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, SECTION)
+        val ALWAYS_WRAPPED_BLOCKS = TokenSet.create(COMMENT_MULTI_LINE, TYPE_SECTION, CODE_SECTION)
 
         /**
          * @return true if this comment covers the full line and doesn't have instructions, ... in front

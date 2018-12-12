@@ -1,5 +1,4 @@
 parameter (list int);
-return (list int);
 storage unit;
 code { CAR;                     # Access list
        # Insert procedure

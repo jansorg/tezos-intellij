@@ -1,5 +1,4 @@
 parameter (pair (set string) (set string));
-return (set string);
 storage unit;
 code { CAR;                     # Get the parameter
        DUP; CAR; DIP{CDR};      # Unpack the sets

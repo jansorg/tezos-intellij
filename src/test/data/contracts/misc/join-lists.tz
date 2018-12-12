@@ -1,5 +1,4 @@
 parameter (pair (list int) (list int));
-return (list int);
 storage unit;
 code { CAR; DUP; DIP{CDR}; CAR; # Unpack lists
        NIL int; SWAP;           # Setup reverse accumulator

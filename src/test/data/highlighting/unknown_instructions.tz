@@ -1,5 +1,4 @@
 parameter string;
-return string;
 storage <error descr="Unknown type">units</error>;
 code { <error descr="Unknown instruction">UNKNOWN_INSTRUCTION</error>;
     <error descr="Unknown instruction">OTHER_UNKNOWN</error>;
