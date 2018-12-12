@@ -20,11 +20,11 @@ object MichelsonStackUtils {
         val subSamples = type.arguments.map { generateSampleString(it, simpleTypeValueGenerator) }
         return when (type.name) {
             "option" -> "(Some ${subSamples.joinToString(" ")})"
-            "list", "set" -> "{ ${subSamples[0]} }"
+            "list", "set" -> "{ ${subSamples[0]}; }"
             "pair" -> "(Pair ${subSamples.joinToString(" ")})"
             "or" -> "(Left ${subSamples[0]})"
             "lambda" -> "lambda"
-            "map", "big_map" -> "{ Elt ${subSamples.joinToString(" ")} ; }"
+            "map", "big_map" -> "{ Elt ${subSamples.joinToString(" ")}; }"
             else -> "<unknown type ${type.name}>"
         }
     }
@@ -95,15 +95,15 @@ object MichelsonStackUtils {
             "nat" -> "42"
             "string" -> "\"foo\""
             "bytes" -> "0x1A"
-            "mutez" -> "<mutez>"
+            "mutez" -> "100"
             "bool" -> "True"
-//            "key_hash" -> "42"
-//            "timestamp" -> "42"
-//            "address" -> "42"
-//            "operation" -> "42"
-//            "key" -> "42"
-//            "unit" -> "42"
-//            "signature" -> "42"
+            "key_hash" -> "\"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx\"" // this is a sample value in the main tezos repo
+            "timestamp" -> "\"1970-01-01T00:03:20Z\""
+            "address" -> "\"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx\""
+            "operation" -> "Nil"
+            "key" -> "\"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav\""
+            "unit" -> "Unit"
+            "signature" -> "\"edsigthTzJ8X7MPmNeEwybRAvdxS1pupqcM5Mk4uCuyZAe7uEk68YpuGDeViW8wSXMrCi5CwoNgqs8V2w8ayB5dMJzrYCHhD8C7\""
             else -> "<$name>"
         }
     }
