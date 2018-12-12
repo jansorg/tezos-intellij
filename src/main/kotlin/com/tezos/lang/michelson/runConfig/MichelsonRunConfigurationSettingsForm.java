@@ -4,8 +4,11 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ListCellRendererWrapper;
 import com.intellij.ui.SortedComboBoxModel;
+import com.tezos.client.stack.MichelsonStack;
+import com.tezos.client.stack.MichelsonStackType;
 import com.tezos.intellij.settings.TezosClientConfig;
 import com.tezos.intellij.ui.Icons;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,35 +24,43 @@ public class MichelsonRunConfigurationSettingsForm {
     private SortedComboBoxModel<TezosClientConfig> clientModel;
     private JComboBox clientList;
     private JTextField michelsonFile;
-    private com.intellij.ui.components.JBTextField inputParam;
-    private com.intellij.ui.components.JBTextField inputStorage;
     private JCheckBox promptForInput;
+    private JPanel parameterInput;
+    private JPanel storageInput;
 
     public MichelsonRunConfigurationSettingsForm() {
     }
 
+    private MichelsonValueInput paramInput() {
+        return (MichelsonValueInput) parameterInput;
+    }
+
+    private MichelsonValueInput storageInput() {
+        return (MichelsonValueInput) storageInput;
+    }
+
     public String getInputParam() {
-        return inputParam.getText();
+        return paramInput().getText();
     }
 
-    public void setInputParam(String value) {
-        inputParam.setText(value);
+    public void setInputParam(@NotNull String value) {
+        paramInput().setText(value);
     }
 
-    public void setParamEmptyText(String value) {
-        inputParam.getEmptyText().setText(value);
+    public void setParamType(@Nullable MichelsonStackType type) {
+        paramInput().setType(type);
     }
 
     public String getInputStorage() {
-        return inputStorage.getText();
+        return storageInput().getText();
     }
 
-    public void setStorageEmptyText(String value) {
-        inputStorage.getEmptyText().setText(value);
+    public void setInputStorage(@NotNull String value) {
+        storageInput().setText(value);
     }
 
-    public void setInputStorage(String value) {
-        inputStorage.setText(value);
+    public void setStorageType(@Nullable MichelsonStackType value) {
+        storageInput().setType(value);
     }
 
     public boolean getPromptForInput() {
@@ -86,6 +97,9 @@ public class MichelsonRunConfigurationSettingsForm {
     }
 
     private void createUIComponents() {
+        parameterInput = new MichelsonValueInput(null);
+        storageInput = new MichelsonValueInput(null);
+
         clientModel = new SortedComboBoxModel<>((a, b) -> {
             if (a == defaultClientItem) {
                 return -1;

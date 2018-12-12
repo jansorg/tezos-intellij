@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiManager
 import com.intellij.util.xmlb.XmlSerializer
 import com.intellij.util.xmlb.XmlSerializerUtil
-import com.tezos.client.stack.MichelsonStackUtils
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import org.jdom.Element
@@ -113,21 +113,15 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
         }
     }
 
-    fun parameterInputSample(): String? {
-        val type = findPsiFile()?.getContract()?.findParameterSection()?.type?.asStackType()
-        return type?.let {
-            MichelsonStackUtils.generateSampleString(it)
-        }
+    fun parameterInputType(): MichelsonStackType? {
+        return findPsiFile()?.getContract()?.findParameterSection()?.type?.asStackType()
     }
 
-    fun storageInputSample(): String? {
-        val type = findPsiFile()?.getContract()?.findStorageSection()?.type?.asStackType()
-        return type?.let {
-            MichelsonStackUtils.generateSampleString(it)
-        }
+    fun storageInputType(): MichelsonStackType? {
+        return findPsiFile()?.getContract()?.findStorageSection()?.type?.asStackType()
     }
 
-    fun findPsiFile(): MichelsonPsiFile? {
+    private fun findPsiFile(): MichelsonPsiFile? {
         val file = VirtualFileManager.getInstance().findFileByUrl(VfsUtilCore.pathToUrl(filePath!!))
         return file?.let {
             PsiManager.getInstance(project).findFile(file)

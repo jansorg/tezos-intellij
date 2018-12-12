@@ -3,39 +3,23 @@ package com.tezos.lang.michelson.runConfig
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.ui.DocumentAdapter
+import com.intellij.util.ui.JBDimension
 import com.tezos.client.stack.MichelsonStackType
-import com.tezos.client.stack.MichelsonStackUtils
 import javax.swing.JComponent
-import javax.swing.event.DocumentEvent
 
 /**
  * @author jansorg
  */
-class MichelsonInputDialog(project: Project, inputParameterSpec: MichelsonStackType?, inputParameter: String, inputStorageSpec: MichelsonStackType?, inputStorage: String) : DialogWrapper(project, false, IdeModalityType.PROJECT) {
-    private val form = MichelsonInputForm()
+class MichelsonInputDialog(project: Project, inputParameterSpec: MichelsonStackType?, parameterInput: String, inputStorageSpec: MichelsonStackType?, storageInput: String) : DialogWrapper(project, false, IdeModalityType.PROJECT) {
 
+    private val form = MichelsonInputForm(inputParameterSpec, inputStorageSpec)
     init {
         title = "Michelson: Input Values"
-
         form.expectedParameterType.text = inputParameterSpec?.asString(true) ?: ""
-        form.paramterInput.text = inputParameter
-        inputParameterSpec?.let {
-            form.paramterInput.emptyText.setText(MichelsonStackUtils.generateSampleString(it))
-        }
-
         form.expectedStorageType.text = inputStorageSpec?.asString(true) ?: ""
-        form.storageInput.text = inputStorage
-        inputStorageSpec?.let {
-            form.storageInput.emptyText.setText(MichelsonStackUtils.generateSampleString(it))
-        }
 
-        val dialog = this
-        form.paramterInput.document.addDocumentListener(object : DocumentAdapter() {
-            override fun textChanged(e: DocumentEvent?) {
-                dialog.validate()
-            }
-        })
+        form.paramterInput.text = parameterInput
+        form.storageInput.text = storageInput
 
         init()
     }
@@ -44,9 +28,7 @@ class MichelsonInputDialog(project: Project, inputParameterSpec: MichelsonStackT
         return DialogStyle.COMPACT
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? {
-        return form.paramterInput
-    }
+    override fun getPreferredFocusedComponent(): JComponent? = form.paramterInput
 
     override fun postponeValidation(): Boolean = false
 

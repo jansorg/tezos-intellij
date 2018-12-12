@@ -1,7 +1,9 @@
 package com.tezos.lang.michelson.runConfig;
 
 import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBTextField;
+import com.intellij.util.ui.JBDimension;
+import com.tezos.client.stack.MichelsonStackType;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -9,11 +11,20 @@ import javax.swing.*;
  * @author jansorg
  */
 public class MichelsonInputForm {
+    private final MichelsonStackType parameterType;
+    private final MichelsonStackType storageType;
     private JBLabel expectedParameterType;
     private JBLabel expectedStorageType;
-    private JBTextField paramterInput;
-    private JBTextField storageInput;
     private JPanel mainPanel;
+    private JPanel storageInput;
+    private JPanel parameterInput;
+
+    public MichelsonInputForm(@Nullable MichelsonStackType parameterType, @Nullable MichelsonStackType storageType) {
+        this.parameterType = parameterType;
+        this.storageType = storageType;
+
+        mainPanel.setMinimumSize(new JBDimension(350, 100));
+    }
 
     public JPanel getMainPanel() {
         return mainPanel;
@@ -23,15 +34,20 @@ public class MichelsonInputForm {
         return expectedParameterType;
     }
 
-    public JBTextField getParamterInput() {
-        return paramterInput;
+    public MichelsonValueInput getParamterInput() {
+        return (MichelsonValueInput) parameterInput;
     }
 
     public JBLabel getExpectedStorageType() {
         return expectedStorageType;
     }
 
-    public JBTextField getStorageInput() {
-        return storageInput;
+    public MichelsonValueInput getStorageInput() {
+        return (MichelsonValueInput) storageInput;
+    }
+
+    private void createUIComponents() {
+        parameterInput = new MichelsonValueInput(parameterType);
+        storageInput = new MichelsonValueInput(storageType);
     }
 }

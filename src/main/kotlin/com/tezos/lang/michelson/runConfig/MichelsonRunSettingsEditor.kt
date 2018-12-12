@@ -12,20 +12,15 @@ class MichelsonRunSettingsEditor : SettingsEditor<MichelsonRunConfiguration>() {
     }
 
     override fun resetEditorFrom(config: MichelsonRunConfiguration) {
-        val clients = TezosSettingService.getSettings().clients
         editor.michelsonFile = config.filePath ?: ""
-        editor.inputParam = config.inputParameter
-        editor.inputStorage = config.inputStorage
+        editor.inputParam = config.inputParameter ?: ""
+        editor.inputStorage = config.inputStorage ?: ""
         editor.promptForInput = config.promptForInput
 
-        config.parameterInputSample()?.let {
-            editor.setParamEmptyText(it)
-        }
+        editor.setParamType(config.parameterInputType())
+        editor.setStorageType(config.storageInputType())
 
-        config.storageInputSample()?.let {
-            editor.setStorageEmptyText(it)
-        }
-
+        val clients = TezosSettingService.getSettings().clients
         editor.setTezosClients(clients)
 
         if (config.useDefaultTezosClient) {
