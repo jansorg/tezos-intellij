@@ -9,6 +9,8 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbAwareRunnable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.UserDataHolderBase
@@ -29,7 +31,7 @@ import javax.swing.Icon
 /**
  * We can't extend RunConfigurationBase as this class changed a lot between in versions later than 145.x.
  */
-class MichelsonRunConfiguration(private val project: Project, private val factory: ConfigurationFactory, private var name: String) : UserDataHolderBase(), RunConfiguration, LocatableConfiguration, TargetAwareRunProfile {
+class MichelsonRunConfiguration(private val project: Project, private val factory: ConfigurationFactory, private var name: String) : UserDataHolderBase(), RunConfiguration, LocatableConfiguration, TargetAwareRunProfile, DumbAware {
     private var configBean = MichelsonRunConfigBean()
 
     val env = mutableMapOf<String, String>()
