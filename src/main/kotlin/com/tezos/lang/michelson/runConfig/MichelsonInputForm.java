@@ -1,7 +1,6 @@
 package com.tezos.lang.michelson.runConfig;
 
 import com.intellij.ui.components.JBLabel;
-import com.intellij.util.ui.JBDimension;
 import com.tezos.client.stack.MichelsonStackType;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,8 +21,6 @@ public class MichelsonInputForm {
     public MichelsonInputForm(@Nullable MichelsonStackType parameterType, @Nullable MichelsonStackType storageType) {
         this.parameterType = parameterType;
         this.storageType = storageType;
-
-        mainPanel.setMinimumSize(new JBDimension(350, 100));
     }
 
     public JPanel getMainPanel() {

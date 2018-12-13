@@ -28,6 +28,7 @@ class MichelsonValueInput(private var expectedType: MichelsonStackType?) : JPane
     private var button: ActionButton? = null
 
     init {
+        input.minimumSize = JBDimension(250, 20)
         add(input, BorderLayout.CENTER)
 
         if (expectedType != null) {
@@ -65,9 +66,11 @@ class MichelsonValueInput(private var expectedType: MichelsonStackType?) : JPane
         }
 
         val popupAction = PopupValuesAction(input, type)
-        button = ActionButton(popupAction, PresentationFactory().getPresentation(popupAction), "", JBDimension(25, 20))
-        button!!.maximumSize = JBDimension(30, 30)
-        add(button, BorderLayout.EAST)
+
+        val newButton = ActionButton(popupAction, PresentationFactory().getPresentation(popupAction), "", JBDimension(25, 20))
+        newButton.maximumSize = newButton.preferredSize
+        add(newButton, BorderLayout.EAST)
+        button = newButton
 
         input.emptyText.text = type.asString(true)
     }
@@ -81,7 +84,7 @@ class PopupValuesAction(private val target: JTextField, var type: MichelsonStack
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val popup = JBPopupFactory.getInstance().createActionGroupPopup("Choose a value", this, e.dataContext, JBPopupFactory.ActionSelectionAid.ALPHA_NUMBERING, false)
+        val popup = JBPopupFactory.getInstance().createActionGroupPopup("Sample values", this, e.dataContext, JBPopupFactory.ActionSelectionAid.ALPHA_NUMBERING, false)
         popup.showUnderneathOf(e.inputEvent?.component ?: target)
     }
 }

@@ -21,12 +21,15 @@ class MichelsonInputDialog(project: Project, inputParameterSpec: MichelsonStackT
         form.paramterInput.text = parameterInput
         form.storageInput.text = storageInput
 
+        form.mainPanel.minimumSize = form.mainPanel.preferredSize
+
         init()
     }
 
     override fun getStyle(): DialogStyle {
         return DialogStyle.COMPACT
     }
+
 
     override fun getPreferredFocusedComponent(): JComponent? = form.paramterInput
 
