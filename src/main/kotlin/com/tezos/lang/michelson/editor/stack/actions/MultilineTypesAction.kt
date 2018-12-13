@@ -10,13 +10,18 @@ import com.tezos.intellij.ui.Icons
  * @author jansorg
  */
 class MultilineTypesAction : ToggleAction("Indent nested types", "Wrap and indent nested types lines", Icons.StackIndentation), DumbAware, RightAlignedToolbarAction {
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.isEnabledAndVisible = SplitActionUtil.findStackEditor(e) != null
+    }
+
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        val editor = SplitActionUtil.findStackEditor(e)
+        val editor = SplitActionUtil.findStackEditor(e) ?: return
         editor.nestedBlocks = state
         editor.triggerStackUpdate()
     }
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        return SplitActionUtil.findStackEditor(e).nestedBlocks
+        return SplitActionUtil.findStackEditor(e)?.nestedBlocks ?: false
     }
 }
