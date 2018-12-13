@@ -9,7 +9,6 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.util.ui.JBDimension
 import com.tezos.client.stack.MichelsonStackType
 import com.tezos.client.stack.MichelsonStackUtils

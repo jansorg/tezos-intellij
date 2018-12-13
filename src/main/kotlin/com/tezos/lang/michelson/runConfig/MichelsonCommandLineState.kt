@@ -32,6 +32,8 @@ class MichelsonCommandLineState(private val config: MichelsonRunConfiguration, e
     private fun createCommandLine(): GeneralCommandLine {
         val filePath = config.filePath ?: throw CantRunException("Missing Michelson file")
 
+        config.checkSettingsBeforeRun()
+
         val paramInput = DataKeys.PARAMETER_INPUT.get(config) ?: config.inputParameter
         ?: throw CantRunException("missing input parameter value")
 
