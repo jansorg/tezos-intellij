@@ -8,7 +8,7 @@ import com.tezos.lang.michelson.editor.stack.MichelsonSplitEditor
  * @author jansorg
  */
 object SplitActionUtil {
-    fun findStackEditor(e: AnActionEvent): MichelsonSplitEditor {
-        return e.getData(PlatformDataKeys.FILE_EDITOR) as MichelsonSplitEditor
+    fun findStackEditor(e: AnActionEvent): MichelsonSplitEditor? {
+        return e.getData(PlatformDataKeys.FILE_EDITOR) as? MichelsonSplitEditor
     }
 }
