@@ -1,4 +1,5 @@
 # Version 0.10.0
+- Feature: Run configurations for Michelson files. You will be asked for the input values by default.
 - Show an error instead of failing silently when no tezos client is configured
 
 # Version 0.9.0
