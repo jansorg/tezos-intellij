@@ -18,6 +18,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitInstruction(o);
   }
 
+  public R visitCodeSection(@NotNull PsiCodeSection o) {
+    return visitSection(o);
+  }
+
   public R visitComplexType(@NotNull PsiComplexType o) {
     return visitType(o);
   }
@@ -96,6 +100,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitTypeAnnotation(@NotNull PsiTypeAnnotation o) {
     return visitAnnotation(o);
+  }
+
+  public R visitTypeSection(@NotNull PsiTypeSection o) {
+    return visitSection(o);
   }
 
   public R visitVariableAnnotation(@NotNull PsiVariableAnnotation o) {

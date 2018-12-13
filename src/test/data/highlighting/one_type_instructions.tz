@@ -1,5 +1,4 @@
 parameter string;
-return string;
 storage unit;
 code { <error descr="One <type> argument expected">EMPTY_SET</error>; # all commands expect a single type argument, which is missing here
     <error descr="One <type> argument expected">LEFT</error>;

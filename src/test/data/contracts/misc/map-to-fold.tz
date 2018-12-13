@@ -1,5 +1,4 @@
 parameter (pair (lambda int int) (list int));
-return (list int);
 storage unit;
 code { DIP{NIL int};
        CAR;

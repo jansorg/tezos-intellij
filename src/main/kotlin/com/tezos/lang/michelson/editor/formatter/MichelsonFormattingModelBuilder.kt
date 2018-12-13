@@ -26,6 +26,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
         val allToplevel = TokenSet.orSet(TokenSet.create(INSTRUCTION_TOKEN, MACRO_TOKEN, TAG_TOKEN), MichelsonTokenSets.TYPE_NAMES, types)
         val allArguments = TokenSet.orSet(types, literals, MichelsonTokenSets.TYPE_NAMES, MichelsonTokenSets.LITERAL_TOKENS, annotations)
         val blockInstructionSet = TokenSet.create(BLOCK_INSTRUCTION, EMPTY_BLOCK)
+
+        val sections = TokenSet.create(CODE_SECTION, TYPE_SECTION)
     }
 
 
@@ -48,8 +50,8 @@ class MichelsonFormattingModelBuilder : FormattingModelBuilder {
 
         // section
         builder.after(SECTION_NAME).lineBreakOrForceSpace(false, true)
-        builder.beforeInside(SEMI, SECTION).lineBreakOrForceSpace(false, false)
-        builder.between(SECTION, SECTION).lineBreakInCode()
+        builder.beforeInside(SEMI, sections).lineBreakOrForceSpace(false, false)
+        builder.between(sections, sections).lineBreakInCode()
 
         // generic: no space in '(...)'
         builder.withinPair(LEFT_PAREN, RIGHT_PAREN).lineBreakOrForceSpace(false, false)

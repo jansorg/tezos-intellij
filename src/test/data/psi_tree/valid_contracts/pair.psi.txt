@@ -1,6 +1,6 @@
 MICHELSON_FILE
   PsiElement(CONTRACT)
-    PsiElement(SECTION)
+    PsiElement(CODE_SECTION)
       PsiElement(SECTION_NAME)('code')
       PsiElement(BLOCK_INSTRUCTION)
         PsiElement({)('{')

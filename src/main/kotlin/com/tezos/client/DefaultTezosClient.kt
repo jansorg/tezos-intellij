@@ -104,14 +104,8 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
     private fun execClient(content: String): String {
         val outFile = Files.createTempFile("tezos-intellij-", ".txt")
         try {
-            val exePath = when (Files.isExecutable(executable)) {
-                true -> listOf(executable.toString())
-                false -> PathEnvironmentVariableUtil.findInPath("bash")?.let {
-                    listOf(it.toString(), executable.toString())
-                }
-            } ?: throw IllegalStateException("$executable isn't executable and shell wasn't found.")
+            val command = TezosCommandline.typecheckScriptContent(content, executable)
 
-            val command = exePath + listOf("client", "typecheck", "script", "text:$content", "--emacs", "-v")
             val builder = ProcessBuilder().redirectOutput(outFile.toFile()).command(command)
             setupClientEnv(builder.environment())
 
@@ -144,9 +138,7 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
      */
     private fun setupClientEnv(env: MutableMap<String, String>) {
         try {
-            env.putIfAbsent("TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER", "Y")
-            env.putIfAbsent("ALPHANET_EMACS", "true")
-            env.putIfAbsent("TEZOS_ALPHANET_DO_NOT_PULL", "yes")
+            env.putAll(TezosCommandline.DefaultEnv)
         } catch (e: UnsupportedOperationException) {
             LOG.debug("error setting up environment for tezos-client", e)
         }

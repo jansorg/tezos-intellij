@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
+import com.tezos.client.stack.MichelsonStackAnnotation;
 import com.tezos.lang.michelson.lang.AnnotationType;
 import com.intellij.psi.tree.IElementType;
 
@@ -57,6 +58,11 @@ public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implement
   @Nullable
   public PsiType findParentType() {
     return MichelsonPsiUtil.findParentType(this);
+  }
+
+  @NotNull
+  public MichelsonStackAnnotation asStackAnnotation() {
+    return MichelsonPsiUtil.asStackAnnotation(this);
   }
 
 }

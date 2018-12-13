@@ -1,3 +1,7 @@
+# Version 0.10.0
+- Feature: Run configurations for Michelson files. You will be asked for the input values by default.
+- Show an error instead of failing silently when no tezos client is configured
+
 # Version 0.9.0
 - Feature: Support parameter info `View > Parameter Info` for instructions, types and tags
 - Fix wrong indentation after pressing enter in the code section

@@ -219,7 +219,7 @@ class MichelsonSplitEditor(val mainEditor: TextEditor, val stackEditor: Michelso
                 parenStyle = parenStyle)
     }
 
-    override fun caretAdded(e: CaretEvent?) {}
+    override fun caretAdded(e: CaretEvent) {}
 
     override fun caretRemoved(e: CaretEvent) {}
 }

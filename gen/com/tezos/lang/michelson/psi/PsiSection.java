@@ -7,12 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiSection extends MichelsonComposite {
 
-  @Nullable
-  PsiType getType();
-
-  @Nullable
-  PsiInstruction getInstructions();
-
   @NotNull
   PsiSectionType getSectionType();
 

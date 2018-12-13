@@ -49,7 +49,9 @@ object MichelsonLanguage : Language("Michelson") {
 
     val TYPE_NAMES = TYPES.map { it.name }.toSet()
 
-    fun String.type(type: ParameterType, subtypes: List<ParameterType> = emptyList()): TypeMetadata {
+    fun findTypeMetadata(name: String) = TYPES.firstOrNull { it.name == name }
+
+    private fun String.type(type: ParameterType, subtypes: List<ParameterType> = emptyList()): TypeMetadata {
         return SimpleTypeMetadata(this, type, subtypes)
     }
 

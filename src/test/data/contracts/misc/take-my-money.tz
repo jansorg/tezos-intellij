@@ -1,5 +1,4 @@
 parameter key_hash;
-return unit;
 storage unit;
 code { CAR; DEFAULT_ACCOUNT; # Create an account for the recipient of the funds
        DIP{UNIT};             # Push a value of the storage type below the contract

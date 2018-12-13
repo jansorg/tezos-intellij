@@ -1,0 +1,5 @@
+parameter string;
+storage string;
+<error descr="<section> expected, got 'return'">return</error> string;
+unknown string;
+code {};
