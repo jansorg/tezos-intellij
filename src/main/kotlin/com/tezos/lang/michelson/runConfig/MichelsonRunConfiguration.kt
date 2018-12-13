@@ -20,7 +20,7 @@ import org.jdom.Element
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory, name: String) : RunConfigurationBase(project, factory, name), LocatableConfiguration {
+class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory, name: String) : RunConfigurationBase<Any>(project, factory, name), LocatableConfiguration {
     private var configBean = MichelsonRunConfigBean()
 
     val env = mutableMapOf<String, String>()
@@ -61,10 +61,6 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
             configBean.INPUT_STORAGE = value
         }
 
-    override fun canRunOn(target: ExecutionTarget): Boolean {
-        return true
-    }
-
     override fun suggestedName(): String? {
         return null
     }
@@ -75,14 +71,6 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
         return MichelsonRunSettingsEditor()
-    }
-
-    override fun isCompileBeforeLaunchAddedByDefault(): Boolean {
-        return false
-    }
-
-    override fun excludeCompileBeforeLaunchOption(): Boolean {
-        return true
     }
 
     /**
@@ -108,8 +96,8 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
             val paramInput = dialog.paramInputValue
             val storageInput = dialog.storageInputValue
 
-            DataKeys.PARAMETER_INPUT.set(this, paramInput)
-            DataKeys.STORAGE_INPUT.set(this, storageInput)
+//            DataKeys.PARAMETER_INPUT.set(this, paramInput)
+//            DataKeys.STORAGE_INPUT.set(this, storageInput)
         }
     }
 
@@ -154,19 +142,19 @@ class MichelsonRunConfiguration(project: Project, factory: ConfigurationFactory,
 
     override fun readExternal(element: Element) {
         PathMacroManager.getInstance(project).expandPaths(element)
-        super.readExternal(element)
+        super<RunConfigurationBase>.readExternal(element)
         XmlSerializer.deserializeInto(configBean, element)
         EnvironmentVariablesComponent.readExternal(element, env)
     }
 
     override fun writeExternal(element: Element) {
-        super.writeExternal(element)
+        super<RunConfigurationBase>.writeExternal(element)
         XmlSerializer.serializeInto(configBean, element, null)
         EnvironmentVariablesComponent.writeExternal(element, env)
     }
 
     override fun clone(): RunConfiguration {
-        val clone = super.clone() as MichelsonRunConfiguration
+        val clone = MichelsonRunConfiguration(project, factory!!, name)
         clone.configBean = XmlSerializerUtil.createCopy(configBean)
         return clone
     }

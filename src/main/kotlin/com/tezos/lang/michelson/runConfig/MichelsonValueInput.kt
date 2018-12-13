@@ -9,10 +9,12 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.components.JBTextField
+import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.util.ui.JBDimension
 import com.tezos.client.stack.MichelsonStackType
 import com.tezos.client.stack.MichelsonStackUtils
 import com.tezos.intellij.ui.Icons
+import com.tezos.intellij.ui.TextFieldFactory
 import java.awt.BorderLayout
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -24,10 +26,11 @@ import javax.swing.JTextField
  * @author jansorg
  */
 class MichelsonValueInput(private var expectedType: MichelsonStackType?) : JPanel(BorderLayout()) {
-    val input = JBTextField()
+    val input: JBTextField
     private var button: ActionButton? = null
 
     init {
+        input = TextFieldFactory.createExpandableTextField()
         input.minimumSize = JBDimension(250, 20)
         add(input, BorderLayout.CENTER)
 
@@ -90,7 +93,7 @@ class PopupValuesAction(private val target: JTextField, var type: MichelsonStack
 }
 
 class SelectSampleValueAction(private val target: JTextField, val value: String) : DumbAwareAction(value) {
-    override fun actionPerformed(e: AnActionEvent?) {
+    override fun actionPerformed(e: AnActionEvent) {
         target.text = value
     }
 }
