@@ -4,6 +4,7 @@ import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 
 /**
@@ -14,7 +15,9 @@ import com.tezos.lang.michelson.psi.MichelsonPsiFile
  */
 class MichelsonRunConfigurationProducer : RunConfigurationProducer<MichelsonRunConfiguration>(MichelsonRunConfigurationType.getInstance()) {
     override fun isConfigurationFromContext(configuration: MichelsonRunConfiguration, context: ConfigurationContext): Boolean {
-        return false
+        val psiFile = context.psiLocation?.containingFile ?: return false
+
+        return configuration.filePath == filePath(psiFile)
     }
 
     override fun setupConfigurationFromContext(configuration: MichelsonRunConfiguration, context: ConfigurationContext, sourceElement: Ref<PsiElement>): Boolean {
@@ -22,7 +25,11 @@ class MichelsonRunConfigurationProducer : RunConfigurationProducer<MichelsonRunC
         sourceElement.set(containingFile)
 
         configuration.name = containingFile.name
-        configuration.filePath = containingFile.virtualFile.path
-        return true
+        configuration.filePath = filePath(containingFile)
+        return true;
+    }
+
+    private fun filePath(containingFile: PsiFile): String {
+        return containingFile.virtualFile.path
     }
 }
