@@ -3,7 +3,6 @@ package com.tezos.lang.michelson.runConfig
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.util.ui.JBDimension
 import com.tezos.client.stack.MichelsonStackType
 import javax.swing.JComponent
 
@@ -30,8 +29,7 @@ class MichelsonInputDialog(project: Project, inputParameterSpec: MichelsonStackT
         return DialogStyle.COMPACT
     }
 
-
-    override fun getPreferredFocusedComponent(): JComponent? = form.paramterInput
+    override fun getPreferredFocusedComponent(): JComponent? = form.paramterInput.input
 
     override fun postponeValidation(): Boolean = false
 
@@ -39,11 +37,11 @@ class MichelsonInputDialog(project: Project, inputParameterSpec: MichelsonStackT
 
     override fun doValidate(): ValidationInfo? {
         if (paramInputValue.isEmpty()) {
-            return ValidationInfo("Parameter value must not be empty", form.paramterInput)
+            return ValidationInfo("Parameter value must not be empty", form.paramterInput.input)
         }
 
         if (storageInputValue.isEmpty()) {
-            return ValidationInfo("Storage value must not be empty", form.storageInput)
+            return ValidationInfo("Storage value must not be empty", form.storageInput.input)
         }
 
         return null
