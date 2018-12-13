@@ -92,7 +92,7 @@ class MichelsonRunConfiguration(private val project: Project, private val factor
 
     override fun getProject(): Project = project
 
-    override fun getType(): ConfigurationType = MichelsonRunConfigurationType()
+    override fun getType(): ConfigurationType = factory.type
 
     override fun createRunnerSettings(provider: ConfigurationInfoProvider?): ConfigurationPerRunnerSettings? = null
 
@@ -105,9 +105,8 @@ class MichelsonRunConfiguration(private val project: Project, private val factor
     override fun getFactory(): ConfigurationFactory = factory
 
     override fun canRunOn(target: ExecutionTarget): Boolean {
-        return true
+        return target.id == "default_target"
     }
-
 
     /**
      * Requests input values for parameter and storage if the run configuration has the corresponding flag set.
