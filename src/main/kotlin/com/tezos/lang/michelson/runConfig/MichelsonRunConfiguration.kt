@@ -10,7 +10,6 @@ import com.intellij.execution.runners.ProgramRunner
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.DumbAware
-import com.intellij.openapi.project.DumbAwareRunnable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.UserDataHolderBase
@@ -33,8 +32,7 @@ import javax.swing.Icon
  */
 class MichelsonRunConfiguration(private val project: Project, private val factory: ConfigurationFactory, private var name: String) : UserDataHolderBase(), RunConfiguration, LocatableConfiguration, TargetAwareRunProfile, DumbAware {
     private var configBean = MichelsonRunConfigBean()
-
-    val env = mutableMapOf<String, String>()
+    private val env = mutableMapOf<String, String>()
 
     var useDefaultTezosClient: Boolean
         get() = configBean.USE_DEFAULT_CLIENT
@@ -73,11 +71,11 @@ class MichelsonRunConfiguration(private val project: Project, private val factor
         }
 
     override fun suggestedName(): String? {
-        return null
+        return findVirtualFile()?.name
     }
 
     override fun isGeneratedName(): Boolean {
-        return false
+        return suggestedName() != null && configBean.GENERATED_NAME
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
@@ -88,6 +86,7 @@ class MichelsonRunConfiguration(private val project: Project, private val factor
 
     override fun setName(name: String) {
         this.name = name
+        this.configBean.GENERATED_NAME = name != this.name
     }
 
     override fun getIcon(): Icon = Icons.Tezos
@@ -148,11 +147,12 @@ class MichelsonRunConfiguration(private val project: Project, private val factor
     }
 
     private fun findPsiFile(): MichelsonPsiFile? {
-        val file = VirtualFileManager.getInstance().findFileByUrl(VfsUtilCore.pathToUrl(filePath!!))
-        return file?.let {
-            PsiManager.getInstance(project).findFile(file)
+        return findVirtualFile()?.let {
+            PsiManager.getInstance(project).findFile(it)
         } as? MichelsonPsiFile
     }
+
+    private fun findVirtualFile() = VirtualFileManager.getInstance().findFileByUrl(VfsUtilCore.pathToUrl(filePath!!))
 
     override fun checkConfiguration() {
         // errors
@@ -208,5 +208,7 @@ class MichelsonRunConfiguration(private val project: Project, private val factor
         var INPUT_STORAGE: String? = null
         @JvmField
         var PROMPT_FOR_INPUT: Boolean = true
+        @JvmField
+        var GENERATED_NAME: Boolean = true
     }
 }
