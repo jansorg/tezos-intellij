@@ -133,6 +133,7 @@
         <component>
             <interface-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager</interface-class>
             <implementation-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManagerImpl</implementation-class>
+            <!--suppress PluginXmlValidity -->
             <headless-implementation-class>com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager</headless-implementation-class>
         </component>
     </project-components>
@@ -146,7 +147,7 @@
         <group id="tezos.editorToolbar">
             <action id="tezos.editorShowAnnotations" class="com.tezos.lang.michelson.editor.stack.actions.ShowAnnotationsAction"/>
             <action id="tezos.editorHighlightUnchanged" class="com.tezos.lang.michelson.editor.stack.actions.HighlightUnchangedAction"/>
-            <action id="tezos.editorUseColors" class="com.tezos.lang.michelson.editor.stack.actions.UseColoredRenderingAction"/>
+            <!--<action id="tezos.editorUseColors" class="com.tezos.lang.michelson.editor.stack.actions.UseColoredRenderingAction"/>-->
             <action id="tezos.editorMultilineTypes" class="com.tezos.lang.michelson.editor.stack.actions.MultilineTypesAction"/>
         </group>
     </actions>

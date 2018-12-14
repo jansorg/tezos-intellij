@@ -54,7 +54,7 @@ class MichelsonSplitEditor(val mainEditor: TextEditor, val stackEditor: Michelso
     private val alarm = Alarm(Alarm.ThreadToUse.SWING_THREAD, this)
 
     var stackHighlightUnchanged = true
-    var stackShowAnnotations = false
+    var stackShowAnnotations = true
     var stackColored = true
     var nestedBlocks = true
 
