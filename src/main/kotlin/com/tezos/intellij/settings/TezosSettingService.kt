@@ -1,5 +1,6 @@
 package com.tezos.intellij.settings
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
@@ -25,6 +26,14 @@ class TezosSettingService : PersistentStateComponent<TezosSettings> {
         @JvmStatic
         fun getSettings(): TezosSettings {
             return getInstance().state
+        }
+
+        fun publishDefaultClientChanged() {
+            ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).defaultTezosClientChanged()
+        }
+
+        fun publishStackPositionChanged() {
+            ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).tezosStackPositionChanged()
         }
     }
 

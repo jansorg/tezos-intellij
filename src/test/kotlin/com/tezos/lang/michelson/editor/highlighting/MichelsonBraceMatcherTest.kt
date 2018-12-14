@@ -24,7 +24,7 @@ class MichelsonBraceMatcherTest : MichelsonFixtureTest() {
         assertStartElement(matcher, "PUSH <caret>(pair (int string)) (Pair 123 234)", "PUSH")
     }
 
-    fun assertStartElement(matcher: MichelsonBraceMatcher, code: String, expectedStartText: String) {
+    private fun assertStartElement(matcher: MichelsonBraceMatcher, code: String, expectedStartText: String) {
         val (file, psiElement) = configureByCode(code)
         val start = matcher.getCodeConstructStart(file, psiElement!!.textOffset)
         Assert.assertEquals(expectedStartText, file.findElementAt(start)?.text)

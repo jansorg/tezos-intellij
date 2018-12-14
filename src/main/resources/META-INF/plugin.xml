@@ -80,7 +80,7 @@
         <lang.ast.factory language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonAstFactory" />
         <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
 
-        <!--Highlighting and basic validation-->
+        <!-- Highlighting and basic validation -->
         <colorSettingsPage implementation="com.tezos.lang.michelson.editor.highlighting.MichelsonColorSettingsPage"/>
         <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighterFactory"/>
         <additionalTextAttributes scheme="Default" file="colors/michelson_default.xml"/>

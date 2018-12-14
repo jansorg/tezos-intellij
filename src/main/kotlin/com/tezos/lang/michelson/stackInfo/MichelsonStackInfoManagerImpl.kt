@@ -9,7 +9,11 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.ShutDownTracker
 import com.intellij.openapi.vfs.VirtualFile
@@ -21,10 +25,11 @@ import com.tezos.client.TezosClient
 import com.tezos.client.TezosClientError
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.intellij.settings.TezosSettingsListener
+import com.tezos.lang.michelson.lang.MichelsonFileType
 import java.nio.file.Path
 import java.nio.file.Paths
 
-open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener {
+open class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener, FileEditorManagerListener {
     private companion object {
         val LOG = Logger.getInstance("#tezos.stackInfo")!!
         const val UPDATE_DELAY = 150
@@ -64,7 +69,7 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
 
     private val stacks: MutableMap<Path, StackInfo> = Maps.newConcurrentMap()
     @Volatile
-    private var client: TezosClient? = null
+    internal var client: TezosClient? = null
 
     override fun getComponentName(): String = "michelson.stackInfoManager"
 
@@ -75,6 +80,9 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
 
     override fun projectOpened() {
         this.client = defaultTezosClient()
+
+        val projectBus = project.messageBus
+        projectBus.connect(this).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, this)
     }
 
     override fun projectClosed() {
@@ -117,6 +125,15 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
 
     override fun defaultTezosClientChanged() {
         this.client = defaultTezosClient()
+
+        for (file in FileEditorManager.getInstance(project)!!.selectedFiles) {
+            if (file.fileType is MichelsonFileType) {
+                val doc = FileDocumentManager.getInstance().getDocument(file)
+                if (doc != null) {
+                    triggerStackUpdate(doc)
+                }
+            }
+        }
     }
 
     override fun beforeDocumentChange(event: DocumentEvent) {}
@@ -144,6 +161,27 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
         alarm.addRequest(runnable, UPDATE_DELAY)
     }
 
+    override fun selectionChanged(event: FileEditorManagerEvent) {
+        currentFileChanged(event.newFile)
+    }
+
+    override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
+        // no-op, selectionChanged is already called
+    }
+
+    override fun fileClosed(source: FileEditorManager, file: VirtualFile) {
+        // no-op, selectionChanged is already called
+    }
+
+    private fun currentFileChanged(file: VirtualFile?) {
+        if (file?.fileType is MichelsonFileType) {
+            val doc = FileDocumentManager.getInstance().getDocument(file)
+            if (doc != null) {
+                triggerStackUpdate(doc)
+            }
+        }
+    }
+
     protected fun updateStackInfo(document: Document) {
         val client = this.client ?: return
         val path = documentPath(document) ?: return
@@ -161,10 +199,11 @@ open class MichelsonStackInfoManagerImpl : MichelsonStackInfoManager, ProjectCom
         } catch (e: TezosClientError) {
             LOG.debug("Error while executing tezos client. File: $path", e)
             stacks[path] = StackInfo(e)
+            callListenersInEdt(document)
         }
     }
 
-    private fun documentPath(document: Document): Path? {
+    protected fun documentPath(document: Document): Path? {
         val file = FileDocumentManager.getInstance().getFile(document)
         return file?.toJavaPath()
     }
