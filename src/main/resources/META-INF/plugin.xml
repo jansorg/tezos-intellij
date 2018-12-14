@@ -80,7 +80,7 @@
         <lang.ast.factory language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonAstFactory" />
         <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
 
-        <!--Highlighting and basic validation-->
+        <!-- Highlighting and basic validation -->
         <colorSettingsPage implementation="com.tezos.lang.michelson.editor.highlighting.MichelsonColorSettingsPage"/>
         <lang.syntaxHighlighterFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.highlighting.MichelsonSyntaxHighlighterFactory"/>
         <additionalTextAttributes scheme="Default" file="colors/michelson_default.xml"/>
@@ -133,6 +133,7 @@
         <component>
             <interface-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager</interface-class>
             <implementation-class>com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManagerImpl</implementation-class>
+            <!--suppress PluginXmlValidity -->
             <headless-implementation-class>com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager</headless-implementation-class>
         </component>
     </project-components>
@@ -146,7 +147,7 @@
         <group id="tezos.editorToolbar">
             <action id="tezos.editorShowAnnotations" class="com.tezos.lang.michelson.editor.stack.actions.ShowAnnotationsAction"/>
             <action id="tezos.editorHighlightUnchanged" class="com.tezos.lang.michelson.editor.stack.actions.HighlightUnchangedAction"/>
-            <action id="tezos.editorUseColors" class="com.tezos.lang.michelson.editor.stack.actions.UseColoredRenderingAction"/>
+            <!--<action id="tezos.editorUseColors" class="com.tezos.lang.michelson.editor.stack.actions.UseColoredRenderingAction"/>-->
             <action id="tezos.editorMultilineTypes" class="com.tezos.lang.michelson.editor.stack.actions.MultilineTypesAction"/>
         </group>
     </actions>

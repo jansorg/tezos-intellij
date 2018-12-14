@@ -2,6 +2,10 @@
 - Feature: Run configurations for Michelson files. You will be asked for the input values by default.
 - Show an error instead of failing silently when no tezos client is configured
 - Fix exception when "Find Action..." was invoked
+- Update stack info when a file is opened
+- Update stack info when a file's editor is selected
+- Make colored stack output the default, remove toggle to simplify ui
+- Show annotations in stack info by default
 
 # Version 0.9.0
 - Feature: Support parameter info `View > Parameter Info` for instructions, types and tags

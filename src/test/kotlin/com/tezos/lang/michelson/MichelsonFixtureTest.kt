@@ -4,13 +4,23 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
+import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
 
 /**
  * @author jansorg
  */
 abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() {
     override fun getTestDataPath(): String = MichelsonTestUtils.dataPath().toString()
+
+    override fun setUp() {
+        super.setUp()
+
+        TezosSettingService.getSettings().setClients(emptyList())
+        TezosSettingService.publishDefaultClientChanged()
+        MockMichelsonStackInfoManager.getInstance(project).reset()
+    }
 
     open fun configureByCode(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
         val file = myFixture.configureByText("file.tz", codeTemplate(code))

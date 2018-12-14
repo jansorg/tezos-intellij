@@ -28,11 +28,11 @@ class TezosConfigurable() : Configurable, SearchableConfigurable {
         settingsForm.applyTo(newSettings)
 
         if (current.getDefaultClient() != newSettings.getDefaultClient()) {
-            ApplicationManager.getApplication().messageBus.syncPublisher(TezosSettingService.TOPIC).defaultTezosClientChanged()
+            TezosSettingService.publishDefaultClientChanged()
         }
 
         if (current.stackPanelPosition != newSettings.stackPanelPosition) {
-            ApplicationManager.getApplication().messageBus.syncPublisher(TezosSettingService.TOPIC).tezosStackPositionChanged()
+            TezosSettingService.publishStackPositionChanged()
         }
     }
 
