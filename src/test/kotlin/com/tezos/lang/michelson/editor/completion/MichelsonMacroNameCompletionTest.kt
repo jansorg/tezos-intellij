@@ -4,6 +4,8 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.psi.PsiElement
 import com.tezos.client.MockTezosClient
 import com.tezos.client.stack.*
+import com.tezos.intellij.settings.TezosClientConfig
+import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.macro.AssertMacroMetadata
 import com.tezos.lang.michelson.lang.macro.CompareMacroMetadata
@@ -17,6 +19,13 @@ import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
  * @author jansorg
  */
 class MichelsonMacroNameCompletionTest : MichelsonCompletionTest() {
+    override fun setUp() {
+        super.setUp()
+
+        TezosSettingService.getSettings().setClients(listOf(TezosClientConfig("test default", "/alphanet.sh", true)))
+        TezosSettingService.publishDefaultClientChanged()
+    }
+
     fun testEmpty() {
         configureByCode("<caret>")
         assertCompletionsAtLeast(*MichelsonLanguage.MACRO_NAMES.toTypedArray(), type = CompletionType.BASIC)

@@ -98,7 +98,7 @@ class MichelsonStackInfoManagerImplTest : MichelsonFixtureTest() {
         }
     }
 
-    private fun ideBuildSkipsEditorEvents() = ApplicationInfo.getInstance().build.baselineVersion == 145
+    private fun ideBuildSkipsEditorEvents() = ApplicationInfo.getInstance().build.baselineVersion <= 181
 }
 
 private fun setDefaultClient() {
