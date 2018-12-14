@@ -18,6 +18,17 @@
 
     <change-notes><![CDATA[
         <html>
+        <b>Version 0.10.0</b>
+        <ul>
+            <li>Feature: Run configurations for Michelson files. You will be asked for the input values by default.</li>
+            <li>Show an error instead of failing silently when no tezos client is configured</li>
+            <li>Fix exception when "Find Action..." was invoked</li>
+            <li>Update stack info when a file is opened</li>
+            <li>Update stack info when a file's editor is selected</li>
+            <li>Make colored stack output the default, remove toggle to simplify ui</li>
+            <li>Show annotations by default in stack visualization</li>
+        </ul><br><br>
+
         <b>Version 0.9.0</b>
         <ul>
             <li>Feature: Support parameter info 'View > Parameter Info' for instructions, types and tags</li>
