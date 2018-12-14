@@ -5,6 +5,8 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.util.Disposer
 import com.tezos.client.MockTezosClient
+import com.tezos.intellij.settings.TezosClientConfig
+import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.MichelsonFixtureTest
 import com.tezos.lang.michelson.MichelsonTestUtils
 import com.tezos.lang.michelson.MichelsonTestUtils.locateMichelsonFiles
@@ -60,6 +62,9 @@ class MichelsonStackVisualizationEditorTest(val file: String) : MichelsonFixture
         if (!Files.exists(dataFile)) {
             throw IllegalStateException("stack info file not found: $dataFile")
         }
+
+        TezosSettingService.getSettings().setClients(listOf(TezosClientConfig("test default", "/alphanet.sh", true)))
+        TezosSettingService.publishDefaultClientChanged()
 
         myFixture.configureByFile(michelsonFile.toString())
         MockTezosClient.loadStackInfo(myFixture.file, dataFile)
