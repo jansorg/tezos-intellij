@@ -18,7 +18,7 @@ unit
 
 
 -----
-[111 : 117] SECTION_NAME
+[111 : 117] TYPE_NAME
 return
 -----
 [118 : 122] TYPE_NAME

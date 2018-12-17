@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiContract extends MichelsonComposite {
 
+  boolean isMainContract();
+
   @NotNull
   List<PsiSection> getSections();
-
-  boolean isMainContract();
 
   @Nullable
   PsiSection findSectionByType(@NotNull PsiSectionType type);

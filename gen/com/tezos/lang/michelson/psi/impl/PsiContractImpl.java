@@ -26,14 +26,13 @@ public class PsiContractImpl extends MichelsonCompositeImpl implements PsiContra
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<PsiSection> getSections() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiSection.class);
-  }
-
   public boolean isMainContract() {
     return MichelsonPsiUtil.isMainContract(this);
+  }
+
+  @NotNull
+  public List<PsiSection> getSections() {
+    return MichelsonPsiUtil.getSections(this);
   }
 
   @Nullable

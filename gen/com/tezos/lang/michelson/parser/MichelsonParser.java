@@ -95,6 +95,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == TYPE_SECTION) {
       result = type_section(builder, 0);
     }
+    else if (type == UNKNOWN_SECTION) {
+      result = unknown_section(builder, 0);
+    }
     else if (type == VARIABLE_ANNOTATION) {
       result = variable_annotation(builder, 0);
     }
@@ -109,8 +112,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(CODE_SECTION, SECTION, TYPE_SECTION),
     create_token_set_(COMPLEX_TYPE, SIMPLE_TYPE, TYPE),
+    create_token_set_(CODE_SECTION, SECTION, TYPE_SECTION, UNKNOWN_SECTION),
     create_token_set_(ANNOTATION, FIELD_ANNOTATION, TYPE_ANNOTATION, VARIABLE_ANNOTATION),
     create_token_set_(DATA_LIST, DATA_MAP, LITERAL_DATA, MAP_ENTRY,
       STRING_LITERAL, TAG),
@@ -159,24 +162,16 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'code' instruction ';'?
+  // 'code' instruction
   public static boolean code_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "code_section")) return false;
     boolean result, pinned;
     Marker marker = enter_section_(builder, level, _NONE_, CODE_SECTION, "<code section>");
     result = consumeToken(builder, "code");
     pinned = result; // pin = 1
-    result = result && report_error_(builder, instruction(builder, level + 1));
-    result = pinned && code_section_2(builder, level + 1) && result;
+    result = result && instruction(builder, level + 1);
     exit_section_(builder, level, marker, result, pinned, null);
     return result || pinned;
-  }
-
-  // ';'?
-  private static boolean code_section_2(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "code_section_2")) return false;
-    consumeToken(builder, SEMI);
-    return true;
   }
 
   /* ********************************************************** */
@@ -223,17 +218,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // section+
+  // sections
   public static boolean contract(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "contract")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _NONE_, CONTRACT, "<contract>");
-    result = section(builder, level + 1);
-    while (result) {
-      int pos = current_position_(builder);
-      if (!section(builder, level + 1)) break;
-      if (!empty_element_parsed_guard_(builder, "contract", pos)) break;
-    }
+    result = sections(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
   }
@@ -570,20 +560,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'parameter' type ';'
-  static boolean parameter_section(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "parameter_section")) return false;
-    boolean result, pinned;
-    Marker marker = enter_section_(builder, level, _NONE_);
-    result = consumeToken(builder, "parameter");
-    pinned = result; // pin = 1
-    result = result && report_error_(builder, type(builder, level + 1));
-    result = pinned && consumeToken(builder, SEMI) && result;
-    exit_section_(builder, level, marker, result, pinned, null);
-    return result || pinned;
-  }
-
-  /* ********************************************************** */
   // contract?
   static boolean script_file(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "script_file")) return false;
@@ -601,6 +577,54 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = code_section(builder, level + 1);
     exit_section_(builder, level, marker, result, false, null);
     return result;
+  }
+
+  /* ********************************************************** */
+  // <<parse_section_error_aware section unknown_section>>
+  static boolean section_parser(PsiBuilder builder, int level) {
+    return parse_section_error_aware(builder, level + 1, section_parser_, unknown_section_parser_);
+  }
+
+  /* ********************************************************** */
+  // section_parser (';' section_parser)* ';'?
+  static boolean sections(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "sections")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = section_parser(builder, level + 1);
+    result = result && sections_1(builder, level + 1);
+    result = result && sections_2(builder, level + 1);
+    exit_section_(builder, marker, null, result);
+    return result;
+  }
+
+  // (';' section_parser)*
+  private static boolean sections_1(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "sections_1")) return false;
+    while (true) {
+      int pos = current_position_(builder);
+      if (!sections_1_0(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "sections_1", pos)) break;
+    }
+    return true;
+  }
+
+  // ';' section_parser
+  private static boolean sections_1_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "sections_1_0")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, SEMI);
+    result = result && section_parser(builder, level + 1);
+    exit_section_(builder, marker, null, result);
+    return result;
+  }
+
+  // ';'?
+  private static boolean sections_2(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "sections_2")) return false;
+    consumeToken(builder, SEMI);
+    return true;
   }
 
   /* ********************************************************** */
@@ -629,20 +653,6 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = consumeToken(builder, TYPE_NAME_COMPARABLE);
     exit_section_(builder, level, marker, result, false, null);
     return result;
-  }
-
-  /* ********************************************************** */
-  // 'storage' type ';'
-  static boolean storage_section(PsiBuilder builder, int level) {
-    if (!recursion_guard_(builder, level, "storage_section")) return false;
-    boolean result, pinned;
-    Marker marker = enter_section_(builder, level, _NONE_);
-    result = consumeToken(builder, "storage");
-    pinned = result; // pin = 1
-    result = result && report_error_(builder, type(builder, level + 1));
-    result = pinned && consumeToken(builder, SEMI) && result;
-    exit_section_(builder, level, marker, result, pinned, null);
-    return result || pinned;
   }
 
   /* ********************************************************** */
@@ -764,15 +774,34 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // parameter_section | storage_section
+  // ('parameter' | 'storage') type
   public static boolean type_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "type_section")) return false;
-    boolean result;
+    boolean result, pinned;
     Marker marker = enter_section_(builder, level, _NONE_, TYPE_SECTION, "<type section>");
-    result = parameter_section(builder, level + 1);
-    if (!result) result = storage_section(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, null);
+    result = type_section_0(builder, level + 1);
+    pinned = result; // pin = 1
+    result = result && type(builder, level + 1);
+    exit_section_(builder, level, marker, result, pinned, null);
+    return result || pinned;
+  }
+
+  // 'parameter' | 'storage'
+  private static boolean type_section_0(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "type_section_0")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder);
+    result = consumeToken(builder, "parameter");
+    if (!result) result = consumeToken(builder, "storage");
+    exit_section_(builder, marker, null, result);
     return result;
+  }
+
+  /* ********************************************************** */
+  public static boolean unknown_section(PsiBuilder builder, int level) {
+    Marker marker = enter_section_(builder);
+    exit_section_(builder, marker, UNKNOWN_SECTION, true);
+    return true;
   }
 
   /* ********************************************************** */
@@ -797,6 +826,11 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
       return instruction_recover(builder, level + 1);
     }
   };
+  static final Parser section_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder, int level) {
+      return section(builder, level + 1);
+    }
+  };
   static final Parser tag_recovery_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return tag_recovery(builder, level + 1);
@@ -805,6 +839,11 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   static final Parser toplevel_data_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder, int level) {
       return toplevel_data(builder, level + 1);
+    }
+  };
+  static final Parser unknown_section_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder, int level) {
+      return unknown_section(builder, level + 1);
     }
   };
 }

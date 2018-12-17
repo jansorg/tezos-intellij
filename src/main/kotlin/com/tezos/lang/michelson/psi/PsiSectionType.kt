@@ -7,7 +7,12 @@ package com.tezos.lang.michelson.psi
 enum class PsiSectionType {
     PARAMETER,
     STORAGE,
-    CODE;
+    CODE,
+    UNKNOWN;
+
+    companion object {
+        val completionValues = listOf(PARAMETER, STORAGE,CODE)
+    }
 
     fun codeName() = name.toLowerCase()
 }

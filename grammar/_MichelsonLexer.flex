@@ -28,7 +28,7 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 EOL=\R
 WHITE_SPACE=\s+
 
-SECTION_NAME=parameter|return|storage|code
+SECTION_NAME=parameter|storage|code
 TYPE_NAME=[a-z_][a-zA-Z0-9_]*
 INT=-?[0-9]+
 BYTE=0x[A-F0-9]+

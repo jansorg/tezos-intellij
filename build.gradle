@@ -142,10 +142,6 @@ generateGrammarSource {
     arguments += ["-package", "com.tezos.client.stack", "-visitor"]
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.8.1'
-}
-
 task generateLexers {
     dependsOn generateMichelsonLexer
 }

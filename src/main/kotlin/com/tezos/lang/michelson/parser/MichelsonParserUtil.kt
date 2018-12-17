@@ -1,8 +1,11 @@
+@file:Suppress("FunctionName")
+
 package com.tezos.lang.michelson.parser
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
+import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.MichelsonTypes.*
 import com.tezos.lang.michelson.psi.isWhitespace
 
@@ -13,10 +16,56 @@ import com.tezos.lang.michelson.psi.isWhitespace
  * @author jansorg
  */
 object MichelsonParserUtil : GeneratedParserUtilBase() {
+    private val STOP_TOKENS_SECTION = TokenSet.create(SECTION_NAME, LEFT_CURLY, RIGHT_CURLY, SEMI)
+
     private val STOP_TOKENS_INSTRUCTION = TokenSet.create(SEMI, LEFT_CURLY, RIGHT_CURLY, MACRO_TOKEN)
     private val STOP_TOKENS_NESTED_TAG = TokenSet.create(RIGHT_PAREN, SEMI, LEFT_CURLY)
     private val STOP_TOKENS_TAG = TokenSet.create(LEFT_PAREN, SEMI, INSTRUCTION_TOKEN, LEFT_CURLY, RIGHT_CURLY)
     private val BEFORE_TAG = TokenSet.create(LEFT_CURLY, RIGHT_CURLY, SEMI, LEFT_PAREN)
+
+    /**
+     * Called in a recover_while rule.
+     * A recoverWhile is even called when a rule wasn't matching at all.
+     *
+     * @param builder the PSI builder
+     * @param level   the current nesting level
+     * @return `false` when the recoverWhile should stop to consume tokens, `true` to proceed.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    @JvmStatic
+    fun parse_section_error_aware(builder: PsiBuilder, level: Int, sectionParser: GeneratedParserUtilBase.Parser, unknownSectionParser: GeneratedParserUtilBase.Parser): Boolean {
+        val ok = sectionParser.parse(builder, level)
+        if (ok) {
+            return true
+        }
+
+        // stop at end of file or when probably parsing at the end of a nested contract
+        if (builder.eof()|| STOP_TOKENS_SECTION.contains(builder.tokenType)) {
+            return false
+        }
+
+        val offset = builder.currentOffset
+        val marker = builder.mark()
+
+        // don't raise an error at the end of a nested contract
+        // atm we can't handle that in a better way (missing context information)
+        // we mark a token because without the error marker was placed before whitespace preceeding the current token
+        val error = builder.mark()
+        builder.advanceLexer()
+        error.error("<section> expected")
+
+        var next = builder.tokenType
+        while (next != null && !STOP_TOKENS_SECTION.contains(next)) {
+            builder.advanceLexer()
+            next = builder.tokenType
+        }
+
+        if (builder.currentOffset > offset) {
+            marker.done(MichelsonTypes.UNKNOWN_SECTION)
+            return true
+        }
+        return false
+    }
 
     @JvmStatic
     fun parse_instruction_block(builder: PsiBuilder, level: Int, instructionParser: GeneratedParserUtilBase.Parser): Boolean {
