@@ -106,6 +106,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitSection(o);
   }
 
+  public R visitUnknownSection(@NotNull PsiUnknownSection o) {
+    return visitSection(o);
+  }
+
   public R visitVariableAnnotation(@NotNull PsiVariableAnnotation o) {
     return visitAnnotation(o);
   }

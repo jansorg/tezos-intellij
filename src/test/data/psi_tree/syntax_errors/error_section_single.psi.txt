@@ -1,0 +1,7 @@
+MICHELSON_FILE
+  PsiElement(CONTRACT)
+    PsiElement(UNKNOWN_SECTION)
+      PsiErrorElement:<section> expected
+        PsiElement(TYPE_NAME)('unknown')
+      PsiElement(TYPE_NAME)('unit')
+    PsiElement(;)(';')

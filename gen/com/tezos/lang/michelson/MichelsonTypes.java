@@ -35,6 +35,7 @@ public interface MichelsonTypes {
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
   IElementType TYPE_SECTION = new MichelsonCompositeElementType("TYPE_SECTION");
+  IElementType UNKNOWN_SECTION = new MichelsonCompositeElementType("UNKNOWN_SECTION");
   IElementType VARIABLE_ANNOTATION = new MichelsonCompositeElementType("VARIABLE_ANNOTATION");
 
   IElementType BYTE = new MichelsonElementType("BYTE");
@@ -123,6 +124,9 @@ public interface MichelsonTypes {
       }
       else if (type == TYPE_SECTION) {
         return new PsiTypeSectionImpl(type);
+      }
+      else if (type == UNKNOWN_SECTION) {
+        return new PsiUnknownSectionImpl(type);
       }
       else if (type == VARIABLE_ANNOTATION) {
         return new PsiVariableAnnotationImpl(type);

@@ -29,6 +29,11 @@ object MichelsonPsiUtil {
     }
 
     @JvmStatic
+    fun getSections(contract: PsiContract): List<PsiSection> {
+        return PsiTreeUtil.getChildrenOfTypeAsList(contract, PsiSection::class.java)
+    }
+
+    @JvmStatic
     fun findSectionByType(contract: PsiContract, type: PsiSectionType): PsiSection? {
         return contract.sections.firstOrNull { it.sectionType == type }
     }
@@ -55,7 +60,7 @@ object MichelsonPsiUtil {
             "parameter" -> PsiSectionType.PARAMETER
             "storage" -> PsiSectionType.STORAGE
             "code" -> PsiSectionType.CODE
-            else -> throw IllegalStateException("unsupported section type $token")
+            else -> PsiSectionType.UNKNOWN
         }
     }
 

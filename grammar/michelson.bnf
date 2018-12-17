@@ -82,15 +82,18 @@
 }
 
 // we probably need an external rule to make sure that the required sections are present
-// (we can't define arbitrary order without adding a lot of ruled)
+// (we can't define arbitrary order without adding a lot of rules)
 private script_file ::= contract?
-contract ::= section+ { methods=[sections="section" isMainContract findSectionByType findParameterSection findStorageSection findCodeSection] }
+contract ::= sections { methods=[sections="section" isMainContract getSections findSectionByType findParameterSection findStorageSection findCodeSection] }
 
+private sections ::= section_parser (';' section_parser)* ';'?
+
+private section_parser ::= <<parse_section_error_aware section unknown_section>>
 section ::= type_section | code_section {methods=[getSectionType]}
-type_section ::= parameter_section | storage_section
-private parameter_section ::= 'parameter' type ';' {pin=1}
-private storage_section ::= 'storage' type ';' {pin=1}
-code_section ::= 'code' instruction ';'? {pin=1 methods=[instructions="instruction"]}
+type_section ::= ('parameter' | 'storage') type
+code_section ::= 'code' instruction {methods=[instructions="instruction"]}
+//noinspection BnfUnusedRule, used by <<section_parser>>
+unknown_section ::=
 
 empty_block ::= '{' ';'? '}' {extends=block_instruction}
 

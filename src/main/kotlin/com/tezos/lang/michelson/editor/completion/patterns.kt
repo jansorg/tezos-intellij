@@ -12,21 +12,21 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
-import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.psi.PsiBlockInstruction
+import com.tezos.lang.michelson.psi.PsiContract
 import com.tezos.lang.michelson.psi.PsiInstruction
 import com.tezos.lang.michelson.psi.PsiSection
 
 fun IElementType.toPsiPattern() = PlatformPatterns.psiElement().withElementType(this)
 fun TokenSet.toPsiPattern() = PlatformPatterns.psiElement().withElementType(this)
 
-val DEBUG_FALSE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug") {
+val DEBUG_FALSE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug FALSE") {
     override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
         return false
     }
 })
 
-val DEBUG_TRUE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug") {
+val DEBUG_TRUE = PlatformPatterns.psiElement().with(object : PatternCondition<PsiElement?>("debug TRUE") {
     override fun accepts(t: PsiElement, context: ProcessingContext): Boolean {
         return true
     }
@@ -68,10 +68,25 @@ val PATTERN_INSTRUCTION_OR_DATA_TOKEN = TokenSet.create(MichelsonTypes.INSTRUCTI
 val PATTERN_DATA_ELEMENT = MichelsonTypes.LITERAL_DATA.toPsiPattern()
 val PATTERN_INSIDE_DATA_ELEMENT = PlatformPatterns.psiElement().withParent(PATTERN_DATA_ELEMENT)!!
 
-// dummy text IntelliJ -> Error element -> File
-val TOPLEVEL_PATTERN = PlatformPatterns
-        .psiElement()
-        .withSuperParent(2, MichelsonPsiFile::class.java)!!
+val SECTION_PATTERN_VALID = PlatformPatterns.psiElement().isFirstAcceptedChild(DEBUG_TRUE).withParent(
+        PlatformPatterns.psiElement(PsiSection::class.java)
+)
+val SECTION_PATTERN_ERROR = PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement(PsiErrorElement::class.java).and(SECTION_PATTERN_VALID))
+val SECTION_PATTERN = StandardPatterns.or(SECTION_PATTERN_VALID, SECTION_PATTERN_ERROR)
+
+//val SECTION_PATTERN = PlatformPatterns.or(
+//        // dummy text IntelliJ (parsed as instruction) < Error element < Contract
+//        PlatformPatterns.psiElement()
+//                .withParent(
+//                        PlatformPatterns
+//                                .psiElement(PsiErrorElement::class.java)
+//                                    .withParent(PsiContract::class.java)
+//                ),
+//        PlatformPatterns.or(
+//                DEBUG_TRUE,
+//                PlatformPatterns.psiElement(MichelsonTypes.SECTION_NAME).isFirstAcceptedChild(DEBUG_TRUE)
+//        )
+//)
 
 val WHITESPACE_PATTERN = PlatformPatterns.psiElement(TokenType.WHITE_SPACE)!!
 

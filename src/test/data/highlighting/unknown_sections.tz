@@ -1,5 +1,5 @@
 parameter string;
 storage string;
-<error descr="<section> expected, got 'return'">return</error> string;
-unknown string;
+<error descr="<section> expected">return</error> string;
+<error descr="<section> expected">unknown</error> string;
 code {};

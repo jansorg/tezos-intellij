@@ -7,7 +7,6 @@ import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.MichelsonTypes.*
 import com.tezos.lang.michelson.editor.completion.provider.*
-import com.tezos.lang.michelson.psi.PsiSection
 
 /**
  * @author jansorg
@@ -50,7 +49,9 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
 
     init {
         // sections
-        extend(null, TOPLEVEL_PATTERN, SectionCompletion())
+        // handle empty files when there's no original position
+        extend(null, SECTION_PATTERN, SectionCompletion())
+        extendOriginal(null, SECTION_PATTERN, SectionCompletion())
 
         // instructions
         val commandEndPattern = PlatformPatterns.psiElement().withElementType(TokenSet.create(LEFT_CURLY, SEMI))
