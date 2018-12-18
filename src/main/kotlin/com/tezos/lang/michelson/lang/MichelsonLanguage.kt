@@ -3,7 +3,10 @@
 package com.tezos.lang.michelson.lang
 
 import com.intellij.lang.Language
+import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.lang.AnnotationType.*
+import com.tezos.lang.michelson.lang.StackTransformations.adding
+import com.tezos.lang.michelson.lang.StackTransformations.transforming
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.lang.instruction.NamedAnnotation
 import com.tezos.lang.michelson.lang.instruction.SimpleInstruction
@@ -105,20 +108,50 @@ object MichelsonLanguage : Language("Michelson") {
 
     // instructions
     val INSTRUCTIONS: List<InstructionMetadata> = listOf(
-            "ABS".with(VARIABLE to 1),
-            "ADD".with(VARIABLE to 1),
-            "ADDRESS".with(VARIABLE to 1),
-            "AMOUNT".with(VARIABLE to 1),
-            "AND".with(VARIABLE to 1),
-            "BALANCE".with(VARIABLE to 1),
-            "BLAKE2B".with(VARIABLE to 1),
-            "CAR".with(VARIABLE to 1),
-            "CAST".with(VARIABLE to 1),
-            "CDR".with(VARIABLE to 1),
-            "CHECK_SIGNATURE".with(VARIABLE to 1),
-            "COMPARE".with(VARIABLE to 1),
-            "CONCAT".with(VARIABLE to 1),
-            "CONS".with(VARIABLE to 1),
+            "ABS".with(VARIABLE to 1).with(transforming("int" to "nat")),
+            "ADD".with(VARIABLE to 1).with(transforming(
+                    // numbers
+                    listOf("int", "int") to "int",
+                    listOf("int", "nat") to "int",
+                    listOf("nat", "int") to "int",
+                    listOf("nat", "nat") to "nat",
+                    // timestamps
+                    listOf("timestamp", "int") to "timestamp",
+                    listOf("int", "timestamp") to "timestamp",
+                    // mutez
+                    listOf("mutez", "mutez") to "mutez"
+            )),
+            "ADDRESS".with(VARIABLE to 1).with(transforming("contract" to "address")),
+            "AMOUNT".with(VARIABLE to 1).with(adding("mutez")),
+            "AND".with(VARIABLE to 1).with(transforming(
+                    listOf("bool", "bool") to "bool",
+                    listOf("nat", "nat") to "nat",
+                    listOf("int", "nat") to "nat"
+            )),
+            "BALANCE".with(VARIABLE to 1).with(adding("mutez")),
+            "BLAKE2B".with(VARIABLE to 1).with(transforming("bytes" to "bytes")),
+            "CAR".with(VARIABLE to 1).with(PairTransformation { arguments[0] }),
+            // fixme we could add a warning when cast is called on a incompatible input type
+            "CAST".with(ParameterType.TYPE).and(VARIABLE to 1).with(TopItemTransformation { _, argTypes -> argTypes[0] }),
+            "CDR".with(VARIABLE to 1).with(PairTransformation { arguments[1] }),
+            "CHECK_SIGNATURE".with(VARIABLE to 1).with(transforming(listOf("key", "signature", "bytes") to "bool")),
+            "COMPARE".with(VARIABLE to 1).with(transforming("key_hash" to "key_hash")),
+            "CONCAT".with(VARIABLE to 1).with(transforming(
+                    // string + string -> string
+                    listOf(MichelsonStackType("string", listOf(MichelsonStackType("string")))) to listOf(MichelsonStackType("string")),
+                    // (list string) -> string
+                    listOf(MichelsonStackType("list", listOf(MichelsonStackType("string")))) to listOf(MichelsonStackType("string")),
+                    // bytes + bytes -> bytes
+                    listOf(MichelsonStackType("bytes", listOf(MichelsonStackType("bytes")))) to listOf(MichelsonStackType("bytes")),
+                    // (list bytes) -> bytes
+                    listOf(MichelsonStackType("list", listOf(MichelsonStackType("bytes")))) to listOf(MichelsonStackType("bytes"))
+            )),
+            "CONS".with(VARIABLE to 1).with(TwoTopItemsTransformation{ first, second, argTypes ->
+                if (second.name != "list" || second.arguments.size < 1 || second.arguments[0] != first)  {
+                    throw UnsupportedOperationException()
+                }
+                second
+            }),
             "CREATE_ACCOUNT".with(VARIABLE to 2),
             "DIV".with(),
             "DROP".with(),
@@ -197,12 +230,13 @@ object MichelsonLanguage : Language("Michelson") {
     // creates instruction metadata from an instruction name
     private fun String.with(vararg params: ParameterType, annotations: Map<AnnotationType, Short> = emptyMap(), predefinedAnnotations: List<NamedAnnotation> = emptyList()) = SimpleInstruction(this, params.toList(), annotations, predefinedAnnotations)
 
-    private fun String.with(vararg annotations: Pair<AnnotationType, Int>): SimpleInstruction {
+    private fun String.with(vararg annotations: Pair<AnnotationType, Int>, transformation: StackTransformation = UnsupportedTransformation): SimpleInstruction {
         val intMap = annotations.map { (k, v) -> k to v.toShort() }.toMap()
-        return SimpleInstruction(this, emptyList(), intMap, emptyList())
+        return SimpleInstruction(this, emptyList(), intMap, emptyList(), transformation)
     }
 
     private fun SimpleInstruction.and(vararg values: Pair<AnnotationType, Int>): SimpleInstruction {
-        return this.copy(annotations = values.map { (k, v) -> k to v.toShort() }.toMap())
+        return this.copy(supportedAnnotations = values.map { (k, v) -> k to v.toShort() }.toMap())
     }
 }
+

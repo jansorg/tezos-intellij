@@ -15,27 +15,25 @@ import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 
 internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        when (parameters.completionType) {
-            CompletionType.BASIC -> basic(result)
-            CompletionType.SMART -> smart(parameters, result)
-            else -> {
-            }
+        when {
+            parameters.completionType == CompletionType.BASIC -> addBasicCompletions(result)
+            parameters.completionType == CompletionType.SMART -> addSmartCompletions(parameters, result)
         }
     }
 
     /**
      * Suggest statis macro names for basic completion
      */
-    private fun basic(result: CompletionResultSet) {
+    private fun addBasicCompletions(result: CompletionResultSet) {
         for (macro in MichelsonLanguage.MACROS) {
             addNames(result, macro.staticNames())
         }
     }
 
     /**
-     * Suggest dynamic macro names, which are based on the current stack, for smart completion.
+     * Suggest dynamic macro names, which are based on the current stack
      */
-    private fun smart(parameters: CompletionParameters, result: CompletionResultSet) {
+    private fun addSmartCompletions(parameters: CompletionParameters, result: CompletionResultSet) {
         val doc = parameters.editor.document
         val stackInfo = MichelsonStackInfoManager.getInstance(parameters.editor.project).stackInfo(doc)
         if (stackInfo == null || !stackInfo.isStack) {
@@ -82,12 +80,6 @@ internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() 
             if (name.stackType != null) {
                 item = item.withTypeText(name.stackType.asString(true), name.stackType == top?.type)
             }
-
-/*
-            if (name.accessedType != null) {
-                item = item.appendTailText(" on ", true).appendTailText(name.accessedType.asString(true), true)
-            }
-*/
 
             result.addElement(item)
         }

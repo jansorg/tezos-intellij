@@ -53,6 +53,14 @@ data class MichelsonStack(val frames: List<MichelsonStackFrame>) {
 
     val top: MichelsonStackFrame?
         get() = frames.getOrNull(0)
+
+    fun drop(count: Int) = copy(frames = frames.drop(count))
+
+    fun push(newFrame: MichelsonStackFrame): MichelsonStack = copy(frames = listOf(newFrame) + frames)
+    fun push(newType: MichelsonStackType): MichelsonStack = copy(frames = listOf(MichelsonStackFrame(newType)) + frames)
+
+    fun push(newFrames: List<MichelsonStackFrame>): MichelsonStack = copy(frames = newFrames + frames)
+    fun pushTypes(newFrames: List<MichelsonStackType>): MichelsonStack = copy(frames = newFrames.map { MichelsonStackFrame(it) } + frames)
 }
 
 /**
