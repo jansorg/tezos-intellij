@@ -7,6 +7,8 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
 import com.tezos.client.stack.MichelsonStack
+import com.tezos.client.stack.MichelsonStackType
+import com.tezos.lang.michelson.lang.LangTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.psi.MichelsonPsiUtil
@@ -55,8 +57,14 @@ internal class InstructionNameCompletion : CompletionProvider<CompletionParamete
         for (instr in MichelsonLanguage.INSTRUCTIONS) {
             if (instr.isAvailable(stack)) {
                 try {
-                    val newStack = instr.transformStack(stack, emptyList())
-                    val item = LookupElementBuilder.create(instr.name).withTypeText(newStack.top?.type?.asString(true) ?: "<empty stack>", true)
+                    val args = mutableListOf<MichelsonStackType>()
+                    for (i in 0 until instr.parameters.size) {
+                        args.add(LangTypes.ANY)
+                    }
+
+                    val newStack = instr.transformStack(stack, args)
+                    val item = LookupElementBuilder.create(instr.name).withTypeText(newStack.top?.type?.asString(true)
+                            ?: "<empty stack>", true)
                     result.addElement(item)
                 } catch (e: UnsupportedOperationException) {
                     // skip this instruction
