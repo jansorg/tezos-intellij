@@ -165,13 +165,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   // 'code' instruction
   public static boolean code_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "code_section")) return false;
-    boolean result, pinned;
+    boolean result;
     Marker marker = enter_section_(builder, level, _NONE_, CODE_SECTION, "<code section>");
     result = consumeToken(builder, "code");
-    pinned = result; // pin = 1
     result = result && instruction(builder, level + 1);
-    exit_section_(builder, level, marker, result, pinned, null);
-    return result || pinned;
+    exit_section_(builder, level, marker, result, false, null);
+    return result;
   }
 
   /* ********************************************************** */
@@ -777,13 +776,12 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   // ('parameter' | 'storage') type
   public static boolean type_section(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "type_section")) return false;
-    boolean result, pinned;
+    boolean result;
     Marker marker = enter_section_(builder, level, _NONE_, TYPE_SECTION, "<type section>");
     result = type_section_0(builder, level + 1);
-    pinned = result; // pin = 1
     result = result && type(builder, level + 1);
-    exit_section_(builder, level, marker, result, pinned, null);
-    return result || pinned;
+    exit_section_(builder, level, marker, result, false, null);
+    return result;
   }
 
   // 'parameter' | 'storage'

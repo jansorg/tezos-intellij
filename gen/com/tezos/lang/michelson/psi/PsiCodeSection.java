@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface PsiCodeSection extends PsiSection {
 
-  @Nullable
+  @NotNull
   PsiInstruction getInstructions();
 
 }

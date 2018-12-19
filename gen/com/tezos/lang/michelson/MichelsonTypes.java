@@ -63,7 +63,6 @@ public interface MichelsonTypes {
   IElementType VAR_ANNOTATION_TOKEN = new MichelsonElementType("VAR_ANNOTATION_TOKEN");
 
   class Factory {
-
     public static CompositePsiElement createElement(IElementType type) {
        if (type == ANNOTATION_LIST) {
         return new PsiAnnotationListImpl(type);
