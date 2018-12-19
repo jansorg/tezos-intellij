@@ -126,11 +126,13 @@ open class MichelsonStackInfoManagerImpl(private val project: Project) : Michels
     override fun defaultTezosClientChanged() {
         this.client = defaultTezosClient()
 
-        for (file in FileEditorManager.getInstance(project)!!.selectedFiles) {
-            if (file.fileType is MichelsonFileType) {
-                val doc = FileDocumentManager.getInstance().getDocument(file)
-                if (doc != null) {
-                    triggerStackUpdate(doc)
+        if (this.client != null) {
+            for (file in FileEditorManager.getInstance(project)!!.selectedFiles) {
+                if (file.fileType is MichelsonFileType) {
+                    val doc = FileDocumentManager.getInstance().getDocument(file)
+                    if (doc != null) {
+                        triggerStackUpdate(doc)
+                    }
                 }
             }
         }

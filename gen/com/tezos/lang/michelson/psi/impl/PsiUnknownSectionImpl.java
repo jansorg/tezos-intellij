@@ -11,25 +11,19 @@ import static com.tezos.lang.michelson.MichelsonTypes.*;
 import com.tezos.lang.michelson.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-public class PsiTypeSectionImpl extends PsiSectionImpl implements PsiTypeSection {
+public class PsiUnknownSectionImpl extends PsiSectionImpl implements PsiUnknownSection {
 
-  public PsiTypeSectionImpl(@NotNull IElementType type) {
+  public PsiUnknownSectionImpl(@NotNull IElementType type) {
     super(type);
   }
 
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
-    return visitor.visitTypeSection(this);
+    return visitor.visitUnknownSection(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public PsiType getType() {
-    return PsiTreeUtil.getChildOfType(this, PsiType.class);
   }
 
 }

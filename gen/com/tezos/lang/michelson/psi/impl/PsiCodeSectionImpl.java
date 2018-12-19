@@ -27,7 +27,7 @@ public class PsiCodeSectionImpl extends PsiSectionImpl implements PsiCodeSection
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiInstruction getInstructions() {
     return PsiTreeUtil.getChildOfType(this, PsiInstruction.class);
   }

@@ -15,52 +15,38 @@ import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 
 internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        when (parameters.completionType) {
-            CompletionType.BASIC -> basic(result)
-            CompletionType.SMART -> smart(parameters, result)
-            else -> {
-            }
+        when {
+            parameters.completionType == CompletionType.BASIC -> addBasicCompletions(result)
+            parameters.completionType == CompletionType.SMART -> addSmartCompletions(parameters, result)
         }
     }
 
     /**
      * Suggest statis macro names for basic completion
      */
-    private fun basic(result: CompletionResultSet) {
+    private fun addBasicCompletions(result: CompletionResultSet) {
         for (macro in MichelsonLanguage.MACROS) {
             addNames(result, macro.staticNames())
         }
     }
 
     /**
-     * Suggest dynamic macro names, which are based on the current stack, for smart completion.
+     * Suggest dynamic macro names, which are based on the current stack
      */
-    private fun smart(parameters: CompletionParameters, result: CompletionResultSet) {
-        val doc = parameters.editor.document
-        val stackInfo = MichelsonStackInfoManager.getInstance(parameters.editor.project).stackInfo(doc)
-        if (stackInfo == null || !stackInfo.isStack) {
-            for (macro in MichelsonLanguage.MACROS) {
-                addTypedNames(result, macro.dynamicNames(MichelsonStack.EMPTY), null)
+    private fun addSmartCompletions(parameters: CompletionParameters, result: CompletionResultSet) {
+        val stack = locateStackTransformation(parameters.position, parameters.editor.document)
+        when (stack) {
+            null -> {
+                for (macro in MichelsonLanguage.MACROS) {
+                    addTypedNames(result, macro.dynamicNames(MichelsonStack.EMPTY), null)
+                }
             }
-            return
-        }
-
-        val stack = stackInfo.getStackOrThrow()
-
-        // find the previous instruction, i.e. the previous sibling at the current offset
-        // the stack produced by that instruction is the input for our macro completion
-        val offset = when {
-            MichelsonPsiUtil.isFirstCodeChild(parameters.originalPosition, parameters.offset) -> parameters.originalPosition?.textOffset
-            else -> MichelsonPsiUtil.findPrevInstruction(parameters.position)?.textOffset
-        }
-
-        if (offset != null) {
-            val matching = stack.elementAt(offset)
-            if (matching != null) {
-                val inputStack = matching.after
+            else -> {
+                val input = stack.before
+                val top = stack.before.top
 
                 for (macro in MichelsonLanguage.MACROS) {
-                    addTypedNames(result, macro.dynamicNames(inputStack), inputStack.top)
+                    addTypedNames(result, macro.dynamicNames(input), top)
                 }
             }
         }
@@ -82,12 +68,6 @@ internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() 
             if (name.stackType != null) {
                 item = item.withTypeText(name.stackType.asString(true), name.stackType == top?.type)
             }
-
-/*
-            if (name.accessedType != null) {
-                item = item.appendTailText(" on ", true).appendTailText(name.accessedType.asString(true), true)
-            }
-*/
 
             result.addElement(item)
         }
