@@ -36,3 +36,6 @@ which were obtained at https://gitlab.com/tezos/tezos and which are under the MI
 - [Tezos](https://tezos.com/)
 - [Tezos foundation](http://tezosfoundation.ch/)
 - [Michelson language whitepaper](http://tezos.gitlab.io/betanet/whitedoc/michelson.html)
+
+# Development links
+- [The original parser](https://gitlab.com/tezos/tezos/blob/master/src/proto_alpha/lib_protocol/src/script_ir_translator.ml)
