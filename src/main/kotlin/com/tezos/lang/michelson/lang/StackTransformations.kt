@@ -34,6 +34,19 @@ object UnsupportedTransformation : StackTransformation {
 /**
  * Transforms a pair with a configurable operation.
  */
+data class DroppingTransformation(private val count: Int) : StackTransformation {
+    override fun supports(stack: MichelsonStack): Boolean {
+        return stack.size > 0
+    }
+
+    override fun transform(meta: InstructionMetadata, stack: MichelsonStack, argTypes: List<MichelsonStackType>): MichelsonStack {
+        return stack.drop(count)
+    }
+}
+
+/**
+ * Transforms a pair with a configurable operation.
+ */
 data class PairTransformation(private val op: MichelsonStackType.() -> MichelsonStackType) : StackTransformation {
     override fun supports(stack: MichelsonStack): Boolean {
         return stack.size > 0 && stack.top!!.type.name == "pair"
@@ -49,7 +62,7 @@ data class PairTransformation(private val op: MichelsonStackType.() -> Michelson
 /**
  * Transforms the top item of the stack.
  */
-data class TopItemTransformation(private val op: (item: MichelsonStackType, argTypes: List<MichelsonStackType>) -> MichelsonStackType) : StackTransformation {
+data class TopItemTransformation(private val op: (item: MichelsonStackType, argTypes: List<MichelsonStackType>) -> List<MichelsonStackType>) : StackTransformation {
     override fun supports(stack: MichelsonStack): Boolean {
         return stack.size >= 1
     }
@@ -57,14 +70,28 @@ data class TopItemTransformation(private val op: (item: MichelsonStackType, argT
     override fun transform(meta: InstructionMetadata, stack: MichelsonStack, argTypes: List<MichelsonStackType>): MichelsonStack {
         val pair = stack.top!!.type
         val result = op(pair, argTypes)
-        return stack.drop(1).push(result)
+        return stack.drop(1).pushTypes(result)
     }
 }
 
 /**
  * Transforms the top item of the stack.
  */
-data class TwoTopItemsTransformation(private val op: (first: MichelsonStackType, second: MichelsonStackType, argTypes: List<MichelsonStackType>) -> MichelsonStackType) : StackTransformation {
+data class NoItemTransformation(private val op: (argTypes: List<MichelsonStackType>) -> List<MichelsonStackType>) : StackTransformation {
+    override fun supports(stack: MichelsonStack): Boolean {
+        return true
+    }
+
+    override fun transform(meta: InstructionMetadata, stack: MichelsonStack, argTypes: List<MichelsonStackType>): MichelsonStack {
+        val result = op(argTypes)
+        return stack.pushTypes(result)
+    }
+}
+
+/**
+ * Transforms the top item of the stack.
+ */
+data class TwoTopItemsTransformation(private val op: (first: MichelsonStackType, second: MichelsonStackType, argTypes: List<MichelsonStackType>) -> List<MichelsonStackType>) : StackTransformation {
     override fun supports(stack: MichelsonStack): Boolean {
         return stack.size >= 2
     }
@@ -73,7 +100,24 @@ data class TwoTopItemsTransformation(private val op: (first: MichelsonStackType,
         val first = stack.frames[0].type
         val second = stack.frames[1].type
         val result = op(first, second, argTypes)
-        return stack.drop(2).push(result)
+        return stack.drop(2).pushTypes(result)
+    }
+}
+
+/**
+ * Transforms the top item of the stack.
+ */
+data class TopThreeItemsTransformation(private val op: (first: MichelsonStackType, second: MichelsonStackType, third: MichelsonStackType, argTypes: List<MichelsonStackType>) -> List<MichelsonStackType>) : StackTransformation {
+    override fun supports(stack: MichelsonStack): Boolean {
+        return stack.size >= 3
+    }
+
+    override fun transform(meta: InstructionMetadata, stack: MichelsonStack, argTypes: List<MichelsonStackType>): MichelsonStack {
+        val first = stack.frames[0].type
+        val second = stack.frames[1].type
+        val third = stack.frames[2].type
+        val result = op(first, second, third, argTypes)
+        return stack.drop(2).pushTypes(result)
     }
 }
 
@@ -122,9 +166,10 @@ data class SimpleStackTransformation(private val definitions: List<Pair<List<Mic
 }
 
 object StackTransformations {
-    fun adding(newType: MichelsonStackType): StackTransformation = transforming(emptyList<MichelsonStackType>() to listOf(newType))
+    fun dropping(count: Int): StackTransformation = DroppingTransformation(count)
 
     fun adding(newType: String): StackTransformation = adding(MichelsonStackType(newType))
+    fun adding(newType: MichelsonStackType): StackTransformation = transforming(emptyList<MichelsonStackType>() to listOf(newType))
 
     @JvmName("transformingNames")
     fun transforming(vararg pairs: Pair<String, String>) = transforming(*pairs.map { Pair(MichelsonStackType(it.first), MichelsonStackType(it.second)) }.toTypedArray())
@@ -137,6 +182,11 @@ object StackTransformations {
     @JvmName("transformingNameListsToSingle")
     fun transforming(vararg pairs: Pair<List<String>, String>) = transforming(* pairs.map {
         it.first.map { MichelsonStackType(it) } to listOf(MichelsonStackType(it.second))
+    }.toTypedArray())
+
+    @JvmName("transformingNameListsTyoes")
+    fun transforming(vararg pairs: Pair<List<MichelsonStackType>, MichelsonStackType>) = transforming(* pairs.map {
+        it.first to listOf(it.second)
     }.toTypedArray())
 
     fun transforming(from: MichelsonStackType, to: MichelsonStackType) = transforming(from to to)
