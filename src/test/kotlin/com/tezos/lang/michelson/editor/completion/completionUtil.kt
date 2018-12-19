@@ -3,17 +3,25 @@ package com.tezos.lang.michelson.editor.completion
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.completion.CompletionType
 import com.tezos.client.MockTezosClient
+import com.tezos.intellij.settings.TezosClientConfig
+import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.MichelsonFixtureTest
+import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
 import org.junit.Assert
 
 /**
  * @author jansorg
  */
-abstract class MichelsonCompletionTest : MichelsonFixtureTest() {
+abstract class MichelsonCompletionTest(val setupDefaultClient: Boolean = true) : MichelsonFixtureTest() {
     override fun setUp() {
         super.setUp()
 
+        if (setupDefaultClient) {
+            TezosSettingService.getSettings().setClients(listOf(TezosClientConfig("unit test client", "alphanet.sh", true)))
+        }
+
         MockTezosClient.reset()
+        MockMichelsonStackInfoManager.getInstance(project).reset()
     }
 
     fun assertCompletions(vararg items: String, type: CompletionType = CompletionType.BASIC) {

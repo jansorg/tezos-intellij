@@ -9,7 +9,7 @@ code {
     <error descr="AND doesn't support arguments">AND</error> "invalid arg" 123;
     <error descr="BALANCE doesn't support arguments">BALANCE</error> "invalid arg" 123;
     <error descr="BLAKE2B doesn't support arguments">BLAKE2B</error> "invalid arg" 123;
-    <error descr="CAST doesn't support arguments">CAST</error> "invalid arg" 123 ;
+    <error descr="Unexpected <data> arguments">CAST</error> int "invalid arg" 123 ;
     <error descr="CHECK_SIGNATURE doesn't support arguments">CHECK_SIGNATURE</error> "invalid arg" 123;
     <error descr="COMPARE doesn't support arguments">COMPARE</error> "invalid arg" 123;
     <error descr="CONCAT doesn't support arguments">CONCAT</error> "invalid arg" 123;
@@ -60,7 +60,7 @@ code {
     BALANCE;
     BLAKE2B;
     CAR;
-    CAST;
+    CAST int;
     CDR;
     CHECK_SIGNATURE;
     COMPARE;

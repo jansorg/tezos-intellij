@@ -17,7 +17,7 @@ class MockMichelsonStackInfoManager(project: Project) : MichelsonStackInfoManage
     private val docUpdateCount: MutableMap<String, Int> = Maps.newConcurrentMap()
 
     fun reset() {
-        this.client = null
+        this.client = defaultTezosClient()
         this.docUpdateCount.clear()
     }
 

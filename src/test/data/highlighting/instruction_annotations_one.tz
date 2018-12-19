@@ -52,7 +52,7 @@ code
     SOURCE <error descr="Unsupported annotation">:a</error> ;
     SENDER <error descr="Unsupported annotation">:a</error> ;
     SELF <error descr="Unsupported annotation">:a</error> ;
-    CAST <error descr="Unsupported annotation">:a</error> ;
+    CAST int <error descr="Unsupported annotation">:a</error> ;
     RENAME <error descr="Unsupported annotation">:a</error> ;
 
     # only variable annotations are allowed on these instructions
@@ -167,7 +167,7 @@ code
     SOURCE @a <error descr="Only one variable annotation supported">@a</error> ;
     SENDER @a <error descr="Only one variable annotation supported">@a</error> ;
     SELF @a <error descr="Only one variable annotation supported">@a</error> ;
-    CAST @a <error descr="Only one variable annotation supported">@a</error> ;
+    CAST int @a <error descr="Only one variable annotation supported">@a</error> ;
     RENAME @a <error descr="Only one variable annotation supported">@a</error> ;
 
     # valid
@@ -233,7 +233,7 @@ code
     SOURCE @a ;
     SENDER @a ;
     SELF @a ;
-    CAST @a ;
+    CAST int @a ;
     RENAME @a ;
 
     # zero annotations is valid
@@ -294,7 +294,7 @@ code
     SOURCE ;
     SENDER ;
     SELF ;
-    CAST ;
+    CAST int ;
     RENAME ;
 
     # valid

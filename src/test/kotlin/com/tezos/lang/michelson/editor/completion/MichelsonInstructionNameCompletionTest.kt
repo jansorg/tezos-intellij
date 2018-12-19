@@ -1,8 +1,12 @@
 package com.tezos.lang.michelson.editor.completion
 
 import com.intellij.codeInsight.completion.CompletionType
+import com.tezos.client.MockTezosClient
+import com.tezos.client.stack.MichelsonStack
+import com.tezos.lang.michelson.lang.LangTypes
 import com.tezos.lang.michelson.lang.MichelsonFileType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
 
 /**
  * @author jansorg
@@ -53,9 +57,21 @@ class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
         assertCompletions()
     }
 
-    fun testSmart() {
-        configureByCode("<caret>")
-        assertCompletions("AMOUNT", "BALANCE", "FAIL", "NOW", "SELF", "SENDER", "SOURCE", "STEPS_TO_QUOTA", "UNIT", type = CompletionType.SMART)
+    fun testSmartPair() {
+        stackAndCode("<caret>", stackOf(pair(LangTypes.INT, LangTypes.STRING)), MichelsonStack.EMPTY)
+        assertCompletionsAtLeast("AMOUNT", "BALANCE", "CAR", "CAST", "CDR", "DROP", "DUP", "EMPTY_SET", "EMPTY_MAP", "FAIL", "NOW", "SELF", "SENDER", "SOURCE", "STEPS_TO_QUOTA", "UNIT", type = CompletionType.SMART)
+    }
+
+    fun testSmartEmpty() {
+        stackAndCode("<caret>", MichelsonStack.EMPTY, stackOf(LangTypes.INT))
+        assertCompletionsAtLeast("AMOUNT", "BALANCE", "FAIL", "NOW", "SELF", "SENDER", "SOURCE", "STEPS_TO_QUOTA", "UNIT", type = CompletionType.SMART)
+        assertCompletionsNoneOf("DUP", "DIP", "CAR", "CDR", "DROP", type = CompletionType.SMART)
+    }
+
+    private fun stackAndCode(content: String, before: MichelsonStack, after: MichelsonStack) {
+        val (psi, _) = configureByCode(content)
+        MockTezosClient.addTypes(psi, before, after)
+        MockMichelsonStackInfoManager.getInstance(project).forceUpdate(myFixture.editor)
     }
 
     fun testEmptyFile() {

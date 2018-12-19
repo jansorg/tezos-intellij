@@ -11,8 +11,6 @@ import com.tezos.client.stack.MichelsonStackType
 import com.tezos.lang.michelson.lang.LangTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
-import com.tezos.lang.michelson.psi.MichelsonPsiUtil
-import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 
 internal class InstructionNameCompletion : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
@@ -29,46 +27,28 @@ internal class InstructionNameCompletion : CompletionProvider<CompletionParamete
     }
 
     private fun addSmartCompletions(result: CompletionResultSet, parameters: CompletionParameters) {
-        val doc = parameters.editor.document
-        val stackInfo = MichelsonStackInfoManager.getInstance(parameters.editor.project).stackInfo(doc)
-        if (stackInfo == null || !stackInfo.isStack) {
-            addSmartInstructions(result, MichelsonStack.EMPTY)
-            return
-        }
-
-        val stack = stackInfo.getStackOrThrow()
-
-        // find the previous instruction, i.e. the previous sibling at the current offset
-        // the stack produced by that instruction is the input for our macro completion
-        val offset = when {
-            MichelsonPsiUtil.isFirstCodeChild(parameters.originalPosition, parameters.offset) -> parameters.originalPosition?.textOffset
-            else -> MichelsonPsiUtil.findPrevInstruction(parameters.position)?.textOffset
-        }
-
-        if (offset != null) {
-            val matching = stack.elementAt(offset)
-            if (matching != null) {
-                addSmartInstructions(result, matching.before)
-            }
+        val matching = locateStackTransformation(parameters.position, parameters.editor.document)
+        if (matching != null) {
+            addMatchingInstructions(result, matching.before)
         }
     }
 
-    private fun addSmartInstructions(result: CompletionResultSet, stack: MichelsonStack) {
+    private fun addMatchingInstructions(result: CompletionResultSet, stack: MichelsonStack) {
         for (instr in MichelsonLanguage.INSTRUCTIONS) {
-            if (instr.isAvailable(stack)) {
-                try {
-                    val args = mutableListOf<MichelsonStackType>()
-                    for (i in 0 until instr.parameters.size) {
-                        args.add(LangTypes.ANY)
-                    }
+            if (!instr.isAvailable(stack)) {
+                continue
+            }
 
-                    val newStack = instr.transformStack(stack, args)
-                    val item = LookupElementBuilder.create(instr.name).withTypeText(newStack.top?.type?.asString(true)
-                            ?: "<empty stack>", true)
-                    result.addElement(item)
-                } catch (e: UnsupportedOperationException) {
-                    // skip this instruction
-                }
+            try {
+                // pass dummy args for parameters expected by the instruction
+                val args = repeated(instr.parameters.size, LangTypes.ANY)
+
+                val newStack = instr.transformStack(stack, args)
+                val item = LookupElementBuilder.create(instr.name).withTypeText(newStack.top?.type?.asString(true)
+                        ?: "<empty stack>", true)
+                result.addElement(item)
+            } catch (e: UnsupportedOperationException) {
+                // skip this instruction
             }
         }
     }

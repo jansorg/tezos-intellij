@@ -8,23 +8,23 @@ import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import org.junit.Assert
 import org.junit.Test
 
-class NewBashFileActionTest : MichelsonFixtureTest() {
+class NewFileActionTest : MichelsonFixtureTest() {
     @Test
     fun testNewFile() {
         val actionManager = ActionManager.getInstance()
         val action = actionManager.getAction("tezos.NewMichelsonFile") as CreateMichelsonFileAction
 
         // @see https://devnet.jetbrains.com/message/5539349#5539349
-        val directoryVirtualFile = myFixture.getTempDirFixture().findOrCreateDir("")
-        val directory = myFixture.getPsiManager().findDirectory(directoryVirtualFile)!!
+        val directoryVirtualFile = myFixture.tempDirFixture.findOrCreateDir("")
+        val directory = myFixture.psiManager.findDirectory(directoryVirtualFile)!!
 
         Assert.assertEquals("Michelson Contract", action.templatePresentation.text)
 
         val result = ApplicationManager.getApplication().runWriteAction(Computable {
-            action.createFile("bash_file", "Michelson File", directory)
+            action.createFile("michelson_file", "Michelson File", directory)
         })
 
-        assertNotNull("Expected a newly created bash file", result)
-        assertTrue("Expected a newly created bash file", result is MichelsonPsiFile)
+        assertNotNull("Expected a newly created file", result)
+        assertTrue("Expected a newly created file", result is MichelsonPsiFile)
     }
 }

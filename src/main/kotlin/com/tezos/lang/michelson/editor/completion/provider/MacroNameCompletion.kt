@@ -34,31 +34,19 @@ internal class MacroNameCompletion : CompletionProvider<CompletionParameters>() 
      * Suggest dynamic macro names, which are based on the current stack
      */
     private fun addSmartCompletions(parameters: CompletionParameters, result: CompletionResultSet) {
-        val doc = parameters.editor.document
-        val stackInfo = MichelsonStackInfoManager.getInstance(parameters.editor.project).stackInfo(doc)
-        if (stackInfo == null || !stackInfo.isStack) {
-            for (macro in MichelsonLanguage.MACROS) {
-                addTypedNames(result, macro.dynamicNames(MichelsonStack.EMPTY), null)
+        val stack = locateStackTransformation(parameters.position, parameters.editor.document)
+        when (stack) {
+            null -> {
+                for (macro in MichelsonLanguage.MACROS) {
+                    addTypedNames(result, macro.dynamicNames(MichelsonStack.EMPTY), null)
+                }
             }
-            return
-        }
-
-        val stack = stackInfo.getStackOrThrow()
-
-        // find the previous instruction, i.e. the previous sibling at the current offset
-        // the stack produced by that instruction is the input for our macro completion
-        val offset = when {
-            MichelsonPsiUtil.isFirstCodeChild(parameters.originalPosition, parameters.offset) -> parameters.originalPosition?.textOffset
-            else -> MichelsonPsiUtil.findPrevInstruction(parameters.position)?.textOffset
-        }
-
-        if (offset != null) {
-            val matching = stack.elementAt(offset)
-            if (matching != null) {
-                val inputStack = matching.after
+            else -> {
+                val input = stack.before
+                val top = stack.before.top
 
                 for (macro in MichelsonLanguage.MACROS) {
-                    addTypedNames(result, macro.dynamicNames(inputStack), inputStack.top)
+                    addTypedNames(result, macro.dynamicNames(input), top)
                 }
             }
         }
