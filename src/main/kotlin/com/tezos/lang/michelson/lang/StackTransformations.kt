@@ -49,7 +49,7 @@ data class DroppingTransformation(private val count: Int) : StackTransformation 
  */
 data class PairTransformation(private val op: MichelsonStackType.() -> MichelsonStackType) : StackTransformation {
     override fun supports(stack: MichelsonStack): Boolean {
-        return stack.size > 0 && stack.top!!.type.name == "pair"
+        return stack.size >= 1 && stack.top!!.type.name == "pair"
     }
 
     override fun transform(meta: InstructionMetadata, stack: MichelsonStack, argTypes: List<MichelsonStackType>): MichelsonStack {
@@ -126,11 +126,11 @@ data class SimpleStackTransformation(private val definitions: List<Pair<List<Mic
 
     init {
         // we can safely assume that all definitions have the same size
-        for (definition in definitions) {
-            if (definition.first.size != minSize || definition.second.size != minSize) {
-                throw IllegalArgumentException("transformation definition are not all of the same size")
-            }
-        }
+//        for (definition in definitions) {
+//            if (definition.first.size != minSize || definition.second.size != minSize) {
+//                throw IllegalArgumentException("transformation definition are not all of the same size")
+//            }
+//        }
     }
 
     override fun supports(stack: MichelsonStack): Boolean {

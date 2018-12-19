@@ -55,13 +55,7 @@ data class SimpleInstruction(override val name: String, override val parameters:
     }
 
     override fun isAvailable(stack: MichelsonStack): Boolean {
-        return try {
-            //fixme
-            transformStack(stack, emptyList())
-            true
-        } catch (e: UnsupportedOperationException) {
-            false
-        }
+        return transformation.supports(stack)
     }
 
     override fun transformStack(stack: MichelsonStack, argTypes: List<MichelsonStackType>): MichelsonStack {

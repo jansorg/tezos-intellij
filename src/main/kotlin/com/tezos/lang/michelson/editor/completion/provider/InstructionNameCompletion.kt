@@ -8,6 +8,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
 import com.tezos.client.stack.MichelsonStack
 import com.tezos.lang.michelson.lang.MichelsonLanguage
+import com.tezos.lang.michelson.lang.instruction.InstructionMetadata
 import com.tezos.lang.michelson.psi.MichelsonPsiUtil
 import com.tezos.lang.michelson.stackInfo.MichelsonStackInfoManager
 
@@ -21,8 +22,7 @@ internal class InstructionNameCompletion : CompletionProvider<CompletionParamete
 
     private fun addBasicCompletions(result: CompletionResultSet) {
         for (meta in MichelsonLanguage.INSTRUCTIONS) {
-            val item = LookupElementBuilder.create(meta.name).withTypeText("instruction", true);
-            result.addElement(item)
+            add(meta, result)
         }
     }
 
@@ -30,9 +30,7 @@ internal class InstructionNameCompletion : CompletionProvider<CompletionParamete
         val doc = parameters.editor.document
         val stackInfo = MichelsonStackInfoManager.getInstance(parameters.editor.project).stackInfo(doc)
         if (stackInfo == null || !stackInfo.isStack) {
-            for (instr in MichelsonLanguage.INSTRUCTIONS) {
-                addTypedNames(result, instr.dynamicNames(MichelsonStack.EMPTY), null)
-            }
+            addSmartInstructions(result, MichelsonStack.EMPTY)
             return
         }
 
@@ -48,11 +46,27 @@ internal class InstructionNameCompletion : CompletionProvider<CompletionParamete
         if (offset != null) {
             val matching = stack.elementAt(offset)
             if (matching != null) {
-                val inputStack = matching.after
+                addSmartInstructions(result, matching.before)
+            }
+        }
+    }
 
-                for (instr in MichelsonLanguage.INSTRUCTIONS.ACROS) {
-                    addTypedNames(result, instr.dynamicNames(inputStack), inputStack.top)
+    private fun addSmartInstructions(result: CompletionResultSet, stack: MichelsonStack) {
+        for (instr in MichelsonLanguage.INSTRUCTIONS) {
+            if (instr.isAvailable(stack)) {
+                try {
+                    val newStack = instr.transformStack(stack, emptyList())
+                    val item = LookupElementBuilder.create(instr.name).withTypeText(newStack.top?.type?.asString(true) ?: "<empty stack>", true)
+                    result.addElement(item)
+                } catch (e: UnsupportedOperationException) {
+                    // skip this instruction
                 }
             }
         }
+    }
+
+    private fun add(meta: InstructionMetadata, result: CompletionResultSet) {
+        val item = LookupElementBuilder.create(meta.name).withTypeText("instruction", true);
+        result.addElement(item)
+    }
 }

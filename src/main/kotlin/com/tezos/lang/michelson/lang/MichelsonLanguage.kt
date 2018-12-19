@@ -154,7 +154,12 @@ object MichelsonLanguage : Language("Michelson") {
             "BLAKE2B".with(VARIABLE to 1).with(transforming(BYTES to BYTES)),
             "CAR".with(VARIABLE to 1).with(PairTransformation { arguments[0] }),
             // fixme we could add a warning when cast is called on a incompatible input type
-            "CAST".with(ParameterType.TYPE).and(VARIABLE to 1).with(TopItemTransformation { _, argTypes -> listOf(argTypes[0]) }),
+            "CAST".with(ParameterType.TYPE).and(VARIABLE to 1).with(TopItemTransformation { _, argTypes ->
+                if (argTypes.size != 1) {
+                    throw UnsupportedOperationException()
+                }
+                listOf(argTypes[0])
+            }),
             "CDR".with(VARIABLE to 1).with(PairTransformation { arguments[1] }),
             "CHECK_SIGNATURE".with(VARIABLE to 1).with(transforming(listOf(KEY, SIGNATURE, BYTES) to BOOL)),
             "COMPARE".with(VARIABLE to 1).with(transforming(KEY_HASH to KEY_HASH)),

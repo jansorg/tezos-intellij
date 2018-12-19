@@ -53,6 +53,11 @@ class MichelsonInstructionNameCompletionTest : MichelsonCompletionTest() {
         assertCompletions()
     }
 
+    fun testSmart() {
+        configureByCode("<caret>")
+        assertCompletions("AMOUNT", "BALANCE", "FAIL", "NOW", "SELF", "SENDER", "SOURCE", "STEPS_TO_QUOTA", "UNIT", type = CompletionType.SMART)
+    }
+
     fun testEmptyFile() {
         myFixture.configureByText(MichelsonFileType,
                 """parameter unit;
