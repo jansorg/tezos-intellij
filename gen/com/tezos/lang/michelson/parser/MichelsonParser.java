@@ -156,7 +156,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(builder, level, "block_instruction")) return false;
     boolean result;
     Marker marker = enter_section_(builder, level, _COLLAPSE_, BLOCK_INSTRUCTION, "<block instruction>");
-    result = parse_instruction_block(builder, level + 1, instruction_parser_);
+    result = parse_instruction_block(builder, level + 1, MichelsonParser::instruction);
     exit_section_(builder, level, marker, result, false, null);
     return result;
   }
@@ -444,7 +444,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     pinned = result; // pin = 1
     result = result && report_error_(builder, generic_instruction_1(builder, level + 1));
     result = pinned && generic_instruction_2(builder, level + 1) && result;
-    exit_section_(builder, level, marker, result, pinned, instruction_recover_parser_);
+    exit_section_(builder, level, marker, result, pinned, MichelsonParser::instruction_recover);
     return result || pinned;
   }
 
@@ -517,7 +517,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     pinned = result; // pin = 1
     result = result && report_error_(builder, macro_instruction_1(builder, level + 1));
     result = pinned && macro_instruction_2(builder, level + 1) && result;
-    exit_section_(builder, level, marker, result, pinned, instruction_recover_parser_);
+    exit_section_(builder, level, marker, result, pinned, MichelsonParser::instruction_recover);
     return result || pinned;
   }
 
@@ -555,7 +555,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // <<parseNestedData toplevel_data>>
   static boolean nested_data(PsiBuilder builder, int level) {
-    return parseNestedData(builder, level + 1, toplevel_data_parser_);
+    return parseNestedData(builder, level + 1, MichelsonParser::toplevel_data);
   }
 
   /* ********************************************************** */
@@ -581,7 +581,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // <<parse_section_error_aware section unknown_section>>
   static boolean section_parser(PsiBuilder builder, int level) {
-    return parse_section_error_aware(builder, level + 1, section_parser_, unknown_section_parser_);
+    return parse_section_error_aware(builder, level + 1, MichelsonParser::section, MichelsonParser::unknown_section);
   }
 
   /* ********************************************************** */
@@ -700,7 +700,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = consumeToken(builder, "False");
     if (!result) result = consumeToken(builder, "None");
     if (!result) result = tag_4(builder, level + 1);
-    exit_section_(builder, level, marker, result, false, tag_recovery_parser_);
+    exit_section_(builder, level, marker, result, false, MichelsonParser::tag_recovery);
     return result;
   }
 
@@ -814,34 +814,4 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     return result;
   }
 
-  static final Parser instruction_parser_ = new Parser() {
-    public boolean parse(PsiBuilder builder, int level) {
-      return instruction(builder, level + 1);
-    }
-  };
-  static final Parser instruction_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder builder, int level) {
-      return instruction_recover(builder, level + 1);
-    }
-  };
-  static final Parser section_parser_ = new Parser() {
-    public boolean parse(PsiBuilder builder, int level) {
-      return section(builder, level + 1);
-    }
-  };
-  static final Parser tag_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder builder, int level) {
-      return tag_recovery(builder, level + 1);
-    }
-  };
-  static final Parser toplevel_data_parser_ = new Parser() {
-    public boolean parse(PsiBuilder builder, int level) {
-      return toplevel_data(builder, level + 1);
-    }
-  };
-  static final Parser unknown_section_parser_ = new Parser() {
-    public boolean parse(PsiBuilder builder, int level) {
-      return unknown_section(builder, level + 1);
-    }
-  };
 }
