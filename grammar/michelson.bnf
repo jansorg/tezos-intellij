@@ -12,7 +12,7 @@
 */
 
 {
-    generate=[names="long" visitor-value="R"]
+    generate=[names="long" visitor-value="R" java="8" token-sets="yes"]
 
     parserClass="com.tezos.lang.michelson.parser.MichelsonParser"
     parserUtilClass="com.tezos.lang.michelson.parser.MichelsonParserUtil"
