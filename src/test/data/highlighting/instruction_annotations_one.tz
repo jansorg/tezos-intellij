@@ -52,7 +52,7 @@ code
     SOURCE <error descr="Unsupported annotation">:a</error> ;
     SENDER <error descr="Unsupported annotation">:a</error> ;
     SELF <error descr="Unsupported annotation">:a</error> ;
-    CAST int <error descr="Unsupported annotation">:a</error> ;
+    CAST <error descr="Unsupported annotation">:a</error> int;
     RENAME <error descr="Unsupported annotation">:a</error> ;
 
     # only variable annotations are allowed on these instructions
@@ -109,7 +109,7 @@ code
     SOURCE <error descr="Unsupported annotation">%a</error> ;
     SENDER <error descr="Unsupported annotation">%a</error> ;
     SELF <error descr="Unsupported annotation">%a</error> ;
-    CAST <error descr="Unsupported annotation">%a</error> ;
+    <error descr="One <type> argument expected">CAST</error> <error descr="Unsupported annotation">%a</error> ;
     RENAME <error descr="Unsupported annotation">%a</error> ;
 
     # two variable annotations are invalid, the 2nd annotation must be highlighted in this case
@@ -167,29 +167,29 @@ code
     SOURCE @a <error descr="Only one variable annotation supported">@a</error> ;
     SENDER @a <error descr="Only one variable annotation supported">@a</error> ;
     SELF @a <error descr="Only one variable annotation supported">@a</error> ;
-    CAST int @a <error descr="Only one variable annotation supported">@a</error> ;
-    RENAME @a <error descr="Only one variable annotation supported">@a</error> ;
+    CAST int <error descr="<literal data>, <tag>, <type> or '{' expected, got '@a'">@a</error><error descr="expected ';'"> </error><error descr="Unexpected token">@a</error> ;
+    <error descr="<section> expected">RENAME</error> @a @a ;
 
     # valid
-    PAIR :a ;
-    CAR @a ;
-    CDR @a ;
+    <error descr="<section> expected">PAIR</error> :a ;
+    <error descr="<section> expected">CAR</error> @a ;
+    <error descr="<section> expected">CDR</error> @a ;
 
     # one variable annotations is valid
-    DUP @a ;
-    PUSH @a int 123 ;
-    UNIT @a ;
-    SOME @a ;
-    NONE @a int ;
-    PAIR @a ;
-    CAR @a ;
-    CDR @a ;
-    LEFT @a int ;
-    RIGHT @a int ;
-    NIL @a int ;
-    CONS @a ;
-    SIZE @a ;
-    MAP @a {} ;
+    <error descr="<section> expected">DUP</error> @a ;
+    <error descr="<section> expected">PUSH</error> @a int 123 ;
+    <error descr="<section> expected">UNIT</error> @a ;
+    <error descr="<section> expected">SOME</error> @a ;
+    <error descr="<section> expected">NONE</error> @a int ;
+    <error descr="<section> expected">PAIR</error> @a ;
+    <error descr="<section> expected">CAR</error> @a ;
+    <error descr="<section> expected">CDR</error> @a ;
+    <error descr="<section> expected">LEFT</error> @a int ;
+    <error descr="<section> expected">RIGHT</error> @a int ;
+    <error descr="<section> expected">NIL</error> @a int ;
+    <error descr="<section> expected">CONS</error> @a ;
+    <error descr="<section> expected">SIZE</error> @a ;
+    <error descr="<section> expected">MAP</error> @a <error descr="';' expected, got '{'">{</error>} ;
     MEM @a ;
     EMPTY_SET @a int ;
     EMPTY_MAP @a int int ;
