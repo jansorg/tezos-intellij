@@ -93,12 +93,20 @@ data class MichelsonStackType(val name: String, val arguments: List<MichelsonSta
             return name
         }
 
-        val result = StringBuilder()
-        result.append("(").append(name)
-        for (a in arguments) {
-            result.append(" ").append(a.asString(true))
+        val (prefix, suffix) = when (name.isNotEmpty()) {
+            true -> "($name" to ")"
+            false -> "" to ""
         }
-        result.append(")")
+
+        val result = StringBuilder()
+        result.append(prefix)
+        for (a in arguments) {
+            if (result.isNotEmpty()) {
+                result.append(" ")
+            }
+            result.append(a.asString(true))
+        }
+        result.append(suffix)
         return result.toString()
     }
 
