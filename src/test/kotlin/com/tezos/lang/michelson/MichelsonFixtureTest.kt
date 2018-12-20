@@ -1,9 +1,17 @@
 package com.tezos.lang.michelson
 
+import com.intellij.openapi.application.ApplicationInfo
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.EdtTestUtil
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.util.ThrowableRunnable
+import com.tezos.intellij.settings.TezosClientConfig
 import com.tezos.intellij.settings.TezosSettingService
 import com.tezos.lang.michelson.psi.MichelsonPsiFile
 import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
@@ -22,11 +30,43 @@ abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() 
         MockMichelsonStackInfoManager.getInstance(project).reset()
     }
 
+    fun setDefaultClient() {
+        TezosSettingService.getSettings().setClients(listOf(TezosClientConfig("test client", "/alphanet.sh", true)))
+        TezosSettingService.publishDefaultClientChanged()
+    }
+
+    open fun configure(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
+        val file = myFixture.configureByText("file.tz", code)
+
+        return Pair(file as MichelsonPsiFile, getPsiAtCaret(allowWhitespace))
+    }
+
     open fun configureByCode(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
         val file = myFixture.configureByText("file.tz", codeTemplate(code))
 
         return Pair(file as MichelsonPsiFile, getPsiAtCaret(allowWhitespace))
     }
+
+    open fun configureByCodeAndFocus(text: String) {
+        configureByCode(text)
+
+        triggerOptionalEditorEvent(myFixture.file.virtualFile)
+    }
+
+    open fun triggerOptionalEditorEvent(file: VirtualFile?) {
+        val newEditor = file?.let {
+            FileEditorManager.getInstance(project).getSelectedEditor(it)
+        }
+
+        if (ideBuildSkipsEditorEvents()) {
+            val event = FileEditorManagerEvent(FileEditorManager.getInstance(project), null, null, file, newEditor)
+            EdtTestUtil.runInEdtAndWait(ThrowableRunnable {
+                project.messageBus.syncPublisher(FileEditorManagerListener.FILE_EDITOR_MANAGER).selectionChanged(event)
+            })
+        }
+    }
+
+    open fun ideBuildSkipsEditorEvents() = ApplicationInfo.getInstance().build.baselineVersion <= 181
 
     fun codeOffset(code: String): Int = Math.max(0, codeTemplate(code).indexOf("<caret>"))
 

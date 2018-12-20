@@ -7,15 +7,20 @@ import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.MichelsonTypes.*
 import com.tezos.lang.michelson.editor.completion.provider.*
+import com.tezos.lang.michelson.psi.PsiTypeSection
 
 /**
  * @author jansorg
  */
 class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor() {
     private companion object {
+        val IN_TYPE_SECTION = PlatformPatterns.psiElement().inside(PsiTypeSection::class.java)!!
+        val AFTER_SECTION_NAME_LEAF = PlatformPatterns.psiElement().afterLeaf(SECTION_NAME.toPsiPattern().withText(PlatformPatterns.string().oneOf("parameter", "storage")))!!
         val AFTER_INSTRUCTION_TOKEN_LEAF = PlatformPatterns.psiElement().afterLeaf(PATTERN_INSTRUCTION_TOKEN)!!
         val AFTER_INSTRUCTION_ELEMENT = PlatformPatterns.psiElement().afterSibling(INSTRUCTION_ELEMENT_PATTERN)!!
         val SIMPLE_TYPE_PATTERN = PlatformPatterns.or(
+                AFTER_SECTION_NAME_LEAF,
+                IN_TYPE_SECTION,
                 PlatformPatterns.psiElement().inside(INSTRUCTION_ELEMENT_PATTERN)
                         .andNot(PATTERN_INSTRUCTION_TOKEN)
                         .andNot(PATTERN_INSIDE_DATA_ELEMENT)
@@ -65,6 +70,7 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
         extendOriginal(null, instructionInCode, MacroNameCompletion())
 
         // types
+        extend(null, SIMPLE_TYPE_PATTERN, TypeCompletion(true, false))
         extendOriginal(null, SIMPLE_TYPE_PATTERN, TypeCompletion(true, false))
         extendOriginal(null, LEFT_PAREN_PATTERN.and(SIMPLE_TYPE_PATTERN), TypeCompletion(false, true))
 

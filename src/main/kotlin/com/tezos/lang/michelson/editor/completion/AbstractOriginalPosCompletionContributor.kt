@@ -54,27 +54,6 @@ abstract class AbstractOriginalPosCompletionContributor : CompletionContributor(
 
         fillOriginalCompletionVariants(parameters, result)
         super.fillCompletionVariants(parameters, result)
-
-        // we have to use the original position because an extra token can mess up the PSI structure because of the instruction parsing recovery
-        /*var leaf = parameters.originalPosition
-        while (leaf != null) {
-            leaf = PsiTreeUtil.prevVisibleLeaf(leaf)
-
-            val leafType = leaf?.node?.elementType
-            if (leafType == MichelsonTypes.INSTRUCTION_TOKEN) {
-                if (!atInstructionStart) {
-                    super.fillCompletionVariants(parameters, result)
-                }
-                return
-            }
-
-            if (leafType == MichelsonTypes.SEMI || leafType == MichelsonTypes.LEFT_CURLY) {
-                if (atInstructionStart) {
-                    super.fillCompletionVariants(parameters, result)
-                }
-                return
-            }
-        }*/
     }
 }
 
