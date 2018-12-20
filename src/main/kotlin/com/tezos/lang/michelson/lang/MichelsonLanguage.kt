@@ -173,7 +173,7 @@ object MichelsonLanguage : Language("Michelson") {
                     // (list bytes) -> bytes
                     listOf(LIST(BYTES)) to BYTES
             )),
-            "CONS".with(VARIABLE to 1).with(TwoTopItemsTransformation { first, second, argTypes ->
+            "CONS".with(VARIABLE to 1).with(TwoTopItemsTransformation { first, second, _ ->
                 if (second.name != "list" || second.arguments.size < 1 || second.arguments[0] != first) {
                     throw UnsupportedOperationException()
                 }
@@ -184,7 +184,7 @@ object MichelsonLanguage : Language("Michelson") {
             )),
             "DIV".with(),//fixme not in spec anymore?
             "DROP".with().with(dropping(1)),
-            "DUP".with(VARIABLE to 1).with(TopItemTransformation { item, argTypes -> listOf(item, item) }),
+            "DUP".with(VARIABLE to 1).with(TopItemTransformation { item, _ -> listOf(item, item) }),
             "EDIV".with(VARIABLE to 1).with(transforming(
                     // numbers
                     listOf(INT, INT) to OPTION(PAIR(INT, NAT)),
@@ -202,11 +202,11 @@ object MichelsonLanguage : Language("Michelson") {
                 }
                 listOf(second.arguments[1])
             }),
-            "FAILWITH".with().with(TopItemTransformation { item, argTypes ->
+            "FAILWITH".with().with(TopItemTransformation { item, _ ->
                 listOf(FAILED)
             }),
             "GE".with(VARIABLE to 1).with(transforming(INT to BOOL)),
-            "GET".with(VARIABLE to 1).with(TwoTopItemsTransformation { key, map, argTypes ->
+            "GET".with(VARIABLE to 1).with(TwoTopItemsTransformation { key, map, _ ->
                 if (map.name != "map" || map.arguments.size != 2 || map.arguments[0].isType(key)) {
                     throw UnsupportedOperationException()
                 }
@@ -220,7 +220,7 @@ object MichelsonLanguage : Language("Michelson") {
             "LSL".with(VARIABLE to 1).with(transforming(listOf(NAT, NAT) to NAT)),
             "LSR".with(VARIABLE to 1).with(transforming(listOf(NAT, NAT) to NAT)),
             "LT".with(VARIABLE to 1).with(transforming(INT to BOOL)),
-            "MEM".with(VARIABLE to 1).with(TwoTopItemsTransformation { first, second, argTypes ->
+            "MEM".with(VARIABLE to 1).with(TwoTopItemsTransformation { first, second, _ ->
                 if (second.name != "set" || second.arguments.size != 1 || !second.arguments[0].isType(first)) {
                     throw UnsupportedOperationException()
                 }
@@ -249,13 +249,13 @@ object MichelsonLanguage : Language("Michelson") {
             )),
             "NOW".with(VARIABLE to 1).with(adding(TIMESTAMP)),
             "OR".with(VARIABLE to 1).with(transforming(BOOL to BOOL)),
-            "PACK".with().with(TopItemTransformation { item, argTypes ->
+            "PACK".with().with(TopItemTransformation { item, _ ->
                 listOf(BYTES)
             }),
-            "PAIR".with(VARIABLE to 1, TYPE to 1, FIELD to 2).with(TwoTopItemsTransformation { first, second, argTypes ->
+            "PAIR".with(VARIABLE to 1, TYPE to 1, FIELD to 2).with(TwoTopItemsTransformation { first, second, _ ->
                 listOf(PAIR(first, second))
             }),
-            "RENAME".with(VARIABLE to 1).with(TopItemTransformation { item, argTypes ->
+            "RENAME".with(VARIABLE to 1).with(TopItemTransformation { item, _ ->
                 listOf(item) //fixme annotations are not yet handled here
             }),
             "SELF".with(VARIABLE to 1).with(adding(CONTRACT(LangTypes.ANY))), //fixme find out type of current contract
@@ -279,7 +279,7 @@ object MichelsonLanguage : Language("Michelson") {
                     listOf(NAT, NAT, STRING) to OPTION(STRING),
                     listOf(NAT, NAT, BYTES) to OPTION(BYTES)
             )),
-            "SOME".with(VARIABLE to 1, TYPE to 1, FIELD to 1).with(TopItemTransformation { item, argTypes ->
+            "SOME".with(VARIABLE to 1, TYPE to 1, FIELD to 1).with(TopItemTransformation { item, _ ->
                 listOf(OPTION(item))
             }),
             "SOURCE".with(VARIABLE to 1).with(adding(ADDRESS)),
@@ -296,17 +296,17 @@ object MichelsonLanguage : Language("Michelson") {
                     // mutez
                     listOf(MUTEZ, MUTEZ) to MUTEZ
             )),
-            "SWAP".with().with(TwoTopItemsTransformation { first, second, argTypes ->
+            "SWAP".with().with(TwoTopItemsTransformation { first, second, _ ->
                 listOf(second, first)
             }),
-            "TRANSFER_TOKENS".with(VARIABLE to 1).with(TopThreeItemsTransformation { first, second, third, argTypes ->
+            "TRANSFER_TOKENS".with(VARIABLE to 1).with(TopThreeItemsTransformation { first, second, third, _ ->
                 if (!second.isType(MUTEZ) || third.name != "contract" || third.arguments.size != 1 || !third.arguments[0].isType(first)) {
                     throw UnsupportedOperationException()
                 }
                 listOf(OPERATION)
             }), // fixme questionable
             "UNIT".with(VARIABLE to 1, TYPE to 1).with(adding(UNIT)), // fixme questionable var
-            "UPDATE".with(VARIABLE to 1).with(TopThreeItemsTransformation { first, second, third, argTypes ->
+            "UPDATE".with(VARIABLE to 1).with(TopThreeItemsTransformation { first, second, third, _ ->
                 if (!second.isType(BOOL) || third.name != "set" || third.arguments.size != 1 || !third.arguments[0].isType(first)) {
                     throw UnsupportedOperationException()
                 }
@@ -349,7 +349,7 @@ object MichelsonLanguage : Language("Michelson") {
                     listOf(BOOL) to emptyList<MichelsonStackType>()
             )),
             // :: (or 'a 'b) : 'A   ->  'b : 'A
-            "LOOP_LEFT".with(ParameterType.INSTRUCTION_BLOCK).with(TopItemTransformation { item, argTypes ->
+            "LOOP_LEFT".with(ParameterType.INSTRUCTION_BLOCK).with(TopItemTransformation { item, _ ->
                 if (item.name != "or" || item.arguments.size != 2) {
                     throw UnsupportedOperationException()
                 }
