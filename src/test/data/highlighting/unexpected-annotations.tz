@@ -1,0 +1,4 @@
+code {
+       PUSH int 123 <error descr="Unexpected annotations">@a :b %c</error>;
+       PUSH (pair int int <error descr="Unexpected annotations">@a :b %c</error>) (Pair 123 123);
+     }

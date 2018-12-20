@@ -86,6 +86,9 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     else if (type == TAG) {
       result = tag(builder, 0);
     }
+    else if (type == TRAILING_ANNOTATION_LIST) {
+      result = trailing_annotation_list(builder, 0);
+    }
     else if (type == TYPE) {
       result = type(builder, 0);
     }
@@ -174,7 +177,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* ')'
+  // '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* trailing_annotation_list? ')'
   public static boolean complex_type(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "complex_type")) return false;
     if (!nextTokenIs(builder, "<type>", LEFT_PAREN)) return false;
@@ -184,6 +187,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = result && complex_type_1(builder, level + 1);
     result = result && complex_type_2(builder, level + 1);
     result = result && complex_type_3(builder, level + 1);
+    result = result && complex_type_4(builder, level + 1);
     result = result && consumeToken(builder, RIGHT_PAREN);
     exit_section_(builder, level, marker, result, false, null);
     return result;
@@ -216,6 +220,13 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     return true;
   }
 
+  // trailing_annotation_list?
+  private static boolean complex_type_4(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "complex_type_4")) return false;
+    trailing_annotation_list(builder, level + 1);
+    return true;
+  }
+
   /* ********************************************************** */
   // sections
   public static boolean contract(PsiBuilder builder, int level) {
@@ -242,7 +253,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'CREATE_CONTRACT' annotation_list? contract_wrapper?
+  // 'CREATE_CONTRACT' annotation_list? contract_wrapper? trailing_annotation_list?
   public static boolean create_contract_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "create_contract_instruction")) return false;
     boolean result, pinned;
@@ -250,7 +261,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, "CREATE_CONTRACT");
     pinned = result; // pin = 1
     result = result && report_error_(builder, create_contract_instruction_1(builder, level + 1));
-    result = pinned && create_contract_instruction_2(builder, level + 1) && result;
+    result = pinned && report_error_(builder, create_contract_instruction_2(builder, level + 1)) && result;
+    result = pinned && create_contract_instruction_3(builder, level + 1) && result;
     exit_section_(builder, level, marker, result, pinned, null);
     return result || pinned;
   }
@@ -266,6 +278,13 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   private static boolean create_contract_instruction_2(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "create_contract_instruction_2")) return false;
     contract_wrapper(builder, level + 1);
+    return true;
+  }
+
+  // trailing_annotation_list?
+  private static boolean create_contract_instruction_3(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "create_contract_instruction_3")) return false;
+    trailing_annotation_list(builder, level + 1);
     return true;
   }
 
@@ -435,7 +454,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INSTRUCTION_TOKEN annotation_list? (toplevel_data | type | block_instruction)*
+  // INSTRUCTION_TOKEN annotation_list? (toplevel_data | type | block_instruction)* trailing_annotation_list?
   public static boolean generic_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "generic_instruction")) return false;
     boolean result, pinned;
@@ -443,7 +462,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, INSTRUCTION_TOKEN);
     pinned = result; // pin = 1
     result = result && report_error_(builder, generic_instruction_1(builder, level + 1));
-    result = pinned && generic_instruction_2(builder, level + 1) && result;
+    result = pinned && report_error_(builder, generic_instruction_2(builder, level + 1)) && result;
+    result = pinned && generic_instruction_3(builder, level + 1) && result;
     exit_section_(builder, level, marker, result, pinned, MichelsonParser::instruction_recover);
     return result || pinned;
   }
@@ -474,6 +494,13 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = type(builder, level + 1);
     if (!result) result = block_instruction(builder, level + 1);
     return result;
+  }
+
+  // trailing_annotation_list?
+  private static boolean generic_instruction_3(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "generic_instruction_3")) return false;
+    trailing_annotation_list(builder, level + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -508,7 +535,7 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // MACRO_TOKEN annotation_list? block_instruction*
+  // MACRO_TOKEN annotation_list? block_instruction* trailing_annotation_list?
   public static boolean macro_instruction(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "macro_instruction")) return false;
     boolean result, pinned;
@@ -516,7 +543,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     result = consumeToken(builder, MACRO_TOKEN);
     pinned = result; // pin = 1
     result = result && report_error_(builder, macro_instruction_1(builder, level + 1));
-    result = pinned && macro_instruction_2(builder, level + 1) && result;
+    result = pinned && report_error_(builder, macro_instruction_2(builder, level + 1)) && result;
+    result = pinned && macro_instruction_3(builder, level + 1) && result;
     exit_section_(builder, level, marker, result, pinned, MichelsonParser::instruction_recover);
     return result || pinned;
   }
@@ -536,6 +564,13 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
       if (!block_instruction(builder, level + 1)) break;
       if (!empty_element_parsed_guard_(builder, "macro_instruction_2", pos)) break;
     }
+    return true;
+  }
+
+  // trailing_annotation_list?
+  private static boolean macro_instruction_3(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "macro_instruction_3")) return false;
+    trailing_annotation_list(builder, level + 1);
     return true;
   }
 
@@ -745,6 +780,22 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     if (!result) result = empty_block(builder, level + 1);
     if (!result) result = nested_data(builder, level + 1);
     exit_section_(builder, marker, null, result);
+    return result;
+  }
+
+  /* ********************************************************** */
+  // annotation+
+  public static boolean trailing_annotation_list(PsiBuilder builder, int level) {
+    if (!recursion_guard_(builder, level, "trailing_annotation_list")) return false;
+    boolean result;
+    Marker marker = enter_section_(builder, level, _NONE_, TRAILING_ANNOTATION_LIST, "<trailing annotation list>");
+    result = annotation(builder, level + 1);
+    while (result) {
+      int pos = current_position_(builder);
+      if (!annotation(builder, level + 1)) break;
+      if (!empty_element_parsed_guard_(builder, "trailing_annotation_list", pos)) break;
+    }
+    exit_section_(builder, level, marker, result, false, null);
     return result;
   }
 

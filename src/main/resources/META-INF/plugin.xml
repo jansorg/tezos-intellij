@@ -134,8 +134,8 @@
         <fileEditorProvider implementation="com.tezos.lang.michelson.editor.stack.MichelsonSplitEditorProvider" />
 
         <!-- run configurations -->
-        <configurationType implementation="com.tezos.lang.michelson.runConfig.MichelsonRunConfigurationType"/>
-        <runConfigurationProducer implementation="com.tezos.lang.michelson.runConfig.MichelsonRunConfigurationProducer"/>
+        <configurationType implementation="com.tezos.lang.michelson.runConfig.MichelsonRunConfigurationType" />
+        <runConfigurationProducer implementation="com.tezos.lang.michelson.runConfig.MichelsonRunConfigurationProducer" />
 
         <!-- inspections -->
 

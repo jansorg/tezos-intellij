@@ -34,6 +34,12 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
   }
 
   @Override
+  @Nullable
+  public PsiTrailingAnnotationList getTrailingAnnotationList() {
+    return PsiTreeUtil.getChildOfType(this, PsiTrailingAnnotationList.class);
+  }
+
+  @Override
   @NotNull
   public PsiElement getMacroToken() {
     return findPsiChildByType(MACRO_TOKEN);

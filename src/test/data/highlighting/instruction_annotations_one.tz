@@ -167,29 +167,29 @@ code
     SOURCE @a <error descr="Only one variable annotation supported">@a</error> ;
     SENDER @a <error descr="Only one variable annotation supported">@a</error> ;
     SELF @a <error descr="Only one variable annotation supported">@a</error> ;
-    CAST int <error descr="<literal data>, <tag>, <type> or '{' expected, got '@a'">@a</error><error descr="expected ';'"> </error><error descr="Unexpected token">@a</error> ;
-    <error descr="<section> expected">RENAME</error> @a @a ;
+    CAST int <error descr="Unexpected annotations">@a @a</error> ;
+    RENAME @a <error descr="Only one variable annotation supported">@a</error> ;
 
     # valid
-    <error descr="<section> expected">PAIR</error> :a ;
-    <error descr="<section> expected">CAR</error> @a ;
-    <error descr="<section> expected">CDR</error> @a ;
+    PAIR :a ;
+    CAR @a ;
+    CDR @a ;
 
     # one variable annotations is valid
-    <error descr="<section> expected">DUP</error> @a ;
-    <error descr="<section> expected">PUSH</error> @a int 123 ;
-    <error descr="<section> expected">UNIT</error> @a ;
-    <error descr="<section> expected">SOME</error> @a ;
-    <error descr="<section> expected">NONE</error> @a int ;
-    <error descr="<section> expected">PAIR</error> @a ;
-    <error descr="<section> expected">CAR</error> @a ;
-    <error descr="<section> expected">CDR</error> @a ;
-    <error descr="<section> expected">LEFT</error> @a int ;
-    <error descr="<section> expected">RIGHT</error> @a int ;
-    <error descr="<section> expected">NIL</error> @a int ;
-    <error descr="<section> expected">CONS</error> @a ;
-    <error descr="<section> expected">SIZE</error> @a ;
-    <error descr="<section> expected">MAP</error> @a <error descr="';' expected, got '{'">{</error>} ;
+    DUP @a ;
+    PUSH @a int 123 ;
+    UNIT @a ;
+    SOME @a ;
+    NONE @a int ;
+    PAIR @a ;
+    CAR @a ;
+    CDR @a ;
+    LEFT @a int ;
+    RIGHT @a int ;
+    NIL @a int ;
+    CONS @a ;
+    SIZE @a ;
+    MAP @a {} ;
     MEM @a ;
     EMPTY_SET @a int ;
     EMPTY_MAP @a int int ;
@@ -233,7 +233,7 @@ code
     SOURCE @a ;
     SENDER @a ;
     SELF @a ;
-    CAST int @a ;
+    CAST int <error descr="Unexpected annotations">@a</error> ;
     RENAME @a ;
 
     # zero annotations is valid

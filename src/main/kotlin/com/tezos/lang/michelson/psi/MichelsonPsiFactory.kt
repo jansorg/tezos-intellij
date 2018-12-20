@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
 import com.intellij.util.IncorrectOperationException
 import com.tezos.lang.michelson.lang.MichelsonFileType
+import com.tezos.lang.michelson.psi.impl.PsiAnnotationListImpl
 import org.jetbrains.annotations.NonNls
 
 /**
@@ -35,6 +36,12 @@ class MichelsonPsiFactory(private val psiManager: PsiManager) {
     fun createComplexType(text: String): PsiComplexType {
         val section = createParameterSection("($text)")?: throw IncorrectOperationException("parameter section could not be created")
         val type = section.type as? PsiComplexType ?: throw IncorrectOperationException("type is not a complex type")
+        return type
+    }
+
+    fun createAnnotationList(text: String): PsiAnnotationList {
+        val section = createParameterSection("(int $text)")?: throw IncorrectOperationException("parameter section could not be created")
+        val type = (section.type as? PsiComplexType)?.annotationList ?: throw IncorrectOperationException("type is not an annotation list")
         return type
     }
 
