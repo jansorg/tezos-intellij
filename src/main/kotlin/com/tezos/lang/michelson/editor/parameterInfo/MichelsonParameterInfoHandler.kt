@@ -81,7 +81,7 @@ class MichelsonParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElemen
             buffer.append(psi.instructionName)
             endOffset = buffer.length
 
-            val meta = psi.instructionMetadata
+            val meta = psi.getInstructionMetadata()
             if (meta != null) {
                 for (p in meta.parameters) {
                     buffer.append(" ").append(p.asPlaceholder())
