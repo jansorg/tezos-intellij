@@ -5,8 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.tezos.lang.michelson.psi.PsiGenericInstruction
-import com.tezos.lang.michelson.psi.PsiTrailingAnnotationList
+import com.tezos.lang.michelson.psi.*
 
 /**
  * @author jansorg
@@ -31,12 +30,46 @@ class MoveTrailingAnnotationsIntention : PsiElementBaseIntentionAction() {
 
         val parent = list.parent
         when (parent) {
-            is PsiGenericInstruction -> moveIntoInstruction(list, parent)
+            is PsiInstruction -> moveIntoInstruction(list, parent)
+            is PsiComplexType -> moveIntoComplexType(list, parent)
+        }
+
+        list.delete()
+    }
+
+    private fun moveIntoComplexType(list: PsiTrailingAnnotationList, parent: PsiComplexType) {
+        val existingList = parent.annotationList
+        when (existingList) {
+            null -> parent.typeToken?.let {
+                val newList = MichelsonPsiFactory.getInstance(list.project).createAnnotationList(list.text)
+                parent.addAfter(newList, it)
+            }
+            else -> {
+                for (a in list.annotations) {
+                    existingList.add(a)
+                }
+            }
         }
     }
 
-    private fun moveIntoInstruction(list: PsiTrailingAnnotationList, parent: PsiGenericInstruction) {
+    private fun moveIntoInstruction(list: PsiTrailingAnnotationList, parent: PsiInstruction) {
+        val existingList = when (parent) {
+            is PsiGenericInstruction -> parent.annotationList
+            is PsiMacroInstruction -> parent.annotationList
+            else -> null
+        }
 
+        when (existingList) {
+            null -> {
+                val newList = MichelsonPsiFactory.getInstance(list.project).createAnnotationList(list.text)
+                parent.addAfter(newList, parent.instructionToken)
+            }
+            else -> {
+                for (a in list.annotations) {
+                    existingList.add(a)
+                }
+            }
+        }
     }
 
     private fun findAnnotations(element: PsiElement): PsiTrailingAnnotationList? {

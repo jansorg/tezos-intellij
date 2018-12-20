@@ -1,5 +1,4 @@
 code {
-       PUSH int 123 @a :b %c;
-       PUSH (pair int int @a :b %c) (Pair 123 123);
-       PUSH (pair int int @a :b %c) (Pair 123 123 %a);
+       PUSH int 123 <error descr="Unexpected annotations">@a :b %c</error>;
+       PUSH (pair int int <error descr="Unexpected annotations">@a :b %c</error>) (Pair 123 123);
      }

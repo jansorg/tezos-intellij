@@ -2,6 +2,8 @@
 - Feature: Smart completion of instructions. Only those instructions which are compatible with the current stack are suggested.
 - Feature: Intentions to wrap a type in parentheses, e.g. "int" to "(int)"
 - Feature: Intentions to unwrap a type, e.g. "(int)" to "int"
+- Feature: Error highlighting of trailing annotations on instructions and types
+- Feature: Intention to move trailing annotation to the right place
 - Don't suggest section names inside of sections or types
 
 # Version 0.10.0
