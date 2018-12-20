@@ -202,7 +202,7 @@ object MichelsonLanguage : Language("Michelson") {
                 }
                 listOf(second.arguments[1])
             }),
-            "FAILWITH".with().with(TopItemTransformation { item, _ ->
+            "FAILWITH".with().with(TopItemTransformation { _, _ ->
                 listOf(FAILED)
             }),
             "GE".with(VARIABLE to 1).with(transforming(INT to BOOL)),
@@ -249,7 +249,7 @@ object MichelsonLanguage : Language("Michelson") {
             )),
             "NOW".with(VARIABLE to 1).with(adding(TIMESTAMP)),
             "OR".with(VARIABLE to 1).with(transforming(BOOL to BOOL)),
-            "PACK".with().with(TopItemTransformation { item, _ ->
+            "PACK".with().with(TopItemTransformation { _, _ ->
                 listOf(BYTES)
             }),
             "PAIR".with(VARIABLE to 1, TYPE to 1, FIELD to 2).with(TwoTopItemsTransformation { first, second, _ ->

@@ -60,6 +60,7 @@ public class PsiVisitor<R> extends PsiElementVisitor {
 
   public R visitGenericInstruction(@NotNull PsiGenericInstruction o) {
     return visitInstruction(o);
+    // visitInstructionWithMeta(o);
   }
 
   public R visitInstruction(@NotNull PsiInstruction o) {

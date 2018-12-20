@@ -12,10 +12,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lexer.MichelsonTokenSets
-import com.tezos.lang.michelson.psi.PsiBlockInstruction
-import com.tezos.lang.michelson.psi.PsiContract
-import com.tezos.lang.michelson.psi.PsiInstruction
-import com.tezos.lang.michelson.psi.PsiSection
+import com.tezos.lang.michelson.psi.*
 
 fun IElementType.toPsiPattern() = PlatformPatterns.psiElement().withElementType(this)
 fun TokenSet.toPsiPattern() = PlatformPatterns.psiElement().withElementType(this)
@@ -59,6 +56,7 @@ val AFTER_ERROR_LEAF_SKIPPING_WS = PlatformPatterns.psiElement().with(object : P
 
 val LEFT_PAREN_PATTERN = MichelsonTypes.LEFT_PAREN.toPsiPattern()
 val PATTERN_TAG_TOKEN = MichelsonTypes.TAG_TOKEN.toPsiPattern()
+val PATTERN_LITERAL_TOKEN = PlatformPatterns.psiElement().withElementType(PlatformPatterns.elementType().tokenSet(MichelsonTokenSets.LITERAL_TOKENS))
 
 val PATTERN_INSTRUCTION_TOKEN = MichelsonTypes.INSTRUCTION_TOKEN.toPsiPattern()
 val INSTRUCTION_ELEMENT_PATTERN = PlatformPatterns.psiElement(PsiInstruction::class.java).andNot(PlatformPatterns.psiElement(PsiBlockInstruction::class.java))
@@ -73,20 +71,6 @@ val SECTION_PATTERN_VALID = PlatformPatterns.psiElement().isFirstAcceptedChild(D
 )
 val SECTION_PATTERN_ERROR = PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement(PsiErrorElement::class.java).and(SECTION_PATTERN_VALID))
 val SECTION_PATTERN = StandardPatterns.or(SECTION_PATTERN_VALID, SECTION_PATTERN_ERROR)
-
-//val SECTION_PATTERN = PlatformPatterns.or(
-//        // dummy text IntelliJ (parsed as instruction) < Error element < Contract
-//        PlatformPatterns.psiElement()
-//                .withParent(
-//                        PlatformPatterns
-//                                .psiElement(PsiErrorElement::class.java)
-//                                    .withParent(PsiContract::class.java)
-//                ),
-//        PlatformPatterns.or(
-//                DEBUG_TRUE,
-//                PlatformPatterns.psiElement(MichelsonTypes.SECTION_NAME).isFirstAcceptedChild(DEBUG_TRUE)
-//        )
-//)
 
 val WHITESPACE_PATTERN = PlatformPatterns.psiElement(TokenType.WHITE_SPACE)!!
 

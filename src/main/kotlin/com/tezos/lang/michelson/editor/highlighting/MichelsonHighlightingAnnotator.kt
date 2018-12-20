@@ -66,7 +66,7 @@ class MichelsonHighlightingAnnotator : Annotator {
      * The spec also states: to improve readability and robustness, instructions CAR and CDR.
      */
     private fun annotateInstructionAnnotations(psi: PsiGenericInstruction, holder: AnnotationHolder) {
-        val meta = psi.instructionMetadata ?: return
+        val meta = psi.getInstructionMetadata() ?: return
         val annotations = psi.annotations
         val annotationCount = annotations.size
 
@@ -209,7 +209,7 @@ class MichelsonHighlightingAnnotator : Annotator {
         val name = psi.instructionName ?: return
 
         val instruction = psi.instructionToken
-        val meta = psi.instructionMetadata
+        val meta = psi.getInstructionMetadata()
         if (meta == null) {
             holder.createErrorAnnotation(instruction, "Unknown instruction")
             return

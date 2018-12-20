@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.tezos.lang.michelson.lang.instruction.InstructionMetadata;
 
-public interface PsiGenericInstruction extends PsiInstruction {
+public interface PsiGenericInstruction extends PsiInstruction, PsiInstructionWithMeta {
 
   @Nullable
   PsiAnnotationList getAnnotationList();
