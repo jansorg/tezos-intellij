@@ -106,6 +106,9 @@
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
         <lang.documentationProvider language="Michelson" implementationClass="com.tezos.lang.michelson.editor.documentation.MichelsonDocumentationProvider" />
 
+        <!-- PSI -->
+        <projectService serviceImplementation="com.tezos.lang.michelson.psi.MichelsonPsiFactory" />
+
         <!-- settings -->
         <applicationConfigurable groupId="language" provider="com.tezos.intellij.settings.ui.TezosConfigurableProvider"/>
         <applicationService id="tezos.settings" serviceImplementation="com.tezos.intellij.settings.TezosSettingService"/>
@@ -137,6 +140,8 @@
         <!-- inspections -->
 
         <!-- intentions -->
+        <intentionAction><className>com.tezos.lang.michelson.editor.intention.WrapSimpleTypeIntention</className></intentionAction>
+        <intentionAction><className>com.tezos.lang.michelson.editor.intention.UnwrapComplexTypeIntention</className></intentionAction>
     </extensions>
     <!-- @formatter:on -->
 
