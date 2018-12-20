@@ -40,6 +40,14 @@ class MichelsonSimpleTypeCompletionTest : MichelsonCompletionTest() {
         assertCompletionsAtLeast(*simpleTypes)
         // fixme assert that tags are are not shown for instructions which don't support them
 
+        configure("parameter (pair <caret>)")
+        assertCompletionsAtLeast(*simpleTypes)
+
+        configure("parameter <caret>")
+        assertCompletionsAtLeast(*simpleTypes)
+
+        configure("code <caret>")
+        assertCompletionsNoneOf(*simpleTypes)
         // configureByCode("PUSH (Pair int <caret>)")
         // assertCompletionsNoneOf(*reference)
     }
