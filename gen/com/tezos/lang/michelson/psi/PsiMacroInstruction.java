@@ -11,6 +11,9 @@ public interface PsiMacroInstruction extends PsiInstruction {
   @Nullable
   PsiAnnotationList getAnnotationList();
 
+  @Nullable
+  PsiTrailingAnnotationList getTrailingAnnotationList();
+
   @NotNull
   PsiElement getMacroToken();
 

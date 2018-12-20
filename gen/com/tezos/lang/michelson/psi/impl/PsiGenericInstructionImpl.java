@@ -46,6 +46,12 @@ public class PsiGenericInstructionImpl extends PsiInstructionImpl implements Psi
   }
 
   @Override
+  @Nullable
+  public PsiTrailingAnnotationList getTrailingAnnotationList() {
+    return PsiTreeUtil.getChildOfType(this, PsiTrailingAnnotationList.class);
+  }
+
+  @Override
   @NotNull
   public List<PsiType> getTypeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiType.class);

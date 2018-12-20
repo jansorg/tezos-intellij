@@ -32,6 +32,7 @@ public interface MichelsonTypes {
   IElementType SIMPLE_TYPE = new MichelsonCompositeElementType("SIMPLE_TYPE");
   IElementType STRING_LITERAL = new MichelsonCompositeElementType("STRING_LITERAL");
   IElementType TAG = new MichelsonCompositeElementType("TAG");
+  IElementType TRAILING_ANNOTATION_LIST = new MichelsonCompositeElementType("TRAILING_ANNOTATION_LIST");
   IElementType TYPE = new MichelsonCompositeElementType("TYPE");
   IElementType TYPE_ANNOTATION = new MichelsonCompositeElementType("TYPE_ANNOTATION");
   IElementType TYPE_SECTION = new MichelsonCompositeElementType("TYPE_SECTION");
@@ -117,6 +118,9 @@ public interface MichelsonTypes {
       }
       else if (type == TAG) {
         return new PsiTagImpl(type);
+      }
+      else if (type == TRAILING_ANNOTATION_LIST) {
+        return new PsiTrailingAnnotationListImpl(type);
       }
       else if (type == TYPE_ANNOTATION) {
         return new PsiTypeAnnotationImpl(type);

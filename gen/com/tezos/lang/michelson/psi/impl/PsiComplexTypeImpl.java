@@ -34,6 +34,12 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
 
   @Override
   @Nullable
+  public PsiTrailingAnnotationList getTrailingAnnotationList() {
+    return PsiTreeUtil.getChildOfType(this, PsiTrailingAnnotationList.class);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getTypeName() {
     return findPsiChildByType(TYPE_NAME);
   }

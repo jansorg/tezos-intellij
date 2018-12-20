@@ -94,6 +94,10 @@ public class PsiVisitor<R> extends PsiElementVisitor {
     return visitData(o);
   }
 
+  public R visitTrailingAnnotationList(@NotNull PsiTrailingAnnotationList o) {
+    return visitMichelsonComposite(o);
+  }
+
   public R visitType(@NotNull PsiType o) {
     return visitMichelsonComposite(o);
   }

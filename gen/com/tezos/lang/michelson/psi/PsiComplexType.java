@@ -11,6 +11,9 @@ public interface PsiComplexType extends PsiType {
   PsiAnnotationList getAnnotationList();
 
   @Nullable
+  PsiTrailingAnnotationList getTrailingAnnotationList();
+
+  @Nullable
   PsiElement getTypeName();
 
   @Nullable

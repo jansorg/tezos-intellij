@@ -1,0 +1,5 @@
+code {
+       PUSH int 123 @a :b %c;
+       PUSH (pair int int @a :b %c) (Pair 123 123);
+       PUSH (pair int int @a :b %c) (Pair 123 123 %a);
+     }

@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
+import com.tezos.lang.michelson.editor.intention.MoveTrailingAnnotationsIntention
 import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.ParameterType
@@ -43,11 +44,18 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         // annotation highlighting
         when (psi) {
+            is PsiTrailingAnnotationList -> annotateTrailingAnnotations(psi, holder)
+
             is PsiType -> annotateAnnotationsOfType(psi, holder)
             is PsiGenericInstruction -> annotateInstructionAnnotations(psi, holder)
             //fixme handle contract instruction
             is PsiMacroInstruction -> annotateMacroAnnotations(psi, holder)
         }
+    }
+
+    private fun annotateTrailingAnnotations(psi: PsiTrailingAnnotationList, holder: AnnotationHolder) {
+        val annotation = holder.createErrorAnnotation(psi, "Unexpected annotations")
+        annotation.registerFix(MoveTrailingAnnotationsIntention())
     }
 
     /**
