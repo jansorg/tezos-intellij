@@ -71,7 +71,7 @@ val SECTION_PATTERN_VALID = PlatformPatterns.psiElement().isFirstAcceptedChild(D
 )
 val SECTION_PATTERN_ERROR = PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement(PsiErrorElement::class.java).and(SECTION_PATTERN_VALID))
 val SECTION_PATTERN = StandardPatterns.or(SECTION_PATTERN_VALID, SECTION_PATTERN_ERROR)
-]
+
 val WHITESPACE_PATTERN = PlatformPatterns.psiElement(TokenType.WHITE_SPACE)!!
 
 val IN_CODE_SECTION = PlatformPatterns.psiElement().inside(
