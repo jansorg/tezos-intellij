@@ -4,6 +4,7 @@
 - Feature: Intentions to unwrap a type, e.g. "(int)" to "int"
 - Feature: Error highlighting of trailing annotations on instructions and types
 - Feature: Intention to move trailing annotation to the right place
+- Feature: Intention to remove a unsupported or unexpected annotation, e.g. to remove a field annotation which isn't supported by the current instruction
 - Don't suggest section names inside of sections or types
 
 # Version 0.10.0

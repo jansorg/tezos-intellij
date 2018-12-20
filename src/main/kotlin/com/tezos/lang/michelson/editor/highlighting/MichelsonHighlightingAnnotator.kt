@@ -9,6 +9,8 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.editor.intention.MoveTrailingAnnotationsIntention
+import com.tezos.lang.michelson.editor.intention.RemoveAnnotationIntention
+import com.tezos.lang.michelson.editor.intention.RemoveTrailingAnnotationsIntention
 import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.ParameterType
@@ -55,6 +57,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
     private fun annotateTrailingAnnotations(psi: PsiTrailingAnnotationList, holder: AnnotationHolder) {
         val annotation = holder.createErrorAnnotation(psi, "Unexpected annotations")
+        annotation.registerFix(RemoveTrailingAnnotationsIntention())
         annotation.registerFix(MoveTrailingAnnotationsIntention())
     }
 
@@ -71,7 +74,7 @@ class MichelsonHighlightingAnnotator : Annotator {
             // mark annotations on instructions which do not support them
             !meta.supportsAnnotations() && annotationCount > 0 -> {
                 for (annotation in annotations) {
-                    holder.createErrorAnnotation(annotation, "Unexpected annotation")
+                    createAnnotationErrorWithFix(holder, annotation, "Unexpected annotation")
                 }
             }
 
@@ -92,7 +95,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                                     1 -> "Only one variable annotation supported"
                                     else -> "Only $maxVarAnnotations variable annotations supported"
                                 }
-                                holder.createErrorAnnotation(a, msg)
+                                createAnnotationErrorWithFix(holder, a, msg)
                             }
                             else -> varAnnotations++
                         }
@@ -103,7 +106,7 @@ class MichelsonHighlightingAnnotator : Annotator {
                                     1 -> "Only one field annotation supported"
                                     else -> "Only $maxFieldAnnotations field annotations supported"
                                 }
-                                holder.createErrorAnnotation(a, msg)
+                                createAnnotationErrorWithFix(holder, a, msg)
                             }
                             else -> fieldAnnotations++
                         }
@@ -114,16 +117,21 @@ class MichelsonHighlightingAnnotator : Annotator {
                                     1 -> "Only one type annotation supported"
                                     else -> "Only $maxTypeAnnotations type annotations supported"
                                 }
-                                holder.createErrorAnnotation(a, msg)
+                                createAnnotationErrorWithFix(holder, a, msg)
                             }
                             else -> typeAnnotations++
                         }
 
-                        else -> holder.createErrorAnnotation(a, "Unsupported annotation")
+                        else -> createAnnotationErrorWithFix(holder, a, "Unsupported annotation")
                     }
                 }
             }
         }
+    }
+
+    private fun createAnnotationErrorWithFix(holder: AnnotationHolder, annotation: PsiAnnotation, message: String) {
+        val error = holder.createErrorAnnotation(annotation, message)
+        error.registerFix(RemoveAnnotationIntention(annotation))
     }
 
     /**
@@ -155,11 +163,11 @@ class MichelsonHighlightingAnnotator : Annotator {
                             when {
                                 supported && fieldAnnotations >= 1 -> holder.createErrorAnnotation(a, "Only one field annotation supported")
                                 supported -> fieldAnnotations++
-                                else -> holder.createErrorAnnotation(a, "Unsupported annotation")
+                                else -> createAnnotationErrorWithFix(holder, a, "Unsupported annotation")
                             }
                         }
 
-                        else -> holder.createErrorAnnotation(a, "Unsupported annotation")
+                        else -> createAnnotationErrorWithFix(holder, a, "Unsupported annotation")
                     }
                 }
             }

@@ -19,7 +19,7 @@ class MoveTrailingAnnotationsIntention : PsiElementBaseIntentionAction() {
         text = LABEL
     }
 
-    override fun getFamilyName(): String = "Tezos/Michelson"
+    override fun getFamilyName(): String = MichelsonIntentions.FAMILY
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
         return findAnnotations(element) != null
