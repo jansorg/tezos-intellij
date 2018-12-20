@@ -5,6 +5,7 @@
 - Feature: Error highlighting of trailing annotations on instructions and types
 - Feature: Intention to move trailing annotation to the right place
 - Feature: Intention to remove a unsupported or unexpected annotation, e.g. to remove a field annotation which isn't supported by the current instruction
+- Feature: Smart completion of types and tags where an argument of an instruction is expected. Only the values which are valid at the position of the argument are suggested.
 - Don't suggest section names inside of sections or types
 
 # Version 0.10.0
