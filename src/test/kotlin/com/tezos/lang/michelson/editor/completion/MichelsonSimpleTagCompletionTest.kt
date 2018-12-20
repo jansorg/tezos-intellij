@@ -1,5 +1,6 @@
 package com.tezos.lang.michelson.editor.completion
 
+import com.intellij.codeInsight.completion.CompletionType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 
 /**
@@ -39,6 +40,16 @@ class MichelsonSimpleTagCompletionTest : MichelsonCompletionTest() {
 
         configureByCode("PUSH unit (Fal<caret>)")
         assertCompletionsAtLeast(*reference.filter { it.contains("Fal") }.toTypedArray())
+
+        // smart
+        configureByCode("NIL <caret>")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH <caret>")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH int <caret>")
+        assertCompletions(*reference, type = CompletionType.SMART)
 
         // no completions
         configureByCode("<caret>")

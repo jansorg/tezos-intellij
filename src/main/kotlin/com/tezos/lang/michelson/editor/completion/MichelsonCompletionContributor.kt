@@ -65,12 +65,12 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
         extendOriginal(null, instructionInCode, MacroNameCompletion())
 
         // types
-        extendOriginal(null, SIMPLE_TYPE_PATTERN, SimpleTypeCompletion())
-        extendOriginal(null, LEFT_PAREN_PATTERN.and(SIMPLE_TYPE_PATTERN), NestedTypeCompletion())
+        extendOriginal(null, SIMPLE_TYPE_PATTERN, TypeCompletion(true, false))
+        extendOriginal(null, LEFT_PAREN_PATTERN.and(SIMPLE_TYPE_PATTERN), TypeCompletion(false, true))
 
         // tags
-        extendOriginal(null, TAG, SimpleTagCompletion())
-        extendOriginal(null, COMPLEX_TAG, NestedTagCompletion())
+        extendOriginal(null, TAG, TagCompletion(true, false))
+        extendOriginal(null, COMPLEX_TAG, TagCompletion(false, true))
     }
 }
 
