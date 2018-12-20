@@ -9,7 +9,8 @@ import com.tezos.lang.michelson.psi.PsiSectionType
  * @author jansorg
  */
 class SectionCompletionTest : MichelsonCompletionTest() {
-    private val names = PsiSectionType.completionValues.map { it.codeName() }.toTypedArray()
+    private val simpleNames = PsiSectionType.completionValues.map { it.codeName() }.toTypedArray()
+    private val names = simpleNames + simpleNames.map { "$it " }
 
     fun testSectionCompletion() {
         // basic
@@ -31,11 +32,11 @@ class SectionCompletionTest : MichelsonCompletionTest() {
 
         // no completions
         myFixture.configureByText(MichelsonFileType, "parameter <caret>")
-        assertCompletions()
+        assertCompletionsNoneOf(*names)
 
         myFixture.configureByText(MichelsonFileType, "parameter (pair int <caret>);")
-        assertCompletions()
-        assertCompletions(type = CompletionType.SMART)
+        assertCompletionsNoneOf(*names)
+        assertCompletionsNoneOf(*names, type = CompletionType.SMART)
 
         myFixture.configureByText(MichelsonFileType, "parameter (<caret>);")
         assertCompletionsNoneOf(*names)

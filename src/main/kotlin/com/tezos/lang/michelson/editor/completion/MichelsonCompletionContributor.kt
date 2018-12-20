@@ -46,7 +46,9 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
                 // e.g. "PUSH int |T" (T is an instruction token here)
                 AFTER_ERROR_LEAF_SKIPPING_WS.beforeLeaf(PATTERN_INSTRUCTION_TOKEN),
                 // e.g. "PUSH int |Tr" (Tr is a tag here)
-                WHITESPACE_PATTERN.beforeLeaf(PATTERN_TAG_TOKEN)
+                WHITESPACE_PATTERN.beforeLeaf(PATTERN_TAG_TOKEN),
+                // e.g. "PUSH int |123"
+                WHITESPACE_PATTERN.beforeLeaf(PATTERN_LITERAL_TOKEN)
         )!!
 
         val COMPLEX_TAG = PlatformPatterns.or(LEFT_PAREN_PATTERN, PlatformPatterns.psiElement(TAG_TOKEN).afterLeafSkipping(WHITESPACE_PATTERN, LEFT_PAREN_PATTERN))!!

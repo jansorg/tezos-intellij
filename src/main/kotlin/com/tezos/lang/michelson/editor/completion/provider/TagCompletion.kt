@@ -55,7 +55,7 @@ fun findExpectedParameterType(position: PsiElement, offset: Int): ParameterType?
         // whitespace might be after an instruction, as in "PUSH <caret>"
         // but for "PUSH <caret> int" the prev sibling should be used
         position is PsiWhiteSpace && !isMacroOrGenericInstruction(position.parent) -> PsiTreeUtil.prevLeaf(position)
-        else -> position.prevSibling
+        else -> PsiTreeUtil.prevVisibleLeaf(position)
     }
 
     val parent = findParentInstruction(start) ?: return null
@@ -63,11 +63,12 @@ fun findExpectedParameterType(position: PsiElement, offset: Int): ParameterType?
 //    val meta = MichelsonLanguage.INSTRUCTIONS.firstOrNull { it.name == instructionNameToken.text } ?: return null
     val meta = (parent as? PsiInstructionWithMeta)?.getInstructionMetadata() ?: return null
 
-    var psi: PsiElement? = when (hasParent(position, parent)) {
-        true -> position
-        false -> PsiTreeUtil.prevVisibleLeaf(position)
-    } ?: return null
+//    var psi: PsiElement? = when (hasParent(position, parent)) {
+//        true -> position
+//        false -> PsiTreeUtil.prevVisibleLeaf(position)
+//    } ?: return null
 
+    var psi = PsiTreeUtil.prevVisibleLeaf(position)
     psi = PsiTreeUtil.findFirstParent(psi, ::isParamElement) ?: psi
 
     var pos = 0
