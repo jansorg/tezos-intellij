@@ -45,11 +45,32 @@ class MichelsonSimpleTagCompletionTest : MichelsonCompletionTest() {
         configureByCode("NIL <caret>")
         assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
 
+        configureByCode("PUSH int <caret>")
+        assertCompletions(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH bool True<caret>")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH bool Tr<caret>ue")
+        assertCompletions(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH bool <caret>True")
+        assertCompletions(*reference, type = CompletionType.SMART)
+
         configureByCode("PUSH <caret>")
         assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
 
-        configureByCode("PUSH int <caret>")
-        assertCompletions(*reference, type = CompletionType.SMART)
+        configureByCode("PUSH int<caret>")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH in<caret>t")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH <caret> int")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
+
+        configureByCode("PUSH <caret>")
+        assertCompletionsNoneOf(*reference, type = CompletionType.SMART)
 
         // no completions
         configureByCode("<caret>")

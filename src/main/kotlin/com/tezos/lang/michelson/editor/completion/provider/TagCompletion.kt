@@ -7,9 +7,9 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
-import com.intellij.util.ui.tree.TreeUtil
 import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.ParameterType
@@ -51,47 +51,61 @@ internal class TagCompletion(val completeSimple: Boolean, val completeComplex: B
 fun findExpectedParameterType(position: PsiElement, offset: Int): ParameterType? {
     // locate the instruction name token
     // we can't use the PSI hierarchy here because incomplete instructions won't have a complete parent hierarchy
-    var name: PsiElement? = when {
+    val start: PsiElement? = when {
         // whitespace might be after an instruction, as in "PUSH <caret>"
         // but for "PUSH <caret> int" the prev sibling should be used
-        position is PsiWhiteSpace && (position.parent !is PsiGenericInstruction && position.parent !is PsiMacroInstruction) -> PsiTreeUtil.prevLeaf(position)
+        position is PsiWhiteSpace && !isMacroOrGenericInstruction(position.parent) -> PsiTreeUtil.prevLeaf(position)
         else -> position.prevSibling
     }
 
-    val parent = PsiTreeUtil.findFirstParent(name) { it is PsiGenericInstruction || it is PsiMacroInstruction }
-    while (name != null && name.node.elementType != MichelsonTypes.INSTRUCTION_TOKEN) {
-        name = PsiTreeUtil.prevLeaf(name, true)
-        if (PsiTreeUtil.findFirstParent(name) { it == parent } == null) {
-            name = null
-        }
-    }
+    val parent = findParentInstruction(start) ?: return null
+//    val instructionNameToken = findPrevLeafInParent(start, parent, MichelsonTypes.INSTRUCTION_TOKEN) ?: return null
+//    val meta = MichelsonLanguage.INSTRUCTIONS.firstOrNull { it.name == instructionNameToken.text } ?: return null
+    val meta = (parent as? PsiInstructionWithMeta)?.getInstructionMetadata() ?: return null
 
-    if (name == null) {
-        return null
-    }
-
-    val meta = MichelsonLanguage.INSTRUCTIONS.firstOrNull { it.name == name.text } ?: return null
-
-    var pos = 0
-    var psi: PsiElement? = when (PsiTreeUtil.findFirstParent(position) { it == parent } != null) {
+    var psi: PsiElement? = when (hasParent(position, parent)) {
         true -> position
         false -> PsiTreeUtil.prevVisibleLeaf(position)
-    }
-
-    if (psi == null) {
-        return null
-    }
+    } ?: return null
 
     psi = PsiTreeUtil.findFirstParent(psi, ::isParamElement) ?: psi
+
+    var pos = 0
     while (psi != null) {
         if (isParamElement(psi)) {
             pos++
         }
-
         psi = psi.prevSibling
     }
 
     return meta.parameters.getOrNull(pos)
+}
+
+fun findPrevLeafInParent(psi: PsiElement?, parent: PsiElement, type: IElementType?): PsiElement? {
+    if (psi == null) {
+        return null
+    }
+
+    var current: PsiElement? = psi
+    while (current != null && current.node.elementType != type) {
+        current = PsiTreeUtil.prevLeaf(current, true)
+        if (current == null || !hasParent(current, parent)) {
+            return null
+        }
+    }
+    return current
+}
+
+fun hasParent(psi: PsiElement?, parent: PsiElement?): Boolean {
+    return psi != null && parent != null && PsiTreeUtil.findFirstParent(psi) { it == parent } != null
+}
+
+fun findParentInstruction(psi: PsiElement?): PsiInstruction? {
+    return PsiTreeUtil.findFirstParent(psi, ::isMacroOrGenericInstruction) as? PsiInstruction
+}
+
+fun isMacroOrGenericInstruction(psi: PsiElement): Boolean {
+    return psi is PsiGenericInstruction || psi is PsiMacroInstruction
 }
 
 fun isParamElement(psi: PsiElement): Boolean {
