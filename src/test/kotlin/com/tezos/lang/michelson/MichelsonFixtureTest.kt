@@ -22,6 +22,12 @@ abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() 
         MockMichelsonStackInfoManager.getInstance(project).reset()
     }
 
+    open fun configure(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
+        val file = myFixture.configureByText("file.tz", code)
+
+        return Pair(file as MichelsonPsiFile, getPsiAtCaret(allowWhitespace))
+    }
+
     open fun configureByCode(code: String, allowWhitespace: Boolean = false): Pair<MichelsonPsiFile, PsiElement?> {
         val file = myFixture.configureByText("file.tz", codeTemplate(code))
 
