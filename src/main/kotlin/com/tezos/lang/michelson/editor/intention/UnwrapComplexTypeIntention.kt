@@ -10,7 +10,7 @@ import com.tezos.lang.michelson.psi.PsiComplexType
 /**
  * @author jansorg
  */
-class UnwrapSimpleTypeIntention : PsiElementBaseIntentionAction() {
+class UnwrapComplexTypeIntention : PsiElementBaseIntentionAction() {
     init {
         text = "Unwrap type"
     }
