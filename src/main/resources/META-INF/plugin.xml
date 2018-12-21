@@ -105,6 +105,7 @@
         <lang.psiStructureViewFactory language="Michelson" implementationClass="com.tezos.lang.michelson.editor.structureView.MichelsonStructureViewFactory"/>
         <lang.foldingBuilder language="Michelson" implementationClass="com.tezos.lang.michelson.editor.folding.MichelsonFoldingBuilder"/>
         <lang.documentationProvider language="Michelson" implementationClass="com.tezos.lang.michelson.editor.documentation.MichelsonDocumentationProvider" />
+        <errorHandler implementation="com.tezos.intellij.errorReporter.TezosErrorReporter" />
 
         <!-- PSI -->
         <projectService serviceImplementation="com.tezos.lang.michelson.psi.MichelsonPsiFactory" />
@@ -159,6 +160,9 @@
             <action id="tezos.NewMichelsonFile" class="com.tezos.lang.michelson.actions.CreateMichelsonFileAction"/>
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
         </group>
+
+        <!-- only visible in internal mode -->
+        <action id="tezos.triggerException" class="com.tezos.intellij.errorReporter.TriggerExceptionAction" />
 
         <group id="tezos.editorToolbar">
             <action id="tezos.editorShowAnnotations" class="com.tezos.lang.michelson.editor.stack.actions.ShowAnnotationsAction"/>

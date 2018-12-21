@@ -46,6 +46,8 @@ dependencies {
 
     antlr "org.antlr:antlr4:4.7.1"
     compile group: "org.antlr", name: "antlr4-runtime", version: "4.7.1"
+
+    test "org.nanohttpd:nanohttpd:2.3.1"
 }
 
 sourceSets {

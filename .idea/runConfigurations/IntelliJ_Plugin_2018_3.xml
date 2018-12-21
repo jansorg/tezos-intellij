@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="IntelliJ Plugin 2018.3" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
     <module name="tezos-intellij-plugin" />
-    <option name="VM_PARAMETERS" value="-Xmx1512m -Xms768m -XX:MaxPermSize=250m -ea" />
+    <option name="VM_PARAMETERS" value="-Xmx1512m -Xms768m -XX:MaxPermSize=250m -ea -Didea.is.internal=true" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <alternative-path path="IntelliJ IDEA IU-183.x" alternative-path-enabled="true" />
     <predefined_log_file enabled="true" id="idea.log" />
