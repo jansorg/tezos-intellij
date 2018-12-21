@@ -141,8 +141,12 @@
         <!-- inspections -->
 
         <!-- intentions -->
-        <intentionAction><className>com.tezos.lang.michelson.editor.intention.WrapSimpleTypeIntention</className></intentionAction>
-        <intentionAction><className>com.tezos.lang.michelson.editor.intention.UnwrapComplexTypeIntention</className></intentionAction>
+        <intentionAction>
+            <className>com.tezos.lang.michelson.editor.intention.WrapSimpleTypeIntention</className>
+        </intentionAction>
+        <intentionAction>
+            <className>com.tezos.lang.michelson.editor.intention.UnwrapComplexTypeIntention</className>
+        </intentionAction>
     </extensions>
     <!-- @formatter:on -->
 

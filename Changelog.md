@@ -9,6 +9,7 @@
 - Feature: Warn about missing, superfluous, and unsupported arguments to a type, e.g. `pair int`, `pair int int int` or `map unit int`
 - Don't suggest section names inside of sections or types
 - Fix `contract` live template
+- Treat `*.tez` and `*.tez` as Michelson files (same as in Emacs).
 
 # Version 0.10.0
 - Feature: Run configurations for Michelson files. You will be asked for the input values by default.

@@ -12,5 +12,6 @@ import com.intellij.openapi.fileTypes.FileTypeFactory
 class MichelsonFileTypeFactory : FileTypeFactory() {
     override fun createFileTypes(consumer: FileTypeConsumer) {
         consumer.consume(MichelsonFileType, "tz")
+        consumer.consume(MichelsonFileType, "tez")
     }
 }
