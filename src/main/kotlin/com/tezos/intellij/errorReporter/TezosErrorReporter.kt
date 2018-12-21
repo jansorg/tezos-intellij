@@ -24,20 +24,16 @@ import java.awt.Component
  */
 class TezosErrorReporter : ErrorReportSubmitter() {
     private companion object {
-        const val serverURL = "https://www.ansorg-it.com/tezos/errorReceiver.pl"
+        const val serverURL = "https://www.plugin-dev.com/tezos/errorReceiver.pl"
     }
 
-    override fun getReportActionText(): String {
-        return "Report to Tezos plugin author"
-    }
+    override fun getReportActionText(): String = "Report to Tezos Plugin Author"
 
     override fun submit(events: Array<out IdeaLoggingEvent>, additionalInfo: String?, parentComponent: Component, consumer: Consumer<SubmittedReportInfo>): Boolean {
-        val dataContext = DataManager.getInstance().getDataContext(parentComponent)
-        val project = CommonDataKeys.PROJECT.getData(dataContext)
+        val project = CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext(parentComponent))
 
         val task = SendErrorTask(project!!, pluginDescriptor, additionalInfo, events, parentComponent)
-        val indicator = BackgroundableProcessIndicator(task)
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, indicator)
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
 
         return true
     }
