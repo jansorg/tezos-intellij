@@ -34,8 +34,8 @@ open class HttpEndpointReporter(private val url: String, private val senderEmail
             connection.doOutput = true
             connection.instanceFollowRedirects = followRedirects
             connection.requestMethod = "POST"
-            connection.connectTimeout = TimeUnit.SECONDS.toMillis(2).toInt();
-            connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
+            connection.connectTimeout = TimeUnit.SECONDS.toMillis(2).toInt()
+            connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8")
             senderEmail?.let { connection.setRequestProperty("x-sender", it) }
             pluginID?.let { connection.setRequestProperty("x-plugin", it) }
 

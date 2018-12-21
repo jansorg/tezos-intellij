@@ -4,7 +4,6 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent
 import com.intellij.openapi.extensions.PluginDescriptor
-import kotlin.text.StringBuilder
 
 /**
  * Formats the information about plugins as a string.
