@@ -11,11 +11,15 @@ import com.tezos.lang.michelson.psi.PsiSimpleType
  * @author jansorg
  */
 class WrapSimpleTypeIntention : PsiElementBaseIntentionAction() {
-    init {
-        text = "Wrap in parentheses"
+    companion object {
+        const val LABEL = "Wrap in parentheses"
     }
 
-    override fun getFamilyName(): String = "Tezos/Michelson"
+    init {
+        text = LABEL
+    }
+
+    override fun getFamilyName(): String = MichelsonIntentions.FAMILY
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
         return element.parent is PsiSimpleType

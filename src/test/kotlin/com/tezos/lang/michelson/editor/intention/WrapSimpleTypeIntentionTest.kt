@@ -21,7 +21,7 @@ class WrapSimpleTypeIntentionTest : MichelsonFixtureTest() {
     private fun assertNoWrap(code: String) {
         configureByCode(code)
         try {
-            myFixture.findSingleIntention("Wrap in parentheses")
+            myFixture.findSingleIntention(WrapSimpleTypeIntention.LABEL)
             Assert.fail("Intention must be unavailable on $code")
         } catch (e: AssertionError) {
             // expected
@@ -30,14 +30,12 @@ class WrapSimpleTypeIntentionTest : MichelsonFixtureTest() {
 
     private fun assertWrap(code: String, expectedCodeResult: String) {
         val (file, _) = configureByCode(code)
-        val intention = myFixture.findSingleIntention("Wrap in parentheses")
+        val intention = myFixture.findSingleIntention(WrapSimpleTypeIntention.LABEL)
         Assert.assertNotNull(intention)
         myFixture.launchAction(intention)
 
         Assert.assertEquals(expectedCodeResult, file.getContract()?.findCodeSection()?.text)
     }
 
-    override fun isWriteActionRequired(): Boolean {
-        return false
-    }
+    override fun isWriteActionRequired(): Boolean = false
 }

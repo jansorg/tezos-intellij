@@ -25,4 +25,7 @@ public interface PsiType extends PsiAnnotated {
   @NotNull
   MichelsonStackType asStackType();
 
+  @Nullable
+  PsiElement getTypeToken();
+
 }

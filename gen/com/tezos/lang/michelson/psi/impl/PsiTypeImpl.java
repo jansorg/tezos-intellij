@@ -56,4 +56,9 @@ public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiT
     return MichelsonPsiUtil.asStackType(this);
   }
 
+  @Nullable
+  public PsiElement getTypeToken() {
+    return MichelsonPsiUtil.getTypeToken(this);
+  }
+
 }

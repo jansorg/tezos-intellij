@@ -58,6 +58,7 @@ object MichelsonLanguage : Language("Michelson") {
             "key_hash".type(ParameterType.COMPARABLE_TYPE),
             "timestamp".type(ParameterType.COMPARABLE_TYPE),
             "address".type(ParameterType.TYPE),
+            "contract".type(ParameterType.TYPE, listOf(ParameterType.TYPE)),
             "operation".type(ParameterType.TYPE),
             "key".type(ParameterType.TYPE),
             "unit".type(ParameterType.TYPE),
