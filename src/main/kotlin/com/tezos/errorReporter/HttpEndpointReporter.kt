@@ -9,6 +9,11 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 /**
+ * Sends content to an HTTP endpoint. The user defined headers x-plugin and x-sender are send with the request
+ * if you provide values for the corresponding constructor parameters.
+ *
+ * It uses IntelliJ's HTTP connection factory to automatically make use of the global settings (proxy, etc.)
+ *
  * @author jansorg
  */
 open class HttpEndpointReporter(private val url: String, private val senderEmail: String?, val content: String, private val pluginID: String? = null, private val followRedirects: Boolean = true) {
