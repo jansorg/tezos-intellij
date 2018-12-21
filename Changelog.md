@@ -8,6 +8,7 @@
 - Feature: Smart completion of types and tags where an argument of an instruction is expected. Only the values which are valid at the position of the argument are suggested.
 - Feature: Warn about missing, superfluous, and unsupported arguments to a type, e.g. `pair int`, `pair int int int` or `map unit int`
 - Don't suggest section names inside of sections or types
+- Fix `contract` live template
 
 # Version 0.10.0
 - Feature: Run configurations for Michelson files. You will be asked for the input values by default.
