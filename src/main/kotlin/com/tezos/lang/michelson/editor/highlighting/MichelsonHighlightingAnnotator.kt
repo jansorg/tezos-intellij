@@ -11,6 +11,7 @@ import com.tezos.lang.michelson.MichelsonTypes
 import com.tezos.lang.michelson.editor.intention.MoveTrailingAnnotationsIntention
 import com.tezos.lang.michelson.editor.intention.RemoveAnnotationIntention
 import com.tezos.lang.michelson.editor.intention.RemoveTrailingAnnotationsIntention
+import com.tezos.lang.michelson.editor.intention.RemoveTypeIntention
 import com.tezos.lang.michelson.lang.AnnotationType
 import com.tezos.lang.michelson.lang.MichelsonLanguage
 import com.tezos.lang.michelson.lang.ParameterType
@@ -39,7 +40,7 @@ class MichelsonHighlightingAnnotator : Annotator {
 
         // generic type and instruction highlighting
         when (psi) {
-            is PsiSimpleType -> annotateGenericType(psi, holder)
+            is PsiType -> annotateType(psi, holder)
             is PsiGenericInstruction -> annotateInstruction(psi, holder)
             is PsiMacroInstruction -> annotateMacroInstruction(psi, holder)
         }
@@ -296,11 +297,39 @@ class MichelsonHighlightingAnnotator : Annotator {
         }
     }
 
-    private fun annotateGenericType(element: PsiSimpleType, holder: AnnotationHolder) {
-        val typeName = element.typeNameString
-        if (typeName !in MichelsonLanguage.TYPE_NAMES) {
-            holder.createErrorAnnotation(element.typeToken, "Unknown type")
-            return
+    private fun annotateType(element: PsiType, holder: AnnotationHolder) {
+        val typeToken = element.typeToken
+
+        val meta = element.typeMetadata
+        when {
+            meta == null -> holder.createErrorAnnotation(element.typeToken ?: element, "Unknown type")
+            // e.g. when pair is used without parentheses
+            element is PsiSimpleType && meta.isNesting && meta.subtypes.isNotEmpty() -> {
+                holder.createErrorAnnotation(typeToken ?: element, "Missing type arguments")
+            }
+            // highlight missing and existing, but unsupported arguments to the complex type
+            // e.g. "(pair address)", here the 1st isn't comparable and the 2nd isn't available
+            element is PsiComplexType -> {
+                val args = element.typeArguments
+                val expectedTypes = meta.subtypes
+
+                if (args.size < expectedTypes.size) {
+                    holder.createErrorAnnotation(typeToken ?: element, "Missing type arguments")
+                }
+
+                for ((index, type) in expectedTypes.withIndex()) {
+                    val passed = args.getOrNull(index)
+                    if (passed != null && type == ParameterType.COMPARABLE_TYPE && !passed.isComparable) {
+                        holder.createErrorAnnotation(passed, "Comparable type expected")
+                    }
+                }
+
+                if (args.size > expectedTypes.size) {
+                    for (arg in args.listIterator(expectedTypes.size)) {
+                        holder.createErrorAnnotation(arg, "Superfluous argument").registerFix(RemoveTypeIntention(arg))
+                    }
+                }
+            }
         }
     }
 

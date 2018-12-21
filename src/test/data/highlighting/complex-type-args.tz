@@ -1,0 +1,9 @@
+parameter <error descr="Missing type arguments">pair</error>;
+storage (pair int <error descr="Missing type arguments">pair</error>);
+code {
+       PUSH int 123;
+       PUSH (<error descr="Missing type arguments">pair</error> int) (Pair 123 123);
+       PUSH (pair int int <error descr="Superfluous argument">int</error>) (Pair 123 123);
+       PUSH (pair int int <error descr="Superfluous argument">int</error>) (Pair 123 123);
+       PUSH (pair int int int <error descr="Missing type arguments">pair</error>) (Pair 123 123);
+     }

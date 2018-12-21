@@ -11,11 +11,15 @@ import com.tezos.lang.michelson.psi.PsiComplexType
  * @author jansorg
  */
 class UnwrapComplexTypeIntention : PsiElementBaseIntentionAction() {
-    init {
-        text = "Unwrap type"
+    companion object {
+        const val LABEL = "Unwrap type"
     }
 
-    override fun getFamilyName(): String = "Tezos/Michelson"
+    init {
+        text = LABEL
+    }
+
+    override fun getFamilyName(): String = MichelsonIntentions.FAMILY
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
         val type = element.parent as? PsiComplexType ?: return false

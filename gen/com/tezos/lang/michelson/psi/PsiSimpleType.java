@@ -13,7 +13,4 @@ public interface PsiSimpleType extends PsiType {
   @Nullable
   PsiElement getTypeNameComparable();
 
-  @NotNull
-  PsiElement getTypeToken();
-
 }

@@ -66,11 +66,7 @@ object MichelsonPsiUtil {
 
     @JvmStatic
     fun getTypeNameString(type: PsiType): String {
-        return when (type) {
-            is PsiSimpleType -> type.typeToken.text
-            is PsiComplexType -> type.typeToken!!.text
-            else -> throw IllegalStateException("unsupported PSI element type ${type.javaClass.name}")
-        }
+        return type.typeToken!!.text
     }
 
     @JvmStatic
@@ -109,11 +105,6 @@ object MichelsonPsiUtil {
     @JvmStatic
     fun hasSimpleTypes(type: PsiComplexType): Boolean {
         return type.typeArguments.any { it is PsiSimpleType }
-    }
-
-    @JvmStatic
-    fun getTypeToken(type: PsiComplexType): PsiElement? {
-        return type.node.findChildByType(MichelsonTokenSets.TYPE_NAMES)?.psi
     }
 
     @JvmStatic
@@ -184,11 +175,10 @@ object MichelsonPsiUtil {
 
     /**
      * Returns the metadata for the given type.
-     * Instruction blocks don't have a unique instruction name. 'null' is returned in this case.
      */
     @JvmStatic
-    fun getTypeToken(psi: PsiSimpleType): PsiElement {
-        return psi.firstChild
+    fun getTypeToken(psi: PsiType): PsiElement? {
+        return psi.node.findChildByType(MichelsonTokenSets.TYPE_NAMES)?.psi
     }
 
     /**

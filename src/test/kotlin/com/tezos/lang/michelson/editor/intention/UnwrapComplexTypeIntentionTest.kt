@@ -22,7 +22,7 @@ class UnwrapComplexTypeIntentionTest: MichelsonFixtureTest(){
     private fun assertNoUnwrap(code: String) {
         configureByCode(code)
         try {
-            myFixture.findSingleIntention("Unwrap type")
+            myFixture.findSingleIntention(UnwrapComplexTypeIntention.LABEL)
             Assert.fail("Intention must be unavailable on $code")
         } catch (e: AssertionError) {
             // expected
@@ -31,14 +31,12 @@ class UnwrapComplexTypeIntentionTest: MichelsonFixtureTest(){
 
     private fun assertUnwrap(code: String, expectedCodeResult: String) {
         val (file, _) = configureByCode(code)
-        val intention = myFixture.findSingleIntention("Unwrap type")
+        val intention = myFixture.findSingleIntention(UnwrapComplexTypeIntention.LABEL)
         Assert.assertNotNull(intention)
         myFixture.launchAction(intention)
 
         Assert.assertEquals(expectedCodeResult, file.getContract()?.findCodeSection()?.text)
     }
 
-    override fun isWriteActionRequired(): Boolean {
-        return false
-    }
+    override fun isWriteActionRequired(): Boolean = false
 }

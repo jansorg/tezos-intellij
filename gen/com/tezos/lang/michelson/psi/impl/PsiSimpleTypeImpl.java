@@ -38,9 +38,4 @@ public class PsiSimpleTypeImpl extends PsiTypeImpl implements PsiSimpleType {
     return findPsiChildByType(TYPE_NAME_COMPARABLE);
   }
 
-  @NotNull
-  public PsiElement getTypeToken() {
-    return MichelsonPsiUtil.getTypeToken(this);
-  }
-
 }

@@ -134,9 +134,9 @@ private instruction_recover ::= <<instruction_recover_while>>
 contract_wrapper ::= '{' contract '}'
 
 //-- types
-type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString asStackType]}
-simple_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type" methods=[getTypeToken]}
-complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* trailing_annotation_list? ')' {name="type" methods=[typeArguments="type" getTypeToken hasSimpleTypes hasComplexTypes]}
+type ::= simple_type | complex_type {implements="com.tezos.lang.michelson.psi.PsiAnnotated" methods=[isComparable findParentType hasParentType getTypeMetadata getTypeNameString asStackType getTypeToken]}
+simple_type ::= TYPE_NAME | TYPE_NAME_COMPARABLE {name="type"}
+complex_type ::= '(' (TYPE_NAME | TYPE_NAME_COMPARABLE) annotation_list? type* trailing_annotation_list? ')' {name="type" methods=[typeArguments="type" hasSimpleTypes hasComplexTypes]}
 
 //-- annotations
 annotation_list ::= annotation+ {methods=[annotations="annotation" findParentInstruction]}
