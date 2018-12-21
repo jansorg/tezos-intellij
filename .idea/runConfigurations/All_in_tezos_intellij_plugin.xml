@@ -3,7 +3,7 @@
     <module name="tezos-intellij-plugin" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.tezos.*" />
+        <option name="PATTERN" value="com.tezos.errorReporter.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

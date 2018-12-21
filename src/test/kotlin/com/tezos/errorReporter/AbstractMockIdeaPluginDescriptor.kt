@@ -7,7 +7,7 @@ import com.intellij.openapi.extensions.PluginId
 import org.jdom.Element
 import java.io.File
 
-data class MockIdeaPluginDescriptor(val id: String, private val name: String, private val version: String) : IdeaPluginDescriptor {
+abstract class AbstractMockIdeaPluginDescriptor(private val id: String, private val name: String, private val version: String) : IdeaPluginDescriptor {
     override fun getChangeNotes(): String = ""
 
     override fun getVendor(): String = ""

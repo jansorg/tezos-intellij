@@ -116,7 +116,7 @@ task generateMichelsonParser(type: GenerateParser) {
 // the coverage reports will be available at build/reports/coverage/test/html/index.html
 apply plugin: 'jacoco'
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = "0.8.2"
     reportsDir = file("$buildDir/reports/coverage")
 }
 
