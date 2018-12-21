@@ -6,6 +6,7 @@
 - Feature: Intention to move trailing annotation to the right place
 - Feature: Intention to remove a unsupported or unexpected annotation, e.g. to remove a field annotation which isn't supported by the current instruction
 - Feature: Smart completion of types and tags where an argument of an instruction is expected. Only the values which are valid at the position of the argument are suggested.
+- Feature: Warn about missing, superfluous, and unsupported arguments to a type, e.g. `pair int`, `pair int int int` or `map unit int`
 - Don't suggest section names inside of sections or types
 
 # Version 0.10.0
