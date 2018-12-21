@@ -46,6 +46,8 @@ dependencies {
 
     antlr "org.antlr:antlr4:4.7.1"
     compile group: "org.antlr", name: "antlr4-runtime", version: "4.7.1"
+
+    testCompile "org.nanohttpd:nanohttpd:2.3.1"
 }
 
 sourceSets {
@@ -114,7 +116,7 @@ task generateMichelsonParser(type: GenerateParser) {
 // the coverage reports will be available at build/reports/coverage/test/html/index.html
 apply plugin: 'jacoco'
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = "0.8.2"
     reportsDir = file("$buildDir/reports/coverage")
 }
 

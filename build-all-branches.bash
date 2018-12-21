@@ -2,7 +2,8 @@
 
 # Builds and tests with all major versions we support
 
-for ij in "2018.2.3" "2018.1.3" "2017.1.3"; do
+for ij in "2018.3.1" "2018.2.3" "2018.1.3" "2017.1.3"; do
+    echo "Building with $ij"
     ./gradlew -Pintellij="$ij" clean build
     [[ "$?" != "0" ]] && echo "#################  Build with IntelliJ $ij failed" && exit 1
 done
