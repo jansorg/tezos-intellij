@@ -4,13 +4,16 @@ IntelliJ support for the Tezos platform.
 This plugin adds support of technologies and languages used by the
 Tezos platform to the IntelliJ products.
 
-**Please beware that this is a very early release. A lot of features will be added in the future.**
-
 <img src="docs/mainwindow.png"/>
 
 ## Reporting issues and whishes
 Please use GitHub's issues to report any issue your uncover. Please free to
 suggest features and possible extensions there as well.
+
+### Logfile
+If you would like to submit the logfile, then:
+- enable logging of the Tezos plugin by adding the line `#tezos` to the content of action at `Help > Debug Log Settings`
+- attach the `idea.log` file shown by `Help > Show Log in ...`. Make sure to remove any private information from the file before uploading it.
 
 ## Compatibility
 

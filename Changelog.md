@@ -1,3 +1,6 @@
+# Version 1.0.1
+- Add logging of stderr when the tezos-client command exited with a non-zero exit code. 
+
 # Version 1.0.0
 - Feature: Smart completion of instructions. Only those instructions which are compatible with the current stack are suggested.
 - Feature: Intentions to wrap a type in parentheses, e.g. "int" to "(int)"
