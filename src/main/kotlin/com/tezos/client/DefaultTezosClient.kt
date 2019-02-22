@@ -121,11 +121,17 @@ open class StandaloneTezosClient(private val executable: Path) : TezosClient {
                 p.exitValue() == 0 -> {
                     val out = Files.readAllBytes(outFile).toString(StandardCharsets.UTF_8)
                     if (LOG.isDebugEnabled) {
-                        LOG.debug("tezos-client finished with exit code ${p.exitValue()} and stdout ${out}")
+                        LOG.debug("tezos-client finished with exit code ${p.exitValue()} and stdout '$out'")
                     }
                     out
                 }
-                else -> throw TezosClientExitError(p.exitValue())
+                else -> {
+                    val out = Files.readAllBytes(outFile).toString(StandardCharsets.UTF_8)
+                    if (LOG.isDebugEnabled) {
+                        LOG.debug("tezos-client terminated with exit code ${p.exitValue()} and output '$out'")
+                    }
+                    throw TezosClientExitError(p.exitValue())
+                }
             }
         } finally {
             Files.deleteIfExists(outFile)
