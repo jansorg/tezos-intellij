@@ -1,4 +1,4 @@
-# Version 1.0.2
+# Version 1.0.1
 - Add logging of stderr when the tezos-client command exited with a non-zero exit code. 
 
 # Version 1.0.0
