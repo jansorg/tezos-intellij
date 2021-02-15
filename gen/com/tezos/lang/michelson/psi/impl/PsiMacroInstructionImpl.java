@@ -18,10 +18,12 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitMacroInstruction(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
@@ -51,6 +53,7 @@ public class PsiMacroInstructionImpl extends PsiInstructionImpl implements PsiMa
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiBlockInstruction.class);
   }
 
+  @Override
   @Nullable
   public MacroMetadata getMacroMetadata() {
     return MichelsonPsiUtil.getMacroMetadata(this);

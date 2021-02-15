@@ -17,20 +17,24 @@ public abstract class PsiInstructionImpl extends MichelsonCompositeImpl implemen
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitInstruction(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
+  @Override
   @Nullable
   public String getInstructionName() {
     return MichelsonPsiUtil.getInstructionName(this);
   }
 
+  @Override
   @Nullable
   public PsiElement getInstructionToken() {
     return MichelsonPsiUtil.getInstructionToken(this);

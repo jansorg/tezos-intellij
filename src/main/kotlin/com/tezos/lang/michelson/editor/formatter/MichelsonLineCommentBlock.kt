@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.util.SmartList
 import com.intellij.util.containers.ContainerUtil
 import java.util.*
 
@@ -21,7 +22,7 @@ class MichelsonLineCommentBlock(node: ASTNode, wrap: Wrap, alignment: Alignment?
     override fun buildChildren(): MutableList<Block> {
         return when {
             michelsonStyle.LINE_COMMENT_LEADING_SPACE -> {
-                val blocks = ContainerUtil.newSmartList<Block>()
+                val blocks = SmartList<Block>()
                 val nodeRange = node.textRange
                 val spaceCount = StringUtil.countChars(node.text, ' ', 1, true)
 

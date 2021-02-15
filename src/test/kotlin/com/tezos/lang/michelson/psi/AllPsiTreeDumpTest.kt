@@ -38,12 +38,6 @@ class AllPsiTreeDumpTest(val michelsonFile: String) : MichelsonFixtureTest() {
         }
     }
 
-    @Before
-    fun setupTest() = setUp()
-
-    @After
-    fun shutdownTest() = tearDown()
-
     @Test
     fun testFile() {
         val file = dataRootPath.resolve(michelsonFile)

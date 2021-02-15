@@ -19,43 +19,52 @@ public abstract class PsiTypeImpl extends MichelsonCompositeImpl implements PsiT
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitType(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
+  @Override
   public boolean isComparable() {
     return MichelsonPsiUtil.isComparable(this);
   }
 
+  @Override
   @Nullable
   public PsiType findParentType() {
     return MichelsonPsiUtil.findParentType(this);
   }
 
+  @Override
   public boolean hasParentType() {
     return MichelsonPsiUtil.hasParentType(this);
   }
 
+  @Override
   @Nullable
   public TypeMetadata getTypeMetadata() {
     return MichelsonPsiUtil.getTypeMetadata(this);
   }
 
+  @Override
   @NotNull
   public String getTypeNameString() {
     return MichelsonPsiUtil.getTypeNameString(this);
   }
 
+  @Override
   @NotNull
   public MichelsonStackType asStackType() {
     return MichelsonPsiUtil.asStackType(this);
   }
 
+  @Override
   @Nullable
   public PsiElement getTypeToken() {
     return MichelsonPsiUtil.getTypeToken(this);

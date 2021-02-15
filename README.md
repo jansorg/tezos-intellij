@@ -17,7 +17,7 @@ If you would like to submit the logfile, then:
 
 ## Compatibility
 
-This plugin is compatible with versions 2016.1 (builds 145.x) and later.
+This plugin is compatible with versions 2020.2 (builds 202.x) and later.
 This includes:
 - IntelliJ
 - PyCharm

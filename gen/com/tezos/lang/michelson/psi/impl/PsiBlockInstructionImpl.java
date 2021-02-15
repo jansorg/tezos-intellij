@@ -17,15 +17,18 @@ public class PsiBlockInstructionImpl extends PsiInstructionImpl implements PsiBl
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitBlockInstruction(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
+  @Override
   public boolean isWhitespaceOnly() {
     return MichelsonPsiUtil.isWhitespaceOnly(this);
   }

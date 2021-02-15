@@ -2,4 +2,4 @@ build/
 .gradle/
 .idea/markdown-navigator.xml
 .idea/workspace.xml
-
+*.iml

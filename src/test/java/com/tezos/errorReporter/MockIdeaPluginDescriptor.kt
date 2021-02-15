@@ -1,34 +1,17 @@
-package com.tezos.errorReporter;
+package com.tezos.errorReporter
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.Date
 
-import java.util.Date;
-
-/**
- * Has to be Java because we're supporting older builds. Later builds added new methods in the interface. This isn't possible to implement
- * in Kotlin when we're also compiling with an interface which doesn't define this yet (override keyword vs Java's annotation).
- * @author jansorg
- */
-public class MockIdeaPluginDescriptor extends com.tezos.errorReporter.AbstractMockIdeaPluginDescriptor {
-    public MockIdeaPluginDescriptor(@NotNull String id, @NotNull String name, @NotNull String version) {
-        super(id, name, version);
+class MockIdeaPluginDescriptor(id: String, name: String, version: String) : AbstractMockIdeaPluginDescriptor(id, name, version) {
+    override fun getReleaseDate(): Date? {
+        return null
     }
 
-    @Nullable
-//    @Override
-    public Date getReleaseDate(){
-        return null;
+    override fun getProductCode(): String? {
+        return null
     }
 
-    @Nullable
-//    @Override
-    public String getProductCode() {
-        return null;
-    }
-
-//    @Override
-    public int getReleaseVersion() {
-        return 0;
+    override fun getReleaseVersion(): Int {
+        return 0
     }
 }

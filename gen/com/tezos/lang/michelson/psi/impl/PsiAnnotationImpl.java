@@ -19,47 +19,57 @@ public abstract class PsiAnnotationImpl extends MichelsonCompositeImpl implement
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitAnnotation(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
+  @Override
   public boolean isTypeAnnotation() {
     return MichelsonPsiUtil.isTypeAnnotation(this);
   }
 
+  @Override
   public boolean isVariableAnnotation() {
     return MichelsonPsiUtil.isVariableAnnotation(this);
   }
 
+  @Override
   public boolean isFieldAnnotation() {
     return MichelsonPsiUtil.isFieldAnnotation(this);
   }
 
+  @Override
   @NotNull
   public AnnotationType getAnnotationType() {
     return MichelsonPsiUtil.getAnnotationType(this);
   }
 
+  @Override
   @Nullable
   public PsiInstruction findParentInstruction() {
     return MichelsonPsiUtil.findParentInstruction(this);
   }
 
+  @Override
   @Nullable
   public PsiAnnotationList findParentAnnotationList() {
     return MichelsonPsiUtil.findParentAnnotationList(this);
   }
 
+  @Override
   @Nullable
   public PsiType findParentType() {
     return MichelsonPsiUtil.findParentType(this);
   }
 
+  @Override
   @NotNull
   public MichelsonStackAnnotation asStackAnnotation() {
     return MichelsonPsiUtil.asStackAnnotation(this);

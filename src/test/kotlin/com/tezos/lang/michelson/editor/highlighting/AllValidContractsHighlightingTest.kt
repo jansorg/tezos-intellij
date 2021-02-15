@@ -29,12 +29,6 @@ class AllValidContractsHighlightingTest(val michelsonFile: String) : MichelsonFi
         }
     }
 
-    @Before
-    fun setupTest() = setUp()
-
-    @After
-    fun shutdownTest() = tearDown()
-
     override fun isWriteActionRequired(): Boolean = false
 
     @Test

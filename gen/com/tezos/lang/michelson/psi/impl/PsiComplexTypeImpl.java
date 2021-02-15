@@ -17,10 +17,12 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitComplexType(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
@@ -56,10 +58,12 @@ public class PsiComplexTypeImpl extends PsiTypeImpl implements PsiComplexType {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiType.class);
   }
 
+  @Override
   public boolean hasSimpleTypes() {
     return MichelsonPsiUtil.hasSimpleTypes(this);
   }
 
+  @Override
   public boolean hasComplexTypes() {
     return MichelsonPsiUtil.hasComplexTypes(this);
   }

@@ -31,7 +31,7 @@ class MichelsonCommandLineState(private val config: MichelsonRunConfiguration, e
                     return
                 }
 
-                ExecutionManager.getInstance(project).contentManager.toFrontRunContent(environment.executor, event.processHandler)
+//                ExecutionManager.getInstance(project).contentManager.toFrontRunContent(environment.executor, event.processHandler)
             }
         })
         return processHandler

@@ -49,12 +49,6 @@ class AllFormattingTest(val michelsonFile: String) : MichelsonFixtureTest() {
         }
     }
 
-    @Before
-    fun setupTest() = setUp()
-
-    @After
-    fun shutdownTest() = tearDown()
-
     @Test
     fun testFile() {
         testFileFormatting(dataRootPath.resolve(michelsonFile))

@@ -9,7 +9,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.EdtTestUtil
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixture4TestCase
 import com.intellij.util.ThrowableRunnable
 import com.tezos.intellij.settings.TezosClientConfig
 import com.tezos.intellij.settings.TezosSettingService
@@ -19,7 +20,7 @@ import com.tezos.lang.michelson.stackInfo.MockMichelsonStackInfoManager
 /**
  * @author jansorg
  */
-abstract class MichelsonFixtureTest : LightPlatformCodeInsightFixtureTestCase() {
+abstract class MichelsonFixtureTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String = MichelsonTestUtils.dataPath().toString()
 
     override fun setUp() {
