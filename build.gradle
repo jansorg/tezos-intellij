@@ -34,9 +34,9 @@ configurations {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile "org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinx_html_version}"
+    compile("org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinx_html_version}") {
+        exclude group: "org.jetbrains.kotlin"
+    }
 
     antlr "org.antlr:antlr4:4.7.1"
     compile group: "org.antlr", name: "antlr4-runtime", version: "4.7.1"
@@ -59,6 +59,10 @@ intellij {
         sinceBuild '203.0'
         untilBuild '211.*'
     }
+}
+
+tasks.named("buildSearchableOptions") {
+    enabled = false
 }
 
 publishPlugin {

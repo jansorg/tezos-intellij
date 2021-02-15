@@ -1,3 +1,6 @@
+# Version 1.0.2
+- Compatibility with 2020.3 
+
 # Version 1.0.1
 - Add logging of stderr when the tezos-client command exited with a non-zero exit code. 
 
