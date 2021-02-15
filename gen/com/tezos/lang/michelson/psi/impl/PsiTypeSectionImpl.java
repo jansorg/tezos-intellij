@@ -17,10 +17,12 @@ public class PsiTypeSectionImpl extends PsiSectionImpl implements PsiTypeSection
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitTypeSection(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);

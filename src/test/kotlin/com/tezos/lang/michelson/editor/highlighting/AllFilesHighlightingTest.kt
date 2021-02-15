@@ -29,12 +29,6 @@ class AllFilesHighlightingTest(val michelsonFile: String) : MichelsonFixtureTest
         }
     }
 
-    @Before
-    fun setupTest() = setUp()
-
-    @After
-    fun shutdownTest() = tearDown()
-
     override fun isWriteActionRequired(): Boolean = false
 
     @Test

@@ -23,94 +23,15 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
     boolean result;
     builder = adapt_builder_(type, builder, this, EXTENDS_SETS_);
     Marker marker = enter_section_(builder, 0, _COLLAPSE_, null);
-    if (type == ANNOTATION) {
-      result = annotation(builder, 0);
-    }
-    else if (type == ANNOTATION_LIST) {
-      result = annotation_list(builder, 0);
-    }
-    else if (type == BLOCK_INSTRUCTION) {
-      result = block_instruction(builder, 0);
-    }
-    else if (type == CODE_SECTION) {
-      result = code_section(builder, 0);
-    }
-    else if (type == COMPLEX_TYPE) {
-      result = complex_type(builder, 0);
-    }
-    else if (type == CONTRACT) {
-      result = contract(builder, 0);
-    }
-    else if (type == CONTRACT_WRAPPER) {
-      result = contract_wrapper(builder, 0);
-    }
-    else if (type == CREATE_CONTRACT_INSTRUCTION) {
-      result = create_contract_instruction(builder, 0);
-    }
-    else if (type == DATA_LIST) {
-      result = data_list(builder, 0);
-    }
-    else if (type == DATA_MAP) {
-      result = data_map(builder, 0);
-    }
-    else if (type == EMPTY_BLOCK) {
-      result = empty_block(builder, 0);
-    }
-    else if (type == FIELD_ANNOTATION) {
-      result = field_annotation(builder, 0);
-    }
-    else if (type == GENERIC_INSTRUCTION) {
-      result = generic_instruction(builder, 0);
-    }
-    else if (type == INSTRUCTION) {
-      result = instruction(builder, 0);
-    }
-    else if (type == LITERAL_DATA) {
-      result = literal_data(builder, 0);
-    }
-    else if (type == MACRO_INSTRUCTION) {
-      result = macro_instruction(builder, 0);
-    }
-    else if (type == MAP_ENTRY) {
-      result = map_entry(builder, 0);
-    }
-    else if (type == SECTION) {
-      result = section(builder, 0);
-    }
-    else if (type == SIMPLE_TYPE) {
-      result = simple_type(builder, 0);
-    }
-    else if (type == STRING_LITERAL) {
-      result = string_literal(builder, 0);
-    }
-    else if (type == TAG) {
-      result = tag(builder, 0);
-    }
-    else if (type == TRAILING_ANNOTATION_LIST) {
-      result = trailing_annotation_list(builder, 0);
-    }
-    else if (type == TYPE) {
-      result = type(builder, 0);
-    }
-    else if (type == TYPE_ANNOTATION) {
-      result = type_annotation(builder, 0);
-    }
-    else if (type == TYPE_SECTION) {
-      result = type_section(builder, 0);
-    }
-    else if (type == UNKNOWN_SECTION) {
-      result = unknown_section(builder, 0);
-    }
-    else if (type == VARIABLE_ANNOTATION) {
-      result = variable_annotation(builder, 0);
-    }
-    else {
-      result = parse_root_(type, builder, 0);
-    }
+    result = parse_root_(type, builder);
     exit_section_(builder, 0, marker, type, result, true, TRUE_CONDITION);
   }
 
-  protected boolean parse_root_(IElementType type, PsiBuilder builder, int level) {
+  protected boolean parse_root_(IElementType type, PsiBuilder builder) {
+    return parse_root_(type, builder, 0);
+  }
+
+  static boolean parse_root_(IElementType type, PsiBuilder builder, int level) {
     return script_file(builder, level + 1);
   }
 
@@ -839,10 +760,8 @@ public class MichelsonParser implements PsiParser, LightPsiParser {
   private static boolean type_section_0(PsiBuilder builder, int level) {
     if (!recursion_guard_(builder, level, "type_section_0")) return false;
     boolean result;
-    Marker marker = enter_section_(builder);
     result = consumeToken(builder, "parameter");
     if (!result) result = consumeToken(builder, "storage");
-    exit_section_(builder, marker, null, result);
     return result;
   }
 

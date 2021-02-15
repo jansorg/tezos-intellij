@@ -20,7 +20,10 @@ import java.awt.Component
  * @author jansorg
  */
 abstract class AbstractHttpErrorSubmitter(private val serverURL: String) : ErrorReportSubmitter() {
-    override fun submit(events: Array<out IdeaLoggingEvent>, additionalInfo: String?, parentComponent: Component, consumer: Consumer<SubmittedReportInfo>): Boolean {
+    override fun submit(events: Array<out IdeaLoggingEvent>,
+                        additionalInfo: String?,
+                        parentComponent: Component,
+                        consumer: Consumer<in SubmittedReportInfo>): Boolean {
         val project = CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext(parentComponent))
 
         val task = SendErrorTask(project!!, pluginDescriptor, additionalInfo, events, parentComponent, consumer)
@@ -29,7 +32,14 @@ abstract class AbstractHttpErrorSubmitter(private val serverURL: String) : Error
         return true
     }
 
-    private inner class SendErrorTask(project: Project, val pluginDescriptor: PluginDescriptor, val additionalInfo: String?, val events: Array<out IdeaLoggingEvent>, private val parentComponent: Component, val consumer: Consumer<SubmittedReportInfo>) : Task.Backgroundable(project, "Tezos Error Report", false) {
+    override fun getReportActionText(): String = "Report to Author"
+
+    private inner class SendErrorTask(project: Project,
+                                      val pluginDescriptor: PluginDescriptor,
+                                      val additionalInfo: String?,
+                                      val events: Array<out IdeaLoggingEvent>,
+                                      private val parentComponent: Component,
+                                      val consumer: Consumer<in SubmittedReportInfo>) : Task.Backgroundable(project, "Tezos Error Report", false) {
         override fun run(indicator: ProgressIndicator) {
             val template = PlainTextErrorTemplate(pluginDescriptor, additionalInfo ?: "", events)
             val reporter = HttpEndpointReporter(serverURL, null, template.toString(), pluginID = pluginDescriptor.pluginId.idString)

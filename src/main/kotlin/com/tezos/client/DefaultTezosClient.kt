@@ -54,7 +54,7 @@ private fun MichelsonStackParser.TypeContext.transform(): MichelsonStackType {
 
 open class StandaloneTezosClient(private val executable: Path) : TezosClient {
     companion object {
-        private val LOG = Logger.getInstance("#tezos.client")!!
+        private val LOG = Logger.getInstance("#tezos.client")
 
         /**
          * Clean up output of Tezos clients.

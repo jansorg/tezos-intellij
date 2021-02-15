@@ -52,7 +52,7 @@ val AFTER_ERROR_LEAF_SKIPPING_WS = PlatformPatterns.psiElement().with(object : P
             }
         }
     }
-})!!
+})
 
 val LEFT_PAREN_PATTERN = MichelsonTypes.LEFT_PAREN.toPsiPattern()
 val PATTERN_TAG_TOKEN = MichelsonTypes.TAG_TOKEN.toPsiPattern()
@@ -64,7 +64,7 @@ val INSTRUCTION_ELEMENT_PATTERN = PlatformPatterns.psiElement(PsiInstruction::cl
 val PATTERN_INSTRUCTION_OR_DATA_TOKEN = TokenSet.create(MichelsonTypes.INSTRUCTION_TOKEN, MichelsonTypes.TAG_TOKEN).toPsiPattern()
 
 val PATTERN_DATA_ELEMENT = MichelsonTypes.LITERAL_DATA.toPsiPattern()
-val PATTERN_INSIDE_DATA_ELEMENT = PlatformPatterns.psiElement().withParent(PATTERN_DATA_ELEMENT)!!
+val PATTERN_INSIDE_DATA_ELEMENT = PlatformPatterns.psiElement().withParent(PATTERN_DATA_ELEMENT)
 
 val SECTION_PATTERN_VALID = PlatformPatterns.psiElement().isFirstAcceptedChild(DEBUG_TRUE).withParent(
         PlatformPatterns.psiElement(PsiSection::class.java)

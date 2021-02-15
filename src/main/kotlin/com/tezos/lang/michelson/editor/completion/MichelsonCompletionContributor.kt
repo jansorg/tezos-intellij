@@ -15,8 +15,8 @@ import com.tezos.lang.michelson.psi.PsiTypeSection
 class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor() {
     private companion object {
         val IN_TYPE_SECTION = PlatformPatterns.psiElement().inside(PsiTypeSection::class.java)!!
-        val AFTER_SECTION_NAME_LEAF = PlatformPatterns.psiElement().afterLeaf(SECTION_NAME.toPsiPattern().withText(PlatformPatterns.string().oneOf("parameter", "storage")))!!
-        val AFTER_INSTRUCTION_TOKEN_LEAF = PlatformPatterns.psiElement().afterLeaf(PATTERN_INSTRUCTION_TOKEN)!!
+        val AFTER_SECTION_NAME_LEAF = PlatformPatterns.psiElement().afterLeaf(SECTION_NAME.toPsiPattern().withText(PlatformPatterns.string().oneOf("parameter", "storage")))
+        val AFTER_INSTRUCTION_TOKEN_LEAF = PlatformPatterns.psiElement().afterLeaf(PATTERN_INSTRUCTION_TOKEN)
         val AFTER_INSTRUCTION_ELEMENT = PlatformPatterns.psiElement().afterSibling(INSTRUCTION_ELEMENT_PATTERN)!!
         val SIMPLE_TYPE_PATTERN = PlatformPatterns.or(
                 AFTER_SECTION_NAME_LEAF,
@@ -26,11 +26,11 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
                         .andNot(PATTERN_INSIDE_DATA_ELEMENT)
                         .andNot(PlatformPatterns.psiElement().afterLeaf(PATTERN_TAG_TOKEN)),
                 AFTER_INSTRUCTION_TOKEN_LEAF.andNot(PATTERN_INSIDE_DATA_ELEMENT)
-        )!!
+        )
 
         val TAG_AFTER_INSTRUCTION_TOKEN = PlatformPatterns.psiElement()
                 .withElementType(TokenSet.create(TokenType.WHITE_SPACE, TAG_TOKEN, MichelsonTypes.TAG))
-                .and(AFTER_INSTRUCTION_TOKEN_LEAF)!!
+                .and(AFTER_INSTRUCTION_TOKEN_LEAF)
 
         val TAG = StandardPatterns.or(
                 // e.g. "PUSH |"
@@ -49,9 +49,9 @@ class MichelsonCompletionContributor : AbstractOriginalPosCompletionContributor(
                 WHITESPACE_PATTERN.beforeLeaf(PATTERN_TAG_TOKEN),
                 // e.g. "PUSH int |123"
                 WHITESPACE_PATTERN.beforeLeaf(PATTERN_LITERAL_TOKEN)
-        )!!
+        )
 
-        val COMPLEX_TAG = PlatformPatterns.or(LEFT_PAREN_PATTERN, PlatformPatterns.psiElement(TAG_TOKEN).afterLeafSkipping(WHITESPACE_PATTERN, LEFT_PAREN_PATTERN))!!
+        val COMPLEX_TAG = PlatformPatterns.or(LEFT_PAREN_PATTERN, PlatformPatterns.psiElement(TAG_TOKEN).afterLeafSkipping(WHITESPACE_PATTERN, LEFT_PAREN_PATTERN))
     }
 
     init {

@@ -18,10 +18,12 @@ public class PsiTagImpl extends PsiDataImpl implements PsiTag {
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitTag(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
@@ -45,11 +47,13 @@ public class PsiTagImpl extends PsiDataImpl implements PsiTag {
     return findPsiChildByType(TAG_TOKEN);
   }
 
+  @Override
   @NotNull
   public String getTagName() {
     return MichelsonPsiUtil.getTagName(this);
   }
 
+  @Override
   @Nullable
   public TagMetadata getTagMetadata() {
     return MichelsonPsiUtil.getTagMetadata(this);

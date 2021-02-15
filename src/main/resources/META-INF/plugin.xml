@@ -102,7 +102,8 @@
 
     <!-- @formatter:off -->
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.tezos.lang.michelson.lang.MichelsonFileTypeFactory"/>
+        <fileType language="Michelson" extensions="tz;tez" name="Michelson"
+                  implementationClass="com.tezos.lang.michelson.lang.MichelsonFileType" fieldName="INSTANCE"/>
         <lang.ast.factory language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonAstFactory" />
         <lang.parserDefinition language="Michelson" implementationClass="com.tezos.lang.michelson.parser.MichelsonParserDefinition"/>
 

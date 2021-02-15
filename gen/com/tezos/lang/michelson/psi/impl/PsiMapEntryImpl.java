@@ -17,10 +17,12 @@ public class PsiMapEntryImpl extends PsiTagImpl implements PsiMapEntry {
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitMapEntry(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);

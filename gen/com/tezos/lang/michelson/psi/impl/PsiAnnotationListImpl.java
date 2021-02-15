@@ -17,10 +17,12 @@ public class PsiAnnotationListImpl extends MichelsonCompositeImpl implements Psi
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitAnnotationList(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
@@ -32,6 +34,7 @@ public class PsiAnnotationListImpl extends MichelsonCompositeImpl implements Psi
     return PsiTreeUtil.getChildrenOfTypeAsList(this, PsiAnnotation.class);
   }
 
+  @Override
   @Nullable
   public PsiInstruction findParentInstruction() {
     return MichelsonPsiUtil.findParentInstruction(this);

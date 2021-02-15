@@ -41,12 +41,6 @@ class MichelsonStackVisualizationEditorTest(val file: String) : MichelsonFixture
         }
     }
 
-    @Before
-    fun setupTest() = setUp()
-
-    @After
-    fun shutdownTest() = tearDown()
-
     // tests the fallback when the stack info returned by the tezos client doesn't contain the offset
     // atm the client's stack info doesn't cover annotations of instructions in all cases.
     // we still want to display the stack info in such a case, though

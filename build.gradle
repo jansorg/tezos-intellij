@@ -1,20 +1,16 @@
 buildscript {
-    ext.kotlin_version = '1.2.71'
-    ext.kotlinx_html_version = "0.6.10"
+    ext.kotlinx_html_version = "0.7.2"
 
     repositories {
         mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 plugins {
     id "jacoco"
-    id "org.jetbrains.intellij" version "0.3.9"
-    id "org.jetbrains.grammarkit" version "2018.1.7"
+    id "org.jetbrains.intellij" version "0.6.5"
+    id "org.jetbrains.grammarkit" version "2020.3.1"
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
 repositories {
@@ -24,12 +20,10 @@ repositories {
 
 version = pluginVersion
 
-apply plugin: "java"
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
-apply plugin: "kotlin"
 apply plugin: 'antlr'
 
 configurations {
@@ -62,8 +56,8 @@ intellij {
     pluginName 'tezos'
 
     patchPluginXml {
-        sinceBuild '145.0'
-        untilBuild '193.*'
+        sinceBuild '203.0'
+        untilBuild '211.*'
     }
 }
 
@@ -116,16 +110,15 @@ task generateMichelsonParser(type: GenerateParser) {
 // the coverage reports will be available at build/reports/coverage/test/html/index.html
 apply plugin: 'jacoco'
 jacoco {
-    toolVersion = "0.8.2"
-    reportsDir = file("$buildDir/reports/coverage")
+    toolVersion = "0.8.6"
+//    reportsDir = file("$buildDir/reports/coverage")
 }
 
-test {
+tasks.named("test") {
     finalizedBy jacocoTestReport
 
     jacoco {
         enabled true
-        append false
         includes["com.tezos.*"]
     }
 

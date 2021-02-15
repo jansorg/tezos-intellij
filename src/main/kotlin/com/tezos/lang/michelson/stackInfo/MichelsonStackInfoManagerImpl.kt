@@ -31,7 +31,7 @@ import java.nio.file.Paths
 
 open class MichelsonStackInfoManagerImpl(private val project: Project) : MichelsonStackInfoManager, ProjectComponent, DocumentListener, Disposable, TezosSettingsListener, FileEditorManagerListener {
     private companion object {
-        val LOG = Logger.getInstance("#tezos.stackInfo")!!
+        val LOG = Logger.getInstance("#tezos.stackInfo")
         const val UPDATE_DELAY = 150
     }
 

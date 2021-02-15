@@ -17,39 +17,47 @@ public class PsiContractImpl extends MichelsonCompositeImpl implements PsiContra
     super(type);
   }
 
+  @Override
   public <R> R accept(@NotNull PsiVisitor<R> visitor) {
     return visitor.visitContract(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PsiVisitor) accept((PsiVisitor)visitor);
     else super.accept(visitor);
   }
 
+  @Override
   public boolean isMainContract() {
     return MichelsonPsiUtil.isMainContract(this);
   }
 
+  @Override
   @NotNull
   public List<PsiSection> getSections() {
     return MichelsonPsiUtil.getSections(this);
   }
 
+  @Override
   @Nullable
   public PsiSection findSectionByType(@NotNull PsiSectionType type) {
     return MichelsonPsiUtil.findSectionByType(this, type);
   }
 
+  @Override
   @Nullable
   public PsiTypeSection findParameterSection() {
     return MichelsonPsiUtil.findParameterSection(this);
   }
 
+  @Override
   @Nullable
   public PsiTypeSection findStorageSection() {
     return MichelsonPsiUtil.findStorageSection(this);
   }
 
+  @Override
   @Nullable
   public PsiCodeSection findCodeSection() {
     return MichelsonPsiUtil.findCodeSection(this);
